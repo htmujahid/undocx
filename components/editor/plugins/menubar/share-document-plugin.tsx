@@ -1,0 +1,433 @@
+"use client";
+
+import { useOptimistic, useState } from "react";
+
+import { Check, Copy, Share2, UserPlus, X } from "lucide-react";
+import { toast } from "sonner";
+
+import { useEditorContext } from "@/components/editor/context/editor-context";
+import {
+  inviteCollaboratorAction,
+  removeCollaboratorAction,
+  toggleDocumentPublicAction,
+  updateCollaboratorPermissionAction,
+} from "@/components/editor/plugins/menubar/actions";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
+
+type Permission = "edit" | "comment" | "view";
+
+interface Collaborator {
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+  permission: Permission;
+  status: "active" | "pending";
+  userId?: string;
+}
+
+type OptimisticAction =
+  | { type: "add"; email: string; permission: Permission }
+  | { type: "remove"; id: string }
+  | { type: "update"; id: string; permission: Permission };
+
+export function ShareDocumentPlugin() {
+  const {
+    document,
+    user,
+    collaborators: contextCollaborators,
+  } = useEditorContext();
+  const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [copiedInviteId, setCopiedInviteId] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+  const [permission, setPermission] = useState<Permission>("view");
+  const [isPublic, setIsPublic] = useState(document.is_public || false);
+  const [loading, setLoading] = useState(false);
+
+  // Set up optimistic state for collaborators
+  const [optimisticCollaborators, updateOptimisticCollaborators] = useOptimistic(
+    contextCollaborators,
+    (state, action: OptimisticAction) => {
+      switch (action.type) {
+        case "add":
+          // Add a temporary pending collaborator
+          return [
+            ...state,
+            {
+              id: `temp-${Date.now()}`,
+              document_id: document.id,
+              user_id: null,
+              email: action.email,
+              access_level: action.permission,
+              shared_by: document.user_id,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            },
+          ];
+        case "remove":
+          // Remove collaborator by id
+          return state.filter((collab) => collab.id !== action.id);
+        case "update":
+          // Update collaborator permission
+          return state.map((collab) =>
+            collab.id === action.id
+              ? { ...collab, access_level: action.permission }
+              : collab,
+          );
+        default:
+          return state;
+      }
+    },
+  );
+
+  if (document.user_id !== user?.id) {
+    return null;
+  }
+
+  // Map collaborators from optimistic state to UI format
+  const collaborators: Collaborator[] = optimisticCollaborators.map((access) => {
+    if (access.user_id) {
+      // Active user with user
+      return {
+        id: access.id,
+        userId: access.user_id,
+        name: access.email?.split("@")[0] ?? "User",
+        email: access.email ?? "user@example.com",
+        permission: access.access_level as Permission,
+        status: "active" as const,
+      };
+    } else {
+      // Pending invitation by email
+      return {
+        id: access.id,
+        name: access.email?.split("@")[0] ?? "User",
+        email: access.email ?? "",
+        permission: access.access_level as Permission,
+        status: "pending" as const,
+      };
+    }
+  });
+
+  const handleCopyLink = async () => {
+    const shareLink = `${window.location.origin}/editor/${document.id}`;
+    await navigator.clipboard.writeText(shareLink);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleCopyInviteLink = async (inviteId: string) => {
+    const inviteLink = `${window.location.origin}/editor/${document.id}/invitation`;
+    await navigator.clipboard.writeText(inviteLink);
+    setCopiedInviteId(inviteId);
+    setTimeout(() => setCopiedInviteId(null), 2000);
+    toast.success("Invitation link copied");
+  };
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const handleInviteCollaborator = async () => {
+    if (!email || loading) return;
+    setLoading(true);
+
+    const inviteEmail = email;
+    const invitePermission = permission;
+
+    // Optimistically add the collaborator
+    updateOptimisticCollaborators({
+      type: "add",
+      email: inviteEmail,
+      permission: invitePermission,
+    });
+
+    // Clear form immediately
+    setEmail("");
+    setPermission("view");
+
+    try {
+      await inviteCollaboratorAction(
+        document.id,
+        inviteEmail,
+        invitePermission,
+        document.user_id,
+      );
+      toast.success("Collaborator invited successfully");
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Failed to invite user",
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRemoveCollaborator = async (collaboratorId: string) => {
+    // Optimistically remove the collaborator
+    updateOptimisticCollaborators({
+      type: "remove",
+      id: collaboratorId,
+    });
+
+    try {
+      await removeCollaboratorAction(collaboratorId, document.id);
+      toast.success("Collaborator removed successfully");
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Failed to remove collaborator",
+      );
+    }
+  };
+
+  const handleUpdatePermission = async (
+    collaboratorId: string,
+    newPermission: Permission,
+  ) => {
+    // Optimistically update the permission
+    updateOptimisticCollaborators({
+      type: "update",
+      id: collaboratorId,
+      permission: newPermission,
+    });
+
+    try {
+      await updateCollaboratorPermissionAction(
+        collaboratorId,
+        document.id,
+        newPermission,
+      );
+      toast.success("Permission updated successfully");
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Failed to update permission",
+      );
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="icon-sm">
+          <Share2 className="size-4" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Share Document</DialogTitle>
+          <DialogDescription>
+            Invite people to collaborate or share a link
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          {/* Invite Section */}
+          <div className="space-y-2">
+            <Label htmlFor="email">Invite people</Label>
+            <div className="flex gap-2">
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && email && !loading) {
+                    e.preventDefault();
+                    handleInviteCollaborator();
+                  }
+                }}
+              />
+              <Select
+                value={permission}
+                onValueChange={(value) => setPermission(value as Permission)}
+              >
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="edit">Can edit</SelectItem>
+                  <SelectItem value="comment">Can comment</SelectItem>
+                  <SelectItem value="view">Can view</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button
+                onClick={handleInviteCollaborator}
+                disabled={!email || loading}
+              >
+                <UserPlus className="size-4" />
+              </Button>
+            </div>
+          </div>
+
+          {/* Collaborators List */}
+          {collaborators.length > 0 && (
+            <div className="space-y-2">
+              <Label>People with access</Label>
+              <div className="max-h-[200px] space-y-2 overflow-y-auto">
+                {collaborators.map((collaborator) => (
+                  <div
+                    key={collaborator.id}
+                    className="hover:bg-accent flex items-center justify-between rounded-md p-2"
+                  >
+                    <div className="flex min-w-0 flex-1 items-center gap-3">
+                      <Avatar className="size-8">
+                        <AvatarImage src={collaborator.avatar} />
+                        <AvatarFallback className="text-xs">
+                          {getInitials(collaborator.name)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2">
+                          <p className="truncate text-sm font-medium">
+                            {collaborator.name}
+                          </p>
+                          {collaborator.status === "pending" && (
+                            <Badge variant="secondary" className="text-xs">
+                              Pending
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-muted-foreground truncate text-xs">
+                          {collaborator.email}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Select
+                        value={collaborator.permission}
+                        onValueChange={(value) =>
+                          handleUpdatePermission(
+                            collaborator.id,
+                            value as Permission,
+                          )
+                        }
+                      >
+                        <SelectTrigger className="h-8 w-[125px] text-xs">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="edit">Can edit</SelectItem>
+                          <SelectItem value="comment">Can comment</SelectItem>
+                          <SelectItem value="view">Can view</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-8"
+                        onClick={() => handleCopyInviteLink(collaborator.id)}
+                        title="Copy invitation link"
+                      >
+                        {copiedInviteId === collaborator.id ? (
+                          <Check className="size-4 text-green-500" />
+                        ) : (
+                          <Copy className="size-4" />
+                        )}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-8"
+                        onClick={() => handleRemoveCollaborator(collaborator.id)}
+                      >
+                        <X className="size-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <Separator />
+
+          {/* Link Sharing Section */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="space-y-0.5">
+                <Label>Make document public</Label>
+                <p className="text-muted-foreground text-xs">
+                  {isPublic
+                    ? "Anyone with the link can view this document"
+                    : "Only invited people can access this document"}
+                </p>
+              </div>
+              <Switch
+                checked={isPublic}
+                onCheckedChange={(checked) => {
+                  toast.promise(
+                    toggleDocumentPublicAction(document.id, checked),
+                    {
+                      loading: "Updating visibility...",
+                      success: checked
+                        ? "Document is now public"
+                        : "Document is now private",
+                      error: (err) =>
+                        err instanceof Error
+                          ? err.message
+                          : "Failed to update document visibility",
+                    },
+                  );
+                  setIsPublic(checked);
+                }}
+              />
+            </div>
+
+            {isPublic && (
+              <div className="flex gap-2">
+                <Input
+                  value={
+                    typeof window !== "undefined"
+                      ? `${window.location.origin}/editor/${document.id}`
+                      : ""
+                  }
+                  readOnly
+                  className="font-mono text-xs"
+                />
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={handleCopyLink}
+                  className="shrink-0"
+                >
+                  {copied ? (
+                    <Check className="size-4 text-green-500" />
+                  ) : (
+                    <Copy className="size-4" />
+                  )}
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
