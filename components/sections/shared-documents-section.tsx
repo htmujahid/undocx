@@ -48,7 +48,6 @@ export function SharedDocumentsSection({
             userEmail={doc.user_email}
             userPictureUrl={doc.user_picture_url}
             updatedAt={doc.updated_at}
-            showUser={true}
           />
         ))}
       </div>

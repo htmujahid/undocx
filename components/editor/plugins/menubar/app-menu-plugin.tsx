@@ -156,7 +156,7 @@ export function AppMenuPlugin() {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Move to Trash?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This will move "{document.title}" to trash. You can restore it later from the trash section.
+                            This will move &quot;{document.title}&quot; to trash. You can restore it later from the trash section.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
