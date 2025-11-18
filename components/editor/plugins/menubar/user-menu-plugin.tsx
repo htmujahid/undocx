@@ -8,6 +8,7 @@ import {
   HelpCircleIcon,
   HomeIcon,
   LogOutIcon,
+  MailIcon,
 } from "lucide-react";
 
 import { useEditorContext } from "@/components/editor/context/editor-context";
@@ -83,9 +84,17 @@ export function UserMenuPlugin() {
             <CreditCardIcon />
             Billing
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <HelpCircleIcon />
-            Support
+          <DropdownMenuItem asChild>
+            <a href="https://github.com/htmujahid/undocx">
+              <HelpCircleIcon />
+              Support
+            </a>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <a href="mailto:htmujahid@gmail.com?subject=Undocx Feedback">
+              <MailIcon />
+              Send Feedback
+            </a>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
