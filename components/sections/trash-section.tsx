@@ -78,14 +78,14 @@ export function TrashSection({ initialDocuments }: TrashSectionProps) {
             doc.user_name || doc.user_email?.split("@")[0] || "Unknown";
 
           return (
-            <Card key={doc.id} className="group transition-colors opacity-75">
+            <Card key={doc.id} className="group opacity-75 transition-colors">
               <CardHeader className="flex-row items-start justify-between space-y-3">
                 <div className="flex items-center gap-2">
                   <div className="bg-muted flex h-10 w-10 items-center justify-center rounded-lg">
                     <FileText className="text-muted-foreground h-5 w-5" />
                   </div>
                   <div className="flex-1 space-y-1">
-                    <CardTitle className="line-clamp-2 text-base text-muted-foreground">
+                    <CardTitle className="text-muted-foreground line-clamp-2 text-base">
                       {doc.title}
                     </CardTitle>
                   </div>
@@ -97,10 +97,7 @@ export function TrashSection({ initialDocuments }: TrashSectionProps) {
               <CardFooter className="flex-col items-start gap-2 pt-0">
                 <div className="flex items-center gap-2">
                   <Avatar className="h-6 w-6">
-                    <AvatarImage
-                      src={doc.user_picture_url}
-                      alt={displayUser}
-                    />
+                    <AvatarImage src={doc.user_picture_url} alt={displayUser} />
                     <AvatarFallback className="text-xs">
                       {getInitials(displayUser)}
                     </AvatarFallback>

@@ -148,7 +148,9 @@ export function AppMenuPlugin() {
                             <Trash2 className="size-5" />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <span className="text-sm font-medium">Move to Trash</span>
+                            <span className="text-sm font-medium">
+                              Move to Trash
+                            </span>
                           </div>
                         </button>
                       </AlertDialogTrigger>
@@ -156,7 +158,9 @@ export function AppMenuPlugin() {
                         <AlertDialogHeader>
                           <AlertDialogTitle>Move to Trash?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This will move &quot;{document.title}&quot; to trash. You can restore it later from the trash section.
+                            This will move &quot;{document.title}&quot; to
+                            trash. You can restore it later from the trash
+                            section.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>

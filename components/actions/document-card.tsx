@@ -1,7 +1,8 @@
 "use client";
 
-import { ExternalLink, FileText } from "lucide-react";
 import Link from "next/link";
+
+import { ExternalLink, FileText } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
@@ -61,7 +62,7 @@ export function DocumentCard({
         <div className="flex items-center gap-2">
           <FileText className="text-primary h-5 w-5" />
           <div className="min-w-0 flex-1">
-            <CardTitle className="line-clamp-2 text-sm font-semibold leading-tight">
+            <CardTitle className="line-clamp-2 text-sm leading-tight font-semibold">
               <Link href={`/editor/${documentId}`} className="hover:underline">
                 {title}
               </Link>

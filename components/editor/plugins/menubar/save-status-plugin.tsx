@@ -14,9 +14,9 @@ import { cn } from "@/lib/utils";
  * - 'saved': Shows "Saved" with a check icon
  */
 export function SaveStatusPlugin() {
-  const { saveStatus } = useEditorContext();
+  const { saveStatus, documentMode } = useEditorContext();
 
-  if (saveStatus === "idle") {
+  if (saveStatus === "idle" || documentMode !== "editing") {
     return null;
   }
 

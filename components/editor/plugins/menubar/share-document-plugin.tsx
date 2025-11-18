@@ -1,17 +1,11 @@
 "use client";
 
-import { useOptimistic, useState } from "react";
+import { useState } from "react";
 
 import { Check, Copy, Share2, UserPlus, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { useEditorContext } from "@/components/editor/context/editor-context";
-import {
-  inviteCollaboratorAction,
-  removeCollaboratorAction,
-  toggleDocumentPublicAction,
-  updateCollaboratorPermissionAction,
-} from "@/components/editor/plugins/menubar/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -34,6 +28,8 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import { Tables } from "@/lib/database.types";
+import { createClient } from "@/lib/supabase/client";
 
 type Permission = "edit" | "comment" | "view";
 
@@ -47,10 +43,27 @@ interface Collaborator {
   userId?: string;
 }
 
-type OptimisticAction =
-  | { type: "add"; email: string; permission: Permission }
-  | { type: "remove"; id: string }
-  | { type: "update"; id: string; permission: Permission };
+// Helper function to map database record to UI format
+function mapCollaboratorToUI(access: Tables<"shared_documents">): Collaborator {
+  if (access.user_id) {
+    return {
+      id: access.id,
+      userId: access.user_id,
+      name: access.email?.split("@")[0] ?? "User",
+      email: access.email ?? "user@example.com",
+      permission: access.access_level as Permission,
+      status: "active" as const,
+    };
+  } else {
+    return {
+      id: access.id,
+      name: access.email?.split("@")[0] ?? "User",
+      email: access.email ?? "",
+      permission: access.access_level as Permission,
+      status: "pending" as const,
+    };
+  }
+}
 
 export function ShareDocumentPlugin() {
   const {
@@ -58,6 +71,11 @@ export function ShareDocumentPlugin() {
     user,
     collaborators: contextCollaborators,
   } = useEditorContext();
+  const supabase = createClient();
+
+  const [collaborators, setCollaborators] = useState<Collaborator[]>(
+    contextCollaborators.map(mapCollaboratorToUI),
+  );
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [copiedInviteId, setCopiedInviteId] = useState<string | null>(null);
@@ -66,69 +84,9 @@ export function ShareDocumentPlugin() {
   const [isPublic, setIsPublic] = useState(document.is_public || false);
   const [loading, setLoading] = useState(false);
 
-  // Set up optimistic state for collaborators
-  const [optimisticCollaborators, updateOptimisticCollaborators] = useOptimistic(
-    contextCollaborators,
-    (state, action: OptimisticAction) => {
-      switch (action.type) {
-        case "add":
-          // Add a temporary pending collaborator
-          return [
-            ...state,
-            {
-              id: `temp-${Date.now()}`,
-              document_id: document.id,
-              user_id: null,
-              email: action.email,
-              access_level: action.permission,
-              shared_by: document.user_id,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
-            },
-          ];
-        case "remove":
-          // Remove collaborator by id
-          return state.filter((collab) => collab.id !== action.id);
-        case "update":
-          // Update collaborator permission
-          return state.map((collab) =>
-            collab.id === action.id
-              ? { ...collab, access_level: action.permission }
-              : collab,
-          );
-        default:
-          return state;
-      }
-    },
-  );
-
   if (document.user_id !== user?.id) {
     return null;
   }
-
-  // Map collaborators from optimistic state to UI format
-  const collaborators: Collaborator[] = optimisticCollaborators.map((access) => {
-    if (access.user_id) {
-      // Active user with user
-      return {
-        id: access.id,
-        userId: access.user_id,
-        name: access.email?.split("@")[0] ?? "User",
-        email: access.email ?? "user@example.com",
-        permission: access.access_level as Permission,
-        status: "active" as const,
-      };
-    } else {
-      // Pending invitation by email
-      return {
-        id: access.id,
-        name: access.email?.split("@")[0] ?? "User",
-        email: access.email ?? "",
-        permission: access.access_level as Permission,
-        status: "pending" as const,
-      };
-    }
-  });
 
   const handleCopyLink = async () => {
     const shareLink = `${window.location.origin}/editor/${document.id}`;
@@ -161,74 +119,74 @@ export function ShareDocumentPlugin() {
     const inviteEmail = email;
     const invitePermission = permission;
 
-    // Optimistically add the collaborator
-    updateOptimisticCollaborators({
-      type: "add",
-      email: inviteEmail,
-      permission: invitePermission,
-    });
-
     // Clear form immediately
     setEmail("");
     setPermission("view");
 
-    try {
-      await inviteCollaboratorAction(
-        document.id,
-        inviteEmail,
-        invitePermission,
-        document.user_id,
-      );
-      toast.success("Collaborator invited successfully");
-    } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Failed to invite user",
-      );
-    } finally {
+    const { data, error } = await supabase
+      .from("shared_documents")
+      .insert({
+        document_id: document.id,
+        email: inviteEmail,
+        access_level: invitePermission,
+        shared_by: document.user_id,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      if (error.code === "23505") {
+        toast.error("User already has access to this document");
+      } else {
+        toast.error("Failed to invite user");
+      }
       setLoading(false);
+      return;
     }
+
+    // Update local state
+    setCollaborators((prev) => [...prev, mapCollaboratorToUI(data)]);
+    toast.success("Collaborator invited successfully");
+    setLoading(false);
   };
 
   const handleRemoveCollaborator = async (collaboratorId: string) => {
-    // Optimistically remove the collaborator
-    updateOptimisticCollaborators({
-      type: "remove",
-      id: collaboratorId,
-    });
+    const { error } = await supabase
+      .from("shared_documents")
+      .delete()
+      .eq("id", collaboratorId);
 
-    try {
-      await removeCollaboratorAction(collaboratorId, document.id);
-      toast.success("Collaborator removed successfully");
-    } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Failed to remove collaborator",
-      );
+    if (error) {
+      toast.error("Failed to remove collaborator");
+      return;
     }
+
+    // Update local state
+    setCollaborators((prev) => prev.filter((c) => c.id !== collaboratorId));
+    toast.success("Collaborator removed successfully");
   };
 
   const handleUpdatePermission = async (
     collaboratorId: string,
     newPermission: Permission,
   ) => {
-    // Optimistically update the permission
-    updateOptimisticCollaborators({
-      type: "update",
-      id: collaboratorId,
-      permission: newPermission,
-    });
+    const { error } = await supabase
+      .from("shared_documents")
+      .update({ access_level: newPermission })
+      .eq("id", collaboratorId);
 
-    try {
-      await updateCollaboratorPermissionAction(
-        collaboratorId,
-        document.id,
-        newPermission,
-      );
-      toast.success("Permission updated successfully");
-    } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Failed to update permission",
-      );
+    if (error) {
+      toast.error("Failed to update permission");
+      return;
     }
+
+    // Update local state
+    setCollaborators((prev) =>
+      prev.map((c) =>
+        c.id === collaboratorId ? { ...c, permission: newPermission } : c,
+      ),
+    );
+    toast.success("Permission updated successfully");
   };
 
   return (
@@ -355,7 +313,9 @@ export function ShareDocumentPlugin() {
                         variant="ghost"
                         size="icon"
                         className="size-8"
-                        onClick={() => handleRemoveCollaborator(collaborator.id)}
+                        onClick={() =>
+                          handleRemoveCollaborator(collaborator.id)
+                        }
                       >
                         <X className="size-4" />
                       </Button>
@@ -381,21 +341,23 @@ export function ShareDocumentPlugin() {
               </div>
               <Switch
                 checked={isPublic}
-                onCheckedChange={(checked) => {
-                  toast.promise(
-                    toggleDocumentPublicAction(document.id, checked),
-                    {
-                      loading: "Updating visibility...",
-                      success: checked
-                        ? "Document is now public"
-                        : "Document is now private",
-                      error: (err) =>
-                        err instanceof Error
-                          ? err.message
-                          : "Failed to update document visibility",
-                    },
-                  );
+                onCheckedChange={async (checked) => {
+                  const { error } = await supabase
+                    .from("documents")
+                    .update({ is_public: checked })
+                    .eq("id", document.id);
+
+                  if (error) {
+                    toast.error("Failed to update document visibility");
+                    return;
+                  }
+
                   setIsPublic(checked);
+                  toast.success(
+                    checked
+                      ? "Document is now public"
+                      : "Document is now private",
+                  );
                 }}
               />
             </div>
