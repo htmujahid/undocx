@@ -2,6 +2,13 @@
 
 A Google Docs-like **realtime collaborative rich text editor** built with Next.js, Lexical.dev, Supabase, and shadcn UI.
 
+<h1 align="center">
+   <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="public/images/bg-dark.png">
+   <img alt="supasheet" width="100%" src="public/images/bg-light.png">
+   </picture>
+</h1>
+
 ## Features
 
 - **Real-time Collaboration**: Multiple users can edit documents simultaneously with Supabase Realtime
