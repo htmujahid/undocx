@@ -113,8 +113,7 @@ npm run supabase     # Access Supabase CLI
 ```
 /app                          # Next.js App Router pages
   /auth                       # Authentication pages (login, signup, etc.)
-  /editor                     # Full-featured rich text editor
-  /editor-md                  # Markdown editor variant
+  /editor                     # Full-featured  variant
 /components
   /blocks/editor-x            # Main editor components
   /editor                     # Editor plugins and utilities
@@ -129,11 +128,9 @@ npm run supabase     # Access Supabase CLI
 
 ## Key Routes
 
-- `/` - Landing page
 - `/auth/login` - User login
-- `/auth/sign-up` - User registration
-- `/editor` - Full-featured collaborative editor
-- `/editor-md` - Markdown editor variant
+- `/editor` - Document listing page
+- `/editor/new` - Full-featured collaborative editor
 
 ## Development
 
