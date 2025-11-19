@@ -18,7 +18,7 @@ import { useToolbarContext } from "@/components/editor/context/toolbar-context";
 import { Button } from "@/components/ui/button";
 
 export function ClearFormattingToolbarPlugin() {
-  const { activeEditor } = useToolbarContext();
+  const { activeEditor, isEditable } = useToolbarContext();
 
   const clearFormatting = useCallback(() => {
     activeEditor.update(() => {
@@ -82,6 +82,7 @@ export function ClearFormattingToolbarPlugin() {
       aria-label="Clear formatting"
       variant={"outline"}
       size={"icon"}
+      disabled={!isEditable}
       onClick={clearFormatting}
     >
       <EraserIcon className="h-4 w-4" />

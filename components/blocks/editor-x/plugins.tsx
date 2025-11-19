@@ -22,7 +22,7 @@ import { useEditorContext } from "@/components/editor/context/editor-context";
 import { ContentEditable } from "@/components/editor/editor-ui/content-editable";
 import { CounterCharacterPlugin } from "@/components/editor/plugins/actions/counter-character-plugin";
 import { AutoLinkPlugin } from "@/components/editor/plugins/auto-link-plugin";
-import { ClearFormattingToolbarPlugin } from "@/components/editor/plugins/clear-formatting-toolbar-plugin";
+import { ClearFormattingToolbarPlugin } from "@/components/editor/plugins/toolbar/clear-formatting-toolbar-plugin";
 import { CodeActionMenuPlugin } from "@/components/editor/plugins/code-action-menu-plugin";
 import { CodeHighlightPlugin } from "@/components/editor/plugins/code-highlight-plugin";
 import { CollaborationPlugin } from "@/components/editor/plugins/collaboration-plugin";
