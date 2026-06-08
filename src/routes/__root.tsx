@@ -1,6 +1,8 @@
-import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router"
+import { HeadContent, Scripts, createRootRouteWithContext } from "@tanstack/react-router"
 
-import { sessionAction } from "@/actions/auth/session-action"
+import { QueryClient } from "@tanstack/react-query"
+
+import { authUserQueryOptions } from "@/lib/queries/auth"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
@@ -8,7 +10,7 @@ import { Toaster } from "sonner"
 
 import appCss from "../styles.css?url"
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
       {
@@ -34,12 +36,11 @@ export const Route = createRootRoute({
       },
     ],
   }),
-  beforeLoad: async () => {
-    const data = await sessionAction()
+  beforeLoad: async ({ context }) => {
+    const user =
+      await context.queryClient.ensureQueryData(authUserQueryOptions)
 
-    return {
-      ...data,
-    }
+    return { user }
   },
   notFoundComponent: () => (
     <main className="container mx-auto p-4 pt-16">

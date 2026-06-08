@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 
 import { useState } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -9,6 +10,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp"
 import { authClient } from "@/lib/auth-client"
+import { authUserQueryOptions } from "@/lib/queries/auth"
 import { toast } from "sonner"
 
 export const Route = createFileRoute("/auth/two-factor")({
@@ -17,6 +19,7 @@ export const Route = createFileRoute("/auth/two-factor")({
 
 function TwoFactorPage() {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const [mode, setMode] = useState<"totp" | "backup">("totp")
   const [code, setCode] = useState("")
   const [backupCode, setBackupCode] = useState("")
@@ -26,7 +29,7 @@ function TwoFactorPage() {
   async function handleVerifyTotp() {
     if (code.length !== 6) return
     setLoading(true)
-    const { error } = await authClient.twoFactor.verifyTotp({
+    const { data, error } = await authClient.twoFactor.verifyTotp({
       code,
       trustDevice,
     })
@@ -36,13 +39,14 @@ function TwoFactorPage() {
       setCode("")
       return
     }
+    queryClient.setQueryData(authUserQueryOptions.queryKey, data?.user ?? null)
     navigate({ to: "/home" })
   }
 
   async function handleVerifyBackup() {
     if (!backupCode.trim()) return
     setLoading(true)
-    const { error } = await authClient.twoFactor.verifyBackupCode({
+    const { data, error } = await authClient.twoFactor.verifyBackupCode({
       code: backupCode.trim(),
     })
     setLoading(false)
@@ -51,6 +55,7 @@ function TwoFactorPage() {
       setBackupCode("")
       return
     }
+    queryClient.setQueryData(authUserQueryOptions.queryKey, data?.user ?? null)
     navigate({ to: "/home" })
   }
 

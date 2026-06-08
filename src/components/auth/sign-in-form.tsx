@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router"
 
 import { useForm } from "@tanstack/react-form"
+import { useQueryClient } from "@tanstack/react-query"
 
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -11,6 +12,7 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"
+import { authUserQueryOptions } from "@/lib/queries/auth"
 import { toast } from "sonner"
 import { z } from "zod"
 
@@ -23,6 +25,7 @@ const signInSchema = z.object({
 
 export function SignInForm() {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const form = useForm({
     defaultValues: { email: "", password: "" },
@@ -36,9 +39,14 @@ export function SignInForm() {
         {
           onSuccess(ctx) {
             if (ctx.data.twoFactorRedirect) {
+              queryClient.setQueryData(authUserQueryOptions.queryKey, null)
               navigate({ to: "/auth/two-factor" })
               return
             }
+            queryClient.setQueryData(
+              authUserQueryOptions.queryKey,
+              ctx.data.user,
+            )
             navigate({ to: "/home" })
           },
           onError(ctx) {

@@ -1,6 +1,7 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router"
 
 import { useState } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import QRCode from "react-qr-code"
 
 import { Button } from "@/components/ui/button"
@@ -16,6 +17,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp"
 import { authClient } from "@/lib/auth-client"
+import { authUserQueryOptions } from "@/lib/queries/auth"
 import { ShieldCheckIcon, ShieldOffIcon } from "lucide-react"
 import { toast } from "sonner"
 
@@ -28,6 +30,7 @@ type EnableStep = "idle" | "setup" | "verify"
 function MfaPage() {
   const { user } = Route.useRouteContext()
   const router = useRouter()
+  const queryClient = useQueryClient()
   const isEnabled = !!user?.twoFactorEnabled
 
   const [enableStep, setEnableStep] = useState<EnableStep>("idle")
@@ -64,7 +67,7 @@ function MfaPage() {
   async function handleVerifyEnable() {
     if (verifyCode.length !== 6) return
     setEnableLoading(true)
-    const { error } = await authClient.twoFactor.verifyTotp({
+    const { data, error } = await authClient.twoFactor.verifyTotp({
       code: verifyCode,
     })
     setEnableLoading(false)
@@ -78,6 +81,7 @@ function MfaPage() {
     setEnablePassword("")
     setTotpUri("")
     setVerifyCode("")
+    queryClient.setQueryData(authUserQueryOptions.queryKey, data?.user ?? null)
     router.invalidate()
   }
 
@@ -95,6 +99,10 @@ function MfaPage() {
     toast.success("Two-factor authentication disabled")
     setDisablePassword("")
     setNewBackupCodes([])
+    queryClient.setQueryData(
+      authUserQueryOptions.queryKey,
+      (old) => old ? { ...old, twoFactorEnabled: false } : null,
+    )
     router.invalidate()
   }
 

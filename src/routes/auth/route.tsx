@@ -2,11 +2,7 @@ import { Link, Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/auth")({
   beforeLoad: ({ context, location }) => {
-    if (
-      context.user &&
-      location.pathname !== "/auth/update-password" &&
-      location.pathname !== "/auth/two-factor"
-    )
+    if (context.user && location.pathname !== "/auth/update-password")
       throw redirect({ to: "/home" })
   },
   component: AuthLayout,

@@ -12,15 +12,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { signOut } from "@/lib/auth-client"
 import { useUser } from "@/hooks/use-user"
+import { signOut } from "@/lib/auth-client"
+import { authUserQueryOptions } from "@/lib/queries/auth"
+import { useQueryClient } from "@tanstack/react-query"
 
 export function Navbar() {
   const { user } = useUser()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const handleSignOut = async () => {
     await signOut()
+    queryClient.setQueryData(authUserQueryOptions.queryKey, null)
     navigate({ to: "/" })
   }
 
