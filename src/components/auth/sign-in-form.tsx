@@ -36,7 +36,7 @@ export function SignInForm() {
         toast.error(error.message)
         return
       }
-      navigate({ to: "/" })
+      navigate({ to: "/home" })
     },
   })
 

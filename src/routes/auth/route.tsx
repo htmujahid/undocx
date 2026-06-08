@@ -7,7 +7,7 @@ export const Route = createFileRoute("/auth")({
       location.pathname !== "/auth/update-password" &&
       location.pathname !== "/auth/mfa"
     )
-      throw redirect({ to: "/" })
+      throw redirect({ to: "/home" })
   },
   component: AuthLayout,
 })
