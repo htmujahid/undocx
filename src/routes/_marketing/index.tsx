@@ -1,19 +1,32 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { Button } from "@/components/ui/button"
+import { Navbar } from "@/components/marketing/navbar"
+import { Hero } from "@/components/marketing/hero"
+import { HowItWorks } from "@/components/marketing/how-it-works"
+import { Comparison } from "@/components/marketing/comparison"
+import { Features } from "@/components/marketing/features"
+import { UseCases } from "@/components/marketing/use-cases"
+import { Testimonials } from "@/components/marketing/testimonials"
+import { FAQ } from "@/components/marketing/faq"
+import { CTA } from "@/components/marketing/cta"
+import { Footer } from "@/components/marketing/footer"
 
-export const Route = createFileRoute("/_marketing/")({ component: App })
+export const Route = createFileRoute("/_marketing/")({ component: LandingPage })
 
-function App() {
+function LandingPage() {
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-      </div>
+    <div className="min-h-svh">
+      <Navbar />
+      <main>
+        <Hero />
+        <HowItWorks />
+        <Comparison />
+        <Features />
+        <UseCases />
+        <Testimonials />
+        <FAQ />
+        <CTA />
+      </main>
+      <Footer />
     </div>
   )
 }

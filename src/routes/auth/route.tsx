@@ -102,40 +102,40 @@ function AuthLayout() {
             </span>
           </Link>
 
-          <div className="mt-16 space-y-7">
-            <div className="space-y-3">
-              <p className="text-[2rem] font-semibold leading-tight tracking-tight">
-                AI content.
-                <br />
-                Every format.
-              </p>
-              <p className="max-w-xs text-sm leading-relaxed text-primary-foreground/60">
-                Generate, organize, and edit AI content in 15+ smart layout
-                formats — from flowcharts to flashcards — all in one knowledge
-                base.
-              </p>
-            </div>
+          <div className="flex flex-1 items-center">
+            <div className="space-y-7">
+              <div className="space-y-3">
+                <p className="text-[2rem] font-semibold leading-tight tracking-tight">
+                  AI content. Every format.
+                </p>
+                <p className="text-sm leading-relaxed text-primary-foreground/60">
+                  Generate, organize, and edit AI content in 15+ smart layout
+                  formats.<br /> From flowcharts to flashcards, all in one knowledge
+                  base.
+                </p>
+              </div>
 
-            <div className="space-y-3">
-              {FEATURES.map((f) => (
-                <div key={f.label} className="flex items-start gap-3">
-                  <div className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-md bg-primary-foreground/10 ring-1 ring-primary-foreground/15">
-                    {f.icon}
+              <div className="space-y-3">
+                {FEATURES.map((f) => (
+                  <div key={f.label} className="flex items-start gap-3">
+                    <div className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-md bg-primary-foreground/10 ring-1 ring-primary-foreground/15">
+                      {f.icon}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-primary-foreground/90">
+                        {f.label}
+                      </p>
+                      <p className="text-xs text-primary-foreground/50">
+                        {f.description}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-primary-foreground/90">
-                      {f.label}
-                    </p>
-                    <p className="text-xs text-primary-foreground/50">
-                      {f.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
 
-          <p className="mt-auto text-[11px] text-primary-foreground/30">
+          <p className="text-[11px] text-primary-foreground/30">
             &copy; {new Date().getFullYear()} Tarteeb AI. All rights reserved.
           </p>
         </div>

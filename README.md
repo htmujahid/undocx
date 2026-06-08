@@ -2,7 +2,7 @@
 
 > **Tarteeb** (ترتیب) — Arabic/Urdu for *arrangement* and *organization*
 
-Tarteeb AI is an intelligent content generation and knowledge management platform. Unlike conventional AI tools that output responses in one or two formats, Tarteeb AI adapts its response layout to the nature of your content — producing flowcharts for processes, tables for comparisons, timelines for history, mind maps for concepts, and many more formats. Everything you generate can then be organized, tagged, edited with AI, and managed in a structured knowledge base.
+Tarteeb AI is an intelligent content generation and knowledge management platform. Unlike conventional AI tools that return a wall of text, Tarteeb AI adapts its response layout to the nature of your content — choosing the most fitting format automatically. Everything you generate can then be organized, tagged, edited with AI, and managed in a structured knowledge base.
 
 ---
 
@@ -12,7 +12,7 @@ Most AI assistants return a wall of text (or sometimes an image). Tarteeb AI tre
 
 | Conventional AI | Tarteeb AI |
 |---|---|
-| Text or image only | 15+ adaptive output formats |
+| Text or image only | Adaptive output formats |
 | No organization | Folders, tags, collections |
 | Static responses | AI-assisted inline editing |
 | One-shot generation | Iterative refinement via selection |
@@ -24,25 +24,7 @@ Most AI assistants return a wall of text (or sometimes an image). Tarteeb AI tre
 
 ### Adaptive Content Formats
 
-The AI selects the most suitable layout for your query automatically. Supported formats:
-
-| Format | Best For |
-|---|---|
-| **Rich Text** | Articles, notes, explanations |
-| **Table** | Comparisons, structured data, schedules |
-| **Flowchart** | Processes, decision trees, workflows |
-| **Mind Map** | Concepts, brainstorming, topic overview |
-| **Timeline** | History, project plans, sequences |
-| **Code Block** | Programming, scripts, technical content |
-| **Flashcards** | Study, memorization, Q&A pairs |
-| **Slides** | Presentations, summaries |
-| **Step-by-step Guide** | Tutorials, instructions, how-tos |
-| **Comparison View** | Pros/cons, alternatives, side-by-side |
-| **Kanban Board** | Tasks, projects, workflows |
-| **Image** | Visual explanations, diagrams |
-| **Chart** | Data visualization, trends |
-| **Definition Cards** | Glossaries, term sheets |
-| **FAQ** | Common questions, knowledge base articles |
+The AI selects the most suitable layout for your query automatically — no prompting required. Format support is being expanded continuously.
 
 ### Knowledge Organization
 
