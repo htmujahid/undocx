@@ -38,7 +38,7 @@ export function Comparison() {
             Not another chatbot
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Built to organize and adapt — not just generate and forget.
+            Built to organize and adapt, not just generate and forget.
           </p>
         </div>
 

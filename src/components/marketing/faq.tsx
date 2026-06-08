@@ -8,7 +8,7 @@ import {
 const QUESTIONS = [
   {
     q: "How does the AI decide which format to use?",
-    a: "It analyzes the intent of your query. A sequence gets a step-by-step or timeline format. A comparison gets a table. A concept gets a mind map. You don't need to specify — the model picks what fits.",
+    a: "It analyzes the intent of your query. A sequence gets a step-by-step or timeline format. A comparison gets a table. A concept gets a mind map. You don't need to specify; the model picks what fits.",
   },
   {
     q: "Can I change the format after generation?",
@@ -24,7 +24,7 @@ const QUESTIONS = [
   },
   {
     q: "Can I edit specific parts of the output?",
-    a: "Yes. Highlight any portion — a sentence, a table row, a list item — and prompt the AI to rewrite just that section, leaving everything else unchanged.",
+    a: "Yes. Highlight any portion (a sentence, a table row, a list item) and prompt the AI to rewrite just that section, leaving everything else unchanged.",
   },
   {
     q: "Is there a free plan?",

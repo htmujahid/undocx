@@ -50,7 +50,7 @@ export function SignUpForm() {
           Create an account
         </h1>
         <p className="text-sm text-muted-foreground">
-          Get started for free — no credit card required
+          Get started for free, no credit card required
         </p>
       </div>
 

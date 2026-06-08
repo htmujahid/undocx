@@ -1,7 +1,7 @@
 const TESTIMONIALS = [
   {
     quote:
-      "I asked it to explain a complex topic and it gave me a mind map. That's exactly the kind of thing I needed for studying — not another wall of text.",
+      "I asked it to explain a complex topic and it gave me a mind map. That's exactly the kind of thing I needed for studying, not another wall of text.",
     name: "Priya M.",
     role: "Graduate student",
   },

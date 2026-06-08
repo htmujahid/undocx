@@ -30,7 +30,7 @@ export function ForgotPasswordForm() {
         toast.error(error.message)
         return
       }
-      toast.success("Reset link sent — check your inbox.")
+      toast.success("Reset link sent. Check your inbox.")
     },
   })
 
@@ -56,7 +56,7 @@ export function ForgotPasswordForm() {
           Forgot your password?
         </h1>
         <p className="text-sm text-muted-foreground">
-          No worries — we&apos;ll send you reset instructions.
+          No worries, we&apos;ll send you reset instructions.
         </p>
       </div>
 

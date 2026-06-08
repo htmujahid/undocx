@@ -66,7 +66,7 @@ function EditingVisual() {
           <div className="size-2.5 rounded-full bg-border" />
           <div className="size-2.5 rounded-full bg-border" />
         </div>
-        <span className="text-xs text-muted-foreground">Introduction — Draft</span>
+        <span className="text-xs text-muted-foreground">Introduction · Draft</span>
         <div className="w-16" />
       </div>
 
@@ -117,7 +117,7 @@ function LearningVisual() {
         />
         <div className="relative overflow-hidden rounded-2xl border border-border bg-background shadow-sm">
           <div className="flex items-center justify-between border-b border-border px-5 py-3">
-            <span className="text-xs font-medium text-muted-foreground">Biology — Cell division</span>
+            <span className="text-xs font-medium text-muted-foreground">Biology · Cell division</span>
             <span className="text-xs text-muted-foreground">8 / 20</span>
           </div>
           <div className="px-5 pt-3 pb-1">
@@ -166,7 +166,7 @@ const FEATURES = [
     ),
     title: "Smart organization",
     description:
-      "Everything you generate lands in a persistent knowledge base. Organize with nested folders, tags, and collections. Full-text search across all your content — always findable, never lost.",
+      "Everything you generate lands in a persistent knowledge base. Organize with nested folders, tags, and collections. Full-text search across all your content, always findable, never lost.",
     visual: <OrganizationVisual />,
   },
   {
@@ -177,7 +177,7 @@ const FEATURES = [
     ),
     title: "AI-assisted inline editing",
     description:
-      "Select any portion of your output — a sentence, a table row, a bullet point — and prompt the AI to rewrite, expand, simplify, or translate just that section. The rest stays untouched.",
+      "Select any portion of your output (a sentence, a table row, a bullet point) and prompt the AI to rewrite, expand, simplify, or translate just that section. The rest stays untouched.",
     visual: <EditingVisual />,
   },
   {
@@ -188,7 +188,7 @@ const FEATURES = [
     ),
     title: "Learning tools",
     description:
-      "Auto-generate flashcard decks and quizzes from any content. Track progress, review due cards, and build structured study guides — all from material you've already generated.",
+      "Auto-generate flashcard decks and quizzes from any content. Track progress, review due cards, and build structured study guides, all from material you've already generated.",
     visual: <LearningVisual />,
   },
 ]
@@ -205,7 +205,7 @@ export function Features() {
             More than generation
           </h2>
           <p className="mt-4 text-muted-foreground">
-            A complete workflow — from first draft to organized, searchable knowledge.
+            A complete workflow, from first draft to organized, searchable knowledge.
           </p>
         </div>
 

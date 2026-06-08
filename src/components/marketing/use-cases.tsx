@@ -206,7 +206,7 @@ const USE_CASES = [
     audience: "Students",
     headline: "Turn any material into a study system",
     description:
-      "Generate flashcard decks, quizzes, and study guides from your notes — then track progress as you review.",
+      "Generate flashcard decks, quizzes, and study guides from your notes, then track progress as you review.",
     visual: <QuizVisual />,
     span: "lg:col-span-2",
   },
@@ -222,7 +222,7 @@ const USE_CASES = [
     audience: "Teams",
     headline: "Shared knowledge that sticks",
     description:
-      "Generate process docs and onboarding material that stays structured — not buried in a chat thread.",
+      "Generate process docs and onboarding material that stays structured, not buried in a chat thread.",
     visual: <KanbanVisual />,
     span: "lg:col-span-1",
   },
@@ -230,7 +230,7 @@ const USE_CASES = [
     audience: "Writers & Creators",
     headline: "Draft in the shape of your idea",
     description:
-      "The AI picks the format that fits your intent — comparison table, outline, FAQ — and you refine from there.",
+      "The AI picks the format that fits your intent (comparison table, outline, FAQ) and you refine from there.",
     visual: <FormatPickerVisual />,
     span: "lg:col-span-2",
   },
@@ -248,7 +248,7 @@ export function UseCases() {
             Built for how you actually work
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Same platform, different workflows — Tarteeb adapts to what you need.
+            Same platform, different workflows. Tarteeb adapts to what you need.
           </p>
         </div>
 
