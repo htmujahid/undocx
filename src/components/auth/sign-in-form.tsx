@@ -10,7 +10,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { signIn } from "@/lib/auth-client"
+import { authClient } from "@/lib/auth-client"
 import { toast } from "sonner"
 import { z } from "zod"
 
@@ -28,15 +28,24 @@ export function SignInForm() {
     defaultValues: { email: "", password: "" },
     validators: { onSubmit: signInSchema },
     onSubmit: async ({ value }) => {
-      const { error } = await signIn.email({
-        email: value.email,
-        password: value.password,
-      })
-      if (error) {
-        toast.error(error.message)
-        return
-      }
-      navigate({ to: "/home" })
+      await authClient.signIn.email(
+        {
+          email: value.email,
+          password: value.password,
+        },
+        {
+          onSuccess(ctx) {
+            if (ctx.data.twoFactorRedirect) {
+              navigate({ to: "/auth/two-factor" })
+              return
+            }
+            navigate({ to: "/home" })
+          },
+          onError(ctx) {
+            toast.error(ctx.error.message)
+          },
+        },
+      )
     },
   })
 

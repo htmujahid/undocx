@@ -2,9 +2,11 @@ import { db } from "@/db"
 import { mailer } from "@/lib/mailer"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
+import { twoFactor } from "better-auth/plugins"
 import { tanstackStartCookies } from "better-auth/tanstack-start"
 
 export const auth = betterAuth({
+  appName: "Tarteeb AI",
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
@@ -36,5 +38,5 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
-  plugins: [tanstackStartCookies()],
+  plugins: [tanstackStartCookies(), twoFactor()],
 })

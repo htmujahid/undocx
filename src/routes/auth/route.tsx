@@ -5,7 +5,7 @@ export const Route = createFileRoute("/auth")({
     if (
       context.user &&
       location.pathname !== "/auth/update-password" &&
-      location.pathname !== "/auth/mfa"
+      location.pathname !== "/auth/two-factor"
     )
       throw redirect({ to: "/home" })
   },

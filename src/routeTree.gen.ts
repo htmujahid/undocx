@@ -16,6 +16,7 @@ import { Route as MarketingRouteRouteImport } from './routes/_marketing/route'
 import { Route as HomeIndexRouteImport } from './routes/home/index'
 import { Route as AccountIndexRouteImport } from './routes/account/index'
 import { Route as MarketingIndexRouteImport } from './routes/_marketing/index'
+import { Route as AuthTwoFactorRouteImport } from './routes/auth/two-factor'
 import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
 import { Route as AuthSignInRouteImport } from './routes/auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
@@ -61,6 +62,11 @@ const MarketingIndexRoute = MarketingIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => MarketingRouteRoute,
+} as any)
+const AuthTwoFactorRoute = AuthTwoFactorRouteImport.update({
+  id: '/two-factor',
+  path: '/two-factor',
+  getParentRoute: () => AuthRouteRoute,
 } as any)
 const AuthSignUpRoute = AuthSignUpRouteImport.update({
   id: '/sign-up',
@@ -133,6 +139,7 @@ export interface FileRoutesByFullPath {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
+  '/auth/two-factor': typeof AuthTwoFactorRoute
   '/account/': typeof AccountIndexRoute
   '/home/': typeof HomeIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -149,6 +156,7 @@ export interface FileRoutesByTo {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
+  '/auth/two-factor': typeof AuthTwoFactorRoute
   '/': typeof MarketingIndexRoute
   '/account': typeof AccountIndexRoute
   '/home': typeof HomeIndexRoute
@@ -170,6 +178,7 @@ export interface FileRoutesById {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
+  '/auth/two-factor': typeof AuthTwoFactorRoute
   '/_marketing/': typeof MarketingIndexRoute
   '/account/': typeof AccountIndexRoute
   '/home/': typeof HomeIndexRoute
@@ -192,6 +201,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/sign-in'
     | '/auth/sign-up'
+    | '/auth/two-factor'
     | '/account/'
     | '/home/'
     | '/api/auth/$'
@@ -208,6 +218,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/sign-in'
     | '/auth/sign-up'
+    | '/auth/two-factor'
     | '/'
     | '/account'
     | '/home'
@@ -228,6 +239,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/sign-in'
     | '/auth/sign-up'
+    | '/auth/two-factor'
     | '/_marketing/'
     | '/account/'
     | '/home/'
@@ -292,6 +304,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof MarketingIndexRouteImport
       parentRoute: typeof MarketingRouteRoute
+    }
+    '/auth/two-factor': {
+      id: '/auth/two-factor'
+      path: '/two-factor'
+      fullPath: '/auth/two-factor'
+      preLoaderRoute: typeof AuthTwoFactorRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
     '/auth/sign-up': {
       id: '/auth/sign-up'
@@ -414,6 +433,7 @@ interface AuthRouteRouteChildren {
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   AuthSignInRoute: typeof AuthSignInRoute
   AuthSignUpRoute: typeof AuthSignUpRoute
+  AuthTwoFactorRoute: typeof AuthTwoFactorRoute
 }
 
 const AuthRouteRouteChildren: AuthRouteRouteChildren = {
@@ -421,6 +441,7 @@ const AuthRouteRouteChildren: AuthRouteRouteChildren = {
   AuthResetPasswordRoute: AuthResetPasswordRoute,
   AuthSignInRoute: AuthSignInRoute,
   AuthSignUpRoute: AuthSignUpRoute,
+  AuthTwoFactorRoute: AuthTwoFactorRoute,
 }
 
 const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(

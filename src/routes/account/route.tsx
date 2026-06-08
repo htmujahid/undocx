@@ -21,7 +21,7 @@ const NAV_ITEMS = [
   { to: "/account", label: "Profile", icon: UserIcon, soon: false },
   { to: "/account/security", label: "Security", icon: ShieldIcon, soon: false },
   { to: "/account/subscription", label: "Subscription", icon: CreditCardIcon, soon: true },
-  { to: "/account/mfa", label: "MFA", icon: KeyRoundIcon, soon: true },
+  { to: "/account/mfa", label: "MFA", icon: KeyRoundIcon, soon: false },
 ] as const
 
 function AccountLayout() {
