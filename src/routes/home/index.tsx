@@ -1,62 +1,76 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { useState } from "react"
 
+import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import { useQueryClient } from "@tanstack/react-query"
+import { PanelRightIcon } from "lucide-react"
+
+import { AppSidebar } from "@/components/home/app-sidebar"
+import { ContentPreview } from "@/components/home/content-preview"
+import { PromptPanel } from "@/components/home/prompt-panel"
 import { Button } from "@/components/ui/button"
-import { ArrowUpIcon } from "lucide-react"
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
+import { cn } from "@/lib/utils"
+import { signOut } from "@/lib/auth-client"
+import { authUserQueryOptions } from "@/lib/queries/auth"
 
 export const Route = createFileRoute("/home/")({
   component: HomePage,
 })
 
-const EXAMPLE_PROMPTS = [
-  "Explain how neural networks learn",
-  "Compare SQL vs NoSQL databases",
-  "Steps to deploy a Docker container",
-  "Study guide for the water cycle",
-]
-
 function HomePage() {
   const { user } = Route.useRouteContext()
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const [rightOpen, setRightOpen] = useState(true)
 
-  const firstName = user?.name?.split(" ")[0] ?? "there"
+  const handleSignOut = async () => {
+    await signOut()
+    queryClient.setQueryData(authUserQueryOptions.queryKey, null)
+    navigate({ to: "/" })
+  }
+
+  if (!user) return null
 
   return (
-    <main className="container mx-auto px-4 py-20">
-      <div className="mx-auto max-w-2xl space-y-10">
-        <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-semibold tracking-tight">
-            Good to see you, {firstName}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Describe anything — AI will respond in the format that fits best,
-            mixing formats when needed.
-          </p>
-        </div>
+    // Outer provider: controls the right sidebar
+    <SidebarProvider
+      open={rightOpen}
+      onOpenChange={setRightOpen}
+      style={{ "--sidebar-width": "24rem" } as React.CSSProperties}
+    >
+      {/* Inner provider: controls the left sidebar */}
+      <SidebarProvider className="flex-1 min-h-0">
+        <AppSidebar user={user} onSignOut={handleSignOut} />
+        <SidebarInset className="flex h-svh flex-col overflow-hidden">
+          <header className="flex h-11 shrink-0 items-center border-b px-2">
+            <SidebarTrigger />
+            <span className="ml-2 flex-1 text-xs text-muted-foreground">
+              My Workspace
+            </span>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={() => setRightOpen((o) => !o)}
+              aria-label="Toggle copilot panel"
+            >
+              <PanelRightIcon
+                className={cn(
+                  "transition-colors",
+                  rightOpen ? "text-foreground" : "text-muted-foreground",
+                )}
+              />
+            </Button>
+          </header>
+          <ContentPreview />
+        </SidebarInset>
+      </SidebarProvider>
 
-        <div className="relative">
-          <textarea
-            placeholder="What do you want to know or create?"
-            className="w-full resize-none rounded-xl border bg-muted/30 px-4 pb-12 pt-3.5 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/50"
-            rows={4}
-          />
-          <Button size="icon-sm" className="absolute bottom-3 right-3">
-            <ArrowUpIcon />
-          </Button>
-        </div>
-
-        <div className="space-y-3">
-          <p className="text-center text-xs text-muted-foreground">Try asking</p>
-          <div className="flex flex-wrap justify-center gap-2">
-            {EXAMPLE_PROMPTS.map((prompt) => (
-              <button
-                key={prompt}
-                className="rounded-full border bg-background px-3.5 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              >
-                {prompt}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    </main>
+      {/* Right sidebar — uses the outer SidebarProvider context */}
+      <PromptPanel />
+    </SidebarProvider>
   )
 }
