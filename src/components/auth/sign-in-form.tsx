@@ -38,6 +38,7 @@ export function SignInForm() {
         },
         {
           onSuccess(ctx) {
+            console.log(ctx.data)
             if (ctx.data.twoFactorRedirect) {
               queryClient.setQueryData(authUserQueryOptions.queryKey, null)
               navigate({ to: "/auth/two-factor" })
