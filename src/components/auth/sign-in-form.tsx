@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router"
 
-import { useForm } from "@tanstack/react-form"
 import { useQueryClient } from "@tanstack/react-query"
+
+import { useForm } from "@tanstack/react-form"
 
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -46,14 +47,14 @@ export function SignInForm() {
             }
             queryClient.setQueryData(
               authUserQueryOptions.queryKey,
-              ctx.data.user,
+              ctx.data.user
             )
             navigate({ to: "/home" })
           },
           onError(ctx) {
             toast.error(ctx.error.message)
           },
-        },
+        }
       )
     },
   })

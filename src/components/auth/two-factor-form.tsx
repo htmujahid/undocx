@@ -1,5 +1,7 @@
 import { useState } from "react"
+
 import { useNavigate } from "@tanstack/react-router"
+
 import { useQueryClient } from "@tanstack/react-query"
 
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -112,7 +114,10 @@ export function TwoFactorForm() {
 
           <button
             type="button"
-            onClick={() => { setMode("backup"); setCode("") }}
+            onClick={() => {
+              setMode("backup")
+              setCode("")
+            }}
             className={buttonVariants({
               variant: "link",
               className: "h-auto p-0 text-sm text-muted-foreground",
@@ -143,7 +148,10 @@ export function TwoFactorForm() {
 
           <button
             type="button"
-            onClick={() => { setMode("totp"); setBackupCode("") }}
+            onClick={() => {
+              setMode("totp")
+              setBackupCode("")
+            }}
             className={buttonVariants({
               variant: "link",
               className: "h-auto p-0 text-sm text-muted-foreground",

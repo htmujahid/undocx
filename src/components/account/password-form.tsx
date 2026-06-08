@@ -1,14 +1,20 @@
-import { useForm } from "@tanstack/react-form"
 import { useQueryClient } from "@tanstack/react-query"
-import { toast } from "sonner"
-import { z } from "zod"
+
+import { useForm } from "@tanstack/react-form"
 
 import { setPasswordAction } from "@/actions/auth/set-password-action"
 import { Button } from "@/components/ui/button"
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"
 import { listAccountsQueryOptions } from "@/lib/queries/accounts"
+import { toast } from "sonner"
+import { z } from "zod"
 
 const changeSchema = z
   .object({
@@ -35,7 +41,11 @@ export function PasswordForm({ hasCredential }: { hasCredential: boolean }) {
   const queryClient = useQueryClient()
 
   const changeForm = useForm({
-    defaultValues: { currentPassword: "", newPassword: "", confirmPassword: "" },
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    },
     validators: { onSubmit: changeSchema },
     onSubmit: async ({ value }) => {
       const { error } = await authClient.changePassword({
@@ -58,9 +68,13 @@ export function PasswordForm({ hasCredential }: { hasCredential: boolean }) {
     onSubmit: async ({ value }) => {
       try {
         await setPasswordAction({ data: { newPassword: value.newPassword } })
-        toast.success("Password set — you can now sign in with email and password")
+        toast.success(
+          "Password set — you can now sign in with email and password"
+        )
         setForm.reset()
-        await queryClient.invalidateQueries({ queryKey: listAccountsQueryOptions.queryKey })
+        await queryClient.invalidateQueries({
+          queryKey: listAccountsQueryOptions.queryKey,
+        })
       } catch (e: unknown) {
         toast.error(e instanceof Error ? e.message : "Failed to set password")
       }
@@ -90,10 +104,13 @@ export function PasswordForm({ hasCredential }: { hasCredential: boolean }) {
             <changeForm.Field
               name="currentPassword"
               children={(field) => {
-                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Current password</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>
+                      Current password
+                    </FieldLabel>
                     <Input
                       id={field.name}
                       type="password"
@@ -104,7 +121,9 @@ export function PasswordForm({ hasCredential }: { hasCredential: boolean }) {
                       placeholder="••••••••"
                       autoComplete="current-password"
                     />
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
                   </Field>
                 )
               }}
@@ -112,7 +131,8 @@ export function PasswordForm({ hasCredential }: { hasCredential: boolean }) {
             <changeForm.Field
               name="newPassword"
               children={(field) => {
-                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid
                 return (
                   <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name}>New password</FieldLabel>
@@ -126,7 +146,9 @@ export function PasswordForm({ hasCredential }: { hasCredential: boolean }) {
                       placeholder="••••••••"
                       autoComplete="new-password"
                     />
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
                   </Field>
                 )
               }}
@@ -134,10 +156,13 @@ export function PasswordForm({ hasCredential }: { hasCredential: boolean }) {
             <changeForm.Field
               name="confirmPassword"
               children={(field) => {
-                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Confirm new password</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>
+                      Confirm new password
+                    </FieldLabel>
                     <Input
                       id={field.name}
                       type="password"
@@ -148,7 +173,9 @@ export function PasswordForm({ hasCredential }: { hasCredential: boolean }) {
                       placeholder="••••••••"
                       autoComplete="new-password"
                     />
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
                   </Field>
                 )
               }}
@@ -158,7 +185,11 @@ export function PasswordForm({ hasCredential }: { hasCredential: boolean }) {
           <changeForm.Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}
             children={([canSubmit, isSubmitting]) => (
-              <Button type="submit" variant="outline" disabled={!canSubmit || isSubmitting}>
+              <Button
+                type="submit"
+                variant="outline"
+                disabled={!canSubmit || isSubmitting}
+              >
                 {isSubmitting ? "Updating…" : "Update password"}
               </Button>
             )}
@@ -176,7 +207,8 @@ export function PasswordForm({ hasCredential }: { hasCredential: boolean }) {
             <setForm.Field
               name="newPassword"
               children={(field) => {
-                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid
                 return (
                   <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name}>New password</FieldLabel>
@@ -190,7 +222,9 @@ export function PasswordForm({ hasCredential }: { hasCredential: boolean }) {
                       placeholder="••••••••"
                       autoComplete="new-password"
                     />
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
                   </Field>
                 )
               }}
@@ -198,10 +232,13 @@ export function PasswordForm({ hasCredential }: { hasCredential: boolean }) {
             <setForm.Field
               name="confirmPassword"
               children={(field) => {
-                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>Confirm new password</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>
+                      Confirm new password
+                    </FieldLabel>
                     <Input
                       id={field.name}
                       type="password"
@@ -212,7 +249,9 @@ export function PasswordForm({ hasCredential }: { hasCredential: boolean }) {
                       placeholder="••••••••"
                       autoComplete="new-password"
                     />
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
                   </Field>
                 )
               }}
@@ -222,7 +261,11 @@ export function PasswordForm({ hasCredential }: { hasCredential: boolean }) {
           <setForm.Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}
             children={([canSubmit, isSubmitting]) => (
-              <Button type="submit" variant="outline" disabled={!canSubmit || isSubmitting}>
+              <Button
+                type="submit"
+                variant="outline"
+                disabled={!canSubmit || isSubmitting}
+              >
                 {isSubmitting ? "Setting password…" : "Set password"}
               </Button>
             )}

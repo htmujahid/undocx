@@ -1,8 +1,7 @@
 import { useRef, useState } from "react"
 
-import { ArrowUpIcon, SparklesIcon } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
+import { ArrowUpIcon, SparklesIcon } from "lucide-react"
 
 const EXAMPLE_PROMPTS = [
   "Explain how neural networks learn",
@@ -89,10 +88,7 @@ export function PromptBar() {
           </div>
 
           {/* Submit */}
-          <Button
-            size="icon-sm"
-            disabled={!prompt.trim()}
-          >
+          <Button size="icon-sm" disabled={!prompt.trim()}>
             <ArrowUpIcon />
           </Button>
         </div>

@@ -1,5 +1,6 @@
-import { sessionAction } from "@/actions/auth/session-action"
 import { queryOptions } from "@tanstack/react-query"
+
+import { sessionAction } from "@/actions/auth/session-action"
 
 export const authUserQueryOptions = queryOptions({
   queryKey: ["auth-user"],

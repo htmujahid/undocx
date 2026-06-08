@@ -1,8 +1,6 @@
 import { Link } from "@tanstack/react-router"
 
-const PRODUCT_LINKS = [
-  { label: "About", to: "/about" },
-] as const
+const PRODUCT_LINKS = [{ label: "About", to: "/about" }] as const
 
 const LEGAL_LINKS = [
   { label: "Privacy Policy", to: "/privacy" },

@@ -1,55 +1,61 @@
-import { HeadContent, Scripts, createRootRouteWithContext } from "@tanstack/react-router"
+import {
+  HeadContent,
+  Scripts,
+  createRootRouteWithContext,
+} from "@tanstack/react-router"
 
 import { QueryClient } from "@tanstack/react-query"
 
-import { authUserQueryOptions } from "@/lib/queries/auth"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { authUserQueryOptions } from "@/lib/queries/auth"
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { Toaster } from "sonner"
 
 import appCss from "../styles.css?url"
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      {
-        charSet: "utf-8",
-      },
-      {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1",
-      },
-      {
-        title: "Tarteeb AI",
-      },
-      {
-        name: "description",
-        content:
-          "Tarteeb AI is an intelligent content generation and knowledge management platform that adapts its response layout to the nature of your content.",
-      },
-    ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-    ],
-  }),
-  beforeLoad: async ({ context }) => {
-    const user =
-      await context.queryClient.ensureQueryData(authUserQueryOptions)
+export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
+  {
+    head: () => ({
+      meta: [
+        {
+          charSet: "utf-8",
+        },
+        {
+          name: "viewport",
+          content: "width=device-width, initial-scale=1",
+        },
+        {
+          title: "Tarteeb AI",
+        },
+        {
+          name: "description",
+          content:
+            "Tarteeb AI is an intelligent content generation and knowledge management platform that adapts its response layout to the nature of your content.",
+        },
+      ],
+      links: [
+        {
+          rel: "stylesheet",
+          href: appCss,
+        },
+      ],
+    }),
+    beforeLoad: async ({ context }) => {
+      const user =
+        await context.queryClient.ensureQueryData(authUserQueryOptions)
 
-    return { user }
-  },
-  notFoundComponent: () => (
-    <main className="container mx-auto p-4 pt-16">
-      <h1>404</h1>
-      <p>The requested page could not be found.</p>
-    </main>
-  ),
-  shellComponent: RootDocument,
-})
+      return { user }
+    },
+    notFoundComponent: () => (
+      <main className="container mx-auto p-4 pt-16">
+        <h1>404</h1>
+        <p>The requested page could not be found.</p>
+      </main>
+    ),
+    shellComponent: RootDocument,
+  }
+)
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (

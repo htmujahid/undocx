@@ -13,7 +13,8 @@ export function MfaForm() {
       <div>
         <h1 className="text-lg font-semibold">Multi-factor authentication</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Add an extra layer of security to your account with an authenticator app.
+          Add an extra layer of security to your account with an authenticator
+          app.
         </p>
       </div>
 

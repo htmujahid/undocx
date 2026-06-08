@@ -56,7 +56,9 @@ function PrivacyPage() {
     <main>
       <div className="mx-auto max-w-3xl px-6 py-20">
         <div className="mb-12">
-          <p className="mb-3 text-sm font-medium text-muted-foreground">Legal</p>
+          <p className="mb-3 text-sm font-medium text-muted-foreground">
+            Legal
+          </p>
           <h1 className="text-3xl font-bold tracking-tight">Privacy Policy</h1>
           <p className="mt-3 text-sm text-muted-foreground">
             Effective date: June 1, 2025
@@ -67,7 +69,8 @@ function PrivacyPage() {
           <p className="leading-relaxed text-muted-foreground">
             This Privacy Policy explains how Tarteeb AI collects, uses, and
             protects your information when you use our platform. We take privacy
-            seriously and are committed to being transparent about our practices.
+            seriously and are committed to being transparent about our
+            practices.
           </p>
 
           {SECTIONS.map((section) => (

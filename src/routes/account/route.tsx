@@ -8,7 +8,12 @@ import {
 
 import { Navbar } from "@/components/marketing/navbar"
 import { cn } from "@/lib/utils"
-import { CreditCardIcon, KeyRoundIcon, ShieldIcon, UserIcon } from "lucide-react"
+import {
+  CreditCardIcon,
+  KeyRoundIcon,
+  ShieldIcon,
+  UserIcon,
+} from "lucide-react"
 
 export const Route = createFileRoute("/account")({
   beforeLoad: ({ context }) => {
@@ -20,7 +25,12 @@ export const Route = createFileRoute("/account")({
 const NAV_ITEMS = [
   { to: "/account", label: "Profile", icon: UserIcon, soon: false },
   { to: "/account/security", label: "Security", icon: ShieldIcon, soon: false },
-  { to: "/account/subscription", label: "Subscription", icon: CreditCardIcon, soon: true },
+  {
+    to: "/account/subscription",
+    label: "Subscription",
+    icon: CreditCardIcon,
+    soon: true,
+  },
   { to: "/account/mfa", label: "MFA", icon: KeyRoundIcon, soon: false },
 ] as const
 
@@ -28,7 +38,8 @@ function AccountLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname })
 
   function isActive(to: string) {
-    if (to === "/account") return pathname === "/account" || pathname === "/account/"
+    if (to === "/account")
+      return pathname === "/account" || pathname === "/account/"
     return pathname.startsWith(to)
   }
 

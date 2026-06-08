@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
+
 import { useQuery } from "@tanstack/react-query"
 
 import { DeleteAccountForm } from "@/components/account/delete-account-form"
@@ -8,7 +9,8 @@ import { PasswordForm } from "@/components/account/password-form"
 import { listAccountsQueryOptions } from "@/lib/queries/accounts"
 
 export const Route = createFileRoute("/account/security")({
-  loader: ({ context }) => context.queryClient.ensureQueryData(listAccountsQueryOptions),
+  loader: ({ context }) =>
+    context.queryClient.ensureQueryData(listAccountsQueryOptions),
   component: SecurityPage,
 })
 

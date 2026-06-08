@@ -1,11 +1,17 @@
 import { Link } from "@tanstack/react-router"
+
 import { useForm } from "@tanstack/react-form"
 
 import { Button } from "@/components/ui/button"
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { authClient } from "@/lib/auth-client"
 import { useUser } from "@/hooks/use-user"
+import { authClient } from "@/lib/auth-client"
 import { toast } from "sonner"
 import { z } from "zod"
 
@@ -30,7 +36,12 @@ export function ProfileForm() {
   })
 
   const initials = user?.name
-    ? user.name.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase()
+    ? user.name
+        .split(" ")
+        .map((n) => n[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase()
     : "?"
 
   return (
@@ -92,7 +103,9 @@ export function ProfileForm() {
                       aria-invalid={isInvalid}
                       placeholder="Your name"
                     />
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
                   </Field>
                 )
               }}

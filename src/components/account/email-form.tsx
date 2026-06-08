@@ -1,13 +1,19 @@
 import { useState } from "react"
+
 import { useForm } from "@tanstack/react-form"
-import { toast } from "sonner"
-import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { useUser } from "@/hooks/use-user"
 import { authClient } from "@/lib/auth-client"
+import { toast } from "sonner"
+import { z } from "zod"
 
 const schema = z.object({
   newEmail: z.email("Enter a valid email address"),
@@ -50,8 +56,9 @@ export function EmailForm() {
         <div className="rounded-lg border bg-muted/30 p-4 text-sm">
           <p className="font-medium">Verification email sent</p>
           <p className="mt-1 text-muted-foreground">
-            Check your inbox at <span className="text-foreground">{sentTo}</span> and click the
-            link to confirm your new email address.
+            Check your inbox at{" "}
+            <span className="text-foreground">{sentTo}</span> and click the link
+            to confirm your new email address.
           </p>
           <button
             onClick={() => setEmailSent(false)}
@@ -72,10 +79,13 @@ export function EmailForm() {
             <form.Field
               name="newEmail"
               children={(field) => {
-                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid
                 return (
                   <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>New email address</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>
+                      New email address
+                    </FieldLabel>
                     <Input
                       id={field.name}
                       type="email"
@@ -86,7 +96,9 @@ export function EmailForm() {
                       placeholder="new@example.com"
                       autoComplete="email"
                     />
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
                   </Field>
                 )
               }}
@@ -96,7 +108,11 @@ export function EmailForm() {
           <form.Subscribe
             selector={(state) => [state.canSubmit, state.isSubmitting]}
             children={([canSubmit, isSubmitting]) => (
-              <Button type="submit" variant="outline" disabled={!canSubmit || isSubmitting}>
+              <Button
+                type="submit"
+                variant="outline"
+                disabled={!canSubmit || isSubmitting}
+              >
                 {isSubmitting ? "Sending…" : "Send verification email"}
               </Button>
             )}

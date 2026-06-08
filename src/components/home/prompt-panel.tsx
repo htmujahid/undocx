@@ -1,5 +1,15 @@
 import { useRef, useState } from "react"
 
+import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+} from "@/components/ui/sidebar"
+import { cn } from "@/lib/utils"
 import {
   AlignLeftIcon,
   ArrowUpIcon,
@@ -17,17 +27,6 @@ import {
   TypeIcon,
   WorkflowIcon,
 } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-} from "@/components/ui/sidebar"
-import { cn } from "@/lib/utils"
 
 // ── Layer types ──────────────────────────────────────────────────────────────
 
@@ -97,7 +96,7 @@ export function PromptPanel() {
 
   const toggleVisibility = (id: string) =>
     setLayers((prev) =>
-      prev.map((l) => (l.id === id ? { ...l, visible: !l.visible } : l)),
+      prev.map((l) => (l.id === id ? { ...l, visible: !l.visible } : l))
     )
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -145,14 +144,14 @@ export function PromptPanel() {
                     key={layer.id}
                     className={cn(
                       "group flex items-center gap-2.5 px-3 py-2 transition-colors hover:bg-muted/50",
-                      !layer.visible && "opacity-40",
+                      !layer.visible && "opacity-40"
                     )}
                   >
                     <GripVerticalIcon className="size-3 shrink-0 cursor-grab text-muted-foreground opacity-0 group-hover:opacity-100" />
                     <span
                       className={cn(
                         "flex size-6 shrink-0 items-center justify-center rounded",
-                        colorClass,
+                        colorClass
                       )}
                     >
                       <Icon className="size-3" />
@@ -205,7 +204,7 @@ export function PromptPanel() {
                       "rounded-full px-2 py-0.5 text-[10px] transition-colors",
                       selectedFormat === chip.key
                         ? "bg-primary text-primary-foreground"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
                     )}
                   >
                     {chip.label}

@@ -1,17 +1,6 @@
 import { useState } from "react"
 
 import { Link } from "@tanstack/react-router"
-import {
-  ArchiveIcon,
-  ChevronRightIcon,
-  ClockIcon,
-  FolderIcon,
-  LayoutGridIcon,
-  LogOutIcon,
-  PlusIcon,
-  SettingsIcon,
-  StarIcon,
-} from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -37,6 +26,17 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
+import {
+  ArchiveIcon,
+  ChevronRightIcon,
+  ClockIcon,
+  FolderIcon,
+  LayoutGridIcon,
+  LogOutIcon,
+  PlusIcon,
+  SettingsIcon,
+  StarIcon,
+} from "lucide-react"
 
 const NAV_ITEMS = [
   { icon: LayoutGridIcon, label: "All Items", count: 24 },
@@ -47,11 +47,18 @@ const NAV_ITEMS = [
 
 const PLACEHOLDER_FOLDERS = [
   {
-    id: "1", icon: "📚", name: "Research",
-    children: [{ id: "1-1", name: "AI Papers" }, { id: "1-2", name: "Market Analysis" }],
+    id: "1",
+    icon: "📚",
+    name: "Research",
+    children: [
+      { id: "1-1", name: "AI Papers" },
+      { id: "1-2", name: "Market Analysis" },
+    ],
   },
   {
-    id: "2", icon: "🎓", name: "Learning",
+    id: "2",
+    icon: "🎓",
+    name: "Learning",
     children: [{ id: "2-1", name: "Flashcard Decks" }],
   },
   { id: "3", icon: "💼", name: "Work", children: [] },
@@ -98,7 +105,16 @@ export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="flex size-7 items-center justify-center rounded-md bg-primary">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-3.5 text-primary-foreground">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-3.5 text-primary-foreground"
+              >
                 <path d="M4 6h16M4 10h16M4 14h8M4 18h8" />
                 <path d="M19 14l-3 3 3 3" />
                 <path d="m22 14-3 3 3 3" />
@@ -137,8 +153,14 @@ export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
             {/* Folders */}
             <div>
               <div className="mb-1 flex items-center justify-between px-2">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Folders</span>
-                <Button variant="ghost" size="icon-xs" className="size-4 opacity-50 hover:opacity-100">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  Folders
+                </span>
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  className="size-4 opacity-50 hover:opacity-100"
+                >
                   <PlusIcon />
                 </Button>
               </div>
@@ -151,14 +173,22 @@ export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
                       onOpenChange={() => toggleFolder(folder.id)}
                     >
                       <CollapsibleTrigger className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
-                        <ChevronRightIcon className={cn("size-3 shrink-0 transition-transform", openFolders.has(folder.id) && "rotate-90")} />
+                        <ChevronRightIcon
+                          className={cn(
+                            "size-3 shrink-0 transition-transform",
+                            openFolders.has(folder.id) && "rotate-90"
+                          )}
+                        />
                         <span>{folder.icon}</span>
                         <span className="flex-1 text-left">{folder.name}</span>
                       </CollapsibleTrigger>
                       <CollapsibleContent>
                         <div className="ml-4 mt-0.5 space-y-0.5 border-l pl-3">
                           {folder.children.map((child) => (
-                            <button key={child.id} className="flex w-full items-center rounded-md px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
+                            <button
+                              key={child.id}
+                              className="flex w-full items-center rounded-md px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                            >
                               {child.name}
                             </button>
                           ))}
@@ -166,12 +196,15 @@ export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
                       </CollapsibleContent>
                     </Collapsible>
                   ) : (
-                    <button key={folder.id} className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
+                    <button
+                      key={folder.id}
+                      className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    >
                       <FolderIcon className="size-3.5 shrink-0" />
                       <span>{folder.icon}</span>
                       <span>{folder.name}</span>
                     </button>
-                  ),
+                  )
                 )}
               </div>
             </div>
@@ -181,15 +214,27 @@ export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
             {/* Collections */}
             <div>
               <div className="mb-1 flex items-center justify-between px-2">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Collections</span>
-                <Button variant="ghost" size="icon-xs" className="size-4 opacity-50 hover:opacity-100">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  Collections
+                </span>
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  className="size-4 opacity-50 hover:opacity-100"
+                >
                   <PlusIcon />
                 </Button>
               </div>
               <div className="space-y-0.5">
                 {PLACEHOLDER_COLLECTIONS.map((col) => (
-                  <button key={col.id} className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
-                    <span className="size-2 shrink-0 rounded-full" style={{ backgroundColor: col.color }} />
+                  <button
+                    key={col.id}
+                    className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  >
+                    <span
+                      className="size-2 shrink-0 rounded-full"
+                      style={{ backgroundColor: col.color }}
+                    />
                     {col.name}
                   </button>
                 ))}
@@ -201,15 +246,28 @@ export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
             {/* Tags */}
             <div>
               <div className="mb-1 flex items-center justify-between px-2">
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Tags</span>
-                <Button variant="ghost" size="icon-xs" className="size-4 opacity-50 hover:opacity-100">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  Tags
+                </span>
+                <Button
+                  variant="ghost"
+                  size="icon-xs"
+                  className="size-4 opacity-50 hover:opacity-100"
+                >
                   <PlusIcon />
                 </Button>
               </div>
               <div className="flex flex-wrap gap-1.5 px-2">
                 {PLACEHOLDER_TAGS.map((tag) => (
-                  <button key={tag.id} className="flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] transition-colors hover:bg-muted" style={{ borderColor: `${tag.color}55`, color: tag.color }}>
-                    <span className="size-1.5 rounded-full" style={{ backgroundColor: tag.color }} />
+                  <button
+                    key={tag.id}
+                    className="flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] transition-colors hover:bg-muted"
+                    style={{ borderColor: `${tag.color}55`, color: tag.color }}
+                  >
+                    <span
+                      className="size-1.5 rounded-full"
+                      style={{ backgroundColor: tag.color }}
+                    />
                     {tag.name}
                   </button>
                 ))}
@@ -230,20 +288,30 @@ export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
             </Avatar>
             <div className="min-w-0 flex-1">
               <p className="truncate text-xs font-medium">{user.name}</p>
-              <p className="truncate text-[10px] text-muted-foreground">{user.email}</p>
+              <p className="truncate text-[10px] text-muted-foreground">
+                {user.email}
+              </p>
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" side="top" className="w-52">
-            <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">{user.email}</DropdownMenuLabel>
+            <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
+              {user.email}
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <Link to="/account" className="flex w-full items-center gap-2">
-                <SettingsIcon />Account settings
+                <SettingsIcon />
+                Account settings
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive" className="cursor-pointer" onClick={onSignOut}>
-              <LogOutIcon />Sign out
+            <DropdownMenuItem
+              variant="destructive"
+              className="cursor-pointer"
+              onClick={onSignOut}
+            >
+              <LogOutIcon />
+              Sign out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

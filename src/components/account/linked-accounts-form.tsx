@@ -1,11 +1,18 @@
 import { useState } from "react"
+
 import { useQueryClient } from "@tanstack/react-query"
-import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardAction, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardAction,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { authClient } from "@/lib/auth-client"
 import { type Account, listAccountsQueryOptions } from "@/lib/queries/accounts"
+import { toast } from "sonner"
 
 const OAUTH_PROVIDERS = [
   {
@@ -23,7 +30,9 @@ export function LinkedAccountsForm({ accounts }: { accounts: Account[] }) {
   const oauthAccounts = accounts.filter((a) => a.providerId !== "credential")
 
   const invalidate = () =>
-    queryClient.invalidateQueries({ queryKey: listAccountsQueryOptions.queryKey })
+    queryClient.invalidateQueries({
+      queryKey: listAccountsQueryOptions.queryKey,
+    })
 
   const handleConnect = async (providerId: string) => {
     setPending(providerId)

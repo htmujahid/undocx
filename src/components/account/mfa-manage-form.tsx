@@ -1,5 +1,7 @@
 import { useState } from "react"
+
 import { useRouter } from "@tanstack/react-router"
+
 import { useQueryClient } from "@tanstack/react-query"
 
 import { Button } from "@/components/ui/button"
@@ -21,15 +23,19 @@ export function MfaManageForm() {
   async function handleDisable() {
     if (!disablePassword) return
     setDisableLoading(true)
-    const { error } = await authClient.twoFactor.disable({ password: disablePassword })
+    const { error } = await authClient.twoFactor.disable({
+      password: disablePassword,
+    })
     setDisableLoading(false)
-    if (error) { toast.error(error.message); return }
+    if (error) {
+      toast.error(error.message)
+      return
+    }
     toast.success("Two-factor authentication disabled")
     setDisablePassword("")
     setNewBackupCodes([])
-    queryClient.setQueryData(
-      authUserQueryOptions.queryKey,
-      (old) => old ? { ...old, twoFactorEnabled: false } : null,
+    queryClient.setQueryData(authUserQueryOptions.queryKey, (old) =>
+      old ? { ...old, twoFactorEnabled: false } : null
     )
     router.invalidate()
   }
@@ -40,7 +46,10 @@ export function MfaManageForm() {
       password: disablePassword,
     })
     setBackupLoading(false)
-    if (error) { toast.error(error.message); return }
+    if (error) {
+      toast.error(error.message)
+      return
+    }
     setNewBackupCodes(data?.backupCodes ?? [])
     toast.success("Backup codes regenerated")
   }
@@ -63,7 +72,10 @@ export function MfaManageForm() {
             </p>
             <div className="grid grid-cols-2 gap-1.5">
               {newBackupCodes.map((code) => (
-                <code key={code} className="rounded bg-background px-2 py-1 text-xs font-mono">
+                <code
+                  key={code}
+                  className="rounded bg-background px-2 py-1 text-xs font-mono"
+                >
                   {code}
                 </code>
               ))}
@@ -71,16 +83,23 @@ export function MfaManageForm() {
           </div>
         )}
 
-        <Button variant="outline" onClick={handleRegenerateBackupCodes} disabled={backupLoading}>
+        <Button
+          variant="outline"
+          onClick={handleRegenerateBackupCodes}
+          disabled={backupLoading}
+        >
           {backupLoading ? "Generating…" : "Regenerate backup codes"}
         </Button>
       </section>
 
       <section className="space-y-5 border-t pt-8">
         <div>
-          <h2 className="text-base font-medium text-destructive">Disable 2FA</h2>
+          <h2 className="text-base font-medium text-destructive">
+            Disable 2FA
+          </h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Removing 2FA reduces your account security. Enter your password to confirm.
+            Removing 2FA reduces your account security. Enter your password to
+            confirm.
           </p>
         </div>
 

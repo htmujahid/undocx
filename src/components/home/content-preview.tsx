@@ -8,13 +8,15 @@ function TextBlock() {
     <section className="space-y-2">
       <h2 className="text-base font-semibold">Introduction</h2>
       <p className="text-sm leading-relaxed text-muted-foreground">
-        Machine learning is a subset of artificial intelligence that enables systems to learn and
-        improve from experience without being explicitly programmed. It focuses on developing
-        programs that can access data and use it to learn for themselves.
+        Machine learning is a subset of artificial intelligence that enables
+        systems to learn and improve from experience without being explicitly
+        programmed. It focuses on developing programs that can access data and
+        use it to learn for themselves.
       </p>
       <p className="text-sm leading-relaxed text-muted-foreground">
-        The process begins with observations or data — examples, direct experience, or instruction —
-        so that computers can look for patterns in data and make better decisions in the future.
+        The process begins with observations or data — examples, direct
+        experience, or instruction — so that computers can look for patterns in
+        data and make better decisions in the future.
       </p>
     </section>
   )
@@ -52,7 +54,10 @@ function TableBlock() {
           </thead>
           <tbody>
             {TABLE_DATA.rows.map((row, i) => (
-              <tr key={i} className="border-t transition-colors hover:bg-muted/30">
+              <tr
+                key={i}
+                className="border-t transition-colors hover:bg-muted/30"
+              >
                 {row.map((cell, j) => (
                   <td
                     key={j}
@@ -85,12 +90,13 @@ function ChartBlock() {
   return (
     <section className="space-y-2">
       <div className="rounded-lg border p-4">
-        <p className="mb-4 text-xs font-medium">
-          ML Adoption Rate (%)
-        </p>
+        <p className="mb-4 text-xs font-medium">ML Adoption Rate (%)</p>
         <div className="flex items-end gap-3">
           {CHART_DATA.map((d) => (
-            <div key={d.label} className="flex flex-1 flex-col items-center gap-1.5">
+            <div
+              key={d.label}
+              className="flex flex-1 flex-col items-center gap-1.5"
+            >
               <span className="text-[10px] font-medium text-muted-foreground">
                 {d.value}
               </span>
@@ -98,7 +104,9 @@ function ChartBlock() {
                 className={`w-full rounded-t-sm ${d.color} transition-all`}
                 style={{ height: `${(d.value / max) * 80}px` }}
               />
-              <span className="text-[10px] text-muted-foreground">{d.label}</span>
+              <span className="text-[10px] text-muted-foreground">
+                {d.label}
+              </span>
             </div>
           ))}
         </div>
@@ -127,7 +135,9 @@ function CodeBlock() {
     <section className="space-y-2">
       <div className="overflow-hidden rounded-lg border bg-muted/30">
         <div className="flex items-center justify-between border-b bg-muted/50 px-3 py-1.5">
-          <span className="text-[10px] font-medium text-muted-foreground">python</span>
+          <span className="text-[10px] font-medium text-muted-foreground">
+            python
+          </span>
           <div className="flex gap-1.5">
             <span className="size-2 rounded-full bg-red-400/70" />
             <span className="size-2 rounded-full bg-yellow-400/70" />

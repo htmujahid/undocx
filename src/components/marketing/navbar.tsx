@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router"
-import { HomeIcon, LogOutIcon, SettingsIcon } from "lucide-react"
+
+import { useQueryClient } from "@tanstack/react-query"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { buttonVariants } from "@/components/ui/button"
@@ -15,7 +16,7 @@ import {
 import { useUser } from "@/hooks/use-user"
 import { signOut } from "@/lib/auth-client"
 import { authUserQueryOptions } from "@/lib/queries/auth"
-import { useQueryClient } from "@tanstack/react-query"
+import { HomeIcon, LogOutIcon, SettingsIcon } from "lucide-react"
 
 export function Navbar() {
   const { user } = useUser()
@@ -67,7 +68,10 @@ export function Navbar() {
             <DropdownMenu>
               <DropdownMenuTrigger className="cursor-pointer rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring">
                 <Avatar size="sm">
-                  <AvatarImage src={user.image ?? undefined} alt={user.name ?? ""} />
+                  <AvatarImage
+                    src={user.image ?? undefined}
+                    alt={user.name ?? ""}
+                  />
                   <AvatarFallback>{initials}</AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
@@ -91,7 +95,10 @@ export function Navbar() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <Link to="/account" className="flex w-full items-center gap-2">
+                    <Link
+                      to="/account"
+                      className="flex w-full items-center gap-2"
+                    >
                       <SettingsIcon />
                       Account settings
                     </Link>

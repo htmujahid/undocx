@@ -1,8 +1,8 @@
 import { useState } from "react"
 
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
+
 import { useQueryClient } from "@tanstack/react-query"
-import { PanelRightIcon } from "lucide-react"
 
 import { AppSidebar } from "@/components/home/app-sidebar"
 import { ContentPreview } from "@/components/home/content-preview"
@@ -13,9 +13,10 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import { cn } from "@/lib/utils"
 import { signOut } from "@/lib/auth-client"
 import { authUserQueryOptions } from "@/lib/queries/auth"
+import { cn } from "@/lib/utils"
+import { PanelRightIcon } from "lucide-react"
 
 export const Route = createFileRoute("/home/")({
   component: HomePage,
@@ -60,7 +61,7 @@ function HomePage() {
               <PanelRightIcon
                 className={cn(
                   "transition-colors",
-                  rightOpen ? "text-foreground" : "text-muted-foreground",
+                  rightOpen ? "text-foreground" : "text-muted-foreground"
                 )}
               />
             </Button>

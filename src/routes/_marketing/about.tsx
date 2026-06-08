@@ -22,10 +22,27 @@ const VALUES = [
 ]
 
 const MILESTONES = [
-  { year: "2024", label: "Founded", detail: "Started with a simple frustration: AI always answered in walls of text." },
-  { year: "2025 Q1", label: "Private beta", detail: "First 500 users helped us learn which formats mattered most." },
-  { year: "2025 Q3", label: "Early access", detail: "Opened to the public with six adaptive content formats." },
-  { year: "Now", label: "Building", detail: "Adding collaboration, more formats, and a richer knowledge base." },
+  {
+    year: "2024",
+    label: "Founded",
+    detail:
+      "Started with a simple frustration: AI always answered in walls of text.",
+  },
+  {
+    year: "2025 Q1",
+    label: "Private beta",
+    detail: "First 500 users helped us learn which formats mattered most.",
+  },
+  {
+    year: "2025 Q3",
+    label: "Early access",
+    detail: "Opened to the public with six adaptive content formats.",
+  },
+  {
+    year: "Now",
+    label: "Building",
+    detail: "Adding collaboration, more formats, and a richer knowledge base.",
+  },
 ]
 
 function AboutPage() {
@@ -34,7 +51,9 @@ function AboutPage() {
       {/* Hero */}
       <section className="border-b border-border/40">
         <div className="mx-auto max-w-3xl px-6 py-24 text-center lg:py-32">
-          <p className="mb-4 text-sm font-medium text-muted-foreground">About Tarteeb AI</p>
+          <p className="mb-4 text-sm font-medium text-muted-foreground">
+            About Tarteeb AI
+          </p>
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
             Information should arrive in the shape it needs to be
           </h1>
@@ -73,13 +92,14 @@ function AboutPage() {
               </h2>
               <p className="mt-4 leading-relaxed text-muted-foreground">
                 Most AI tools treat every question the same way: return text,
-                let the user figure out the rest. That creates cognitive overhead
-                — you still have to restructure the response before it's useful.
+                let the user figure out the rest. That creates cognitive
+                overhead — you still have to restructure the response before
+                it's useful.
               </p>
               <p className="mt-4 leading-relaxed text-muted-foreground">
                 We believe AI should do that work for you. The format is part of
-                the answer. Getting it right makes information immediately usable
-                instead of something you have to process first.
+                the answer. Getting it right makes information immediately
+                usable instead of something you have to process first.
               </p>
             </div>
           </div>
@@ -138,10 +158,7 @@ function AboutPage() {
             your own questions.
           </p>
           <div className="mt-8">
-            <Link
-              to="/auth/sign-up"
-              className={buttonVariants({ size: "lg" })}
-            >
+            <Link to="/auth/sign-up" className={buttonVariants({ size: "lg" })}>
               Get started free
             </Link>
           </div>

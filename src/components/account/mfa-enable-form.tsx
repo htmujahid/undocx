@@ -1,14 +1,21 @@
 import { useState } from "react"
+
 import { useRouter } from "@tanstack/react-router"
+
 import { useQueryClient } from "@tanstack/react-query"
-import { QRCode } from "react-qr-code"
 
 import { Button } from "@/components/ui/button"
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp"
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp"
 import { authClient } from "@/lib/auth-client"
 import { authUserQueryOptions } from "@/lib/queries/auth"
+import { QRCode } from "react-qr-code"
 import { toast } from "sonner"
 
 type EnableStep = "idle" | "setup"
@@ -29,7 +36,10 @@ export function MfaEnableForm() {
     setLoading(true)
     const { data, error } = await authClient.twoFactor.enable({ password })
     setLoading(false)
-    if (error) { toast.error(error.message); return }
+    if (error) {
+      toast.error(error.message)
+      return
+    }
     if (data?.totpURI) {
       setTotpUri(data.totpURI)
       setBackupCodes(data.backupCodes ?? [])
@@ -40,9 +50,15 @@ export function MfaEnableForm() {
   async function handleVerify() {
     if (verifyCode.length !== 6) return
     setLoading(true)
-    const { data, error } = await authClient.twoFactor.verifyTotp({ code: verifyCode })
+    const { data, error } = await authClient.twoFactor.verifyTotp({
+      code: verifyCode,
+    })
     setLoading(false)
-    if (error) { toast.error(error.message); setVerifyCode(""); return }
+    if (error) {
+      toast.error(error.message)
+      setVerifyCode("")
+      return
+    }
     toast.success("Two-factor authentication enabled")
     queryClient.setQueryData(authUserQueryOptions.queryKey, data?.user ?? null)
     router.invalidate()
@@ -70,7 +86,11 @@ export function MfaEnableForm() {
             />
           </Field>
         </FieldGroup>
-        <Button onClick={handleEnable} disabled={!password || loading} variant="outline">
+        <Button
+          onClick={handleEnable}
+          disabled={!password || loading}
+          variant="outline"
+        >
           {loading ? "Generating…" : "Set up authenticator"}
         </Button>
       </section>
@@ -82,8 +102,8 @@ export function MfaEnableForm() {
       <div>
         <h2 className="text-base font-medium">Scan QR code</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Open your authenticator app (Google Authenticator, Authy, etc.) and scan
-          the code below.
+          Open your authenticator app (Google Authenticator, Authy, etc.) and
+          scan the code below.
         </p>
       </div>
 
@@ -100,7 +120,10 @@ export function MfaEnableForm() {
           </p>
           <div className="grid grid-cols-2 gap-1.5">
             {backupCodes.map((code) => (
-              <code key={code} className="rounded bg-background px-2 py-1 text-xs font-mono">
+              <code
+                key={code}
+                className="rounded bg-background px-2 py-1 text-xs font-mono"
+              >
                 {code}
               </code>
             ))}
@@ -109,8 +132,16 @@ export function MfaEnableForm() {
       )}
 
       <div>
-        <p className="mb-3 text-sm font-medium">Enter the 6-digit code to confirm</p>
-        <InputOTP maxLength={6} value={verifyCode} onChange={setVerifyCode} onComplete={handleVerify} containerClassName="w-full">
+        <p className="mb-3 text-sm font-medium">
+          Enter the 6-digit code to confirm
+        </p>
+        <InputOTP
+          maxLength={6}
+          value={verifyCode}
+          onChange={setVerifyCode}
+          onComplete={handleVerify}
+          containerClassName="w-full"
+        >
           <InputOTPGroup className="flex-1 *:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-full *:data-[slot=input-otp-slot]:text-xl">
             <InputOTPSlot index={0} />
             <InputOTPSlot index={1} />
@@ -126,12 +157,20 @@ export function MfaEnableForm() {
       </div>
 
       <div className="flex gap-3">
-        <Button onClick={handleVerify} disabled={verifyCode.length !== 6 || loading}>
+        <Button
+          onClick={handleVerify}
+          disabled={verifyCode.length !== 6 || loading}
+        >
           {loading ? "Verifying…" : "Confirm & enable"}
         </Button>
         <Button
           variant="outline"
-          onClick={() => { setStep("idle"); setTotpUri(""); setBackupCodes([]); setVerifyCode("") }}
+          onClick={() => {
+            setStep("idle")
+            setTotpUri("")
+            setBackupCodes([])
+            setVerifyCode("")
+          }}
         >
           Cancel
         </Button>

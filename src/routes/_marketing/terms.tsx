@@ -60,7 +60,9 @@ function TermsPage() {
     <main>
       <div className="mx-auto max-w-3xl px-6 py-20">
         <div className="mb-12">
-          <p className="mb-3 text-sm font-medium text-muted-foreground">Legal</p>
+          <p className="mb-3 text-sm font-medium text-muted-foreground">
+            Legal
+          </p>
           <h1 className="text-3xl font-bold tracking-tight">
             Terms of Service
           </h1>

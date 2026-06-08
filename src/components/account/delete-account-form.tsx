@@ -1,11 +1,16 @@
 import { useForm } from "@tanstack/react-form"
-import { toast } from "sonner"
-import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field"
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"
+import { toast } from "sonner"
+import { z } from "zod"
 
 const schema = z.object({
   password: z.string().min(1, "Password is required to confirm deletion"),
@@ -29,16 +34,19 @@ export function DeleteAccountForm() {
   return (
     <section className="space-y-5 border-t pt-8">
       <div>
-        <h2 className="text-base font-medium text-destructive">Delete account</h2>
+        <h2 className="text-base font-medium text-destructive">
+          Delete account
+        </h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Permanently delete your account and all your data. This action cannot be undone.
+          Permanently delete your account and all your data. This action cannot
+          be undone.
         </p>
       </div>
 
       <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-5 space-y-4">
         <p className="text-sm text-muted-foreground">
-          Enter your password to confirm. All your workspaces, generations, and account data will
-          be permanently removed.
+          Enter your password to confirm. All your workspaces, generations, and
+          account data will be permanently removed.
         </p>
 
         <form
@@ -52,7 +60,8 @@ export function DeleteAccountForm() {
             <form.Field
               name="password"
               children={(field) => {
-                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid
                 return (
                   <Field data-invalid={isInvalid}>
                     <FieldLabel htmlFor={field.name}>Password</FieldLabel>
@@ -66,7 +75,9 @@ export function DeleteAccountForm() {
                       placeholder="••••••••"
                       autoComplete="current-password"
                     />
-                    {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
                   </Field>
                 )
               }}
