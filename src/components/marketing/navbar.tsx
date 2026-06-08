@@ -1,8 +1,38 @@
-import { Link } from "@tanstack/react-router"
+import { Link, useNavigate } from "@tanstack/react-router"
+import { LogOutIcon, UserIcon } from "lucide-react"
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { buttonVariants } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { signOut } from "@/lib/auth-client"
+import { useUser } from "@/hooks/use-user"
 
 export function Navbar() {
+  const { user } = useUser()
+  const navigate = useNavigate()
+
+  const handleSignOut = async () => {
+    await signOut()
+    navigate({ to: "/" })
+  }
+
+  const initials = user?.name
+    ? user.name
+        .split(" ")
+        .map((n) => n[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase()
+    : "?"
+
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
@@ -29,15 +59,63 @@ export function Navbar() {
         </Link>
 
         <nav className="flex items-center gap-1">
-          <Link
-            to="/auth/sign-in"
-            className={buttonVariants({ variant: "ghost", size: "sm" })}
-          >
-            Sign in
-          </Link>
-          <Link to="/auth/sign-up" className={buttonVariants({ size: "sm" })}>
-            Get started
-          </Link>
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger className="cursor-pointer rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                <Avatar size="sm">
+                  <AvatarImage src={user.image ?? undefined} alt={user.name ?? ""} />
+                  <AvatarFallback>{initials}</AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel className="flex flex-col gap-0.5">
+                    <span className="text-sm font-medium text-foreground">
+                      {user.name}
+                    </span>
+                    <span className="text-xs font-normal text-muted-foreground">
+                      {user.email}
+                    </span>
+                  </DropdownMenuLabel>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem>
+                    <Link to="/" className="flex w-full items-center gap-2">
+                      <UserIcon />
+                      Profile
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem
+                    variant="destructive"
+                    className="cursor-pointer"
+                    onClick={handleSignOut}
+                  >
+                    <LogOutIcon />
+                    Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <>
+              <Link
+                to="/auth/sign-in"
+                className={buttonVariants({ variant: "ghost", size: "sm" })}
+              >
+                Sign in
+              </Link>
+              <Link
+                to="/auth/sign-up"
+                className={buttonVariants({ size: "sm" })}
+              >
+                Get started
+              </Link>
+            </>
+          )}
         </nav>
       </div>
     </header>
