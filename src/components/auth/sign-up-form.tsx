@@ -1,9 +1,7 @@
-import { useForm } from "@tanstack/react-form"
 import { Link, useNavigate } from "@tanstack/react-router"
-import { toast } from "sonner"
-import { z } from "zod"
 
-import { signUp } from "@/lib/auth-client"
+import { useForm } from "@tanstack/react-form"
+
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Field,
@@ -12,6 +10,10 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { signUp } from "@/lib/auth-client"
+import { toast } from "sonner"
+import { z } from "zod"
+
 const signUpSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),
   email: z.email("Enter a valid email address."),
@@ -80,9 +82,7 @@ export function SignUpForm() {
                     placeholder="John Doe"
                     autoComplete="name"
                   />
-                  {isInvalid && (
-                    <FieldError errors={field.state.meta.errors} />
-                  )}
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               )
             }}
@@ -107,9 +107,7 @@ export function SignUpForm() {
                     placeholder="name@example.com"
                     autoComplete="email"
                   />
-                  {isInvalid && (
-                    <FieldError errors={field.state.meta.errors} />
-                  )}
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               )
             }}
@@ -134,14 +132,11 @@ export function SignUpForm() {
                     placeholder="Min. 8 characters"
                     autoComplete="new-password"
                   />
-                  {isInvalid && (
-                    <FieldError errors={field.state.meta.errors} />
-                  )}
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               )
             }}
           />
-
         </FieldGroup>
 
         <form.Subscribe

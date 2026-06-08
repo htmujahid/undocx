@@ -1,10 +1,7 @@
-import { useForm } from "@tanstack/react-form"
 import { Link, useNavigate } from "@tanstack/react-router"
-import { ShieldCheckIcon } from "lucide-react"
-import { toast } from "sonner"
-import { z } from "zod"
 
-import { authClient } from "@/lib/auth-client"
+import { useForm } from "@tanstack/react-form"
+
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Field,
@@ -13,6 +10,10 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { authClient } from "@/lib/auth-client"
+import { ShieldCheckIcon } from "lucide-react"
+import { toast } from "sonner"
+import { z } from "zod"
 
 const resetPasswordSchema = z
   .object({
@@ -52,7 +53,10 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
         <div className="mb-2 flex size-11 items-center justify-center rounded-full bg-muted">
-          <ShieldCheckIcon className="size-5 text-foreground" strokeWidth={1.5} />
+          <ShieldCheckIcon
+            className="size-5 text-foreground"
+            strokeWidth={1.5}
+          />
         </div>
         <h1 className="text-2xl font-semibold tracking-tight">
           Set a new password
@@ -89,9 +93,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
                     placeholder="Min. 8 characters"
                     autoComplete="new-password"
                   />
-                  {isInvalid && (
-                    <FieldError errors={field.state.meta.errors} />
-                  )}
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               )
             }}
@@ -116,9 +118,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
                     placeholder="••••••••"
                     autoComplete="new-password"
                   />
-                  {isInvalid && (
-                    <FieldError errors={field.state.meta.errors} />
-                  )}
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               )
             }}

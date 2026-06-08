@@ -1,9 +1,7 @@
-import { useForm } from "@tanstack/react-form"
 import { Link } from "@tanstack/react-router"
-import { toast } from "sonner"
-import { z } from "zod"
 
-import { authClient } from "@/lib/auth-client"
+import { useForm } from "@tanstack/react-form"
+
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Field,
@@ -13,6 +11,10 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { authClient } from "@/lib/auth-client"
+import { toast } from "sonner"
+import { z } from "zod"
+
 const forgotPasswordSchema = z.object({
   email: z.email("Enter a valid email address."),
 })
@@ -90,9 +92,7 @@ export function ForgotPasswordForm() {
                   <FieldDescription>
                     We&apos;ll send a reset link to this address.
                   </FieldDescription>
-                  {isInvalid && (
-                    <FieldError errors={field.state.meta.errors} />
-                  )}
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               )
             }}

@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router"
+
 import { buttonVariants } from "@/components/ui/button"
 
 export function Hero() {
@@ -31,8 +32,8 @@ export function Hero() {
 
         <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
           Stop getting walls of text. Tarteeb AI reads your intent and responds
-          in the format that actually fits, then keeps everything organized in
-          a knowledge base you own.
+          in the format that actually fits, then keeps everything organized in a
+          knowledge base you own.
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">

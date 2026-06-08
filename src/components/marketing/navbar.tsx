@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router"
+
 import { buttonVariants } from "@/components/ui/button"
 
 export function Navbar() {
@@ -22,7 +23,9 @@ export function Navbar() {
               <path d="m22 14-3 3 3 3" />
             </svg>
           </div>
-          <span className="text-sm font-semibold tracking-tight">Tarteeb AI</span>
+          <span className="text-sm font-semibold tracking-tight">
+            Tarteeb AI
+          </span>
         </Link>
 
         <nav className="flex items-center gap-1">
@@ -32,10 +35,7 @@ export function Navbar() {
           >
             Sign in
           </Link>
-          <Link
-            to="/auth/sign-up"
-            className={buttonVariants({ size: "sm" })}
-          >
+          <Link to="/auth/sign-up" className={buttonVariants({ size: "sm" })}>
             Get started
           </Link>
         </nav>

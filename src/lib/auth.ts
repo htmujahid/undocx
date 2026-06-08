@@ -1,20 +1,20 @@
-import { betterAuth } from 'better-auth'
-import { drizzleAdapter } from 'better-auth/adapters/drizzle'
-import { tanstackStartCookies } from 'better-auth/tanstack-start'
-import { db } from '@/db'
-import { mailer } from '@/lib/mailer'
+import { db } from "@/db"
+import { mailer } from "@/lib/mailer"
+import { betterAuth } from "better-auth"
+import { drizzleAdapter } from "better-auth/adapters/drizzle"
+import { tanstackStartCookies } from "better-auth/tanstack-start"
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
-    provider: 'pg',
+    provider: "pg",
   }),
   emailAndPassword: {
     enabled: true,
     sendResetPassword: async ({ user, url }) => {
       void mailer.sendMail({
-        from: 'noreply@tarteebai.com',
+        from: "noreply@tarteebai.com",
         to: user.email,
-        subject: 'Reset your password',
+        subject: "Reset your password",
         text: `Click the link to reset your password: ${url}`,
       })
     },
@@ -23,9 +23,9 @@ export const auth = betterAuth({
     sendOnSignUp: true,
     sendVerificationEmail: async ({ user, url }) => {
       void mailer.sendMail({
-        from: 'noreply@tarteebai.com',
+        from: "noreply@tarteebai.com",
         to: user.email,
-        subject: 'Verify your email address',
+        subject: "Verify your email address",
         text: `Click the link to verify your email: ${url}`,
       })
     },

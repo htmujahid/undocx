@@ -1,9 +1,7 @@
-import { useForm } from "@tanstack/react-form"
 import { Link, useNavigate } from "@tanstack/react-router"
-import { toast } from "sonner"
-import { z } from "zod"
 
-import { signIn } from "@/lib/auth-client"
+import { useForm } from "@tanstack/react-form"
+
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
   Field,
@@ -12,6 +10,10 @@ import {
   FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { signIn } from "@/lib/auth-client"
+import { toast } from "sonner"
+import { z } from "zod"
+
 import { GoogleButton } from "./google-button"
 
 const signInSchema = z.object({
@@ -87,9 +89,7 @@ export function SignInForm() {
                     placeholder="name@example.com"
                     autoComplete="email"
                   />
-                  {isInvalid && (
-                    <FieldError errors={field.state.meta.errors} />
-                  )}
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               )
             }}
@@ -122,9 +122,7 @@ export function SignInForm() {
                     placeholder="••••••••"
                     autoComplete="current-password"
                   />
-                  {isInvalid && (
-                    <FieldError errors={field.state.meta.errors} />
-                  )}
+                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               )
             }}

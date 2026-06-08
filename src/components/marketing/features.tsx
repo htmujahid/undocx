@@ -12,11 +12,25 @@ function OrganizationVisual() {
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-background shadow-sm">
       <div className="flex items-center gap-2.5 border-b border-border px-4 py-3">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-3.5 text-muted-foreground">
-          <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="size-3.5 text-muted-foreground"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.35-4.35" />
         </svg>
-        <span className="text-xs text-muted-foreground">Search knowledge base...</span>
-        <span className="ml-auto rounded border border-border px-1.5 py-0.5 text-[10px] text-muted-foreground">⌘K</span>
+        <span className="text-xs text-muted-foreground">
+          Search knowledge base...
+        </span>
+        <span className="ml-auto rounded border border-border px-1.5 py-0.5 text-[10px] text-muted-foreground">
+          ⌘K
+        </span>
       </div>
 
       <div className="space-y-0.5 p-2">
@@ -31,12 +45,31 @@ function OrganizationVisual() {
             }`}
           >
             {item.type === "folder" ? (
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-3 shrink-0">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-3 shrink-0"
+              >
                 <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
               </svg>
             ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-3 shrink-0opacity-60">
-                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" /><polyline points="14 2 14 8 20 8" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="size-3 shrink-0opacity-60"
+              >
+                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                <polyline points="14 2 14 8 20 8" />
               </svg>
             )}
             <span>{item.label}</span>
@@ -47,7 +80,10 @@ function OrganizationVisual() {
       <div className="border-t border-border px-4 py-3">
         <div className="flex flex-wrap gap-1.5">
           {["#research", "#science", "#climate"].map((tag) => (
-            <span key={tag} className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-medium text-primary">
+            <span
+              key={tag}
+              className="rounded-full bg-primary/10 px-2.5 py-0.5 text-[11px] font-medium text-primary"
+            >
               {tag}
             </span>
           ))}
@@ -66,7 +102,9 @@ function EditingVisual() {
           <div className="size-2.5 rounded-full bg-border" />
           <div className="size-2.5 rounded-full bg-border" />
         </div>
-        <span className="text-xs text-muted-foreground">Introduction · Draft</span>
+        <span className="text-xs text-muted-foreground">
+          Introduction · Draft
+        </span>
         <div className="w-16" />
       </div>
 
@@ -117,26 +155,39 @@ function LearningVisual() {
         />
         <div className="relative overflow-hidden rounded-2xl border border-border bg-background shadow-sm">
           <div className="flex items-center justify-between border-b border-border px-5 py-3">
-            <span className="text-xs font-medium text-muted-foreground">Biology · Cell division</span>
+            <span className="text-xs font-medium text-muted-foreground">
+              Biology · Cell division
+            </span>
             <span className="text-xs text-muted-foreground">8 / 20</span>
           </div>
           <div className="px-5 pt-3 pb-1">
             <div className="h-1 w-full overflow-hidden rounded-full bg-muted">
-              <div className="h-1 rounded-full bg-primary" style={{ width: "40%" }} />
+              <div
+                className="h-1 rounded-full bg-primary"
+                style={{ width: "40%" }}
+              />
             </div>
           </div>
           <div className="px-5 py-6 text-center">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Question</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Question
+            </p>
             <p className="mt-2 text-sm font-medium leading-snug">
               What is the primary difference between mitosis and meiosis?
             </p>
           </div>
           <div className="flex border-t border-border">
-            <button className="flex-1 py-2.5 text-xs text-muted-foreground hover:bg-muted/40">← Skip</button>
+            <button className="flex-1 py-2.5 text-xs text-muted-foreground hover:bg-muted/40">
+              ← Skip
+            </button>
             <div className="w-px bg-border" />
-            <button className="flex-1 py-2.5 text-xs font-medium text-primary hover:bg-primary/5">Show answer</button>
+            <button className="flex-1 py-2.5 text-xs font-medium text-primary hover:bg-primary/5">
+              Show answer
+            </button>
             <div className="w-px bg-border" />
-            <button className="flex-1 py-2.5 text-xs text-muted-foreground hover:bg-muted/40">Got it →</button>
+            <button className="flex-1 py-2.5 text-xs text-muted-foreground hover:bg-muted/40">
+              Got it →
+            </button>
           </div>
         </div>
       </div>
@@ -147,7 +198,10 @@ function LearningVisual() {
           { label: "Mastered", value: "34" },
           { label: "Streak", value: "7d" },
         ].map((stat) => (
-          <div key={stat.label} className="rounded-xl border border-border bg-background p-3 text-center">
+          <div
+            key={stat.label}
+            className="rounded-xl border border-border bg-background p-3 text-center"
+          >
             <p className="text-base font-bold">{stat.value}</p>
             <p className="text-[10px] text-muted-foreground">{stat.label}</p>
           </div>
@@ -160,7 +214,16 @@ function LearningVisual() {
 const FEATURES = [
   {
     icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="size-5">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="size-5"
+      >
         <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
       </svg>
     ),
@@ -171,8 +234,18 @@ const FEATURES = [
   },
   {
     icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="size-5">
-        <path d="M12 20h9" /><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z" />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="size-5"
+      >
+        <path d="M12 20h9" />
+        <path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z" />
       </svg>
     ),
     title: "AI-assisted inline editing",
@@ -182,8 +255,19 @@ const FEATURES = [
   },
   {
     icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="size-5">
-        <path d="M12 22V12" /><path d="M5 12H2a10 10 0 0 0 20 0h-3" /><circle cx="12" cy="5" r="3" />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="size-5"
+      >
+        <path d="M12 22V12" />
+        <path d="M5 12H2a10 10 0 0 0 20 0h-3" />
+        <circle cx="12" cy="5" r="3" />
       </svg>
     ),
     title: "Learning tools",
@@ -205,7 +289,8 @@ export function Features() {
             More than generation
           </h2>
           <p className="mt-4 text-muted-foreground">
-            A complete workflow, from first draft to organized, searchable knowledge.
+            A complete workflow, from first draft to organized, searchable
+            knowledge.
           </p>
         </div>
 

@@ -1,8 +1,8 @@
 import { useState } from "react"
-import { toast } from "sonner"
 
-import { signIn } from "@/lib/auth-client"
 import { Button } from "@/components/ui/button"
+import { signIn } from "@/lib/auth-client"
+import { toast } from "sonner"
 
 function GoogleIcon() {
   return (
@@ -36,7 +36,9 @@ interface GoogleButtonProps {
   label?: string
 }
 
-export function GoogleButton({ label = "Continue with Google" }: GoogleButtonProps) {
+export function GoogleButton({
+  label = "Continue with Google",
+}: GoogleButtonProps) {
   const [loading, setLoading] = useState(false)
 
   const handleClick = async () => {

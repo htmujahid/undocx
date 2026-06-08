@@ -1,9 +1,12 @@
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router"
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
+
+import { sessionAction } from "@/actions/auth/session-action"
+import { TooltipProvider } from "@/components/ui/tooltip"
 import { TanStackDevtools } from "@tanstack/react-devtools"
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
+import { Toaster } from "sonner"
 
 import appCss from "../styles.css?url"
-import { TooltipProvider } from "@/components/ui/tooltip"
 
 export const Route = createRootRoute({
   head: () => ({
@@ -31,6 +34,13 @@ export const Route = createRootRoute({
       },
     ],
   }),
+  beforeLoad: async () => {
+    const data = await sessionAction()
+
+    return {
+      ...data,
+    }
+  },
   notFoundComponent: () => (
     <main className="container mx-auto p-4 pt-16">
       <h1>404</h1>
@@ -47,9 +57,8 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <TooltipProvider>
-          {children}
-        </TooltipProvider>
+        <TooltipProvider>{children}</TooltipProvider>
+        <Toaster />
         <TanStackDevtools
           config={{
             position: "bottom-right",

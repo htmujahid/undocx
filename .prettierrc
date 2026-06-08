@@ -5,7 +5,26 @@
   "tabWidth": 2,
   "trailingComma": "es5",
   "printWidth": 80,
-  "plugins": ["prettier-plugin-tailwindcss"],
+  "importOrder": [
+    "/^(?!.*\\.css).*/",
+    "^react$",
+    "^react-dom$",
+    "^@supabase/supabase-js$",
+    "^@tanstack/react-start$",
+    "^@tanstack/react-router$",
+    "^@tanstack/react-query$",
+    "^@tanstack/react-table$",
+    "^@tanstack/react-form$",
+    "<THIRD_PARTY_MODULES>",
+    "#/*",
+    "^[./]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+  "plugins": [
+    "prettier-plugin-tailwindcss",
+    "@trivago/prettier-plugin-sort-imports"
+  ],
   "tailwindStylesheet": "src/styles.css",
   "tailwindFunctions": ["cn", "cva"]
 }

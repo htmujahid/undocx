@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet } from "@tanstack/react-router"
+import { Link, Outlet, createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/auth")({
   component: AuthLayout,
@@ -125,9 +125,7 @@ function AuthLayout() {
                       <p className="text-sm font-medium text-white/90">
                         {f.label}
                       </p>
-                      <p className="text-xs text-white/40">
-                        {f.description}
-                      </p>
+                      <p className="text-xs text-white/40">{f.description}</p>
                     </div>
                   </div>
                 ))}

@@ -30,10 +30,16 @@ export function Footer() {
           </p>
 
           <nav className="flex gap-5 text-xs text-muted-foreground">
-            <Link to="/auth/sign-in" className="hover:text-foreground transition-colors">
+            <Link
+              to="/auth/sign-in"
+              className="hover:text-foreground transition-colors"
+            >
               Sign in
             </Link>
-            <Link to="/auth/sign-up" className="hover:text-foreground transition-colors">
+            <Link
+              to="/auth/sign-up"
+              className="hover:text-foreground transition-colors"
+            >
               Get started
             </Link>
           </nav>
