@@ -7,6 +7,9 @@ import tailwindcss from "@tailwindcss/vite"
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
   plugins: [devtools(), tailwindcss(), tanstackStart(), viteReact()],
+  ssr: {
+    external: ['better-auth'],
+  },
 })
 
 export default config
