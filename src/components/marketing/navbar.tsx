@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router"
-import { LogOutIcon, UserIcon } from "lucide-react"
+import { HomeIcon, LogOutIcon, SettingsIcon } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { buttonVariants } from "@/components/ui/button"
@@ -35,7 +35,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link to="/" className="flex items-center gap-2.5">
           <div className="flex size-8 items-center justify-center rounded-lg bg-primary">
             <svg
@@ -81,9 +81,15 @@ export function Navbar() {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
-                    <Link to="/" className="flex w-full items-center gap-2">
-                      <UserIcon />
-                      Profile
+                    <Link to="/home" className="flex w-full items-center gap-2">
+                      <HomeIcon />
+                      Home
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link to="/account" className="flex w-full items-center gap-2">
+                      <SettingsIcon />
+                      Account settings
                     </Link>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>

@@ -11,13 +11,18 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as HomeRouteRouteImport } from './routes/home/route'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
+import { Route as AccountRouteRouteImport } from './routes/account/route'
 import { Route as MarketingRouteRouteImport } from './routes/_marketing/route'
 import { Route as HomeIndexRouteImport } from './routes/home/index'
+import { Route as AccountIndexRouteImport } from './routes/account/index'
 import { Route as MarketingIndexRouteImport } from './routes/_marketing/index'
 import { Route as AuthSignUpRouteImport } from './routes/auth/sign-up'
 import { Route as AuthSignInRouteImport } from './routes/auth/sign-in'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
 import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password'
+import { Route as AccountSubscriptionRouteImport } from './routes/account/subscription'
+import { Route as AccountSecurityRouteImport } from './routes/account/security'
+import { Route as AccountMfaRouteImport } from './routes/account/mfa'
 import { Route as MarketingTermsRouteImport } from './routes/_marketing/terms'
 import { Route as MarketingPrivacyRouteImport } from './routes/_marketing/privacy'
 import { Route as MarketingAboutRouteImport } from './routes/_marketing/about'
@@ -33,6 +38,11 @@ const AuthRouteRoute = AuthRouteRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountRouteRoute = AccountRouteRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MarketingRouteRoute = MarketingRouteRouteImport.update({
   id: '/_marketing',
   getParentRoute: () => rootRouteImport,
@@ -41,6 +51,11 @@ const HomeIndexRoute = HomeIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => HomeRouteRoute,
+} as any)
+const AccountIndexRoute = AccountIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AccountRouteRoute,
 } as any)
 const MarketingIndexRoute = MarketingIndexRouteImport.update({
   id: '/',
@@ -67,6 +82,21 @@ const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AccountSubscriptionRoute = AccountSubscriptionRouteImport.update({
+  id: '/subscription',
+  path: '/subscription',
+  getParentRoute: () => AccountRouteRoute,
+} as any)
+const AccountSecurityRoute = AccountSecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => AccountRouteRoute,
+} as any)
+const AccountMfaRoute = AccountMfaRouteImport.update({
+  id: '/mfa',
+  path: '/mfa',
+  getParentRoute: () => AccountRouteRoute,
+} as any)
 const MarketingTermsRoute = MarketingTermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -90,15 +120,20 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof MarketingIndexRoute
+  '/account': typeof AccountRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/home': typeof HomeRouteRouteWithChildren
   '/about': typeof MarketingAboutRoute
   '/privacy': typeof MarketingPrivacyRoute
   '/terms': typeof MarketingTermsRoute
+  '/account/mfa': typeof AccountMfaRoute
+  '/account/security': typeof AccountSecurityRoute
+  '/account/subscription': typeof AccountSubscriptionRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
+  '/account/': typeof AccountIndexRoute
   '/home/': typeof HomeIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
@@ -107,27 +142,36 @@ export interface FileRoutesByTo {
   '/about': typeof MarketingAboutRoute
   '/privacy': typeof MarketingPrivacyRoute
   '/terms': typeof MarketingTermsRoute
+  '/account/mfa': typeof AccountMfaRoute
+  '/account/security': typeof AccountSecurityRoute
+  '/account/subscription': typeof AccountSubscriptionRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/': typeof MarketingIndexRoute
+  '/account': typeof AccountIndexRoute
   '/home': typeof HomeIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_marketing': typeof MarketingRouteRouteWithChildren
+  '/account': typeof AccountRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
   '/home': typeof HomeRouteRouteWithChildren
   '/_marketing/about': typeof MarketingAboutRoute
   '/_marketing/privacy': typeof MarketingPrivacyRoute
   '/_marketing/terms': typeof MarketingTermsRoute
+  '/account/mfa': typeof AccountMfaRoute
+  '/account/security': typeof AccountSecurityRoute
+  '/account/subscription': typeof AccountSubscriptionRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
   '/_marketing/': typeof MarketingIndexRoute
+  '/account/': typeof AccountIndexRoute
   '/home/': typeof HomeIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
@@ -135,15 +179,20 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/account'
     | '/auth'
     | '/home'
     | '/about'
     | '/privacy'
     | '/terms'
+    | '/account/mfa'
+    | '/account/security'
+    | '/account/subscription'
     | '/auth/forgot-password'
     | '/auth/reset-password'
     | '/auth/sign-in'
     | '/auth/sign-up'
+    | '/account/'
     | '/home/'
     | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
@@ -152,32 +201,42 @@ export interface FileRouteTypes {
     | '/about'
     | '/privacy'
     | '/terms'
+    | '/account/mfa'
+    | '/account/security'
+    | '/account/subscription'
     | '/auth/forgot-password'
     | '/auth/reset-password'
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/'
+    | '/account'
     | '/home'
     | '/api/auth/$'
   id:
     | '__root__'
     | '/_marketing'
+    | '/account'
     | '/auth'
     | '/home'
     | '/_marketing/about'
     | '/_marketing/privacy'
     | '/_marketing/terms'
+    | '/account/mfa'
+    | '/account/security'
+    | '/account/subscription'
     | '/auth/forgot-password'
     | '/auth/reset-password'
     | '/auth/sign-in'
     | '/auth/sign-up'
     | '/_marketing/'
+    | '/account/'
     | '/home/'
     | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   MarketingRouteRoute: typeof MarketingRouteRouteWithChildren
+  AccountRouteRoute: typeof AccountRouteRouteWithChildren
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   HomeRouteRoute: typeof HomeRouteRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -199,6 +258,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_marketing': {
       id: '/_marketing'
       path: ''
@@ -212,6 +278,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/home/'
       preLoaderRoute: typeof HomeIndexRouteImport
       parentRoute: typeof HomeRouteRoute
+    }
+    '/account/': {
+      id: '/account/'
+      path: '/'
+      fullPath: '/account/'
+      preLoaderRoute: typeof AccountIndexRouteImport
+      parentRoute: typeof AccountRouteRoute
     }
     '/_marketing/': {
       id: '/_marketing/'
@@ -247,6 +320,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/forgot-password'
       preLoaderRoute: typeof AuthForgotPasswordRouteImport
       parentRoute: typeof AuthRouteRoute
+    }
+    '/account/subscription': {
+      id: '/account/subscription'
+      path: '/subscription'
+      fullPath: '/account/subscription'
+      preLoaderRoute: typeof AccountSubscriptionRouteImport
+      parentRoute: typeof AccountRouteRoute
+    }
+    '/account/security': {
+      id: '/account/security'
+      path: '/security'
+      fullPath: '/account/security'
+      preLoaderRoute: typeof AccountSecurityRouteImport
+      parentRoute: typeof AccountRouteRoute
+    }
+    '/account/mfa': {
+      id: '/account/mfa'
+      path: '/mfa'
+      fullPath: '/account/mfa'
+      preLoaderRoute: typeof AccountMfaRouteImport
+      parentRoute: typeof AccountRouteRoute
     }
     '/_marketing/terms': {
       id: '/_marketing/terms'
@@ -297,6 +391,24 @@ const MarketingRouteRouteWithChildren = MarketingRouteRoute._addFileChildren(
   MarketingRouteRouteChildren,
 )
 
+interface AccountRouteRouteChildren {
+  AccountMfaRoute: typeof AccountMfaRoute
+  AccountSecurityRoute: typeof AccountSecurityRoute
+  AccountSubscriptionRoute: typeof AccountSubscriptionRoute
+  AccountIndexRoute: typeof AccountIndexRoute
+}
+
+const AccountRouteRouteChildren: AccountRouteRouteChildren = {
+  AccountMfaRoute: AccountMfaRoute,
+  AccountSecurityRoute: AccountSecurityRoute,
+  AccountSubscriptionRoute: AccountSubscriptionRoute,
+  AccountIndexRoute: AccountIndexRoute,
+}
+
+const AccountRouteRouteWithChildren = AccountRouteRoute._addFileChildren(
+  AccountRouteRouteChildren,
+)
+
 interface AuthRouteRouteChildren {
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
@@ -329,6 +441,7 @@ const HomeRouteRouteWithChildren = HomeRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   MarketingRouteRoute: MarketingRouteRouteWithChildren,
+  AccountRouteRoute: AccountRouteRouteWithChildren,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   HomeRouteRoute: HomeRouteRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
