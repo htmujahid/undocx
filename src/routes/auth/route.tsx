@@ -25,7 +25,7 @@ const FEATURES = [
         <path d="M8 16h.01" />
       </svg>
     ),
-    label: "15+ content formats",
+    label: "Adaptive content formats",
     description: "AI picks the best layout for every query",
   },
   {
@@ -70,7 +70,7 @@ const FEATURES = [
 function AuthLayout() {
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
-      <aside className="relative hidden overflow-hidden bg-primary lg:flex lg:flex-col">
+      <aside className="relative hidden overflow-hidden bg-foreground lg:flex lg:flex-col">
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.04]"
           style={{
@@ -79,9 +79,9 @@ function AuthLayout() {
           }}
         />
 
-        <div className="relative flex h-full flex-col p-10 text-primary-foreground">
+        <div className="relative flex h-full flex-col p-10 text-background">
           <Link to="/" className="flex w-fit items-center gap-2.5">
-            <div className="flex size-8 items-center justify-center rounded-lg bg-primary-foreground/10 ring-1 ring-primary-foreground/20">
+            <div className="flex size-8 items-center justify-center rounded-lg bg-white/10 ring-1 ring-white/20">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -108,9 +108,9 @@ function AuthLayout() {
                 <p className="text-[2rem] font-semibold leading-tight tracking-tight">
                   AI content. Every format.
                 </p>
-                <p className="text-sm leading-relaxed text-primary-foreground/60">
-                  Generate, organize, and edit AI content in 15+ smart layout
-                  formats.<br /> From flowcharts to flashcards, all in one knowledge
+                <p className="text-sm leading-relaxed text-white/50">
+                  Generate, organize, and edit AI content in adaptive layout
+                  formats. From flowcharts to flashcards, all in one knowledge
                   base.
                 </p>
               </div>
@@ -118,14 +118,14 @@ function AuthLayout() {
               <div className="space-y-3">
                 {FEATURES.map((f) => (
                   <div key={f.label} className="flex items-start gap-3">
-                    <div className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-md bg-primary-foreground/10 ring-1 ring-primary-foreground/15">
+                    <div className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-md bg-white/10 ring-1 ring-white/15">
                       {f.icon}
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-primary-foreground/90">
+                      <p className="text-sm font-medium text-white/90">
                         {f.label}
                       </p>
-                      <p className="text-xs text-primary-foreground/50">
+                      <p className="text-xs text-white/40">
                         {f.description}
                       </p>
                     </div>
@@ -135,7 +135,7 @@ function AuthLayout() {
             </div>
           </div>
 
-          <p className="text-[11px] text-primary-foreground/30">
+          <p className="text-[11px] text-white/25">
             &copy; {new Date().getFullYear()} Tarteeb AI. All rights reserved.
           </p>
         </div>

@@ -14,13 +14,7 @@ export function Hero() {
             backgroundSize: "48px 48px",
           }}
         />
-        <div
-          className="absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 rounded-full opacity-10"
-          style={{
-            background:
-              "radial-gradient(ellipse at center, oklch(0.205 0 0) 0%, transparent 70%)",
-          }}
-        />
+        <div className="absolute left-1/2 top-0 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
       </div>
 
       <div className="mx-auto max-w-4xl px-6 py-32 text-center lg:py-40">
