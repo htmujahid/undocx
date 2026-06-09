@@ -7,19 +7,19 @@ export const Route = createFileRoute("/_marketing/terms")({
 const SECTIONS = [
   {
     title: "1. Acceptance of terms",
-    body: `By accessing or using Tarteeb AI ("the Service"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you may not use the Service. These Terms apply to all users, including visitors, registered users, and paying subscribers.`,
+    body: `By accessing or using Renderical ("the Service"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, you may not use the Service. These Terms apply to all users, including visitors, registered users, and paying subscribers.`,
   },
   {
     title: "2. Use of the service",
-    body: `You must be at least 16 years old to use Tarteeb AI. You agree to use the Service only for lawful purposes and in accordance with these Terms. You are responsible for all activity that occurs under your account.`,
+    body: `You must be at least 16 years old to use Renderical. You agree to use the Service only for lawful purposes and in accordance with these Terms. You are responsible for all activity that occurs under your account.`,
   },
   {
     title: "3. Accounts",
-    body: `You must provide accurate and complete information when creating an account. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You must notify us immediately at support@tarteeb.ai if you suspect unauthorized access to your account.`,
+    body: `You must provide accurate and complete information when creating an account. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You must notify us immediately at support@renderical.com if you suspect unauthorized access to your account.`,
   },
   {
     title: "4. Content you generate",
-    body: `You retain ownership of the content you create using the Service. By using the Service, you grant Tarteeb AI a limited, non-exclusive license to store and process your content solely to provide the Service to you. We do not use your content to train AI models or share it with third parties without your consent.`,
+    body: `You retain ownership of the content you create using the Service. By using the Service, you grant Renderical a limited, non-exclusive license to store and process your content solely to provide the Service to you. We do not use your content to train AI models or share it with third parties without your consent.`,
   },
   {
     title: "5. Prohibited activities",
@@ -27,7 +27,7 @@ const SECTIONS = [
   },
   {
     title: "6. Intellectual property",
-    body: `The Tarteeb AI name, logo, product design, and underlying technology are the intellectual property of Tarteeb AI and its licensors. These Terms do not grant you any right to use our trademarks, trade names, or branding without our prior written consent.`,
+    body: `The Renderical name, logo, product design, and underlying technology are the intellectual property of Renderical and its licensors. These Terms do not grant you any right to use our trademarks, trade names, or branding without our prior written consent.`,
   },
   {
     title: "7. Paid subscriptions",
@@ -35,11 +35,11 @@ const SECTIONS = [
   },
   {
     title: "8. Disclaimers",
-    body: `The Service is provided "as is" and "as available" without warranties of any kind, either express or implied. Tarteeb AI does not warrant that the Service will be error-free, uninterrupted, or free of harmful components. AI-generated content may be inaccurate; always verify important information independently.`,
+    body: `The Service is provided "as is" and "as available" without warranties of any kind, either express or implied. Renderical does not warrant that the Service will be error-free, uninterrupted, or free of harmful components. AI-generated content may be inaccurate; always verify important information independently.`,
   },
   {
     title: "9. Limitation of liability",
-    body: `To the fullest extent permitted by applicable law, Tarteeb AI shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or goodwill, arising out of your use of or inability to use the Service. Our total liability for any claim shall not exceed the amount you paid us in the 12 months preceding the claim.`,
+    body: `To the fullest extent permitted by applicable law, Renderical shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of profits, data, or goodwill, arising out of your use of or inability to use the Service. Our total liability for any claim shall not exceed the amount you paid us in the 12 months preceding the claim.`,
   },
   {
     title: "10. Termination",
@@ -73,9 +73,9 @@ function TermsPage() {
 
         <div className="prose prose-sm prose-neutral dark:prose-invert max-w-none space-y-10">
           <p className="text-muted-foreground leading-relaxed">
-            Please read these Terms of Service carefully before using Tarteeb
-            AI. These Terms form a legally binding agreement between you and
-            Tarteeb AI regarding your use of the platform and its services.
+            Please read these Terms of Service carefully before using
+            Renderical. These Terms form a legally binding agreement between you and
+            Renderical regarding your use of the platform and its services.
           </p>
 
           {SECTIONS.map((section) => (
@@ -93,10 +93,10 @@ function TermsPage() {
             <p className="text-sm text-muted-foreground">
               Questions about these Terms? Contact us at{" "}
               <a
-                href="mailto:legal@tarteeb.ai"
+                href="mailto:legal@renderical.com"
                 className="text-foreground underline underline-offset-4"
               >
-                legal@tarteeb.ai
+                legal@renderical.com
               </a>
               .
             </p>

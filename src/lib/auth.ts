@@ -6,7 +6,7 @@ import { twoFactor } from "better-auth/plugins"
 import { tanstackStartCookies } from "better-auth/tanstack-start"
 
 export const auth = betterAuth({
-  appName: "Tarteeb AI",
+  appName: "Renderical",
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
@@ -14,7 +14,7 @@ export const auth = betterAuth({
     enabled: true,
     sendResetPassword: async ({ user, url }) => {
       void mailer.sendMail({
-        from: "noreply@tarteebai.com",
+        from: "noreply@renderical.com",
         to: user.email,
         subject: "Reset your password",
         text: `Click the link to reset your password: ${url}`,
@@ -25,7 +25,7 @@ export const auth = betterAuth({
     sendOnSignUp: true,
     sendVerificationEmail: async ({ user, url }) => {
       void mailer.sendMail({
-        from: "noreply@tarteebai.com",
+        from: "noreply@renderical.com",
         to: user.email,
         subject: "Verify your email address",
         text: `Click the link to verify your email: ${url}`,

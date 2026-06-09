@@ -20,7 +20,7 @@ const QUESTIONS = [
   },
   {
     q: "How is this different from ChatGPT or other AI tools?",
-    a: "Most AI tools return text and nothing else. Tarteeb AI treats every response as a structured document and keeps it in an organized knowledge base. The focus is on both the shape of the output and what happens to it afterward.",
+    a: "Most AI tools return text and nothing else. Renderical treats every response as a structured document and keeps it in an organized knowledge base. The focus is on both the shape of the output and what happens to it afterward.",
   },
   {
     q: "Can I edit specific parts of the output?",

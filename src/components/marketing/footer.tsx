@@ -30,7 +30,7 @@ export function Footer() {
                   <path d="m22 14-3 3 3 3" />
                 </svg>
               </div>
-              <span className="text-sm font-semibold">Tarteeb AI</span>
+              <span className="text-sm font-semibold">Renderical</span>
             </Link>
             <p className="text-xs leading-relaxed text-muted-foreground">
               AI content that adapts its format to your question — prose,
@@ -77,7 +77,7 @@ export function Footer() {
 
         <div className="mt-10 border-t pt-6">
           <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} Tarteeb AI. All rights reserved.
+            &copy; {new Date().getFullYear()} Renderical. All rights reserved.
           </p>
         </div>
       </div>

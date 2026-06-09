@@ -9,7 +9,7 @@ export const Route = createFileRoute("/_marketing/about")({
 const VALUES = [
   {
     title: "Format follows intent",
-    body: "The format of an answer should serve the question, not the other way around. We built Tarteeb AI to pick the layout that makes information clearest, not the one that's easiest to generate.",
+    body: "The format of an answer should serve the question, not the other way around. We built Renderical to pick the layout that makes information clearest, not the one that's easiest to generate.",
   },
   {
     title: "Your knowledge base, not ours",
@@ -52,13 +52,13 @@ function AboutPage() {
       <section className="border-b border-border/40">
         <div className="mx-auto max-w-3xl px-6 py-24 text-center lg:py-32">
           <p className="mb-4 text-sm font-medium text-muted-foreground">
-            About Tarteeb AI
+            About Renderical
           </p>
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
             Information should arrive in the shape it needs to be
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-            We built Tarteeb AI because the way AI responds matters as much as
+            We built Renderical because the way AI responds matters as much as
             what it says. A step-by-step process deserves a numbered list, not a
             paragraph. A comparison deserves a table, not a sentence.
           </p>
@@ -74,7 +74,7 @@ function AboutPage() {
                 What we're building
               </h2>
               <p className="mt-4 leading-relaxed text-muted-foreground">
-                Tarteeb AI is an intelligent content generation and knowledge
+                Renderical is an intelligent content generation and knowledge
                 management platform. When you ask a question or give a prompt,
                 our AI decides the best way to present the answer — prose,
                 table, flowchart, flashcards, kanban, or a mix of several

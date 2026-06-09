@@ -35,11 +35,11 @@ const SECTIONS = [
   },
   {
     title: "8. Your rights",
-    body: `Depending on where you live, you may have the right to: access the personal data we hold about you; correct inaccurate data; request deletion of your data; object to or restrict certain processing; receive a copy of your data in a portable format; and withdraw consent where processing is based on consent. To exercise these rights, contact us at privacy@tarteeb.ai.`,
+    body: `Depending on where you live, you may have the right to: access the personal data we hold about you; correct inaccurate data; request deletion of your data; object to or restrict certain processing; receive a copy of your data in a portable format; and withdraw consent where processing is based on consent. To exercise these rights, contact us at privacy@renderical.com.`,
   },
   {
     title: "9. Children's privacy",
-    body: `Tarteeb AI is not directed at children under 16. We do not knowingly collect personal data from children under 16. If we learn that we have collected such data, we will delete it promptly. If you believe a child has provided us with their information, please contact us immediately.`,
+    body: `Renderical is not directed at children under 16. We do not knowingly collect personal data from children under 16. If we learn that we have collected such data, we will delete it promptly. If you believe a child has provided us with their information, please contact us immediately.`,
   },
   {
     title: "10. Third-party links",
@@ -67,7 +67,7 @@ function PrivacyPage() {
 
         <div className="max-w-none space-y-10">
           <p className="leading-relaxed text-muted-foreground">
-            This Privacy Policy explains how Tarteeb AI collects, uses, and
+            This Privacy Policy explains how Renderical collects, uses, and
             protects your information when you use our platform. We take privacy
             seriously and are committed to being transparent about our
             practices.
@@ -88,10 +88,10 @@ function PrivacyPage() {
             <p className="text-sm text-muted-foreground">
               Questions about this policy? Contact us at{" "}
               <a
-                href="mailto:privacy@tarteeb.ai"
+                href="mailto:privacy@renderical.com"
                 className="text-foreground underline underline-offset-4"
               >
-                privacy@tarteeb.ai
+                privacy@renderical.com
               </a>
               .
             </p>

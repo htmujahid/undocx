@@ -31,7 +31,7 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      "Already more useful than asking any other AI to 'format this as a table'. Tarteeb just does it without being asked.",
+      "Already more useful than asking any other AI to 'format this as a table'. Renderical just does it without being asked.",
     name: "Marcus T.",
     role: "Software engineer",
   },

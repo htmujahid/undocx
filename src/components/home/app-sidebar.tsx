@@ -120,7 +120,7 @@ export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
                 <path d="m22 14-3 3 3 3" />
               </svg>
             </div>
-            <span className="text-sm font-semibold">Tarteeb AI</span>
+            <span className="text-sm font-semibold">Renderical</span>
           </div>
           <Button variant="ghost" size="icon-sm">
             <PlusIcon />

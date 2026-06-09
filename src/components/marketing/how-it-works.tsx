@@ -9,7 +9,7 @@ const STEPS = [
     step: "02",
     title: "The AI picks the right format",
     description:
-      "Tarteeb analyzes your query's intent and responds in the layout that best serves it: a flowchart, table, timeline, or guide.",
+      "Renderical analyzes your query's intent and responds in the layout that best serves it: a flowchart, table, timeline, or guide.",
   },
   {
     step: "03",

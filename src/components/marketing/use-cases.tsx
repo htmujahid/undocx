@@ -336,7 +336,7 @@ export function UseCases() {
             Built for how you actually work
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Same platform, different workflows. Tarteeb adapts to what you need.
+            Same platform, different workflows. Renderical adapts to what you need.
           </p>
         </div>
 

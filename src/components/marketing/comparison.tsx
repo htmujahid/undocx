@@ -2,27 +2,27 @@ const ROWS = [
   {
     label: "Output formats",
     conventional: "Text or image only",
-    tarteeb: "Adaptive output layouts",
+    renderical: "Adaptive output layouts",
   },
   {
     label: "Organization",
     conventional: "No organization",
-    tarteeb: "Folders, tags, collections",
+    renderical: "Folders, tags, collections",
   },
   {
     label: "Editing",
     conventional: "Static responses",
-    tarteeb: "AI-assisted inline editing",
+    renderical: "AI-assisted inline editing",
   },
   {
     label: "Workflow",
     conventional: "One-shot generation",
-    tarteeb: "Iterative refinement",
+    renderical: "Iterative refinement",
   },
   {
     label: "History",
     conventional: "Ephemeral chat",
-    tarteeb: "Persistent knowledge base",
+    renderical: "Persistent knowledge base",
   },
 ]
 
@@ -32,7 +32,7 @@ export function Comparison() {
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            Why Tarteeb
+            Why Renderical
           </p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
             Not another chatbot
@@ -49,7 +49,7 @@ export function Comparison() {
               Conventional AI
             </span>
             <span className="text-center text-xs font-semibold text-foreground">
-              Tarteeb AI
+              Renderical
             </span>
           </div>
 
@@ -90,7 +90,7 @@ export function Comparison() {
                 >
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
-                {row.tarteeb}
+                {row.renderical}
               </span>
             </div>
           ))}

@@ -102,7 +102,7 @@ function AuthLayout() {
               </svg>
             </div>
             <span className="text-base font-semibold tracking-tight">
-              Tarteeb AI
+              Renderical
             </span>
           </Link>
 
@@ -138,7 +138,7 @@ function AuthLayout() {
           </div>
 
           <p className="text-[11px] text-white/25">
-            &copy; {new Date().getFullYear()} Tarteeb AI. All rights reserved.
+            &copy; {new Date().getFullYear()} Renderical. All rights reserved.
           </p>
         </div>
       </aside>
@@ -162,7 +162,7 @@ function AuthLayout() {
                 <path d="m22 14-3 3 3 3" />
               </svg>
             </div>
-            <span className="text-sm font-semibold">Tarteeb AI</span>
+            <span className="text-sm font-semibold">Renderical</span>
           </div>
           <Outlet />
         </div>

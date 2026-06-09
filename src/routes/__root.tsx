@@ -26,12 +26,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           content: "width=device-width, initial-scale=1",
         },
         {
-          title: "Tarteeb AI",
+          title: "Renderical",
         },
         {
           name: "description",
           content:
-            "Tarteeb AI is an intelligent content generation and knowledge management platform that adapts its response layout to the nature of your content.",
+            "Renderical is an intelligent content generation and knowledge management platform that adapts its response layout to the nature of your content.",
         },
       ],
       links: [

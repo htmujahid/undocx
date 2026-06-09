@@ -59,7 +59,7 @@ export function Navbar() {
             </svg>
           </div>
           <span className="text-sm font-semibold tracking-tight">
-            Tarteeb AI
+            Renderical
           </span>
         </Link>
 
