@@ -1,16 +1,14 @@
-# Tarteeb AI
+# Renderical
 
-> **Tarteeb** (ترتیب) — Arabic/Urdu for *arrangement* and *organization*
-
-Tarteeb AI is an intelligent content generation and knowledge management platform. Unlike conventional AI tools that return a wall of text, Tarteeb AI adapts its response layout to the nature of your content — choosing the most fitting format automatically. Everything you generate can then be organized, tagged, edited with AI, and managed in a structured knowledge base.
+Renderical is an intelligent content generation and knowledge management platform. Unlike conventional AI tools that return a wall of text, Renderical adapts its response layout to the nature of your content — choosing the most fitting format automatically. Everything you generate can then be organized, tagged, edited with AI, and managed in a structured knowledge base.
 
 ---
 
 ## What Makes It Different
 
-Most AI assistants return a wall of text (or sometimes an image). Tarteeb AI treats every piece of content as a structured document with the most fitting layout for that content type. It then gives you a knowledge base to store, organize, and refine everything you generate.
+Most AI assistants return a wall of text (or sometimes an image). Renderical treats every piece of content as a structured document with the most fitting layout for that content type. It then gives you a knowledge base to store, organize, and refine everything you generate.
 
-| Conventional AI | Tarteeb AI |
+| Conventional AI | Renderical |
 |---|---|
 | Text or image only | Adaptive output formats |
 | No organization | Folders, tags, collections |
@@ -81,8 +79,8 @@ The AI selects the most suitable layout for your query automatically — no prom
 
 ```bash
 # Clone the repository
-git clone https://github.com/htmujahid/tarteebai.git
-cd tarteebai
+git clone https://github.com/htmujahid/renderical.git
+cd renderical
 
 # Install dependencies
 pnpm install
@@ -149,7 +147,7 @@ The app runs at [http://localhost:3000](http://localhost:3000).
 ## Project Structure
 
 ```
-tarteebai/
+renderical/
 ├── src/
 │   ├── components/
 │   │   ├── auth/                    # Auth form components
