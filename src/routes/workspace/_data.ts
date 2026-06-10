@@ -39,6 +39,27 @@ export const data = {
           type: "paragraph", textFormat: 0, textStyle: "",
         },
 
+        {
+          type: "callout", version: 1, calloutType: "note",
+          direction: "ltr", format: "", indent: 0,
+          children: [{ children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "All three paradigms can complement each other — a real-world pipeline often chains unsupervised pre-training with supervised fine-tuning." }], direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "" }],
+        },
+        {
+          type: "callout", version: 1, calloutType: "tip",
+          direction: "ltr", format: "", indent: 0,
+          children: [{ children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Start with a simple baseline model before reaching for complex architectures. A well-tuned linear model often beats a poorly-tuned neural network." }], direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "" }],
+        },
+        {
+          type: "callout", version: 1, calloutType: "warning",
+          direction: "ltr", format: "", indent: 0,
+          children: [{ children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Avoid evaluating on training data. Always hold out a test set before any exploration to prevent data leakage." }], direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "" }],
+        },
+        {
+          type: "callout", version: 1, calloutType: "danger",
+          direction: "ltr", format: "", indent: 0,
+          children: [{ children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Deploying a model without monitoring for distribution shift can silently degrade production accuracy over time." }], direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "" }],
+        },
+
         // ── H2: Supervised Learning ──────────────────────────────────────────
         {
           children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Supervised Learning" }],

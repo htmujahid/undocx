@@ -10,6 +10,7 @@ import { LexicalExtensionComposer } from "@lexical/react/LexicalExtensionCompose
 import { RichTextExtension } from "@lexical/rich-text"
 import { TableExtension } from "@lexical/table"
 
+import { CalloutExtension } from "@/components/workspace/editor/callout-extension"
 import { CodeHighlightExtension } from "@/components/workspace/editor/code-highlight-extension"
 import { HtmlExtension } from "@/components/workspace/editor/html-extension"
 
@@ -56,7 +57,7 @@ export function Workspace({ user, data }: WorkspaceProps) {
         editable: false,
         $initialEditorState: JSON.stringify(data.editorState),
         onError: (error: Error) => console.error("[Lexical]", error),
-        dependencies: [RichTextExtension, ListExtension, LinkExtension, TableExtension, CodeHighlightExtension, HtmlExtension, HorizontalRuleExtension, TabIndentationExtension],
+        dependencies: [RichTextExtension, ListExtension, LinkExtension, TableExtension, CodeHighlightExtension, HtmlExtension, HorizontalRuleExtension, TabIndentationExtension, CalloutExtension],
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
