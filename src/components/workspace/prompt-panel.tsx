@@ -1,25 +1,12 @@
-import { useRef, useState } from "react"
-
-import { $createParagraphNode, $createTextNode, $getRoot } from "lexical"
-import {
-  AlignLeftIcon,
-  ArrowUpIcon,
-  BarChart2Icon,
-  CreditCardIcon,
-  EyeIcon,
-  EyeOffIcon,
-  GitBranchIcon,
-  GripVerticalIcon,
-  HelpCircleIcon,
-  ImageIcon,
-  SparklesIcon,
-  TableIcon,
-  TerminalIcon,
-  TypeIcon,
-  WorkflowIcon,
-} from "lucide-react"
+import { useEffect, useRef, useState } from "react"
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
+import { $isHeadingNode } from "@lexical/rich-text"
+import {
+  ArrowUpIcon,
+  SparklesIcon,
+} from "lucide-react"
+import { $createParagraphNode, $createTextNode, $getRoot } from "lexical"
 
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -32,52 +19,33 @@ import {
 } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
 
-// ── Layer types ──────────────────────────────────────────────────────────────
+// ── Outline ───────────────────────────────────────────────────────────────────
 
-const LAYER_ICONS = {
-  text: TypeIcon,
-  table: TableIcon,
-  mindmap: GitBranchIcon,
-  flashcard: CreditCardIcon,
-  quiz: HelpCircleIcon,
-  chart: BarChart2Icon,
-  code: TerminalIcon,
-  diagram: WorkflowIcon,
-  outline: AlignLeftIcon,
-  image: ImageIcon,
-} as const
-
-type LayerType = keyof typeof LAYER_ICONS
-
-interface Layer {
-  id: string
-  type: LayerType
-  label: string
-  visible: boolean
+interface OutlineItem {
+  key: string
+  tag: "h1" | "h2" | "h3" | "h4" | "h5" | "h6"
+  text: string
 }
 
-const PLACEHOLDER_LAYERS: Layer[] = [
-  { id: "1", type: "text", label: "Introduction", visible: true },
-  { id: "2", type: "table", label: "Comparison Table", visible: true },
-  { id: "3", type: "chart", label: "Growth Chart", visible: true },
-  { id: "4", type: "code", label: "Code Snippet", visible: false },
-  { id: "5", type: "mindmap", label: "Concept Map", visible: true },
-]
-
-const LAYER_COLORS: Record<LayerType, string> = {
-  text: "text-slate-500 bg-slate-500/10",
-  table: "text-blue-500 bg-blue-500/10",
-  mindmap: "text-violet-500 bg-violet-500/10",
-  flashcard: "text-emerald-500 bg-emerald-500/10",
-  quiz: "text-amber-500 bg-amber-500/10",
-  chart: "text-green-500 bg-green-500/10",
-  code: "text-slate-500 bg-slate-500/10",
-  diagram: "text-rose-500 bg-rose-500/10",
-  outline: "text-cyan-500 bg-cyan-500/10",
-  image: "text-pink-500 bg-pink-500/10",
+const LEVEL_INDENT: Record<OutlineItem["tag"], number> = {
+  h1: 0,
+  h2: 12,
+  h3: 22,
+  h4: 30,
+  h5: 36,
+  h6: 40,
 }
 
-// ── Format chips ─────────────────────────────────────────────────────────────
+const LEVEL_TEXT: Record<OutlineItem["tag"], string> = {
+  h1: "text-[11px] font-medium text-foreground",
+  h2: "text-[11px] text-foreground/80",
+  h3: "text-[11px] text-muted-foreground",
+  h4: "text-[10px] text-muted-foreground/80",
+  h5: "text-[10px] text-muted-foreground/70",
+  h6: "text-[10px] text-muted-foreground/60",
+}
+
+// ── Format chips ──────────────────────────────────────────────────────────────
 
 const FORMAT_CHIPS = [
   { key: "auto", label: "Auto" },
@@ -96,25 +64,42 @@ export function PromptPanel() {
   const [editor] = useLexicalComposerContext()
   const [prompt, setPrompt] = useState("")
   const [selectedFormat, setSelectedFormat] = useState<FormatKey>("auto")
-  const [layers, setLayers] = useState<Layer[]>(PLACEHOLDER_LAYERS)
+  const [outline, setOutline] = useState<OutlineItem[]>([])
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const toggleVisibility = (id: string) =>
-    setLayers((prev) =>
-      prev.map((l) => (l.id === id ? { ...l, visible: !l.visible } : l))
-    )
+  useEffect(() => {
+    const buildOutline = () => {
+      editor.getEditorState().read(() => {
+        setOutline(
+          $getRoot()
+            .getChildren()
+            .filter($isHeadingNode)
+            .map((node) => ({
+              key: node.getKey(),
+              tag: node.getTag() as OutlineItem["tag"],
+              text: node.getTextContent().trim() || node.getTag().toUpperCase(),
+            }))
+        )
+      })
+    }
+
+    buildOutline()
+    return editor.registerUpdateListener(() => buildOutline())
+  }, [editor])
+
+  const scrollToHeading = (key: string) => {
+    const el = editor.getElementByKey(key)
+    el?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }
 
   const handleSubmit = () => {
     const text = prompt.trim()
     if (!text) return
 
-    // Append a new paragraph with the prompt text.
-    // Replace this stub with actual AI generation logic.
     editor.update(() => {
-      const root = $getRoot()
       const paragraph = $createParagraphNode()
       paragraph.append($createTextNode(text))
-      root.append(paragraph)
+      $getRoot().append(paragraph)
     })
 
     setPrompt("")
@@ -137,66 +122,37 @@ export function PromptPanel() {
         </div>
       </SidebarHeader>
 
-      {/* ── Layers panel ── */}
+      {/* ── Outline ── */}
       <SidebarContent className="p-0">
-        <div className="flex items-center justify-between px-4 py-2">
+        <div className="px-4 py-2">
           <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Layers
-          </span>
-          <span className="text-[10px] text-muted-foreground">
-            {layers.filter((l) => l.visible).length}/{layers.length} visible
+            Outline
           </span>
         </div>
         <Separator />
         <ScrollArea className="h-full">
-          {layers.length === 0 ? (
+          {outline.length === 0 ? (
             <div className="flex flex-col items-center justify-center px-4 py-12 text-center">
-              <p className="text-xs text-muted-foreground">No layers yet.</p>
+              <p className="text-xs text-muted-foreground">No headings yet.</p>
               <p className="mt-1 text-[11px] text-muted-foreground">
-                Generate content to see layers here.
+                Add headings to see the document outline.
               </p>
             </div>
           ) : (
-            <div className="py-1">
-              {layers.map((layer) => {
-                const Icon = LAYER_ICONS[layer.type]
-                const colorClass = LAYER_COLORS[layer.type]
-                return (
-                  <div
-                    key={layer.id}
-                    className={cn(
-                      "group flex items-center gap-2.5 px-3 py-2 transition-colors hover:bg-muted/50",
-                      !layer.visible && "opacity-40"
-                    )}
-                  >
-                    <GripVerticalIcon className="size-3 shrink-0 cursor-grab text-muted-foreground opacity-0 group-hover:opacity-100" />
-                    <span
-                      className={cn(
-                        "flex size-6 shrink-0 items-center justify-center rounded",
-                        colorClass
-                      )}
-                    >
-                      <Icon className="size-3" />
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-xs">{layer.label}</p>
-                      <p className="text-[10px] capitalize text-muted-foreground">
-                        {layer.type}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => toggleVisibility(layer.id)}
-                      className="shrink-0 text-muted-foreground opacity-0 transition-opacity hover:text-foreground group-hover:opacity-100"
-                    >
-                      {layer.visible ? (
-                        <EyeIcon className="size-3.5" />
-                      ) : (
-                        <EyeOffIcon className="size-3.5" />
-                      )}
-                    </button>
-                  </div>
-                )
-              })}
+            <div className="py-1.5">
+              {outline.map((item) => (
+                <button
+                  key={item.key}
+                  onClick={() => scrollToHeading(item.key)}
+                  style={{ paddingLeft: `${LEVEL_INDENT[item.tag] + 12}px` }}
+                  className="group relative flex w-full items-center rounded-sm py-1 pr-3 text-left transition-colors hover:bg-muted/50"
+                >
+                  <span className="absolute inset-y-1 left-0 w-0.5 scale-y-0 rounded-full bg-primary/60 transition-transform group-hover:scale-y-100" />
+                  <span className={cn("truncate leading-snug", LEVEL_TEXT[item.tag])}>
+                    {item.text}
+                  </span>
+                </button>
+              ))}
             </div>
           )}
         </ScrollArea>
