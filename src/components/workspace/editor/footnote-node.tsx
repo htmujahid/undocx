@@ -23,7 +23,12 @@ function FootnoteRenderer({ nodeKey }: { nodeKey: string }) {
 
   return (
     <sup className="select-none font-mono text-[10px] font-medium text-muted-foreground">
-      [{index ?? "?"}]
+      <a
+        href={index !== null ? `#fn-${index}` : undefined}
+        className="no-underline transition-colors hover:text-foreground"
+      >
+        [{index ?? "?"}]
+      </a>
     </sup>
   )
 }

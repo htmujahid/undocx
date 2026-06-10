@@ -47,7 +47,7 @@ function FootnoteList() {
       </p>
       <ol className="space-y-2">
         {entries.map(f => (
-          <li key={f.index} className="flex gap-2.5 text-xs text-muted-foreground">
+          <li key={f.index} id={`fn-${f.index}`} className="flex gap-2.5 text-xs text-muted-foreground">
             <span className="shrink-0 font-mono font-medium text-foreground">[{f.index}]</span>
             <span className="leading-relaxed">{f.content}</span>
           </li>
