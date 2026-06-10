@@ -1,24 +1,26 @@
 import { useMemo, useState } from "react"
 
-import { LinkExtension } from "@lexical/link"
-import { ListExtension } from "@lexical/list"
-import { LexicalExtensionComposer } from "@lexical/react/LexicalExtensionComposer"
-import { RichTextExtension } from "@lexical/rich-text"
 import { useNavigate } from "@tanstack/react-router"
-import { useQueryClient } from "@tanstack/react-query"
-import { defineExtension } from "lexical"
-import { PanelRightIcon } from "lucide-react"
 
-import { editorTheme } from "@/components/workspace/editor/theme"
-import { signOut } from "@/lib/auth-client"
-import { authUserQueryOptions } from "@/lib/queries/auth"
-import { cn } from "@/lib/utils"
+import { useQueryClient } from "@tanstack/react-query"
+
 import { Button } from "@/components/ui/button"
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import { editorTheme } from "@/components/workspace/editor/theme"
+import { signOut } from "@/lib/auth-client"
+import { authUserQueryOptions } from "@/lib/queries/auth"
+import { cn } from "@/lib/utils"
+import { LinkExtension } from "@lexical/link"
+import { ListExtension } from "@lexical/list"
+import { LexicalExtensionComposer } from "@lexical/react/LexicalExtensionComposer"
+import { RichTextExtension } from "@lexical/rich-text"
+import { defineExtension } from "lexical"
+import { PanelRightIcon } from "lucide-react"
+
 import { AppSidebar } from "./app-sidebar"
 import { ContentPreview } from "./content-preview"
 import { PromptPanel } from "./prompt-panel"

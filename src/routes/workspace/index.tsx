@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 import { Workspace } from "@/components/workspace/workspace"
+
 import { data } from "./_data"
 
 export const Route = createFileRoute("/workspace/")({

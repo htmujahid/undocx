@@ -10,8 +10,7 @@ export const editorTheme: EditorThemeClasses = {
     h6: "text-xs font-semibold",
   },
   paragraph: "text-sm leading-relaxed",
-  quote:
-    "border-l-4 border-border pl-4 text-sm italic text-muted-foreground",
+  quote: "border-l-4 border-border pl-4 text-sm italic text-muted-foreground",
   list: {
     ul: "list-disc pl-5",
     ol: "list-decimal pl-5",

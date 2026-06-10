@@ -89,7 +89,10 @@ export function Navbar() {
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
-                    <Link to="/workspace" className="flex w-full items-center gap-2">
+                    <Link
+                      to="/workspace"
+                      className="flex w-full items-center gap-2"
+                    >
                       <HomeIcon />
                       Home
                     </Link>

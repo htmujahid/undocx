@@ -74,8 +74,8 @@ function TermsPage() {
         <div className="prose prose-sm prose-neutral dark:prose-invert max-w-none space-y-10">
           <p className="text-muted-foreground leading-relaxed">
             Please read these Terms of Service carefully before using
-            Renderical. These Terms form a legally binding agreement between you and
-            Renderical regarding your use of the platform and its services.
+            Renderical. These Terms form a legally binding agreement between you
+            and Renderical regarding your use of the platform and its services.
           </p>
 
           {SECTIONS.map((section) => (
