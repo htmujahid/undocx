@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useSyncExternalStore } from "react"
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { ContentEditable } from "@lexical/react/LexicalContentEditable"
@@ -6,6 +6,7 @@ import { $getRoot } from "lexical"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import { snapshotFootnotes, subscribeFootnotes } from "@/components/workspace/editor/footnote-store"
 
 function countWords(text: string): number {
   return text.trim() === "" ? 0 : text.trim().split(/\s+/).length
@@ -29,12 +30,38 @@ function WordCount() {
   return <span>{count.toLocaleString()} words</span>
 }
 
+function FootnoteList() {
+  const [editor] = useLexicalComposerContext()
+  const map = useSyncExternalStore(
+    cb => subscribeFootnotes(editor, cb),
+    () => snapshotFootnotes(editor),
+  )
+  const entries = Array.from(map.values()).sort((a, b) => a.index - b.index)
+
+  if (entries.length === 0) return null
+
+  return (
+    <div className="mt-8 border-t pt-6">
+      <p className="mb-3 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+        References
+      </p>
+      <ol className="space-y-2">
+        {entries.map(f => (
+          <li key={f.index} className="flex gap-2.5 text-xs text-muted-foreground">
+            <span className="shrink-0 font-mono font-medium text-foreground">[{f.index}]</span>
+            <span className="leading-relaxed">{f.content}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  )
+}
+
 export function ContentPreview() {
   return (
     <div className="min-h-0 flex-1 overflow-hidden">
       <ScrollArea className="h-full">
         <div className="mx-auto max-w-[720px] px-8 py-8">
-          {/* Document header — not controlled by Lexical */}
           <div className="mb-6">
             <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
               Generated document
@@ -51,8 +78,8 @@ export function ContentPreview() {
 
           <Separator className="mb-6" />
 
-          {/* Lexical readonly content — editor root element */}
           <ContentEditable className="space-y-3 outline-none" />
+          <FootnoteList />
         </div>
       </ScrollArea>
     </div>

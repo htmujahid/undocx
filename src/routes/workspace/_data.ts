@@ -448,10 +448,13 @@ export const data = {
           children: [
             { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Use " },
             { detail: 0, format: 16, mode: "normal", style: "", version: 1, type: "text", text: "scikit-learn" },
+            { type: "footnote", version: 1, children: [{ type: "text", version: 1, format: 0, detail: 0, mode: "normal", style: "", text: "Pedregosa et al., \"Scikit-learn: Machine Learning in Python\", JMLR 12, 2011." }] },
             { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: " for classical algorithms, " },
             { detail: 0, format: 16, mode: "normal", style: "", version: 1, type: "text", text: "PyTorch" },
+            { type: "footnote", version: 1, children: [{ type: "text", version: 1, format: 0, detail: 0, mode: "normal", style: "", text: "Paszke et al., \"PyTorch: An Imperative Style, High-Performance Deep Learning Library\", NeurIPS 2019." }] },
             { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: " or " },
             { detail: 0, format: 16, mode: "normal", style: "", version: 1, type: "text", text: "TensorFlow" },
+            { type: "footnote", version: 1, children: [{ type: "text", version: 1, format: 0, detail: 0, mode: "normal", style: "", text: "Abadi et al., \"TensorFlow: A System for Large-Scale Machine Learning\", OSDI 2016." }] },
             { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: " for deep learning. Full documentation is available on the " },
             {
               children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "scikit-learn website" }],
