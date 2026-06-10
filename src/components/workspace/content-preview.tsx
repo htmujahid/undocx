@@ -1,7 +1,33 @@
+import { useEffect, useState } from "react"
+
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { ContentEditable } from "@lexical/react/LexicalContentEditable"
+import { $getRoot } from "lexical"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+
+function countWords(text: string): number {
+  return text.trim() === "" ? 0 : text.trim().split(/\s+/).length
+}
+
+function WordCount() {
+  const [editor] = useLexicalComposerContext()
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    editor.getEditorState().read(() => {
+      setCount(countWords($getRoot().getTextContent()))
+    })
+    return editor.registerUpdateListener(({ editorState }) => {
+      editorState.read(() => {
+        setCount(countWords($getRoot().getTextContent()))
+      })
+    })
+  }, [editor])
+
+  return <span>{count.toLocaleString()} words</span>
+}
 
 export function ContentPreview() {
   return (
@@ -17,9 +43,7 @@ export function ContentPreview() {
               Introduction to Machine Learning
             </h1>
             <div className="mt-2 flex items-center gap-3 text-[11px] text-muted-foreground">
-              <span>5 layers</span>
-              <span>·</span>
-              <span>~420 words</span>
+              <WordCount />
               <span>·</span>
               <span>Just now</span>
             </div>
