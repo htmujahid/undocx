@@ -23,6 +23,8 @@ export const data = {
           type: "quote",
         },
 
+        { type: "horizontalrule", version: 1 },
+
         // ── H1 ───────────────────────────────────────────────────────────────
         {
           children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Core Concepts" }],

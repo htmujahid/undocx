@@ -32,6 +32,7 @@ export const editorTheme: EditorThemeClasses = {
   },
   code: "my-4 block overflow-x-auto rounded-lg border border-border p-4 font-mono text-sm leading-relaxed",
   hashtag: "font-medium text-primary",
+  hr: "my-6 h-px border-none bg-border",
   table: "w-full",
   tableRow: "m-0 border-t p-0 even:bg-muted",
   tableRowStriping: "",

@@ -3,6 +3,7 @@ import { useMemo, useState } from "react"
 import { defineExtension } from "lexical"
 import { PanelRightIcon } from "lucide-react"
 
+import { HorizontalRuleExtension } from "@lexical/extension"
 import { LinkExtension } from "@lexical/link"
 import { ListExtension } from "@lexical/list"
 import { LexicalExtensionComposer } from "@lexical/react/LexicalExtensionComposer"
@@ -55,7 +56,7 @@ export function Workspace({ user, data }: WorkspaceProps) {
         editable: false,
         $initialEditorState: JSON.stringify(data.editorState),
         onError: (error: Error) => console.error("[Lexical]", error),
-        dependencies: [RichTextExtension, ListExtension, LinkExtension, TableExtension, CodeHighlightExtension, HtmlExtension],
+        dependencies: [RichTextExtension, ListExtension, LinkExtension, TableExtension, CodeHighlightExtension, HtmlExtension, HorizontalRuleExtension],
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
