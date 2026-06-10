@@ -13,7 +13,7 @@ export function ContentPreview() {
             <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
               Generated document
             </p>
-            <h1 className="text-2xl font-bold tracking-tight">
+            <h1 className="text-3xl font-bold tracking-tight">
               Introduction to Machine Learning
             </h1>
             <div className="mt-2 flex items-center gap-3 text-[11px] text-muted-foreground">
