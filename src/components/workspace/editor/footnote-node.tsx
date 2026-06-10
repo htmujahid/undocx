@@ -1,4 +1,4 @@
-import type { EditorConfig, LexicalEditor, SerializedLexicalNode, SerializedTextNode, Spread } from "lexical"
+import type { EditorConfig, LexicalEditor, SerializedLexicalNode, Spread } from "lexical"
 import type { JSX } from "react"
 
 import { useSyncExternalStore } from "react"
@@ -9,7 +9,7 @@ import { DecoratorNode } from "lexical"
 import { snapshotFootnotes, subscribeFootnotes } from "./footnote-store"
 
 export type SerializedFootnoteNode = Spread<
-  { children: SerializedTextNode[] },
+  { text: string },
   SerializedLexicalNode
 >
 
@@ -45,7 +45,7 @@ export class FootnoteNode extends DecoratorNode<JSX.Element> {
   }
 
   static importJSON(serialized: SerializedFootnoteNode): FootnoteNode {
-    return new FootnoteNode(serialized.children.map(c => c.text).join(""))
+    return new FootnoteNode(serialized.text)
   }
 
   constructor(content: string, key?: string) {
@@ -57,9 +57,7 @@ export class FootnoteNode extends DecoratorNode<JSX.Element> {
     return {
       type: "footnote",
       version: 1,
-      children: [
-        { type: "text", version: 1, text: this.__content, format: 0, detail: 0, mode: "normal", style: "" },
-      ],
+      text: this.__content,
     }
   }
 

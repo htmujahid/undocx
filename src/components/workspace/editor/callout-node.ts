@@ -55,6 +55,8 @@ export class CalloutNode extends ElementNode {
     node.setFormat(serialized.format)
     node.setIndent(serialized.indent)
     node.setDirection(serialized.direction)
+    if (serialized.textFormat !== undefined) node.setTextFormat(serialized.textFormat)
+    if (serialized.textStyle !== undefined) node.setTextStyle(serialized.textStyle)
     return node
   }
 

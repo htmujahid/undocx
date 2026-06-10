@@ -13,7 +13,8 @@ import { TableExtension } from "@lexical/table"
 import { CalloutExtension } from "@/components/workspace/editor/callout-extension"
 import { CodeHighlightExtension } from "@/components/workspace/editor/code-highlight-extension"
 import { FootnoteExtension } from "@/components/workspace/editor/footnote-extension"
-import { HtmlExtension } from "@/components/workspace/editor/html-extension"
+import { MathExtension } from "@/components/workspace/editor/math-extension"
+import { SvgExtension } from "@/components/workspace/editor/svg-extension"
 
 import { useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
@@ -58,7 +59,7 @@ export function Workspace({ user, data }: WorkspaceProps) {
         editable: false,
         $initialEditorState: JSON.stringify(data.editorState),
         onError: (error: Error) => console.error("[Lexical]", error),
-        dependencies: [RichTextExtension, ListExtension, LinkExtension, TableExtension, CodeHighlightExtension, HtmlExtension, HorizontalRuleExtension, TabIndentationExtension, CalloutExtension, FootnoteExtension],
+        dependencies: [RichTextExtension, ListExtension, LinkExtension, TableExtension, CodeHighlightExtension, SvgExtension, MathExtension, HorizontalRuleExtension, TabIndentationExtension, CalloutExtension, FootnoteExtension],
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
