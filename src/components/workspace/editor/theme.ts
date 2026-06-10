@@ -31,4 +31,13 @@ export const editorTheme: EditorThemeClasses = {
     underlineStrikethrough: "underline line-through",
   },
   hashtag: "font-medium text-primary",
+  table: "w-full",
+  tableRow: "m-0 border-t p-0 even:bg-muted",
+  tableRowStriping: "",
+  tableCell:
+    "border px-4 py-2 text-left whitespace-nowrap [&[align=center]]:text-center [&[align=right]]:text-right [&_p]:my-0",
+  tableCellHeader:
+    "border px-4 py-2 text-left font-bold whitespace-nowrap [&[align=center]]:text-center [&[align=right]]:text-right [&_p]:my-0",
+  tableScrollableWrapper: "my-6 w-full overflow-x-auto",
+  tableSelection: "bg-primary/15",
 }

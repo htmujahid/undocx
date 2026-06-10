@@ -7,6 +7,7 @@ import { LinkExtension } from "@lexical/link"
 import { ListExtension } from "@lexical/list"
 import { LexicalExtensionComposer } from "@lexical/react/LexicalExtensionComposer"
 import { RichTextExtension } from "@lexical/rich-text"
+import { TableExtension } from "@lexical/table"
 
 import { useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
@@ -51,7 +52,7 @@ export function Workspace({ user, data }: WorkspaceProps) {
         editable: false,
         $initialEditorState: JSON.stringify(data.editorState),
         onError: (error: Error) => console.error("[Lexical]", error),
-        dependencies: [RichTextExtension, ListExtension, LinkExtension],
+        dependencies: [RichTextExtension, ListExtension, LinkExtension, TableExtension],
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []

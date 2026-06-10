@@ -177,6 +177,188 @@ export const data = {
           type: "list", listType: "number", start: 1, tag: "ol",
         },
 
+        // ── H2: Algorithm Comparison ────────────────────────────────────────
+        {
+          children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Algorithm Comparison" }],
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "heading", tag: "h2",
+        },
+        {
+          children: [
+            { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "The table below summarises the four classical algorithms across key dimensions." },
+          ],
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "paragraph", textFormat: 0, textStyle: "",
+        },
+        {
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "table",
+          colWidths: [200, 130, 150, 100, 160],
+          rowStriping: true,
+          children: [
+            // Header row
+            {
+              direction: "ltr", format: "", indent: 0, version: 1,
+              type: "tablerow", height: 0,
+              children: [
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 1, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 1, mode: "normal", style: "", version: 1, type: "text", text: "Algorithm" }] }],
+                },
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 1, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 1, mode: "normal", style: "", version: 1, type: "text", text: "Task type" }] }],
+                },
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 1, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 1, mode: "normal", style: "", version: 1, type: "text", text: "Interpretability" }] }],
+                },
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 1, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 1, mode: "normal", style: "", version: 1, type: "text", text: "Training speed" }] }],
+                },
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 1, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 1, mode: "normal", style: "", version: 1, type: "text", text: "Data requirements" }] }],
+                },
+              ],
+            },
+            // Row 1 — Linear Regression
+            {
+              direction: "ltr", format: "", indent: 0, version: 1,
+              type: "tablerow", height: 0,
+              children: [
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 16, mode: "normal", style: "", version: 1, type: "text", text: "Linear Regression" }] }],
+                },
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Regression" }] }],
+                },
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "High" }] }],
+                },
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Fast" }] }],
+                },
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Small to medium" }] }],
+                },
+              ],
+            },
+            // Row 2 — Decision Trees
+            {
+              direction: "ltr", format: "", indent: 0, version: 1,
+              type: "tablerow", height: 0,
+              children: [
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 16, mode: "normal", style: "", version: 1, type: "text", text: "Decision Trees" }] }],
+                },
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Both" }] }],
+                },
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "High" }] }],
+                },
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Fast" }] }],
+                },
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Small to medium" }] }],
+                },
+              ],
+            },
+            // Row 3 — Random Forest
+            {
+              direction: "ltr", format: "", indent: 0, version: 1,
+              type: "tablerow", height: 0,
+              children: [
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 16, mode: "normal", style: "", version: 1, type: "text", text: "Random Forest" }] }],
+                },
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Both" }] }],
+                },
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Medium" }] }],
+                },
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Moderate" }] }],
+                },
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Large" }] }],
+                },
+              ],
+            },
+            // Row 4 — SVM
+            {
+              direction: "ltr", format: "", indent: 0, version: 1,
+              type: "tablerow", height: 0,
+              children: [
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 16, mode: "normal", style: "", version: 1, type: "text", text: "Support Vector Machine" }] }],
+                },
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Classification" }] }],
+                },
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Low" }] }],
+                },
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Slow" }] }],
+                },
+                {
+                  direction: "ltr", format: "", indent: 0, version: 1,
+                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
+                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Medium" }] }],
+                },
+              ],
+            },
+          ],
+        },
+
         // ── H2: Quick Reference ──────────────────────────────────────────────
         {
           children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Quick Reference" }],
