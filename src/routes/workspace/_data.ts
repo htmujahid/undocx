@@ -59,6 +59,27 @@ export const data = {
           type: "paragraph", textFormat: 0, textStyle: "",
         },
 
+        {
+          children: [{ detail: 0, format: 1, mode: "normal", style: "", version: 1, type: "text", text: "Classification" }],
+          direction: "ltr", format: "", indent: 1, version: 1,
+          type: "paragraph", textFormat: 0, textStyle: "",
+        },
+        {
+          children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Assigns a discrete label to each input. Examples include spam detection, image recognition, and medical diagnosis." }],
+          direction: "ltr", format: "", indent: 2, version: 1,
+          type: "paragraph", textFormat: 0, textStyle: "",
+        },
+        {
+          children: [{ detail: 0, format: 1, mode: "normal", style: "", version: 1, type: "text", text: "Regression" }],
+          direction: "ltr", format: "", indent: 1, version: 1,
+          type: "paragraph", textFormat: 0, textStyle: "",
+        },
+        {
+          children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Predicts a continuous value. House-price estimation and demand forecasting are canonical regression problems." }],
+          direction: "ltr", format: "", indent: 2, version: 1,
+          type: "paragraph", textFormat: 0, textStyle: "",
+        },
+
         // ── H2: Unsupervised Learning ────────────────────────────────────────
         {
           children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Unsupervised Learning" }],
