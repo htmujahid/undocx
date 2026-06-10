@@ -382,11 +382,48 @@ export const data = {
           ],
         },
 
+        // ── H2: Visualizations ───────────────────────────────────────────────
+        {
+          children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Visualizations" }],
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "heading", tag: "h2",
+        },
+        {
+          children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Training accuracy across epochs, visualised as an SVG bar chart:" }],
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "paragraph", textFormat: 0, textStyle: "",
+        },
+        {
+          type: "html", version: 1, display: "block",
+          children: [{ type: "text", version: 1, format: 0, detail: 0, mode: "normal", style: "", text: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200" width="400" height="200" aria-label="Training accuracy bar chart"><rect x="30" y="140" width="40" height="40" fill="#6366f1" rx="2"/><rect x="90" y="110" width="40" height="70" fill="#6366f1" rx="2"/><rect x="150" y="80" width="40" height="100" fill="#6366f1" rx="2"/><rect x="210" y="55" width="40" height="125" fill="#6366f1" rx="2"/><rect x="270" y="35" width="40" height="145" fill="#6366f1" rx="2"/><rect x="330" y="20" width="40" height="160" fill="#6366f1" rx="2"/><line x1="20" y1="180" x2="390" y2="180" stroke="currentColor" stroke-opacity="0.2" stroke-width="1"/><text x="50" y="196" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity="0.5">E1</text><text x="110" y="196" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity="0.5">E2</text><text x="170" y="196" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity="0.5">E3</text><text x="230" y="196" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity="0.5">E4</text><text x="290" y="196" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity="0.5">E5</text><text x="350" y="196" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity="0.5">E6</text><text x="200" y="12" text-anchor="middle" font-size="12" font-weight="600" fill="currentColor" fill-opacity="0.7">Training Accuracy by Epoch</text></svg>' }],
+        },
+        {
+          children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "The gradient-descent parameter update rule expressed in MathML:" }],
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "paragraph", textFormat: 0, textStyle: "",
+        },
+        {
+          type: "html", version: 1, display: "block",
+          children: [{ type: "text", version: 1, format: 0, detail: 0, mode: "normal", style: "", text: '<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>θ</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>θ</mi><mi>t</mi></msub><mo>−</mo><mi>η</mi><msub><mo>∇</mo><mi>θ</mi></msub><mi mathvariant="script">L</mi><mo>(</mo><msub><mi>θ</mi><mi>t</mi></msub><mo>)</mo></mrow></math>' }],
+        },
+
         // ── H2: Quick Reference ──────────────────────────────────────────────
         {
           children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Quick Reference" }],
           direction: "ltr", format: "", indent: 0, version: 1,
           type: "heading", tag: "h2",
+        },
+        {
+          children: [
+            { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "The model minimises cross-entropy loss " },
+            {
+              type: "html", version: 1, display: "inline",
+              children: [{ type: "text", version: 1, format: 0, detail: 0, mode: "normal", style: "", text: '<math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="script">L</mi><mo>=</mo><mo>-</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>y</mi><mi>i</mi></msub><mo>log</mo><msub><mover><mi>y</mi><mo>^</mo></mover><mi>i</mi></msub></math>' }],
+            },
+            { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: " over all training samples." },
+          ],
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "paragraph", textFormat: 0, textStyle: "",
         },
         {
           children: [
