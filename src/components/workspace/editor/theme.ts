@@ -30,6 +30,7 @@ export const editorTheme: EditorThemeClasses = {
     strikethrough: "line-through",
     underlineStrikethrough: "underline line-through",
   },
+  code: "my-4 block overflow-x-auto rounded-lg border border-border p-4 font-mono text-sm leading-relaxed",
   hashtag: "font-medium text-primary",
   table: "w-full",
   tableRow: "m-0 border-t p-0 even:bg-muted",

@@ -359,6 +359,29 @@ export const data = {
           ],
         },
 
+        // ── H2: Code Example ────────────────────────────────────────────────
+        {
+          children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Code Example" }],
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "heading", tag: "h2",
+        },
+        {
+          children: [
+            { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "A minimal supervised learning pipeline using " },
+            { detail: 0, format: 16, mode: "normal", style: "", version: 1, type: "text", text: "scikit-learn" },
+            { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: ":" },
+          ],
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "paragraph", textFormat: 0, textStyle: "",
+        },
+        {
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "code", language: "python",
+          children: [
+            { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "from sklearn.datasets import load_iris\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.metrics import accuracy_score\n\nX, y = load_iris(return_X_y=True)\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\n\nmodel = RandomForestClassifier(n_estimators=100, random_state=42)\nmodel.fit(X_train, y_train)\n\npredictions = model.predict(X_test)\nprint(f\"Accuracy: {accuracy_score(y_test, predictions):.2%}\")" },
+          ],
+        },
+
         // ── H2: Quick Reference ──────────────────────────────────────────────
         {
           children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Quick Reference" }],
