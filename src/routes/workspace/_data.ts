@@ -1,0 +1,242 @@
+export const data = {
+  editorState: {
+    root: {
+      children: [
+        {
+          children: [
+            {
+              detail: 0, format: 0, mode: "normal", style: "", version: 1,
+              type: "text", text: "Introduction to Machine Learning",
+            },
+          ],
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "heading", tag: "h1",
+        },
+        {
+          children: [
+            {
+              detail: 0, format: 0, mode: "normal", style: "", version: 1,
+              type: "text",
+              text: "Machine learning enables systems to learn from experience without being explicitly programmed. It focuses on building algorithms that improve automatically through data.",
+            },
+          ],
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "paragraph", textFormat: 0, textStyle: "",
+        },
+        {
+          children: [
+            {
+              detail: 0, format: 0, mode: "normal", style: "", version: 1,
+              type: "text", text: "The core premise: ",
+            },
+            {
+              detail: 0, format: 1, mode: "normal", style: "", version: 1,
+              type: "text", text: "given enough examples",
+            },
+            {
+              detail: 0, format: 0, mode: "normal", style: "", version: 1,
+              type: "text",
+              text: ", a model can generalise to unseen cases — no hand-written rules required.",
+            },
+          ],
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "quote",
+        },
+        {
+          children: [
+            {
+              detail: 0, format: 0, mode: "normal", style: "", version: 1,
+              type: "text", text: "Supervised Learning",
+            },
+          ],
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "heading", tag: "h2",
+        },
+        {
+          children: [
+            {
+              detail: 0, format: 0, mode: "normal", style: "", version: 1,
+              type: "text", text: "In supervised learning a model trains on ",
+            },
+            {
+              detail: 0, format: 1, mode: "normal", style: "", version: 1,
+              type: "text", text: "labelled data",
+            },
+            {
+              detail: 0, format: 0, mode: "normal", style: "", version: 1,
+              type: "text",
+              text: " — input–output pairs — and learns to predict outputs for new inputs. Common tasks include ",
+            },
+            {
+              detail: 0, format: 2, mode: "normal", style: "", version: 1,
+              type: "text", text: "classification",
+            },
+            {
+              detail: 0, format: 0, mode: "normal", style: "", version: 1,
+              type: "text", text: " and ",
+            },
+            {
+              detail: 0, format: 2, mode: "normal", style: "", version: 1,
+              type: "text", text: "regression",
+            },
+            {
+              detail: 0, format: 0, mode: "normal", style: "", version: 1,
+              type: "text", text: ".",
+            },
+          ],
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "paragraph", textFormat: 0, textStyle: "",
+        },
+        {
+          children: [
+            {
+              detail: 0, format: 0, mode: "normal", style: "", version: 1,
+              type: "text", text: "Key Algorithms",
+            },
+          ],
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "heading", tag: "h2",
+        },
+        {
+          children: [
+            {
+              children: [
+                { detail: 0, format: 1, mode: "normal", style: "", version: 1, type: "text", text: "Linear Regression" },
+                { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: " — predicts a continuous output from input features" },
+              ],
+              direction: "ltr", format: "", indent: 0, version: 1,
+              type: "listitem", value: 1,
+            },
+            {
+              children: [
+                { detail: 0, format: 1, mode: "normal", style: "", version: 1, type: "text", text: "Decision Trees" },
+                { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: " — recursive rule-based classification and regression" },
+              ],
+              direction: "ltr", format: "", indent: 0, version: 1,
+              type: "listitem", value: 2,
+            },
+            {
+              children: [
+                { detail: 0, format: 1, mode: "normal", style: "", version: 1, type: "text", text: "Neural Networks" },
+                { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: " — layered architectures that learn hierarchical representations" },
+              ],
+              direction: "ltr", format: "", indent: 0, version: 1,
+              type: "listitem", value: 3,
+            },
+            {
+              children: [
+                { detail: 0, format: 1, mode: "normal", style: "", version: 1, type: "text", text: "Random Forest" },
+                { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: " — ensemble of decision trees with bootstrap aggregation" },
+              ],
+              direction: "ltr", format: "", indent: 0, version: 1,
+              type: "listitem", value: 4,
+            },
+          ],
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "list", listType: "bullet", start: 1, tag: "ul",
+        },
+        {
+          children: [
+            {
+              detail: 0, format: 0, mode: "normal", style: "", version: 1,
+              type: "text", text: "Training Pipeline",
+            },
+          ],
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "heading", tag: "h2",
+        },
+        {
+          children: [
+            {
+              detail: 0, format: 0, mode: "normal", style: "", version: 1,
+              type: "text", text: "A standard supervised training pipeline follows these steps:",
+            },
+          ],
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "paragraph", textFormat: 0, textStyle: "",
+        },
+        {
+          children: [
+            {
+              children: [
+                { detail: 0, format: 1, mode: "normal", style: "", version: 1, type: "text", text: "Collect & clean data" },
+                { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: " — remove nulls, normalise features, handle class imbalance" },
+              ],
+              direction: "ltr", format: "", indent: 0, version: 1,
+              type: "listitem", value: 1,
+            },
+            {
+              children: [
+                { detail: 0, format: 1, mode: "normal", style: "", version: 1, type: "text", text: "Split into train / validation / test sets" },
+              ],
+              direction: "ltr", format: "", indent: 0, version: 1,
+              type: "listitem", value: 2,
+            },
+            {
+              children: [
+                { detail: 0, format: 1, mode: "normal", style: "", version: 1, type: "text", text: "Choose and fit a model" },
+                { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: " — select architecture, optimiser, and loss function" },
+              ],
+              direction: "ltr", format: "", indent: 0, version: 1,
+              type: "listitem", value: 3,
+            },
+            {
+              children: [
+                { detail: 0, format: 1, mode: "normal", style: "", version: 1, type: "text", text: "Evaluate on held-out test set" },
+                { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: " — accuracy, F1, RMSE depending on the task" },
+              ],
+              direction: "ltr", format: "", indent: 0, version: 1,
+              type: "listitem", value: 4,
+            },
+            {
+              children: [
+                { detail: 0, format: 1, mode: "normal", style: "", version: 1, type: "text", text: "Deploy and monitor" },
+                { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: " — watch for data drift and model degradation" },
+              ],
+              direction: "ltr", format: "", indent: 0, version: 1,
+              type: "listitem", value: 5,
+            },
+          ],
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "list", listType: "number", start: 1, tag: "ol",
+        },
+        {
+          children: [
+            {
+              detail: 0, format: 0, mode: "normal", style: "", version: 1,
+              type: "text", text: "Quick Reference",
+            },
+          ],
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "heading", tag: "h2",
+        },
+        {
+          children: [
+            { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Use " },
+            { detail: 0, format: 16, mode: "normal", style: "", version: 1, type: "text", text: "scikit-learn" },
+            { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: " for classical algorithms, " },
+            { detail: 0, format: 16, mode: "normal", style: "", version: 1, type: "text", text: "PyTorch" },
+            { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: " or " },
+            { detail: 0, format: 16, mode: "normal", style: "", version: 1, type: "text", text: "TensorFlow" },
+            { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: " for deep learning. Full documentation is available on the " },
+            {
+              children: [
+                { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "scikit-learn website" },
+              ],
+              direction: "ltr", format: "", indent: 0, version: 1,
+              type: "link", rel: "noopener", target: null, title: null, url: "https://scikit-learn.org",
+            },
+            { detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "." },
+          ],
+          direction: "ltr", format: "", indent: 0, version: 1,
+          type: "paragraph", textFormat: 0, textStyle: "",
+        },
+      ],
+      direction: "ltr", format: "", indent: 0, version: 1,
+      type: "root",
+    },
+  },
+  lastSaved: 1781058822270,
+  source: "Renderical",
+  version: "0.45.0",
+}

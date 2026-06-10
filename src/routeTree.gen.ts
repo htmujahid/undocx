@@ -9,11 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as HomeRouteRouteImport } from './routes/home/route'
+import { Route as WorkspaceRouteRouteImport } from './routes/workspace/route'
 import { Route as AuthRouteRouteImport } from './routes/auth/route'
 import { Route as AccountRouteRouteImport } from './routes/account/route'
 import { Route as MarketingRouteRouteImport } from './routes/_marketing/route'
-import { Route as HomeIndexRouteImport } from './routes/home/index'
+import { Route as WorkspaceIndexRouteImport } from './routes/workspace/index'
 import { Route as AccountIndexRouteImport } from './routes/account/index'
 import { Route as MarketingIndexRouteImport } from './routes/_marketing/index'
 import { Route as AuthTwoFactorRouteImport } from './routes/auth/two-factor'
@@ -29,9 +29,9 @@ import { Route as MarketingPrivacyRouteImport } from './routes/_marketing/privac
 import { Route as MarketingAboutRouteImport } from './routes/_marketing/about'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
-const HomeRouteRoute = HomeRouteRouteImport.update({
-  id: '/home',
-  path: '/home',
+const WorkspaceRouteRoute = WorkspaceRouteRouteImport.update({
+  id: '/workspace',
+  path: '/workspace',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRouteRoute = AuthRouteRouteImport.update({
@@ -48,10 +48,10 @@ const MarketingRouteRoute = MarketingRouteRouteImport.update({
   id: '/_marketing',
   getParentRoute: () => rootRouteImport,
 } as any)
-const HomeIndexRoute = HomeIndexRouteImport.update({
+const WorkspaceIndexRoute = WorkspaceIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => HomeRouteRoute,
+  getParentRoute: () => WorkspaceRouteRoute,
 } as any)
 const AccountIndexRoute = AccountIndexRouteImport.update({
   id: '/',
@@ -128,7 +128,7 @@ export interface FileRoutesByFullPath {
   '/': typeof MarketingIndexRoute
   '/account': typeof AccountRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
-  '/home': typeof HomeRouteRouteWithChildren
+  '/workspace': typeof WorkspaceRouteRouteWithChildren
   '/about': typeof MarketingAboutRoute
   '/privacy': typeof MarketingPrivacyRoute
   '/terms': typeof MarketingTermsRoute
@@ -141,7 +141,7 @@ export interface FileRoutesByFullPath {
   '/auth/sign-up': typeof AuthSignUpRoute
   '/auth/two-factor': typeof AuthTwoFactorRoute
   '/account/': typeof AccountIndexRoute
-  '/home/': typeof HomeIndexRoute
+  '/workspace/': typeof WorkspaceIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
@@ -159,7 +159,7 @@ export interface FileRoutesByTo {
   '/auth/two-factor': typeof AuthTwoFactorRoute
   '/': typeof MarketingIndexRoute
   '/account': typeof AccountIndexRoute
-  '/home': typeof HomeIndexRoute
+  '/workspace': typeof WorkspaceIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
@@ -167,7 +167,7 @@ export interface FileRoutesById {
   '/_marketing': typeof MarketingRouteRouteWithChildren
   '/account': typeof AccountRouteRouteWithChildren
   '/auth': typeof AuthRouteRouteWithChildren
-  '/home': typeof HomeRouteRouteWithChildren
+  '/workspace': typeof WorkspaceRouteRouteWithChildren
   '/_marketing/about': typeof MarketingAboutRoute
   '/_marketing/privacy': typeof MarketingPrivacyRoute
   '/_marketing/terms': typeof MarketingTermsRoute
@@ -181,7 +181,7 @@ export interface FileRoutesById {
   '/auth/two-factor': typeof AuthTwoFactorRoute
   '/_marketing/': typeof MarketingIndexRoute
   '/account/': typeof AccountIndexRoute
-  '/home/': typeof HomeIndexRoute
+  '/workspace/': typeof WorkspaceIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
@@ -190,7 +190,7 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/auth'
-    | '/home'
+    | '/workspace'
     | '/about'
     | '/privacy'
     | '/terms'
@@ -203,7 +203,7 @@ export interface FileRouteTypes {
     | '/auth/sign-up'
     | '/auth/two-factor'
     | '/account/'
-    | '/home/'
+    | '/workspace/'
     | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -221,14 +221,14 @@ export interface FileRouteTypes {
     | '/auth/two-factor'
     | '/'
     | '/account'
-    | '/home'
+    | '/workspace'
     | '/api/auth/$'
   id:
     | '__root__'
     | '/_marketing'
     | '/account'
     | '/auth'
-    | '/home'
+    | '/workspace'
     | '/_marketing/about'
     | '/_marketing/privacy'
     | '/_marketing/terms'
@@ -242,7 +242,7 @@ export interface FileRouteTypes {
     | '/auth/two-factor'
     | '/_marketing/'
     | '/account/'
-    | '/home/'
+    | '/workspace/'
     | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
@@ -250,17 +250,17 @@ export interface RootRouteChildren {
   MarketingRouteRoute: typeof MarketingRouteRouteWithChildren
   AccountRouteRoute: typeof AccountRouteRouteWithChildren
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
-  HomeRouteRoute: typeof HomeRouteRouteWithChildren
+  WorkspaceRouteRoute: typeof WorkspaceRouteRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/home': {
-      id: '/home'
-      path: '/home'
-      fullPath: '/home'
-      preLoaderRoute: typeof HomeRouteRouteImport
+    '/workspace': {
+      id: '/workspace'
+      path: '/workspace'
+      fullPath: '/workspace'
+      preLoaderRoute: typeof WorkspaceRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -284,12 +284,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketingRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/home/': {
-      id: '/home/'
+    '/workspace/': {
+      id: '/workspace/'
       path: '/'
-      fullPath: '/home/'
-      preLoaderRoute: typeof HomeIndexRouteImport
-      parentRoute: typeof HomeRouteRoute
+      fullPath: '/workspace/'
+      preLoaderRoute: typeof WorkspaceIndexRouteImport
+      parentRoute: typeof WorkspaceRouteRoute
     }
     '/account/': {
       id: '/account/'
@@ -448,23 +448,23 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 )
 
-interface HomeRouteRouteChildren {
-  HomeIndexRoute: typeof HomeIndexRoute
+interface WorkspaceRouteRouteChildren {
+  WorkspaceIndexRoute: typeof WorkspaceIndexRoute
 }
 
-const HomeRouteRouteChildren: HomeRouteRouteChildren = {
-  HomeIndexRoute: HomeIndexRoute,
+const WorkspaceRouteRouteChildren: WorkspaceRouteRouteChildren = {
+  WorkspaceIndexRoute: WorkspaceIndexRoute,
 }
 
-const HomeRouteRouteWithChildren = HomeRouteRoute._addFileChildren(
-  HomeRouteRouteChildren,
+const WorkspaceRouteRouteWithChildren = WorkspaceRouteRoute._addFileChildren(
+  WorkspaceRouteRouteChildren,
 )
 
 const rootRouteChildren: RootRouteChildren = {
   MarketingRouteRoute: MarketingRouteRouteWithChildren,
   AccountRouteRoute: AccountRouteRouteWithChildren,
   AuthRouteRoute: AuthRouteRouteWithChildren,
-  HomeRouteRoute: HomeRouteRouteWithChildren,
+  WorkspaceRouteRoute: WorkspaceRouteRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

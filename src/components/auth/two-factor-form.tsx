@@ -38,7 +38,7 @@ export function TwoFactorForm() {
       return
     }
     queryClient.setQueryData(authUserQueryOptions.queryKey, data?.user ?? null)
-    navigate({ to: "/home" })
+    navigate({ to: "/workspace" })
   }
 
   async function handleVerifyBackup() {
@@ -54,7 +54,7 @@ export function TwoFactorForm() {
       return
     }
     queryClient.setQueryData(authUserQueryOptions.queryKey, data?.user ?? null)
-    navigate({ to: "/home" })
+    navigate({ to: "/workspace" })
   }
 
   return (

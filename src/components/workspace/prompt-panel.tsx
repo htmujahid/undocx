@@ -1,5 +1,12 @@
 import { useRef, useState } from "react"
 
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
+import {
+  $createParagraphNode,
+  $createTextNode,
+  $getRoot,
+} from "lexical"
+
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
@@ -89,6 +96,7 @@ type FormatKey = (typeof FORMAT_CHIPS)[number]["key"]
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function PromptPanel() {
+  const [editor] = useLexicalComposerContext()
   const [prompt, setPrompt] = useState("")
   const [selectedFormat, setSelectedFormat] = useState<FormatKey>("auto")
   const [layers, setLayers] = useState<Layer[]>(PLACEHOLDER_LAYERS)
@@ -99,9 +107,26 @@ export function PromptPanel() {
       prev.map((l) => (l.id === id ? { ...l, visible: !l.visible } : l))
     )
 
+  const handleSubmit = () => {
+    const text = prompt.trim()
+    if (!text) return
+
+    // Append a new paragraph with the prompt text.
+    // Replace this stub with actual AI generation logic.
+    editor.update(() => {
+      const root = $getRoot()
+      const paragraph = $createParagraphNode()
+      paragraph.append($createTextNode(text))
+      root.append(paragraph)
+    })
+
+    setPrompt("")
+  }
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
+      handleSubmit()
     }
   }
 
@@ -211,7 +236,7 @@ export function PromptPanel() {
                   </button>
                 ))}
               </div>
-              <Button size="icon-sm" disabled={!prompt.trim()}>
+              <Button size="icon-sm" disabled={!prompt.trim()} onClick={handleSubmit}>
                 <ArrowUpIcon />
               </Button>
             </div>

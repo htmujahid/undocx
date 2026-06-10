@@ -1,12 +1,12 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 
-export const Route = createFileRoute("/home")({
+export const Route = createFileRoute("/workspace")({
   beforeLoad: ({ context }) => {
     if (!context.user) throw redirect({ to: "/auth/sign-in" })
   },
-  component: HomeLayout,
+  component: WorkspaceLayout,
 })
 
-function HomeLayout() {
+function WorkspaceLayout() {
   return <Outlet />
 }

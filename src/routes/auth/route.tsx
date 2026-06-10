@@ -3,7 +3,7 @@ import { Link, Outlet, createFileRoute, redirect } from "@tanstack/react-router"
 export const Route = createFileRoute("/auth")({
   beforeLoad: ({ context, location }) => {
     if (context.user && location.pathname !== "/auth/update-password")
-      throw redirect({ to: "/home" })
+      throw redirect({ to: "/workspace" })
   },
   component: AuthLayout,
 })

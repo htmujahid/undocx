@@ -49,7 +49,7 @@ export function SignInForm() {
               authUserQueryOptions.queryKey,
               ctx.data.user
             )
-            navigate({ to: "/home" })
+            navigate({ to: "/workspace" })
           },
           onError(ctx) {
             toast.error(ctx.error.message)
