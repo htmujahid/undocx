@@ -7,7 +7,7 @@ export function ContentPreview() {
   return (
     <div className="min-h-0 flex-1 overflow-hidden">
       <ScrollArea className="h-full">
-        <div className="mx-auto max-w-2xl px-8 py-8">
+        <div className="mx-auto max-w-[720px] px-8 py-8">
           {/* Document header — not controlled by Lexical */}
           <div className="mb-6">
             <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">

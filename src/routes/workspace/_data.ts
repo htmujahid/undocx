@@ -237,7 +237,7 @@ export const data = {
         {
           direction: "ltr", format: "", indent: 0, version: 1,
           type: "table",
-          colWidths: [200, 130, 150, 100, 160],
+          colWidths: [200, 130, 150, 150],
           rowStriping: true,
           children: [
             // Header row
@@ -264,11 +264,6 @@ export const data = {
                   direction: "ltr", format: "", indent: 0, version: 1,
                   type: "tablecell", headerState: 1, colSpan: 1, rowSpan: 1, width: null,
                   children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 1, mode: "normal", style: "", version: 1, type: "text", text: "Training speed" }] }],
-                },
-                {
-                  direction: "ltr", format: "", indent: 0, version: 1,
-                  type: "tablecell", headerState: 1, colSpan: 1, rowSpan: 1, width: null,
-                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 1, mode: "normal", style: "", version: 1, type: "text", text: "Data requirements" }] }],
                 },
               ],
             },
@@ -297,11 +292,6 @@ export const data = {
                   type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
                   children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Fast" }] }],
                 },
-                {
-                  direction: "ltr", format: "", indent: 0, version: 1,
-                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
-                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Small to medium" }] }],
-                },
               ],
             },
             // Row 2 — Decision Trees
@@ -328,11 +318,6 @@ export const data = {
                   direction: "ltr", format: "", indent: 0, version: 1,
                   type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
                   children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Fast" }] }],
-                },
-                {
-                  direction: "ltr", format: "", indent: 0, version: 1,
-                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
-                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Small to medium" }] }],
                 },
               ],
             },
@@ -361,11 +346,6 @@ export const data = {
                   type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
                   children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Moderate" }] }],
                 },
-                {
-                  direction: "ltr", format: "", indent: 0, version: 1,
-                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
-                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Large" }] }],
-                },
               ],
             },
             // Row 4 — SVM
@@ -392,11 +372,6 @@ export const data = {
                   direction: "ltr", format: "", indent: 0, version: 1,
                   type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
                   children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Slow" }] }],
-                },
-                {
-                  direction: "ltr", format: "", indent: 0, version: 1,
-                  type: "tablecell", headerState: 0, colSpan: 1, rowSpan: 1, width: null,
-                  children: [{ direction: "ltr", format: "", indent: 0, version: 1, type: "paragraph", textFormat: 0, textStyle: "", children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "Medium" }] }],
                 },
               ],
             },
@@ -439,7 +414,7 @@ export const data = {
         },
         {
           type: "html", version: 1, display: "block",
-          children: [{ type: "text", version: 1, format: 0, detail: 0, mode: "normal", style: "", text: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200" width="400" height="200" aria-label="Training accuracy bar chart"><rect x="30" y="140" width="40" height="40" fill="#6366f1" rx="2"/><rect x="90" y="110" width="40" height="70" fill="#6366f1" rx="2"/><rect x="150" y="80" width="40" height="100" fill="#6366f1" rx="2"/><rect x="210" y="55" width="40" height="125" fill="#6366f1" rx="2"/><rect x="270" y="35" width="40" height="145" fill="#6366f1" rx="2"/><rect x="330" y="20" width="40" height="160" fill="#6366f1" rx="2"/><line x1="20" y1="180" x2="390" y2="180" stroke="currentColor" stroke-opacity="0.2" stroke-width="1"/><text x="50" y="196" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity="0.5">E1</text><text x="110" y="196" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity="0.5">E2</text><text x="170" y="196" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity="0.5">E3</text><text x="230" y="196" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity="0.5">E4</text><text x="290" y="196" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity="0.5">E5</text><text x="350" y="196" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity="0.5">E6</text><text x="200" y="12" text-anchor="middle" font-size="12" font-weight="600" fill="currentColor" fill-opacity="0.7">Training Accuracy by Epoch</text></svg>' }],
+          children: [{ type: "text", version: 1, format: 0, detail: 0, mode: "normal", style: "", text: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200" width="400" height="200" aria-label="Training accuracy bar chart"><rect x="30" y="140" width="40" height="40" fill="currentColor" fill-opacity="0.15" rx="2"/><rect x="90" y="110" width="40" height="70" fill="currentColor" fill-opacity="0.2" rx="2"/><rect x="150" y="80" width="40" height="100" fill="currentColor" fill-opacity="0.25" rx="2"/><rect x="210" y="55" width="40" height="125" fill="currentColor" fill-opacity="0.3" rx="2"/><rect x="270" y="35" width="40" height="145" fill="currentColor" fill-opacity="0.35" rx="2"/><rect x="330" y="20" width="40" height="160" fill="currentColor" fill-opacity="0.45" rx="2"/><line x1="20" y1="180" x2="390" y2="180" stroke="currentColor" stroke-opacity="0.2" stroke-width="1"/><text x="50" y="196" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity="0.5">E1</text><text x="110" y="196" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity="0.5">E2</text><text x="170" y="196" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity="0.5">E3</text><text x="230" y="196" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity="0.5">E4</text><text x="290" y="196" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity="0.5">E5</text><text x="350" y="196" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity="0.5">E6</text><text x="200" y="12" text-anchor="middle" font-size="12" font-weight="600" fill="currentColor" fill-opacity="0.7">Training Accuracy by Epoch</text></svg>' }],
         },
         {
           children: [{ detail: 0, format: 0, mode: "normal", style: "", version: 1, type: "text", text: "The gradient-descent parameter update rule expressed in MathML:" }],
