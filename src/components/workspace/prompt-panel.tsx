@@ -1,12 +1,12 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { $isHeadingNode } from "@lexical/rich-text"
-import {
-  ArrowUpIcon,
-  SparklesIcon,
-} from "lucide-react"
-import { $createParagraphNode, $createTextNode, $getRoot } from "lexical"
+import { ArrowUpIcon, SparklesIcon } from "lucide-react"
+import { $getRoot } from "lexical"
+import { toast } from "sonner"
+
+import { fetchServerSentEvents, useChat } from "@tanstack/ai-react"
 
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -18,6 +18,8 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
+import { outputSchema } from "@/lib/ai-schema"
+import type { GeneratedOutput } from "@/lib/ai-schema"
 
 // ── Outline ───────────────────────────────────────────────────────────────────
 
@@ -45,28 +47,52 @@ const LEVEL_TEXT: Record<OutlineItem["tag"], string> = {
   h6: "text-[10px] text-muted-foreground/60",
 }
 
-// ── Format chips ──────────────────────────────────────────────────────────────
-
-const FORMAT_CHIPS = [
-  { key: "auto", label: "Auto" },
-  { key: "table", label: "Table" },
-  { key: "mindmap", label: "Mind Map" },
-  { key: "flashcard_deck", label: "Flashcards" },
-  { key: "quiz", label: "Quiz" },
-  { key: "outline", label: "Outline" },
-] as const
-
-type FormatKey = (typeof FORMAT_CHIPS)[number]["key"]
-
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function PromptPanel() {
+interface PromptPanelProps {
+  onTitleChange: (title: string) => void
+}
+
+export function PromptPanel({ onTitleChange }: PromptPanelProps) {
   const [editor] = useLexicalComposerContext()
   const [prompt, setPrompt] = useState("")
-  const [selectedFormat, setSelectedFormat] = useState<FormatKey>("auto")
   const [outline, setOutline] = useState<OutlineItem[]>([])
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+  const { sendMessage, messages, isLoading, clear, partial, final } = useChat({
+    connection: fetchServerSentEvents("/api/chat"),
+    outputSchema,
+    onError: (error) => {
+      toast.error("Generation failed. Please try again.")
+      console.error("[Copilot]", error)
+    },
+  })
+
+  // Derive char count from the accumulating raw JSON buffer on the structured-output part
+  const rawLength =
+    messages
+      .at(-1)
+      ?.parts.find((p) => p.type === "structured-output")
+      ?.raw?.length ?? 0
+
+  // Apply the validated structured output once the stream completes.
+  useEffect(() => {
+    if (!final) return
+    try {
+      const result = final as GeneratedOutput
+      editor.setEditorState(
+        editor.parseEditorState(JSON.stringify(result.editorState))
+      )
+      onTitleChange(result.title)
+      setTimeout(clear, 0)
+    } catch (err) {
+      toast.error("Failed to apply generated content.")
+      console.error("[Editor]", err)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [final])
+
+  // Keep the outline in sync with editor headings
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const buildOutline = () => {
       editor.getEditorState().read(() => {
@@ -82,26 +108,18 @@ export function PromptPanel() {
         )
       })
     }
-
     buildOutline()
     return editor.registerUpdateListener(() => buildOutline())
   }, [editor])
 
   const scrollToHeading = (key: string) => {
-    const el = editor.getElementByKey(key)
-    el?.scrollIntoView({ behavior: "smooth", block: "start" })
+    editor.getElementByKey(key)?.scrollIntoView({ behavior: "smooth", block: "start" })
   }
 
   const handleSubmit = () => {
     const text = prompt.trim()
-    if (!text) return
-
-    editor.update(() => {
-      const paragraph = $createParagraphNode()
-      paragraph.append($createTextNode(text))
-      $getRoot().append(paragraph)
-    })
-
+    if (!text || isLoading) return
+    sendMessage(`Topic: ${text}`)
     setPrompt("")
   }
 
@@ -119,6 +137,11 @@ export function PromptPanel() {
         <div className="flex items-center gap-2">
           <SparklesIcon className="size-3.5 text-primary" />
           <span className="text-sm font-semibold">Copilot</span>
+          {isLoading && (
+            <span className="ml-auto animate-pulse text-[10px] text-muted-foreground">
+              Generating…
+            </span>
+          )}
         </div>
       </SidebarHeader>
 
@@ -130,6 +153,20 @@ export function PromptPanel() {
           </span>
         </div>
         <Separator />
+        {isLoading && (
+          <div className="border-b px-4 py-2.5">
+            {partial?.title ? (
+              <p className="truncate text-[11px] font-medium text-foreground">
+                {partial.title}
+              </p>
+            ) : null}
+            {rawLength > 0 && (
+              <p className="text-[10px] text-muted-foreground">
+                {rawLength.toLocaleString()} chars streamed…
+              </p>
+            )}
+          </div>
+        )}
         <ScrollArea className="h-full">
           {outline.length === 0 ? (
             <div className="flex flex-col items-center justify-center px-4 py-12 text-center">
@@ -162,9 +199,13 @@ export function PromptPanel() {
       <SidebarFooter className="p-0">
         <Separator />
         <div className="px-3 py-3">
-          <div className="rounded-xl border bg-muted/20 transition-all focus-within:border-ring/60 focus-within:ring-2 focus-within:ring-ring/20">
+          <div
+            className={cn(
+              "rounded-xl border bg-muted/20 transition-all focus-within:border-ring/60 focus-within:ring-2 focus-within:ring-ring/20",
+              isLoading && "pointer-events-none opacity-60"
+            )}
+          >
             <textarea
-              ref={textareaRef}
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -173,25 +214,10 @@ export function PromptPanel() {
               className="w-full resize-none bg-transparent px-3 pb-1 pt-3 text-xs placeholder:text-muted-foreground focus:outline-none"
             />
             <div className="flex items-center justify-between px-2 pb-2">
-              <div className="flex flex-wrap gap-1">
-                {FORMAT_CHIPS.map((chip) => (
-                  <button
-                    key={chip.key}
-                    onClick={() => setSelectedFormat(chip.key)}
-                    className={cn(
-                      "rounded-full px-2 py-0.5 text-[10px] transition-colors",
-                      selectedFormat === chip.key
-                        ? "bg-primary text-primary-foreground"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                    )}
-                  >
-                    {chip.label}
-                  </button>
-                ))}
-              </div>
+              <div />
               <Button
                 size="icon-sm"
-                disabled={!prompt.trim()}
+                disabled={!prompt.trim() || isLoading}
                 onClick={handleSubmit}
               >
                 <ArrowUpIcon />

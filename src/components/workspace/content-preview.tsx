@@ -57,7 +57,11 @@ function FootnoteList() {
   )
 }
 
-export function ContentPreview() {
+interface ContentPreviewProps {
+  title: string
+}
+
+export function ContentPreview({ title }: ContentPreviewProps) {
   return (
     <div className="min-h-0 flex-1 overflow-hidden">
       <ScrollArea className="h-full">
@@ -67,7 +71,7 @@ export function ContentPreview() {
               Generated document
             </p>
             <h1 className="text-3xl font-bold tracking-tight">
-              Introduction to Machine Learning
+              {title}
             </h1>
             <div className="mt-2 flex items-center gap-3 text-[11px] text-muted-foreground">
               <WordCount />

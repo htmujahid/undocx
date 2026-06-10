@@ -43,6 +43,7 @@ export function Workspace({ user, data }: WorkspaceProps) {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [rightOpen, setRightOpen] = useState(true)
+  const [title, setTitle] = useState("Introduction to Machine Learning")
 
   const handleSignOut = async () => {
     await signOut()
@@ -96,12 +97,12 @@ export function Workspace({ user, data }: WorkspaceProps) {
                 />
               </Button>
             </header>
-            <ContentPreview />
+            <ContentPreview title={title} />
           </SidebarInset>
         </SidebarProvider>
 
         {/* Right sidebar — uses the outer SidebarProvider context */}
-        <PromptPanel />
+        <PromptPanel onTitleChange={setTitle} />
       </SidebarProvider>
     </LexicalExtensionComposer>
   )

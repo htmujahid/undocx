@@ -26,6 +26,11 @@ export const CodeHighlightExtension = defineExtension({
     output.disabled.value = false
 
     // Re-highlight all code nodes whenever the .dark class is toggled on <html>.
+    // Guard: MutationObserver is only available in the browser.
+    if (typeof document === "undefined") {
+      return () => { output.disabled.value = true }
+    }
+
     const observer = new MutationObserver(() => {
       const newTheme = isDarkMode() ? DARK_THEME : LIGHT_THEME
       editor.update(() => {
