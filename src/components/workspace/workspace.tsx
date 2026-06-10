@@ -1,8 +1,15 @@
 import { useMemo, useState } from "react"
 
-import { useNavigate } from "@tanstack/react-router"
+import { defineExtension } from "lexical"
+import { PanelRightIcon } from "lucide-react"
+
+import { LinkExtension } from "@lexical/link"
+import { ListExtension } from "@lexical/list"
+import { LexicalExtensionComposer } from "@lexical/react/LexicalExtensionComposer"
+import { RichTextExtension } from "@lexical/rich-text"
 
 import { useQueryClient } from "@tanstack/react-query"
+import { useNavigate } from "@tanstack/react-router"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -14,12 +21,6 @@ import { editorTheme } from "@/components/workspace/editor/theme"
 import { signOut } from "@/lib/auth-client"
 import { authUserQueryOptions } from "@/lib/queries/auth"
 import { cn } from "@/lib/utils"
-import { LinkExtension } from "@lexical/link"
-import { ListExtension } from "@lexical/list"
-import { LexicalExtensionComposer } from "@lexical/react/LexicalExtensionComposer"
-import { RichTextExtension } from "@lexical/rich-text"
-import { defineExtension } from "lexical"
-import { PanelRightIcon } from "lucide-react"
 
 import { AppSidebar } from "./app-sidebar"
 import { ContentPreview } from "./content-preview"

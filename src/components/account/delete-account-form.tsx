@@ -1,3 +1,6 @@
+import { toast } from "sonner"
+import { z } from "zod"
+
 import { useForm } from "@tanstack/react-form"
 
 import { Button } from "@/components/ui/button"
@@ -9,8 +12,6 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"
-import { toast } from "sonner"
-import { z } from "zod"
 
 const schema = z.object({
   password: z.string().min(1, "Password is required to confirm deletion"),

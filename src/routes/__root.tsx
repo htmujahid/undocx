@@ -1,16 +1,16 @@
+import { Toaster } from "sonner"
+
+import { TanStackDevtools } from "@tanstack/react-devtools"
+import { QueryClient } from "@tanstack/react-query"
 import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
 } from "@tanstack/react-router"
-
-import { QueryClient } from "@tanstack/react-query"
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { authUserQueryOptions } from "@/lib/queries/auth"
-import { TanStackDevtools } from "@tanstack/react-devtools"
-import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
-import { Toaster } from "sonner"
 
 import appCss from "../styles.css?url"
 

@@ -1,6 +1,8 @@
-import { Link, useNavigate } from "@tanstack/react-router"
+import { toast } from "sonner"
+import { z } from "zod"
 
 import { useForm } from "@tanstack/react-form"
+import { Link, useNavigate } from "@tanstack/react-router"
 
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -11,8 +13,6 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { signUp } from "@/lib/auth-client"
-import { toast } from "sonner"
-import { z } from "zod"
 
 const signUpSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters."),

@@ -1,5 +1,7 @@
 import { useState } from "react"
 
+import { toast } from "sonner"
+
 import { useQueryClient } from "@tanstack/react-query"
 
 import { Button } from "@/components/ui/button"
@@ -12,7 +14,6 @@ import {
 } from "@/components/ui/card"
 import { authClient } from "@/lib/auth-client"
 import { type Account, listAccountsQueryOptions } from "@/lib/queries/accounts"
-import { toast } from "sonner"
 
 const OAUTH_PROVIDERS = [
   {

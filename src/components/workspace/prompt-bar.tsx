@@ -1,7 +1,8 @@
 import { useRef, useState } from "react"
 
-import { Button } from "@/components/ui/button"
 import { ArrowUpIcon, SparklesIcon } from "lucide-react"
+
+import { Button } from "@/components/ui/button"
 
 const EXAMPLE_PROMPTS = [
   "Explain how neural networks learn",

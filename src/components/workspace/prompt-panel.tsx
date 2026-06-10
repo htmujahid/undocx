@@ -1,16 +1,5 @@
 import { useRef, useState } from "react"
 
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-} from "@/components/ui/sidebar"
-import { cn } from "@/lib/utils"
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { $createParagraphNode, $createTextNode, $getRoot } from "lexical"
 import {
   AlignLeftIcon,
@@ -29,6 +18,19 @@ import {
   TypeIcon,
   WorkflowIcon,
 } from "lucide-react"
+
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
+
+import { Button } from "@/components/ui/button"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+} from "@/components/ui/sidebar"
+import { cn } from "@/lib/utils"
 
 // ── Layer types ──────────────────────────────────────────────────────────────
 

@@ -1,7 +1,8 @@
+import { z } from "zod"
+
 import { createFileRoute, redirect } from "@tanstack/react-router"
 
 import { ResetPasswordForm } from "@/components/auth/reset-password-form"
-import { z } from "zod"
 
 const searchSchema = z.object({
   token: z.string().catch(""),

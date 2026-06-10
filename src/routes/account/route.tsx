@@ -1,4 +1,11 @@
 import {
+  CreditCardIcon,
+  KeyRoundIcon,
+  ShieldIcon,
+  UserIcon,
+} from "lucide-react"
+
+import {
   Link,
   Outlet,
   createFileRoute,
@@ -8,12 +15,6 @@ import {
 
 import { Navbar } from "@/components/marketing/navbar"
 import { cn } from "@/lib/utils"
-import {
-  CreditCardIcon,
-  KeyRoundIcon,
-  ShieldIcon,
-  UserIcon,
-} from "lucide-react"
 
 export const Route = createFileRoute("/account")({
   beforeLoad: ({ context }) => {

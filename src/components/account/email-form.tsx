@@ -1,5 +1,8 @@
 import { useState } from "react"
 
+import { toast } from "sonner"
+import { z } from "zod"
+
 import { useForm } from "@tanstack/react-form"
 
 import { Button } from "@/components/ui/button"
@@ -12,8 +15,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { useUser } from "@/hooks/use-user"
 import { authClient } from "@/lib/auth-client"
-import { toast } from "sonner"
-import { z } from "zod"
 
 const schema = z.object({
   newEmail: z.email("Enter a valid email address"),

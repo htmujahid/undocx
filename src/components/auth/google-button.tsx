@@ -1,8 +1,9 @@
 import { useState } from "react"
 
+import { toast } from "sonner"
+
 import { Button } from "@/components/ui/button"
 import { signIn } from "@/lib/auth-client"
-import { toast } from "sonner"
 
 function GoogleIcon() {
   return (

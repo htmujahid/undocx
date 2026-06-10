@@ -1,6 +1,8 @@
-import { Link } from "@tanstack/react-router"
+import { toast } from "sonner"
+import { z } from "zod"
 
 import { useForm } from "@tanstack/react-form"
+import { Link } from "@tanstack/react-router"
 
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -12,8 +14,6 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"
-import { toast } from "sonner"
-import { z } from "zod"
 
 const forgotPasswordSchema = z.object({
   email: z.email("Enter a valid email address."),

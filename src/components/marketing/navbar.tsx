@@ -1,6 +1,7 @@
-import { Link, useNavigate } from "@tanstack/react-router"
+import { HomeIcon, LogOutIcon, SettingsIcon } from "lucide-react"
 
 import { useQueryClient } from "@tanstack/react-query"
+import { Link, useNavigate } from "@tanstack/react-router"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { buttonVariants } from "@/components/ui/button"
@@ -16,7 +17,6 @@ import {
 import { useUser } from "@/hooks/use-user"
 import { signOut } from "@/lib/auth-client"
 import { authUserQueryOptions } from "@/lib/queries/auth"
-import { HomeIcon, LogOutIcon, SettingsIcon } from "lucide-react"
 
 export function Navbar() {
   const { user } = useUser()

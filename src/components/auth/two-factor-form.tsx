@@ -1,8 +1,9 @@
 import { useState } from "react"
 
-import { useNavigate } from "@tanstack/react-router"
+import { toast } from "sonner"
 
 import { useQueryClient } from "@tanstack/react-query"
+import { useNavigate } from "@tanstack/react-router"
 
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -13,7 +14,6 @@ import {
 } from "@/components/ui/input-otp"
 import { authClient } from "@/lib/auth-client"
 import { authUserQueryOptions } from "@/lib/queries/auth"
-import { toast } from "sonner"
 
 export function TwoFactorForm() {
   const navigate = useNavigate()

@@ -1,6 +1,9 @@
-import { Link, useNavigate } from "@tanstack/react-router"
+import { ShieldCheckIcon } from "lucide-react"
+import { toast } from "sonner"
+import { z } from "zod"
 
 import { useForm } from "@tanstack/react-form"
+import { Link, useNavigate } from "@tanstack/react-router"
 
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -11,9 +14,6 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"
-import { ShieldCheckIcon } from "lucide-react"
-import { toast } from "sonner"
-import { z } from "zod"
 
 const resetPasswordSchema = z
   .object({

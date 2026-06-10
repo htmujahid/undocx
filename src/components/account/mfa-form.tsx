@@ -1,5 +1,6 @@
-import { useUser } from "@/hooks/use-user"
 import { ShieldCheckIcon, ShieldOffIcon } from "lucide-react"
+
+import { useUser } from "@/hooks/use-user"
 
 import { MfaEnableForm } from "./mfa-enable-form"
 import { MfaManageForm } from "./mfa-manage-form"

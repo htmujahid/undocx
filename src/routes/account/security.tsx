@@ -1,6 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router"
-
 import { useQuery } from "@tanstack/react-query"
+import { createFileRoute } from "@tanstack/react-router"
 
 import { DeleteAccountForm } from "@/components/account/delete-account-form"
 import { EmailForm } from "@/components/account/email-form"

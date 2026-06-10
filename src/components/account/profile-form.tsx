@@ -1,6 +1,8 @@
-import { Link } from "@tanstack/react-router"
+import { toast } from "sonner"
+import { z } from "zod"
 
 import { useForm } from "@tanstack/react-form"
+import { Link } from "@tanstack/react-router"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -12,8 +14,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { useUser } from "@/hooks/use-user"
 import { authClient } from "@/lib/auth-client"
-import { toast } from "sonner"
-import { z } from "zod"
 
 const profileSchema = z.object({
   name: z.string().min(1, "Name is required"),

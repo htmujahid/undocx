@@ -1,15 +1,15 @@
 import { useState } from "react"
 
-import { useRouter } from "@tanstack/react-router"
+import { toast } from "sonner"
 
 import { useQueryClient } from "@tanstack/react-query"
+import { useRouter } from "@tanstack/react-router"
 
 import { Button } from "@/components/ui/button"
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"
 import { authUserQueryOptions } from "@/lib/queries/auth"
-import { toast } from "sonner"
 
 export function MfaManageForm() {
   const queryClient = useQueryClient()

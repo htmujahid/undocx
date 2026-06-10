@@ -1,8 +1,9 @@
-import { Link, useNavigate } from "@tanstack/react-router"
-
-import { useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
+import { z } from "zod"
 
 import { useForm } from "@tanstack/react-form"
+import { useQueryClient } from "@tanstack/react-query"
+import { Link, useNavigate } from "@tanstack/react-router"
 
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -14,8 +15,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"
 import { authUserQueryOptions } from "@/lib/queries/auth"
-import { toast } from "sonner"
-import { z } from "zod"
 
 import { GoogleButton } from "./google-button"
 

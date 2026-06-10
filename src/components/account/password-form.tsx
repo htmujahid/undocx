@@ -1,6 +1,8 @@
-import { useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
+import { z } from "zod"
 
 import { useForm } from "@tanstack/react-form"
+import { useQueryClient } from "@tanstack/react-query"
 
 import { setPasswordAction } from "@/actions/auth/set-password-action"
 import { Button } from "@/components/ui/button"
@@ -13,8 +15,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"
 import { listAccountsQueryOptions } from "@/lib/queries/accounts"
-import { toast } from "sonner"
-import { z } from "zod"
 
 const changeSchema = z
   .object({

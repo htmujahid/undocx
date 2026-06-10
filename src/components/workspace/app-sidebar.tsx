@@ -1,5 +1,17 @@
 import { useState } from "react"
 
+import {
+  ArchiveIcon,
+  ChevronRightIcon,
+  ClockIcon,
+  FolderIcon,
+  LayoutGridIcon,
+  LogOutIcon,
+  PlusIcon,
+  SettingsIcon,
+  StarIcon,
+} from "lucide-react"
+
 import { Link } from "@tanstack/react-router"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -26,17 +38,6 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
-import {
-  ArchiveIcon,
-  ChevronRightIcon,
-  ClockIcon,
-  FolderIcon,
-  LayoutGridIcon,
-  LogOutIcon,
-  PlusIcon,
-  SettingsIcon,
-  StarIcon,
-} from "lucide-react"
 
 const NAV_ITEMS = [
   { icon: LayoutGridIcon, label: "All Items", count: 24 },
