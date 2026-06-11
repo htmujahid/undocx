@@ -14,7 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { authClient } from "@/lib/auth-client"
-import { type Account } from "@/lib/data/accounts"
+import { Account } from "better-auth"
 
 const OAUTH_PROVIDERS = [
   {
