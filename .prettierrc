@@ -22,6 +22,6 @@
     "prettier-plugin-tailwindcss",
     "@trivago/prettier-plugin-sort-imports"
   ],
-  "tailwindStylesheet": "src/styles.css",
+  "tailwindStylesheet": "app/globals.css",
   "tailwindFunctions": ["cn", "cva"]
 }
