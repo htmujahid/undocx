@@ -6,6 +6,7 @@ import { experimental_useObject as useObject } from "@ai-sdk/react"
 import { $getRoot } from "lexical"
 import { ArrowUpIcon, SparklesIcon } from "lucide-react"
 import { toast } from "sonner"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { $isHeadingNode } from "@lexical/rich-text"
@@ -20,6 +21,11 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar"
 import { outputSchema } from "@/lib/ai-schema"
+import {
+  artifactQueryOptions,
+  artifactsQueryOptions,
+  updateArtifactMutationOptions,
+} from "@/lib/data/artifacts"
 import { cn } from "@/lib/utils"
 
 // ── Outline ───────────────────────────────────────────────────────────────────
@@ -51,13 +57,27 @@ const LEVEL_TEXT: Record<OutlineItem["tag"], string> = {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 interface PromptPanelProps {
+  workspaceId: string
+  artifactId: string
   onTitleChange: (title: string) => void
 }
 
-export function PromptPanel({ onTitleChange }: PromptPanelProps) {
+export function PromptPanel({ workspaceId, artifactId, onTitleChange }: PromptPanelProps) {
+  const qc = useQueryClient()
   const [editor] = useLexicalComposerContext()
   const [prompt, setPrompt] = useState("")
   const [outline, setOutline] = useState<OutlineItem[]>([])
+
+  const saveMutation = useMutation({
+    ...updateArtifactMutationOptions,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: artifactsQueryOptions(workspaceId).queryKey })
+      qc.invalidateQueries({
+        queryKey: artifactQueryOptions(workspaceId, artifactId).queryKey,
+      })
+    },
+    onError: () => toast.error("Failed to save artifact."),
+  })
 
   const { object, submit, isLoading } = useObject({
     api: "/api/chat",
@@ -71,7 +91,14 @@ export function PromptPanel({ onTitleChange }: PromptPanelProps) {
         editor.setEditorState(
           editor.parseEditorState(JSON.stringify(result.editorState))
         )
-        onTitleChange(result.title ?? "")
+        const title = result.title ?? "Untitled"
+        onTitleChange(title)
+        saveMutation.mutate({
+          workspaceId,
+          id: artifactId,
+          title,
+          content: result.editorState,
+        })
       } catch (err) {
         toast.error("Failed to apply generated content.")
         console.error("[Editor]", err)

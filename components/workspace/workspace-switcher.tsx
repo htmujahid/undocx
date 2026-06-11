@@ -9,6 +9,7 @@ import {
   PlusIcon,
   Trash2Icon,
 } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import {
@@ -59,7 +60,12 @@ function initials(name: string) {
     .toUpperCase()
 }
 
-export function WorkspaceSwitcher() {
+interface WorkspaceSwitcherProps {
+  currentWorkspaceId: string
+}
+
+export function WorkspaceSwitcher({ currentWorkspaceId }: WorkspaceSwitcherProps) {
+  const router = useRouter()
   const qc = useQueryClient()
   const { data: workspaces = [], isLoading } = useQuery(workspacesQueryOptions)
 
@@ -72,13 +78,12 @@ export function WorkspaceSwitcher() {
     onSuccess: () => qc.invalidateQueries({ queryKey: workspacesQueryOptions.queryKey }),
   })
 
-  const [activeId, setActiveId] = useState<string | null>(null)
   const [createOpen, setCreateOpen] = useState(false)
   const [editWorkspace, setEditWorkspace] = useState<Workspace | null>(null)
   const [editName, setEditName] = useState("")
   const [deleteTarget, setDeleteTarget] = useState<Workspace | null>(null)
 
-  const active = workspaces.find((w) => w.id === activeId) ?? workspaces[0]
+  const active = workspaces.find((w) => w.id === currentWorkspaceId) ?? workspaces[0]
 
   const handleUpdate = () => {
     if (!editWorkspace || !editName.trim() || updateMutation.isPending) return
@@ -93,7 +98,6 @@ export function WorkspaceSwitcher() {
       <SidebarMenu>
         <SidebarMenuItem>
           <DropdownMenu>
-            {/* render prop avoids button-in-button — Base UI composes the trigger onto SidebarMenuButton */}
             <DropdownMenuTrigger
               render={
                 <SidebarMenuButton
@@ -102,18 +106,18 @@ export function WorkspaceSwitcher() {
                 />
               }
             >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-xs font-semibold text-primary-foreground">
+              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-xs font-semibold text-sidebar-primary-foreground">
                 {isLoading ? "…" : active ? initials(active.name) : "W"}
               </div>
-              <div className="flex min-w-0 flex-col gap-0.5 leading-none">
-                <span className="truncate text-xs font-semibold">
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-medium">
                   {active?.name ?? "No workspace"}
                 </span>
-                <span className="truncate text-[10px] text-muted-foreground">
+                <span className="truncate text-xs text-muted-foreground">
                   Workspace
                 </span>
               </div>
-              <ChevronsUpDownIcon className="ml-auto size-3.5 shrink-0" />
+              <ChevronsUpDownIcon className="ml-auto size-4" />
             </DropdownMenuTrigger>
 
             <DropdownMenuContent
@@ -121,49 +125,44 @@ export function WorkspaceSwitcher() {
               align="start"
             >
               {workspaces.length === 0 && (
-                <DropdownMenuItem disabled className="text-xs text-muted-foreground">
-                  No workspaces yet
-                </DropdownMenuItem>
+                <DropdownMenuItem disabled>No workspaces yet</DropdownMenuItem>
               )}
               {workspaces.map((ws) => (
                 <DropdownMenuItem
                   key={ws.id}
-                  className="group flex items-center gap-2 text-xs"
-                  onClick={() => setActiveId(ws.id)}
+                  className="group"
+                  onClick={() => router.push(`/workspace/${ws.id}`)}
                 >
                   <span className="flex-1 truncate">{ws.name}</span>
                   {ws.id === active?.id && (
-                    <CheckIcon className="size-3 shrink-0" />
+                    <CheckIcon className="size-3.5 shrink-0" />
                   )}
                   <button
-                    className="hidden size-4 items-center justify-center rounded hover:text-foreground group-hover:flex"
+                    className="hidden size-5 items-center justify-center rounded-sm text-muted-foreground hover:text-foreground group-hover:flex"
                     onClick={(e) => {
                       e.stopPropagation()
                       setEditWorkspace(ws)
                       setEditName(ws.name)
                     }}
                   >
-                    <EditIcon className="size-3" />
+                    <EditIcon className="size-3.5" />
                   </button>
                   {workspaces.length > 1 && (
                     <button
-                      className="hidden size-4 items-center justify-center rounded text-destructive hover:text-destructive group-hover:flex"
+                      className="hidden size-5 items-center justify-center rounded-sm text-destructive group-hover:flex"
                       onClick={(e) => {
                         e.stopPropagation()
                         setDeleteTarget(ws)
                       }}
                     >
-                      <Trash2Icon className="size-3" />
+                      <Trash2Icon className="size-3.5" />
                     </button>
                   )}
                 </DropdownMenuItem>
               ))}
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                className="gap-2 text-xs"
-                onClick={() => setCreateOpen(true)}
-              >
-                <PlusIcon className="size-3.5" />
+              <DropdownMenuItem onClick={() => setCreateOpen(true)}>
+                <PlusIcon className="text-muted-foreground" />
                 New workspace
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -174,7 +173,7 @@ export function WorkspaceSwitcher() {
       <CreateWorkspaceDialog
         open={createOpen}
         onOpenChange={setCreateOpen}
-        onCreated={setActiveId}
+        onCreated={(id) => router.push(`/workspace/${id}`)}
       />
 
       {/* Delete confirmation */}
@@ -199,7 +198,10 @@ export function WorkspaceSwitcher() {
                 if (!deleteTarget) return
                 deleteMutation.mutate(deleteTarget.id, {
                   onSuccess: () => {
-                    if (activeId === deleteTarget.id) setActiveId(null)
+                    if (currentWorkspaceId === deleteTarget.id) {
+                      const other = workspaces.find((w) => w.id !== deleteTarget.id)
+                      if (other) router.push(`/workspace/${other.id}`)
+                    }
                     setDeleteTarget(null)
                   },
                 })

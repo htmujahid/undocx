@@ -15,6 +15,20 @@
       "when": 1781171291976,
       "tag": "0001_gigantic_sue_storm",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1781172859897,
+      "tag": "0002_complex_ares",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1781193256447,
+      "tag": "0003_quick_proemial_gods",
+      "breakpoints": true
     }
   ]
 }

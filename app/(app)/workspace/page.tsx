@@ -1,19 +1,30 @@
-"use client"
+import { eq } from "drizzle-orm"
+import { redirect } from "next/navigation"
 
-import { useEffect, useState } from "react"
+import { getSession } from "@/lib/auth"
+import { db } from "@/lib/db"
+import { workspace } from "@/lib/db/schema"
 
-import { Workspace } from "@/components/workspace/workspace"
-import { useUser } from "@/hooks/use-user"
+export default async function WorkspacePage() {
+  const session = await getSession()
+  if (!session) redirect("/auth/sign-in")
 
-import { data } from "./data"
+  const [first] = await db
+    .select({ id: workspace.id })
+    .from(workspace)
+    .where(eq(workspace.ownerId, session.user.id))
+    .orderBy(workspace.createdAt)
+    .limit(1)
 
-export default function WorkspacePage() {
-  const { user } = useUser()
-  const [mounted, setMounted] = useState(false)
+  if (first) redirect(`/workspace/${first.id}`)
 
-  useEffect(() => setMounted(true), [])
-
-  if (!user || !mounted) return null
-
-  return <Workspace user={user} data={data} />
+  // No workspaces yet — user needs to create one via the workspace switcher
+  return (
+    <div className="flex h-screen flex-col items-center justify-center gap-2">
+      <p className="text-sm font-medium">No workspaces found</p>
+      <p className="text-xs text-muted-foreground">
+        Create a workspace to get started
+      </p>
+    </div>
+  )
 }

@@ -4,7 +4,6 @@ import { useMemo, useState } from "react"
 
 import { defineExtension } from "lexical"
 import { PanelRightIcon } from "lucide-react"
-import { useRouter } from "next/navigation"
 
 import {
   HorizontalRuleExtension,
@@ -17,38 +16,33 @@ import { RichTextExtension } from "@lexical/rich-text"
 import { TableExtension } from "@lexical/table"
 
 import { Button } from "@/components/ui/button"
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar"
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { CalloutExtension } from "@/components/workspace/editor/callout-extension"
 import { CodeHighlightExtension } from "@/components/workspace/editor/code-highlight-extension"
 import { FootnoteExtension } from "@/components/workspace/editor/footnote-extension"
 import { MathExtension } from "@/components/workspace/editor/math-extension"
 import { SvgExtension } from "@/components/workspace/editor/svg-extension"
 import { editorTheme } from "@/components/workspace/editor/theme"
-import { signOut } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
 
-import { AppSidebar } from "./app-sidebar"
 import { ContentPreview } from "./content-preview"
 import { PromptPanel } from "./prompt-panel"
 
 interface WorkspaceProps {
-  user: { name: string; email: string; image?: string | null }
-  data: { editorState: unknown }
+  workspaceId: string
+  artifactId: string
+  initialTitle: string
+  initialContent: unknown
 }
 
-export function Workspace({ user, data }: WorkspaceProps) {
-  const router = useRouter()
+export function Workspace({
+  workspaceId,
+  artifactId,
+  initialTitle,
+  initialContent,
+}: WorkspaceProps) {
   const [rightOpen, setRightOpen] = useState(true)
-  const [title, setTitle] = useState("Introduction to Machine Learning")
-
-  const handleSignOut = async () => {
-    await signOut()
-    router.push("/")
-  }
+  const [title, setTitle] = useState(initialTitle)
 
   const extension = useMemo(
     () =>
@@ -57,7 +51,9 @@ export function Workspace({ user, data }: WorkspaceProps) {
         namespace: "content-editor",
         theme: editorTheme,
         editable: false,
-        $initialEditorState: JSON.stringify(data.editorState),
+        ...(initialContent
+          ? { $initialEditorState: JSON.stringify(initialContent) }
+          : {}),
         onError: (error: Error) => console.error("[Lexical]", error),
         dependencies: [
           RichTextExtension,
@@ -79,42 +75,43 @@ export function Workspace({ user, data }: WorkspaceProps) {
 
   return (
     <LexicalExtensionComposer extension={extension} contentEditable={null}>
-      {/* Outer provider: controls the right sidebar */}
-      <SidebarProvider
-        open={rightOpen}
-        onOpenChange={setRightOpen}
-        style={{ "--sidebar-width": "24rem" } as React.CSSProperties}
-      >
-        {/* Inner provider: controls the left sidebar */}
-        <SidebarProvider className="min-h-0 flex-1">
-          <AppSidebar user={user} onSignOut={handleSignOut} />
-          <SidebarInset className="flex h-svh flex-col overflow-hidden">
-            <header className="flex h-11 shrink-0 items-center border-b px-2">
-              <SidebarTrigger />
-              <span className="ml-2 flex-1 text-xs text-muted-foreground">
-                My Workspace
-              </span>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                onClick={() => setRightOpen((o) => !o)}
-                aria-label="Toggle copilot panel"
-              >
-                <PanelRightIcon
-                  className={cn(
-                    "transition-colors",
-                    rightOpen ? "text-foreground" : "text-muted-foreground"
-                  )}
-                />
-              </Button>
-            </header>
-            <ContentPreview title={title} />
-          </SidebarInset>
-        </SidebarProvider>
+      <div className="flex h-svh min-w-0 flex-1 flex-col overflow-hidden">
+        {/* Header outside the right SidebarProvider so SidebarTrigger reaches the layout's left sidebar context */}
+        <header className="flex h-11 shrink-0 items-center border-b px-2">
+          <SidebarTrigger />
+          <span className="ml-2 flex-1 truncate text-xs text-muted-foreground">
+            {title}
+          </span>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={() => setRightOpen((o) => !o)}
+            aria-label="Toggle copilot panel"
+          >
+            <PanelRightIcon
+              className={cn(
+                "transition-colors",
+                rightOpen ? "text-foreground" : "text-muted-foreground"
+              )}
+            />
+          </Button>
+        </header>
 
-        {/* Right sidebar — uses the outer SidebarProvider context */}
-        <PromptPanel onTitleChange={setTitle} />
-      </SidebarProvider>
+        {/* Right sidebar provider wraps content + prompt panel */}
+        <SidebarProvider
+          open={rightOpen}
+          onOpenChange={setRightOpen}
+          style={{ "--sidebar-width": "24rem" } as React.CSSProperties}
+          className="min-h-0 flex-1"
+        >
+          <ContentPreview title={title} />
+          <PromptPanel
+            workspaceId={workspaceId}
+            artifactId={artifactId}
+            onTitleChange={setTitle}
+          />
+        </SidebarProvider>
+      </div>
     </LexicalExtensionComposer>
   )
 }
