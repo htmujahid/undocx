@@ -41,6 +41,7 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
+import { WorkspaceSwitcher } from "./workspace-switcher"
 
 const NAV_ITEMS = [
   { icon: LayoutGridIcon, label: "All Items", count: 24 },
@@ -105,31 +106,8 @@ export function AppSidebar({ user, onSignOut }: AppSidebarProps) {
   return (
     <Sidebar collapsible="offcanvas">
       {/* ── Header ── */}
-      <SidebarHeader className="px-3 py-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="flex size-7 items-center justify-center rounded-md bg-primary">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="size-3.5 text-primary-foreground"
-              >
-                <path d="M4 6h16M4 10h16M4 14h8M4 18h8" />
-                <path d="M19 14l-3 3 3 3" />
-                <path d="m22 14-3 3 3 3" />
-              </svg>
-            </div>
-            <span className="text-sm font-semibold">Renderical</span>
-          </div>
-          <Button variant="ghost" size="icon-sm">
-            <PlusIcon />
-          </Button>
-        </div>
+      <SidebarHeader className="px-2 py-2">
+        <WorkspaceSwitcher />
       </SidebarHeader>
 
       {/* ── Scrollable content ── */}

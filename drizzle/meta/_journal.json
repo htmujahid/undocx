@@ -8,6 +8,13 @@
       "when": 1781151286128,
       "tag": "0000_outgoing_cannonball",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1781171291976,
+      "tag": "0001_gigantic_sue_storm",
+      "breakpoints": true
     }
   ]
 }

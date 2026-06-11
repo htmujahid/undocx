@@ -7,6 +7,7 @@ import { twoFactor } from "better-auth/plugins"
 import { headers } from "next/headers"
 
 import { db } from "@/lib/db"
+import { workspace } from "@/lib/db/schema"
 import { mailer } from "@/lib/mailer"
 
 export const auth = betterAuth({
@@ -70,6 +71,18 @@ export const auth = betterAuth({
         subject: "Verify your email address",
         html: `<p>Hi ${user.name},</p><p>Click <a href="${url}">here</a> to verify your email</p><p>Or copy and paste the link below into your browser:</p><p>${url}</p>`,
       })
+    },
+  },
+  databaseHooks: {
+    user: {
+      create: {
+        after: async (user) => {
+          await db.insert(workspace).values({
+            name: "Demo Workspace",
+            ownerId: user.id,
+          })
+        },
+      },
     },
   },
   rateLimit: {
