@@ -1,12 +1,17 @@
 "use client"
 
-import type { EditorConfig, LexicalEditor, SerializedLexicalNode, Spread } from "lexical"
 import type { JSX } from "react"
-
 import { useSyncExternalStore } from "react"
 
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
+import type {
+  EditorConfig,
+  LexicalEditor,
+  SerializedLexicalNode,
+  Spread,
+} from "lexical"
 import { DecoratorNode } from "lexical"
+
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 
 import { snapshotFootnotes, subscribeFootnotes } from "./footnote-store"
 
@@ -18,8 +23,8 @@ export type SerializedFootnoteNode = Spread<
 function FootnoteRenderer({ nodeKey }: { nodeKey: string }) {
   const [editor] = useLexicalComposerContext()
   const map = useSyncExternalStore(
-    cb => subscribeFootnotes(editor, cb),
-    () => snapshotFootnotes(editor),
+    (cb) => subscribeFootnotes(editor, cb),
+    () => snapshotFootnotes(editor)
   )
   const index = map.get(nodeKey)?.index ?? null
 

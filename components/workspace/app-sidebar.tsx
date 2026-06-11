@@ -14,7 +14,6 @@ import {
   SettingsIcon,
   StarIcon,
 } from "lucide-react"
-
 import Link from "next/link"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"

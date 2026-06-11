@@ -1,13 +1,12 @@
 "use client"
 
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
 import { useRouter } from "next/navigation"
+import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
-import { Controller, useForm } from "react-hook-form"
-
-import { setPassword } from "@/lib/actions/auth"
+import { setPassword } from "@/app/(app)/account/security/page"
 import { Button } from "@/components/ui/button"
 import {
   Field,
@@ -47,7 +46,11 @@ export function PasswordForm({ hasCredential }: { hasCredential: boolean }) {
 
   const changeForm = useForm<ChangePasswordValues>({
     resolver: standardSchemaResolver(changeSchema),
-    defaultValues: { currentPassword: "", newPassword: "", confirmPassword: "" },
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    },
   })
 
   const setForm = useForm<SetPasswordValues>({
@@ -168,7 +171,9 @@ export function PasswordForm({ hasCredential }: { hasCredential: boolean }) {
             variant="outline"
             disabled={changeForm.formState.isSubmitting}
           >
-            {changeForm.formState.isSubmitting ? "Updating…" : "Update password"}
+            {changeForm.formState.isSubmitting
+              ? "Updating…"
+              : "Update password"}
           </Button>
         </form>
       ) : (
@@ -226,7 +231,9 @@ export function PasswordForm({ hasCredential }: { hasCredential: boolean }) {
             variant="outline"
             disabled={setForm.formState.isSubmitting}
           >
-            {setForm.formState.isSubmitting ? "Setting password…" : "Set password"}
+            {setForm.formState.isSubmitting
+              ? "Setting password…"
+              : "Set password"}
           </Button>
         </form>
       )}

@@ -1,14 +1,16 @@
 "use client"
 
-import type { EditorConfig, LexicalEditor, SerializedLexicalNode, Spread } from "lexical"
 import type { JSX } from "react"
 
+import type {
+  EditorConfig,
+  LexicalEditor,
+  SerializedLexicalNode,
+  Spread,
+} from "lexical"
 import { DecoratorNode } from "lexical"
 
-export type SerializedSvgNode = Spread<
-  { html: string },
-  SerializedLexicalNode
->
+export type SerializedSvgNode = Spread<{ html: string }, SerializedLexicalNode>
 
 function SvgRenderer({ html }: { html: string }) {
   return (

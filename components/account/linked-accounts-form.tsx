@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 
+import { Account } from "better-auth"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
@@ -14,7 +15,6 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { authClient } from "@/lib/auth-client"
-import { Account } from "better-auth"
 
 const OAUTH_PROVIDERS = [
   {

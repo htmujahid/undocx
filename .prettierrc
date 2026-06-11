@@ -8,6 +8,7 @@
   "importOrder": [
     "^react$",
     "^react-dom$",
+    "next$",
     "<THIRD_PARTY_MODULES>",
     "^@base-ui/",
     "^@fontsource-variable/",

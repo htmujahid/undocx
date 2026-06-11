@@ -2,11 +2,10 @@
 
 import { useState } from "react"
 
-import { toast } from "sonner"
-import { z } from "zod"
-
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
 import { Controller, useForm } from "react-hook-form"
+import { toast } from "sonner"
+import { z } from "zod"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -82,7 +81,9 @@ export function EmailForm({ currentEmail }: { currentEmail: string }) {
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>New email address</FieldLabel>
+                  <FieldLabel htmlFor={field.name}>
+                    New email address
+                  </FieldLabel>
                   <Input
                     {...field}
                     id={field.name}

@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect } from "react"
+
 import { useRouter, useSearchParams } from "next/navigation"
 
 import { ResetPasswordForm } from "@/components/auth/reset-password-form"

@@ -1,23 +1,29 @@
 "use client"
 
+import { $getRoot, configExtension, defineExtension } from "lexical"
+
 import { $isCodeNode } from "@lexical/code"
 import { CodeShikiExtension, ShikiTokenizer } from "@lexical/code-shiki"
 import { getExtensionDependencyFromEditor } from "@lexical/extension"
-import { $getRoot, configExtension, defineExtension } from "lexical"
 
 const LIGHT_THEME = "github-light"
 const DARK_THEME = "github-dark"
 
 function isDarkMode(): boolean {
-  return typeof document !== "undefined" &&
+  return (
+    typeof document !== "undefined" &&
     document.documentElement.classList.contains("dark")
+  )
 }
 
 export const CodeHighlightExtension = defineExtension({
   name: "renderical/code-highlight",
   dependencies: [configExtension(CodeShikiExtension, { disabled: true })],
   afterRegistration(editor) {
-    const { output } = getExtensionDependencyFromEditor(editor, CodeShikiExtension)
+    const { output } = getExtensionDependencyFromEditor(
+      editor,
+      CodeShikiExtension
+    )
 
     // Pick the right default theme before enabling so the first highlight uses
     // the correct palette when the page already starts in dark mode.
@@ -30,7 +36,9 @@ export const CodeHighlightExtension = defineExtension({
     // Re-highlight all code nodes whenever the .dark class is toggled on <html>.
     // Guard: MutationObserver is only available in the browser.
     if (typeof document === "undefined") {
-      return () => { output.disabled.value = true }
+      return () => {
+        output.disabled.value = true
+      }
     }
 
     const observer = new MutationObserver(() => {

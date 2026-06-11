@@ -1,13 +1,14 @@
-import type * as React from 'react'
-import { Toaster } from 'sonner'
+import type * as React from "react"
 
-import { TooltipProvider } from '@/components/ui/tooltip'
+import { Toaster } from "sonner"
 
-import { AuthProvider } from './auth-provider'
-import { QueryProvider } from './query-provider'
-import { ThemeProvider } from './theme-provider'
+import { TooltipProvider } from "@/components/ui/tooltip"
 
-type Session = React.ComponentProps<typeof AuthProvider>['session']
+import { AuthProvider } from "./auth-provider"
+import { QueryProvider } from "./query-provider"
+import { ThemeProvider } from "./theme-provider"
+
+type Session = React.ComponentProps<typeof AuthProvider>["session"]
 
 interface ProvidersProps {
   children: React.ReactNode
@@ -19,9 +20,7 @@ export function Providers({ children, initialSession }: ProvidersProps) {
     <ThemeProvider>
       <QueryProvider>
         <TooltipProvider>
-          <AuthProvider session={initialSession}>
-            {children}
-          </AuthProvider>
+          <AuthProvider session={initialSession}>{children}</AuthProvider>
           <Toaster />
         </TooltipProvider>
       </QueryProvider>

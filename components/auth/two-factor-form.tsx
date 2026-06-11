@@ -4,8 +4,8 @@ import { useState } from "react"
 
 import { useRouter } from "next/navigation"
 
-import { TotpForm } from "./totp-form"
 import { OtpForm } from "./otp-form"
+import { TotpForm } from "./totp-form"
 
 type Mode = "totp" | "otp"
 

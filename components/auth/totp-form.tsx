@@ -30,7 +30,10 @@ export function TotpForm({ onSuccess, onSwitchToOtp }: Props) {
   async function handleVerifyTotp() {
     if (code.length !== 6) return
     setLoading(true)
-    const { error } = await authClient.twoFactor.verifyTotp({ code, trustDevice })
+    const { error } = await authClient.twoFactor.verifyTotp({
+      code,
+      trustDevice,
+    })
     setLoading(false)
     if (error) {
       toast.error(error.message)
@@ -43,7 +46,9 @@ export function TotpForm({ onSuccess, onSwitchToOtp }: Props) {
   async function handleVerifyBackup() {
     if (!backupCode.trim()) return
     setLoading(true)
-    const { error } = await authClient.twoFactor.verifyBackupCode({ code: backupCode.trim() })
+    const { error } = await authClient.twoFactor.verifyBackupCode({
+      code: backupCode.trim(),
+    })
     setLoading(false)
     if (error) {
       toast.error(error.message)
@@ -77,15 +82,24 @@ export function TotpForm({ onSuccess, onSwitchToOtp }: Props) {
         <div className="flex flex-col items-center gap-1">
           <button
             type="button"
-            onClick={() => { setSubMode("totp"); setBackupCode("") }}
-            className={buttonVariants({ variant: "link", className: "h-auto p-0 text-sm text-muted-foreground" })}
+            onClick={() => {
+              setSubMode("totp")
+              setBackupCode("")
+            }}
+            className={buttonVariants({
+              variant: "link",
+              className: "h-auto p-0 text-sm text-muted-foreground",
+            })}
           >
             Use authenticator app instead
           </button>
           <button
             type="button"
             onClick={onSwitchToOtp}
-            className={buttonVariants({ variant: "link", className: "h-auto p-0 text-sm text-muted-foreground" })}
+            className={buttonVariants({
+              variant: "link",
+              className: "h-auto p-0 text-sm text-muted-foreground",
+            })}
           >
             Get a code via email instead
           </button>
@@ -140,14 +154,23 @@ export function TotpForm({ onSuccess, onSwitchToOtp }: Props) {
         <button
           type="button"
           onClick={onSwitchToOtp}
-          className={buttonVariants({ variant: "link", className: "h-auto p-0 text-sm text-muted-foreground" })}
+          className={buttonVariants({
+            variant: "link",
+            className: "h-auto p-0 text-sm text-muted-foreground",
+          })}
         >
           Get a code via email instead
         </button>
         <button
           type="button"
-          onClick={() => { setSubMode("backup"); setCode("") }}
-          className={buttonVariants({ variant: "link", className: "h-auto p-0 text-sm text-muted-foreground" })}
+          onClick={() => {
+            setSubMode("backup")
+            setCode("")
+          }}
+          className={buttonVariants({
+            variant: "link",
+            className: "h-auto p-0 text-sm text-muted-foreground",
+          })}
         >
           Use a backup code
         </button>

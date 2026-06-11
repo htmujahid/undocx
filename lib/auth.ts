@@ -1,9 +1,10 @@
 import { cache } from "react"
-import { headers } from "next/headers"
+
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { nextCookies } from "better-auth/next-js"
 import { twoFactor } from "better-auth/plugins"
+import { headers } from "next/headers"
 
 import { db } from "@/lib/db"
 import { mailer } from "@/lib/mailer"
@@ -29,7 +30,15 @@ export const auth = betterAuth({
     changeEmail: {
       enabled: true,
       requireVerification: true,
-      sendChangeEmailVerification: async ({ user, newEmail, url }: { user: { name: string; email: string }, newEmail: string, url: string }) => {
+      sendChangeEmailVerification: async ({
+        user,
+        newEmail,
+        url,
+      }: {
+        user: { name: string; email: string }
+        newEmail: string
+        url: string
+      }) => {
         void mailer.sendMail({
           from: "noreply@renderical.com",
           to: user.email,

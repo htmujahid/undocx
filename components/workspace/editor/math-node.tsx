@@ -1,8 +1,13 @@
 "use client"
 
-import type { EditorConfig, LexicalEditor, SerializedLexicalNode, Spread } from "lexical"
 import type { JSX } from "react"
 
+import type {
+  EditorConfig,
+  LexicalEditor,
+  SerializedLexicalNode,
+  Spread,
+} from "lexical"
 import { DecoratorNode } from "lexical"
 
 export type MathDisplay = "block" | "inline"
@@ -12,7 +17,13 @@ export type SerializedMathNode = Spread<
   SerializedLexicalNode
 >
 
-function MathRenderer({ html, display }: { html: string; display: MathDisplay }) {
+function MathRenderer({
+  html,
+  display,
+}: {
+  html: string
+  display: MathDisplay
+}) {
   if (display === "inline") {
     return (
       <span
@@ -52,7 +63,12 @@ export class MathNode extends DecoratorNode<JSX.Element> {
   }
 
   exportJSON(): SerializedMathNode {
-    return { type: "math", version: 1, display: this.__display, html: this.__html }
+    return {
+      type: "math",
+      version: 1,
+      display: this.__display,
+      html: this.__html,
+    }
   }
 
   createDOM(_config: EditorConfig): HTMLElement {
@@ -66,7 +82,9 @@ export class MathNode extends DecoratorNode<JSX.Element> {
   }
 
   isInline(): this["__display"] extends "inline" ? true : false {
-    return (this.__display === "inline") as this["__display"] extends "inline" ? true : false
+    return (this.__display === "inline") as this["__display"] extends "inline"
+      ? true
+      : false
   }
 
   decorate(_editor: LexicalEditor, _config: EditorConfig): JSX.Element {
@@ -74,7 +92,10 @@ export class MathNode extends DecoratorNode<JSX.Element> {
   }
 }
 
-export function $createMathNode(html: string, display: MathDisplay = "block"): MathNode {
+export function $createMathNode(
+  html: string,
+  display: MathDisplay = "block"
+): MathNode {
   return new MathNode(html, display)
 }
 

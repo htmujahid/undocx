@@ -19,7 +19,6 @@ import { authClient } from "@/lib/auth-client"
 type EnableStep = "idle" | "setup"
 
 export function MfaEnableForm() {
-
   const [step, setStep] = useState<EnableStep>("idle")
   const [password, setPassword] = useState("")
   const [totpUri, setTotpUri] = useState("")

@@ -1,14 +1,13 @@
 "use client"
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-
 import {
   CreditCardIcon,
   KeyRoundIcon,
   ShieldIcon,
   UserIcon,
 } from "lucide-react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 import { Navbar } from "@/components/marketing/navbar"
 import { cn } from "@/lib/utils"

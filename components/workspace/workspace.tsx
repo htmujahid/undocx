@@ -4,21 +4,17 @@ import { useMemo, useState } from "react"
 
 import { defineExtension } from "lexical"
 import { PanelRightIcon } from "lucide-react"
+import { useRouter } from "next/navigation"
 
-import { HorizontalRuleExtension, TabIndentationExtension } from "@lexical/extension"
+import {
+  HorizontalRuleExtension,
+  TabIndentationExtension,
+} from "@lexical/extension"
 import { LinkExtension } from "@lexical/link"
 import { ListExtension } from "@lexical/list"
 import { LexicalExtensionComposer } from "@lexical/react/LexicalExtensionComposer"
 import { RichTextExtension } from "@lexical/rich-text"
 import { TableExtension } from "@lexical/table"
-
-import { CalloutExtension } from "@/components/workspace/editor/callout-extension"
-import { CodeHighlightExtension } from "@/components/workspace/editor/code-highlight-extension"
-import { FootnoteExtension } from "@/components/workspace/editor/footnote-extension"
-import { MathExtension } from "@/components/workspace/editor/math-extension"
-import { SvgExtension } from "@/components/workspace/editor/svg-extension"
-
-import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -26,6 +22,11 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import { CalloutExtension } from "@/components/workspace/editor/callout-extension"
+import { CodeHighlightExtension } from "@/components/workspace/editor/code-highlight-extension"
+import { FootnoteExtension } from "@/components/workspace/editor/footnote-extension"
+import { MathExtension } from "@/components/workspace/editor/math-extension"
+import { SvgExtension } from "@/components/workspace/editor/svg-extension"
 import { editorTheme } from "@/components/workspace/editor/theme"
 import { signOut } from "@/lib/auth-client"
 import { cn } from "@/lib/utils"
@@ -58,7 +59,19 @@ export function Workspace({ user, data }: WorkspaceProps) {
         editable: false,
         $initialEditorState: JSON.stringify(data.editorState),
         onError: (error: Error) => console.error("[Lexical]", error),
-        dependencies: [RichTextExtension, ListExtension, LinkExtension, TableExtension, CodeHighlightExtension, SvgExtension, MathExtension, HorizontalRuleExtension, TabIndentationExtension, CalloutExtension, FootnoteExtension],
+        dependencies: [
+          RichTextExtension,
+          ListExtension,
+          LinkExtension,
+          TableExtension,
+          CodeHighlightExtension,
+          SvgExtension,
+          MathExtension,
+          HorizontalRuleExtension,
+          TabIndentationExtension,
+          CalloutExtension,
+          FootnoteExtension,
+        ],
       }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []

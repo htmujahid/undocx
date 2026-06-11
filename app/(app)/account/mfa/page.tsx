@@ -1,8 +1,8 @@
 import { ShieldCheckIcon, ShieldOffIcon } from "lucide-react"
 
-import { getSession } from "@/lib/auth"
 import { MfaEnableForm } from "@/components/account/mfa-enable-form"
 import { MfaManageForm } from "@/components/account/mfa-manage-form"
+import { getSession } from "@/lib/auth"
 
 export default async function MfaPage() {
   const session = await getSession()

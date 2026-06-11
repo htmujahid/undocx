@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react"
 
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
-import { $isHeadingNode } from "@lexical/rich-text"
-import { ArrowUpIcon, SparklesIcon } from "lucide-react"
+import { experimental_useObject as useObject } from "@ai-sdk/react"
 import { $getRoot } from "lexical"
+import { ArrowUpIcon, SparklesIcon } from "lucide-react"
 import { toast } from "sonner"
 
-import { experimental_useObject as useObject } from "@ai-sdk/react"
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
+import { $isHeadingNode } from "@lexical/rich-text"
 
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -19,8 +19,8 @@ import {
   SidebarFooter,
   SidebarHeader,
 } from "@/components/ui/sidebar"
-import { cn } from "@/lib/utils"
 import { outputSchema } from "@/lib/ai-schema"
+import { cn } from "@/lib/utils"
 
 // ── Outline ───────────────────────────────────────────────────────────────────
 
@@ -98,7 +98,9 @@ export function PromptPanel({ onTitleChange }: PromptPanelProps) {
       },
     }
     try {
-      editor.setEditorState(editor.parseEditorState(JSON.stringify(partialState)))
+      editor.setEditorState(
+        editor.parseEditorState(JSON.stringify(partialState))
+      )
       if (object!.title) onTitleChange(object!.title)
     } catch {
       // not parseable yet — skip this frame
@@ -128,7 +130,9 @@ export function PromptPanel({ onTitleChange }: PromptPanelProps) {
   }, [editor])
 
   const scrollToHeading = (key: string) => {
-    editor.getElementByKey(key)?.scrollIntoView({ behavior: "smooth", block: "start" })
+    editor
+      .getElementByKey(key)
+      ?.scrollIntoView({ behavior: "smooth", block: "start" })
   }
 
   const handleSubmit = () => {
@@ -186,7 +190,12 @@ export function PromptPanel({ onTitleChange }: PromptPanelProps) {
                   className="group relative flex w-full items-center rounded-sm py-1 pr-3 text-left transition-colors hover:bg-muted/50"
                 >
                   <span className="absolute inset-y-1 left-0 w-0.5 scale-y-0 rounded-full bg-primary/60 transition-transform group-hover:scale-y-100" />
-                  <span className={cn("truncate leading-snug", LEVEL_TEXT[item.tag])}>
+                  <span
+                    className={cn(
+                      "truncate leading-snug",
+                      LEVEL_TEXT[item.tag]
+                    )}
+                  >
                     {item.text}
                   </span>
                 </button>

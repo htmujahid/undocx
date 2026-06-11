@@ -20,18 +20,26 @@ function getStore(editor: LexicalEditor): Store {
   return store
 }
 
-export function subscribeFootnotes(editor: LexicalEditor, cb: () => void): () => void {
+export function subscribeFootnotes(
+  editor: LexicalEditor,
+  cb: () => void
+): () => void {
   const store = getStore(editor)
   store.listeners.add(cb)
   return () => store.listeners.delete(cb)
 }
 
-export function snapshotFootnotes(editor: LexicalEditor): Map<string, FootnoteInfo> {
+export function snapshotFootnotes(
+  editor: LexicalEditor
+): Map<string, FootnoteInfo> {
   return getStore(editor).map
 }
 
-export function publishFootnotes(editor: LexicalEditor, map: Map<string, FootnoteInfo>): void {
+export function publishFootnotes(
+  editor: LexicalEditor,
+  map: Map<string, FootnoteInfo>
+): void {
   const store = getStore(editor)
   store.map = map
-  store.listeners.forEach(cb => cb())
+  store.listeners.forEach((cb) => cb())
 }

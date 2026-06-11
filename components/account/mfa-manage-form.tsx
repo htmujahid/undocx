@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input"
 import { authClient } from "@/lib/auth-client"
 
 export function MfaManageForm() {
-
   const [disablePassword, setDisablePassword] = useState("")
   const [disableLoading, setDisableLoading] = useState(false)
   const [backupLoading, setBackupLoading] = useState(false)

@@ -39,7 +39,10 @@ export function OtpForm({ onSuccess, onSwitchToTotp }: Props) {
   async function handleVerify() {
     if (code.length !== 6) return
     setLoading(true)
-    const { error } = await authClient.twoFactor.verifyOtp({ code, trustDevice })
+    const { error } = await authClient.twoFactor.verifyOtp({
+      code,
+      trustDevice,
+    })
     setLoading(false)
     if (error) {
       toast.error(error.message)
@@ -101,7 +104,10 @@ export function OtpForm({ onSuccess, onSwitchToTotp }: Props) {
             type="button"
             onClick={handleSend}
             disabled={loading}
-            className={buttonVariants({ variant: "link", className: "h-auto p-0 text-sm text-muted-foreground" })}
+            className={buttonVariants({
+              variant: "link",
+              className: "h-auto p-0 text-sm text-muted-foreground",
+            })}
           >
             Resend code
           </button>
@@ -111,7 +117,10 @@ export function OtpForm({ onSuccess, onSwitchToTotp }: Props) {
       <button
         type="button"
         onClick={onSwitchToTotp}
-        className={buttonVariants({ variant: "link", className: "h-auto p-0 text-sm text-muted-foreground" })}
+        className={buttonVariants({
+          variant: "link",
+          className: "h-auto p-0 text-sm text-muted-foreground",
+        })}
       >
         Use authenticator app instead
       </button>

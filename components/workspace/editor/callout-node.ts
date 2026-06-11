@@ -1,8 +1,16 @@
 "use client"
 
-import type { EditorConfig, LexicalNode, SerializedElementNode, Spread } from "lexical"
-
-import { addClassNamesToElement, ElementNode, removeClassNamesFromElement } from "lexical"
+import type {
+  EditorConfig,
+  LexicalNode,
+  SerializedElementNode,
+  Spread,
+} from "lexical"
+import {
+  ElementNode,
+  addClassNamesToElement,
+  removeClassNamesFromElement,
+} from "lexical"
 
 export type CalloutType = "note" | "tip" | "warning" | "danger"
 
@@ -11,12 +19,13 @@ export type SerializedCalloutNode = Spread<
   SerializedElementNode
 >
 
-const TYPE_CLASSES: Record<CalloutType, { border: string[]; icon: string[] }> = {
-  note:    { border: ["border-border"], icon: ["text-foreground"]         },
-  tip:     { border: ["border-border"], icon: ["text-foreground"]         },
-  warning: { border: ["border-border"], icon: ["text-foreground"]         },
-  danger:  { border: ["border-border"], icon: ["text-muted-foreground"]   },
-}
+const TYPE_CLASSES: Record<CalloutType, { border: string[]; icon: string[] }> =
+  {
+    note: { border: ["border-border"], icon: ["text-foreground"] },
+    tip: { border: ["border-border"], icon: ["text-foreground"] },
+    warning: { border: ["border-border"], icon: ["text-foreground"] },
+    danger: { border: ["border-border"], icon: ["text-muted-foreground"] },
+  }
 
 // Lucide-compatible SVG paths, one per callout type.
 const ICON_SVG: Record<CalloutType, string> = {
@@ -27,9 +36,20 @@ const ICON_SVG: Record<CalloutType, string> = {
 }
 
 const BASE_OUTER = [
-  "my-4", "grid", "w-full", "grid-cols-[auto_1fr]", "items-start",
-  "gap-x-2.5", "gap-y-0.5", "rounded-lg", "border", "bg-card",
-  "px-4", "py-3", "text-sm", "text-card-foreground",
+  "my-4",
+  "grid",
+  "w-full",
+  "grid-cols-[auto_1fr]",
+  "items-start",
+  "gap-x-2.5",
+  "gap-y-0.5",
+  "rounded-lg",
+  "border",
+  "bg-card",
+  "px-4",
+  "py-3",
+  "text-sm",
+  "text-card-foreground",
 ]
 
 const BASE_ICON = ["size-4", "shrink-0", "translate-y-0.5", "row-span-2"]
@@ -57,8 +77,10 @@ export class CalloutNode extends ElementNode {
     node.setFormat(serialized.format)
     node.setIndent(serialized.indent)
     node.setDirection(serialized.direction)
-    if (serialized.textFormat !== undefined) node.setTextFormat(serialized.textFormat)
-    if (serialized.textStyle !== undefined) node.setTextStyle(serialized.textStyle)
+    if (serialized.textFormat !== undefined)
+      node.setTextFormat(serialized.textFormat)
+    if (serialized.textStyle !== undefined)
+      node.setTextStyle(serialized.textStyle)
     return node
   }
 
@@ -78,7 +100,11 @@ export class CalloutNode extends ElementNode {
 
   createDOM(_config: EditorConfig): HTMLElement {
     const outer = document.createElement("div")
-    addClassNamesToElement(outer, ...BASE_OUTER, ...TYPE_CLASSES[this.__calloutType].border)
+    addClassNamesToElement(
+      outer,
+      ...BASE_OUTER,
+      ...TYPE_CLASSES[this.__calloutType].border
+    )
 
     outer.appendChild(buildIcon(this.__calloutType))
 
@@ -91,7 +117,10 @@ export class CalloutNode extends ElementNode {
 
   updateDOM(prevNode: CalloutNode, dom: HTMLElement): boolean {
     if (prevNode.__calloutType !== this.__calloutType) {
-      removeClassNamesFromElement(dom, ...TYPE_CLASSES[prevNode.__calloutType].border)
+      removeClassNamesFromElement(
+        dom,
+        ...TYPE_CLASSES[prevNode.__calloutType].border
+      )
       addClassNamesToElement(dom, ...TYPE_CLASSES[this.__calloutType].border)
       // Replace the icon span (first child) with a fresh one.
       dom.replaceChild(buildIcon(this.__calloutType), dom.firstElementChild!)
@@ -108,10 +137,14 @@ export class CalloutNode extends ElementNode {
   }
 }
 
-export function $createCalloutNode(calloutType: CalloutType = "note"): CalloutNode {
+export function $createCalloutNode(
+  calloutType: CalloutType = "note"
+): CalloutNode {
   return new CalloutNode(calloutType)
 }
 
-export function $isCalloutNode(node: LexicalNode | null | undefined): node is CalloutNode {
+export function $isCalloutNode(
+  node: LexicalNode | null | undefined
+): node is CalloutNode {
   return node instanceof CalloutNode
 }

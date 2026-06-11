@@ -1,10 +1,18 @@
-import { headers } from 'next/headers'
+import { headers } from "next/headers"
 
-import { DeleteAccountForm } from '@/components/account/delete-account-form'
-import { EmailForm } from '@/components/account/email-form'
-import { LinkedAccountsForm } from '@/components/account/linked-accounts-form'
-import { PasswordForm } from '@/components/account/password-form'
-import { auth, getSession } from '@/lib/auth'
+import { DeleteAccountForm } from "@/components/account/delete-account-form"
+import { EmailForm } from "@/components/account/email-form"
+import { LinkedAccountsForm } from "@/components/account/linked-accounts-form"
+import { PasswordForm } from "@/components/account/password-form"
+import { auth, getSession } from "@/lib/auth"
+
+export async function setPassword(newPassword: string) {
+  "use server"
+  await auth.api.setPassword({
+    body: { newPassword },
+    headers: await headers(),
+  })
+}
 
 export default async function Page() {
   const [session, accounts] = await Promise.all([
@@ -12,7 +20,7 @@ export default async function Page() {
     auth.api.listUserAccounts({ headers: await headers() }),
   ])
 
-  const hasCredential = accounts.some((a) => a.providerId === 'credential')
+  const hasCredential = accounts.some((a) => a.providerId === "credential")
 
   return (
     <div className="space-y-12">

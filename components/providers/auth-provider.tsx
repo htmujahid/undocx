@@ -1,12 +1,12 @@
-'use client'
+"use client"
 
-import { createContext, useContext } from 'react'
-import type * as React from 'react'
+import { createContext, useContext } from "react"
+import type * as React from "react"
 
-import { authClient } from '@/lib/auth-client'
+import { authClient } from "@/lib/auth-client"
 
 type Session = typeof authClient.$Infer.Session
-type User = Session['user']
+type User = Session["user"]
 
 interface AuthContextValue {
   session: Session | null
