@@ -6,7 +6,7 @@ import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 
-import { setPassword } from "@/app/(app)/account/security/page"
+import { setPassword } from "@/app/(app)/account/security/actions"
 import { Button } from "@/components/ui/button"
 import {
   Field,

@@ -56,10 +56,7 @@ export function FolderItem({
       <SidebarMenuButton
         size="sm"
         isActive={isSelected}
-        onClick={() => {
-          callbacks.onToggle(folder.id)
-          callbacks.onSelect?.(folder.id)
-        }}
+        onClick={() => callbacks.onToggle(folder.id)}
       >
         <span className="relative size-4 shrink-0">
           <span

@@ -3,6 +3,10 @@ import Link from "next/link"
 import { ProfileForm } from "@/components/account/profile-form"
 import { getSession } from "@/lib/auth"
 
+export const metadata = {
+  title: "Profile",
+}
+
 export default async function AccountPage() {
   const session = await getSession()
   const user = session!.user

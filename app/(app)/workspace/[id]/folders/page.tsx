@@ -1,10 +1,14 @@
 import { and, eq } from "drizzle-orm"
 import { redirect } from "next/navigation"
 
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
+
 import { FolderView } from "@/components/workspace/folder-view"
 import { getSession } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { workspace } from "@/lib/db/schema"
+import { favoritesQueryOptions } from "@/lib/data/favorites"
+import { getQueryClient } from "@/lib/data/get-query-client"
 
 export default async function FoldersPage({
   params,
@@ -27,5 +31,13 @@ export default async function FoldersPage({
 
   if (!ws) redirect("/workspace")
 
-  return <FolderView workspaceId={ws.id} folderId={folderId} />
+  const queryClient = getQueryClient()
+
+  await queryClient.prefetchQuery(favoritesQueryOptions(ws.id))
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <FolderView workspaceId={ws.id} folderId={folderId} />
+    </HydrationBoundary>
+  )
 }

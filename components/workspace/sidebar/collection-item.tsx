@@ -6,6 +6,7 @@ import {
   ChevronRightIcon,
   EditIcon,
   FileTextIcon,
+  LayoutListIcon,
   MoreHorizontalIcon,
   Trash2Icon,
 } from "lucide-react"
@@ -125,10 +126,7 @@ export function CollectionItem({
         <SidebarMenuButton
           size="sm"
           isActive={isSelected}
-          onClick={() => {
-            onToggle()
-            onSelect()
-          }}
+          onClick={onToggle}
         >
           {artifacts.length > 0 ? (
             <span className="relative size-4 shrink-0">
@@ -164,6 +162,11 @@ export function CollectionItem({
             align={isMobile ? "end" : "start"}
             className="w-48"
           >
+            <DropdownMenuItem onClick={onSelect}>
+              <LayoutListIcon className="text-muted-foreground" />
+              View collection
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => startEdit(collection)}>
               <EditIcon className="text-muted-foreground" />
               Edit

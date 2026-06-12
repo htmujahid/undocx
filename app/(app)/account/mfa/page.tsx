@@ -4,6 +4,10 @@ import { MfaEnableForm } from "@/components/account/mfa-enable-form"
 import { MfaManageForm } from "@/components/account/mfa-manage-form"
 import { getSession } from "@/lib/auth"
 
+export const metadata = {
+  title: "Multi-factor authentication",
+}
+
 export default async function MfaPage() {
   const session = await getSession()
   const isEnabled = !!session?.user.twoFactorEnabled

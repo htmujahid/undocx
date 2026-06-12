@@ -41,6 +41,12 @@ const MILESTONES = [
   },
 ]
 
+export const metadata = {
+  title: "About",
+  description:
+    "Learn about Renderical's mission to make AI-generated content adaptive, organized, and editable.",
+}
+
 export default function AboutPage() {
   return (
     <main>

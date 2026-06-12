@@ -6,12 +6,8 @@ import { LinkedAccountsForm } from "@/components/account/linked-accounts-form"
 import { PasswordForm } from "@/components/account/password-form"
 import { auth, getSession } from "@/lib/auth"
 
-export async function setPassword(newPassword: string) {
-  "use server"
-  await auth.api.setPassword({
-    body: { newPassword },
-    headers: await headers(),
-  })
+export const metadata = {
+  title: "Security",
 }
 
 export default async function Page() {

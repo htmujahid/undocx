@@ -2,6 +2,7 @@
 
 import {
   EditIcon,
+  FolderOpenIcon,
   FolderPlusIcon,
   MoreHorizontalIcon,
   Trash2Icon,
@@ -39,6 +40,11 @@ export function FolderActionMenu({
         align={isMobile ? "end" : "start"}
         className="w-48"
       >
+        <DropdownMenuItem onClick={() => callbacks.onSelect?.(folder.id)}>
+          <FolderOpenIcon className="text-muted-foreground" />
+          Open folder
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => callbacks.onCreateSubfolder(folder.id)}
         >

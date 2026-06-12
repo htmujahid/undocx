@@ -1,10 +1,14 @@
 import { and, eq } from "drizzle-orm"
 import { redirect } from "next/navigation"
 
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
+
 import { WorkspaceHome } from "@/components/workspace/workspace-home"
 import { getSession } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { workspace } from "@/lib/db/schema"
+import { favoritesQueryOptions } from "@/lib/data/favorites"
+import { getQueryClient } from "@/lib/data/get-query-client"
 
 export default async function WorkspacePage({
   params,
@@ -23,5 +27,13 @@ export default async function WorkspacePage({
 
   if (!ws) redirect("/workspace")
 
-  return <WorkspaceHome workspaceId={ws.id} />
+  const queryClient = getQueryClient()
+
+  await queryClient.prefetchQuery(favoritesQueryOptions(ws.id))
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <WorkspaceHome workspaceId={ws.id} />
+    </HydrationBoundary>
+  )
 }

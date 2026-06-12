@@ -1,10 +1,30 @@
+import { cache } from "react"
+
 import { and, eq } from "drizzle-orm"
-import { redirect } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 
 import { Workspace } from "@/components/workspace/workspace"
 import { getSession } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { artifact, workspace } from "@/lib/db/schema"
+
+const getArtifact = cache(async (id: string, artifactId: string) => {
+  const [art] = await db
+    .select()
+    .from(artifact)
+    .where(and(eq(artifact.id, artifactId), eq(artifact.workspaceId, id)))
+  return art ?? null
+})
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string; artifactId: string }>
+}) {
+  const { id, artifactId } = await params
+  const art = await getArtifact(id, artifactId)
+  return { title: art?.title || "Untitled" }
+}
 
 export default async function ArtifactPage({
   params,
@@ -23,12 +43,9 @@ export default async function ArtifactPage({
 
   if (!ws) redirect("/workspace")
 
-  const [art] = await db
-    .select()
-    .from(artifact)
-    .where(and(eq(artifact.id, artifactId), eq(artifact.workspaceId, id)))
+  const art = await getArtifact(id, artifactId)
 
-  if (!art) redirect(`/workspace/${id}`)
+  if (!art) notFound()
 
   return (
     <Workspace
