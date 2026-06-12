@@ -89,6 +89,7 @@ export function ContentPreview({ title }: { title: string }) {
           <Separator className="mb-6" />
 
           <ContentEditable className="space-y-3 outline-none" />
+
           <FootnoteList />
         </div>
       </ScrollArea>

@@ -32,7 +32,7 @@ import {
 import { cn } from "@/lib/utils"
 
 import { ContentPreview } from "./content-preview"
-import { PromptPanel } from "./prompt-panel"
+import { CopilotSidebar } from "./copilot-sidebar"
 
 export function Workspace({
   workspaceId,
@@ -122,7 +122,7 @@ export function Workspace({
           className="min-h-0 flex-1"
         >
           <ContentPreview title={title} />
-          <PromptPanel
+          <CopilotSidebar
             workspaceId={workspaceId}
             artifactId={artifactId}
             onTitleChange={setTitle}
