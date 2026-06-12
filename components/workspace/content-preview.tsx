@@ -36,11 +36,14 @@ function WordCount() {
   return <span>{count.toLocaleString()} words</span>
 }
 
+const EMPTY_FOOTNOTE_MAP = new Map()
+
 function FootnoteList() {
   const [editor] = useLexicalComposerContext()
   const map = useSyncExternalStore(
     (cb) => subscribeFootnotes(editor, cb),
-    () => snapshotFootnotes(editor)
+    () => snapshotFootnotes(editor),
+    () => EMPTY_FOOTNOTE_MAP
   )
   const entries = Array.from(map.values()).sort((a, b) => a.index - b.index)
 
