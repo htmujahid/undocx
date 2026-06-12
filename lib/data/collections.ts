@@ -52,11 +52,14 @@ export const updateCollectionMutationOptions = mutationOptions({
     name: string
     color?: string
   }): Promise<Collection> => {
-    const res = await fetch(`/api/workspaces/${workspaceId}/collections/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, color }),
-    })
+    const res = await fetch(
+      `/api/workspaces/${workspaceId}/collections/${id}`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, color }),
+      }
+    )
     if (!res.ok) throw new Error("Failed to update collection")
     return res.json()
   },
@@ -70,9 +73,12 @@ export const deleteCollectionMutationOptions = mutationOptions({
     workspaceId: string
     id: string
   }): Promise<void> => {
-    const res = await fetch(`/api/workspaces/${workspaceId}/collections/${id}`, {
-      method: "DELETE",
-    })
+    const res = await fetch(
+      `/api/workspaces/${workspaceId}/collections/${id}`,
+      {
+        method: "DELETE",
+      }
+    )
     if (!res.ok) throw new Error("Failed to delete collection")
   },
 })

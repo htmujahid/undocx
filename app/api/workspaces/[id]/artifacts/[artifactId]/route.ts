@@ -42,7 +42,8 @@ export async function GET(
   { params }: { params: Promise<{ id: string; artifactId: string }> }
 ) {
   const session = await getSession()
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id, artifactId } = await params
   const ws = await verifyWorkspaceOwner(id, session.user.id)
@@ -64,19 +65,26 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string; artifactId: string }> }
 ) {
   const session = await getSession()
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id, artifactId } = await params
   const ws = await verifyWorkspaceOwner(id, session.user.id)
   if (!ws) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
-  const { title, content, isArchived, folderIds, collectionIds } = await req.json()
+  const { title, content, isArchived, folderIds, collectionIds } =
+    await req.json()
   if (title !== undefined && !title?.trim()) {
-    return NextResponse.json({ error: "Title cannot be empty" }, { status: 400 })
+    return NextResponse.json(
+      { error: "Title cannot be empty" },
+      { status: 400 }
+    )
   }
 
   const validFolderIds =
-    folderIds !== undefined ? await filterWorkspaceFolderIds(id, folderIds) : null
+    folderIds !== undefined
+      ? await filterWorkspaceFolderIds(id, folderIds)
+      : null
   const validCollectionIds =
     collectionIds !== undefined
       ? await filterWorkspaceCollectionIds(id, collectionIds)
@@ -110,11 +118,15 @@ export async function PATCH(
     }
 
     if (validFolderIds) {
-      await tx.delete(artifactFolder).where(eq(artifactFolder.artifactId, row.id))
+      await tx
+        .delete(artifactFolder)
+        .where(eq(artifactFolder.artifactId, row.id))
       if (validFolderIds.length) {
         await tx
           .insert(artifactFolder)
-          .values(validFolderIds.map((folderId) => ({ artifactId: row.id, folderId })))
+          .values(
+            validFolderIds.map((folderId) => ({ artifactId: row.id, folderId }))
+          )
       }
     }
     if (validCollectionIds) {
@@ -133,7 +145,8 @@ export async function PATCH(
     return row
   })
 
-  if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  if (!updated)
+    return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   const links = await getArtifactLinks(artifactId)
   return NextResponse.json({ ...updated, ...links })
@@ -144,7 +157,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string; artifactId: string }> }
 ) {
   const session = await getSession()
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id, artifactId } = await params
   const ws = await verifyWorkspaceOwner(id, session.user.id)
@@ -155,7 +169,8 @@ export async function DELETE(
     .where(and(eq(artifact.id, artifactId), eq(artifact.workspaceId, id)))
     .returning()
 
-  if (!deleted) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  if (!deleted)
+    return NextResponse.json({ error: "Not found" }, { status: 404 })
   return new NextResponse(null, { status: 204 })
 }
 
@@ -173,6 +188,8 @@ async function filterWorkspaceCollectionIds(workspaceId: string, ids: unknown) {
   const rows = await db
     .select({ id: collection.id })
     .from(collection)
-    .where(and(eq(collection.workspaceId, workspaceId), inArray(collection.id, ids)))
+    .where(
+      and(eq(collection.workspaceId, workspaceId), inArray(collection.id, ids))
+    )
   return rows.map((r) => r.id)
 }

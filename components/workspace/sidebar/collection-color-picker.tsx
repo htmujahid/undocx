@@ -30,7 +30,8 @@ export function CollectionColorPicker({ value, onChange }: ColorPickerProps) {
           aria-label={`Select color ${color}`}
           className={cn(
             "size-5 rounded-full transition-transform hover:scale-110",
-            value === color && "scale-110 ring-2 ring-ring ring-offset-2 ring-offset-background"
+            value === color &&
+              "scale-110 ring-2 ring-ring ring-offset-2 ring-offset-background"
           )}
           style={{ backgroundColor: color }}
           onClick={() => onChange(color)}

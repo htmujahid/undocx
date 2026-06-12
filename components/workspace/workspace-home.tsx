@@ -2,8 +2,17 @@
 
 import { useState } from "react"
 
-import { ArchiveIcon, CheckIcon, FileTextIcon, FolderIcon, LayersIcon, PlusIcon, StarIcon } from "lucide-react"
+import {
+  ArchiveIcon,
+  CheckIcon,
+  FileTextIcon,
+  FolderIcon,
+  LayersIcon,
+  PlusIcon,
+  StarIcon,
+} from "lucide-react"
 import { useRouter } from "next/navigation"
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { Button } from "@/components/ui/button"
@@ -28,9 +37,15 @@ import {
   deleteArtifactMutationOptions,
   updateArtifactMutationOptions,
 } from "@/lib/data/artifacts"
-import { type Collection, collectionsQueryOptions } from "@/lib/data/collections"
+import {
+  type Collection,
+  collectionsQueryOptions,
+} from "@/lib/data/collections"
+import {
+  favoritesQueryOptions,
+  toggleFavoriteMutationOptions,
+} from "@/lib/data/favorites"
 import { type Folder, foldersQueryOptions } from "@/lib/data/folders"
-import { favoritesQueryOptions, toggleFavoriteMutationOptions } from "@/lib/data/favorites"
 
 function relativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime()
@@ -51,21 +66,30 @@ interface WorkspaceHomeProps {
 export function WorkspaceHome({ workspaceId }: WorkspaceHomeProps) {
   const router = useRouter()
   const qc = useQueryClient()
-  const { data: artifacts = [], isLoading } = useQuery(artifactsQueryOptions(workspaceId))
+  const { data: artifacts = [], isLoading } = useQuery(
+    artifactsQueryOptions(workspaceId)
+  )
   const { data: folders = [] } = useQuery(foldersQueryOptions(workspaceId))
-  const { data: collections = [] } = useQuery(collectionsQueryOptions(workspaceId))
+  const { data: collections = [] } = useQuery(
+    collectionsQueryOptions(workspaceId)
+  )
   const { data: favorites = [] } = useQuery(favoritesQueryOptions(workspaceId))
 
   const [moveTarget, setMoveTarget] = useState<ArtifactSummary | null>(null)
-  const [collectionTarget, setCollectionTarget] = useState<ArtifactSummary | null>(null)
+  const [collectionTarget, setCollectionTarget] =
+    useState<ArtifactSummary | null>(null)
 
   const favoriteIds = new Set(favorites.map((f) => f.id))
 
   const invalidateArtifacts = () =>
-    qc.invalidateQueries({ queryKey: artifactsQueryOptions(workspaceId).queryKey })
+    qc.invalidateQueries({
+      queryKey: artifactsQueryOptions(workspaceId).queryKey,
+    })
 
   const invalidateFavorites = () =>
-    qc.invalidateQueries({ queryKey: favoritesQueryOptions(workspaceId).queryKey })
+    qc.invalidateQueries({
+      queryKey: favoritesQueryOptions(workspaceId).queryKey,
+    })
 
   const updateMutation = useMutation({
     ...updateArtifactMutationOptions,
@@ -134,12 +158,24 @@ export function WorkspaceHome({ workspaceId }: WorkspaceHomeProps) {
                   folders={folders}
                   collections={collections}
                   isFavorited={favoriteIds.has(art.id)}
-                  onClick={() => router.push(`/workspace/${workspaceId}/${art.id}`)}
+                  onClick={() =>
+                    router.push(`/workspace/${workspaceId}/${art.id}`)
+                  }
                   onMove={() => setMoveTarget(art)}
                   onAddToCollection={() => setCollectionTarget(art)}
-                  onFavoriteToggle={() => favoriteMutation.mutate({ workspaceId, artifactId: art.id })}
-                  onArchive={() => updateMutation.mutate({ workspaceId, id: art.id, isArchived: true })}
-                  onDelete={() => deleteMutation.mutate({ workspaceId, id: art.id })}
+                  onFavoriteToggle={() =>
+                    favoriteMutation.mutate({ workspaceId, artifactId: art.id })
+                  }
+                  onArchive={() =>
+                    updateMutation.mutate({
+                      workspaceId,
+                      id: art.id,
+                      isArchived: true,
+                    })
+                  }
+                  onDelete={() =>
+                    deleteMutation.mutate({ workspaceId, id: art.id })
+                  }
                 />
               ))}
             </ArtifactGrid>
@@ -354,7 +390,9 @@ function MoveToFolderDialog({
   onMove: (folderIds: string[]) => void
   onClose: () => void
 }) {
-  const [selected, setSelected] = useState<Set<string>>(new Set(currentFolderIds))
+  const [selected, setSelected] = useState<Set<string>>(
+    new Set(currentFolderIds)
+  )
   const tree = buildFolderTree(folders, null, 0)
 
   const toggle = (folderId: string) =>
@@ -366,7 +404,12 @@ function MoveToFolderDialog({
     })
 
   return (
-    <Dialog open={open} onOpenChange={(o) => { if (!o) onClose() }}>
+    <Dialog
+      open={open}
+      onOpenChange={(o) => {
+        if (!o) onClose()
+      }}
+    >
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
           <DialogTitle>Folders</DialogTitle>
@@ -405,7 +448,11 @@ function MoveToFolderDialog({
           <Button variant="outline" size="sm" onClick={onClose}>
             Cancel
           </Button>
-          <Button size="sm" disabled={isPending} onClick={() => onMove([...selected])}>
+          <Button
+            size="sm"
+            disabled={isPending}
+            onClick={() => onMove([...selected])}
+          >
             Save
           </Button>
         </DialogFooter>
@@ -431,7 +478,9 @@ function AddToCollectionDialog({
   onSave: (collectionIds: string[]) => void
   onClose: () => void
 }) {
-  const [selected, setSelected] = useState<Set<string>>(new Set(currentCollectionIds))
+  const [selected, setSelected] = useState<Set<string>>(
+    new Set(currentCollectionIds)
+  )
 
   const toggle = (id: string) =>
     setSelected((prev) => {
@@ -442,7 +491,12 @@ function AddToCollectionDialog({
     })
 
   return (
-    <Dialog open={open} onOpenChange={(o) => { if (!o) onClose() }}>
+    <Dialog
+      open={open}
+      onOpenChange={(o) => {
+        if (!o) onClose()
+      }}
+    >
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
           <DialogTitle>Collections</DialogTitle>
@@ -480,7 +534,11 @@ function AddToCollectionDialog({
           <Button variant="outline" size="sm" onClick={onClose}>
             Cancel
           </Button>
-          <Button size="sm" disabled={isPending} onClick={() => onSave([...selected])}>
+          <Button
+            size="sm"
+            disabled={isPending}
+            onClick={() => onSave([...selected])}
+          >
             Save
           </Button>
         </DialogFooter>

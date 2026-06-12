@@ -2,10 +2,7 @@
 
 import type { JSX } from "react"
 
-import type {
-  SerializedLexicalNode,
-  Spread,
-} from "lexical"
+import type { SerializedLexicalNode, Spread } from "lexical"
 import { DecoratorNode } from "lexical"
 
 export type SerializedSvgNode = Spread<{ html: string }, SerializedLexicalNode>

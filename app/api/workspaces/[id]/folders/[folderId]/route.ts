@@ -18,7 +18,8 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string; folderId: string }> }
 ) {
   const session = await getSession()
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id, folderId } = await params
   const ws = await verifyWorkspaceOwner(id, session.user.id)
@@ -27,7 +28,8 @@ export async function PATCH(
   const body = await req.json()
   const patch: Record<string, unknown> = {}
   if (body.name !== undefined) {
-    if (!body.name?.trim()) return NextResponse.json({ error: "Name is required" }, { status: 400 })
+    if (!body.name?.trim())
+      return NextResponse.json({ error: "Name is required" }, { status: 400 })
     patch.name = body.name.trim()
   }
   if ("parentId" in body) patch.parentId = body.parentId ?? null
@@ -41,7 +43,8 @@ export async function PATCH(
     .where(and(eq(folder.id, folderId), eq(folder.workspaceId, id)))
     .returning()
 
-  if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  if (!updated)
+    return NextResponse.json({ error: "Not found" }, { status: 404 })
   return NextResponse.json(updated)
 }
 
@@ -50,7 +53,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string; folderId: string }> }
 ) {
   const session = await getSession()
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id, folderId } = await params
   const ws = await verifyWorkspaceOwner(id, session.user.id)
@@ -61,6 +65,7 @@ export async function DELETE(
     .where(and(eq(folder.id, folderId), eq(folder.workspaceId, id)))
     .returning()
 
-  if (!deleted) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  if (!deleted)
+    return NextResponse.json({ error: "Not found" }, { status: 404 })
   return new NextResponse(null, { status: 204 })
 }

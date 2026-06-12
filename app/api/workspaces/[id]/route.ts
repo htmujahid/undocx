@@ -10,7 +10,8 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getSession()
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id } = await params
   const { name } = await request.json()
@@ -24,7 +25,8 @@ export async function PATCH(
     .where(and(eq(workspace.id, id), eq(workspace.ownerId, session.user.id)))
     .returning()
 
-  if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  if (!updated)
+    return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   return NextResponse.json(updated)
 }
@@ -34,7 +36,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getSession()
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id } = await params
 
@@ -55,7 +58,8 @@ export async function DELETE(
     .where(and(eq(workspace.id, id), eq(workspace.ownerId, session.user.id)))
     .returning()
 
-  if (!deleted) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  if (!deleted)
+    return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   return new NextResponse(null, { status: 204 })
 }

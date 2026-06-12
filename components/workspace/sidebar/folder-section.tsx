@@ -4,6 +4,7 @@ import { useState } from "react"
 
 import { PlusIcon } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { Button } from "@/components/ui/button"
@@ -21,7 +22,11 @@ import {
   SidebarGroupLabel,
 } from "@/components/ui/sidebar"
 import { artifactsQueryOptions } from "@/lib/data/artifacts"
-import { createFolderMutationOptions, foldersQueryOptions } from "@/lib/data/folders"
+import {
+  createFolderMutationOptions,
+  foldersQueryOptions,
+} from "@/lib/data/folders"
+
 import { FolderTree } from "./folder-tree"
 
 interface FolderSectionProps {
@@ -34,11 +39,15 @@ export function FolderSection({ workspaceId }: FolderSectionProps) {
   const selectedFolderId = searchParams.get("folderId")
 
   const qc = useQueryClient()
-  const { data: folders = [], isLoading } = useQuery(foldersQueryOptions(workspaceId))
+  const { data: folders = [], isLoading } = useQuery(
+    foldersQueryOptions(workspaceId)
+  )
   const { data: artifacts = [] } = useQuery(artifactsQueryOptions(workspaceId))
 
   const invalidateFolders = () =>
-    qc.invalidateQueries({ queryKey: foldersQueryOptions(workspaceId).queryKey })
+    qc.invalidateQueries({
+      queryKey: foldersQueryOptions(workspaceId).queryKey,
+    })
 
   const createFolderMutation = useMutation({
     ...createFolderMutationOptions,
@@ -86,7 +95,10 @@ export function FolderSection({ workspaceId }: FolderSectionProps) {
     <>
       <SidebarGroup>
         <SidebarGroupLabel>Folders</SidebarGroupLabel>
-        <SidebarGroupAction title="New folder" onClick={() => openCreateDialog(null)}>
+        <SidebarGroupAction
+          title="New folder"
+          onClick={() => openCreateDialog(null)}
+        >
           <PlusIcon />
           <span className="sr-only">New folder</span>
         </SidebarGroupAction>
@@ -101,7 +113,9 @@ export function FolderSection({ workspaceId }: FolderSectionProps) {
           onToggle={toggleOpen}
           onSelect={(folderId) => {
             if (folderId) {
-              router.push(`/workspace/${workspaceId}/folders?folderId=${folderId}`)
+              router.push(
+                `/workspace/${workspaceId}/folders?folderId=${folderId}`
+              )
             } else {
               router.push(`/workspace/${workspaceId}`)
             }
@@ -119,7 +133,9 @@ export function FolderSection({ workspaceId }: FolderSectionProps) {
       >
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
-            <DialogTitle>{createParentId ? "New subfolder" : "New folder"}</DialogTitle>
+            <DialogTitle>
+              {createParentId ? "New subfolder" : "New folder"}
+            </DialogTitle>
           </DialogHeader>
           <Input
             placeholder="Folder name"
@@ -129,7 +145,11 @@ export function FolderSection({ workspaceId }: FolderSectionProps) {
             autoFocus
           />
           <DialogFooter>
-            <Button variant="outline" size="sm" onClick={() => setCreateOpen(false)}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCreateOpen(false)}
+            >
               Cancel
             </Button>
             <Button

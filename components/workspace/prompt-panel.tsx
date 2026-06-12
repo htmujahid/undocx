@@ -6,10 +6,11 @@ import { experimental_useObject as useObject } from "@ai-sdk/react"
 import { $getRoot } from "lexical"
 import { ArrowUpIcon, SparklesIcon } from "lucide-react"
 import { toast } from "sonner"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 import { $isHeadingNode } from "@lexical/rich-text"
+
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -62,7 +63,11 @@ interface PromptPanelProps {
   onTitleChange: (title: string) => void
 }
 
-export function PromptPanel({ workspaceId, artifactId, onTitleChange }: PromptPanelProps) {
+export function PromptPanel({
+  workspaceId,
+  artifactId,
+  onTitleChange,
+}: PromptPanelProps) {
   const qc = useQueryClient()
   const [editor] = useLexicalComposerContext()
   const [prompt, setPrompt] = useState("")
@@ -71,7 +76,9 @@ export function PromptPanel({ workspaceId, artifactId, onTitleChange }: PromptPa
   const saveMutation = useMutation({
     ...updateArtifactMutationOptions,
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: artifactsQueryOptions(workspaceId).queryKey })
+      qc.invalidateQueries({
+        queryKey: artifactsQueryOptions(workspaceId).queryKey,
+      })
       qc.invalidateQueries({
         queryKey: artifactQueryOptions(workspaceId, artifactId).queryKey,
       })

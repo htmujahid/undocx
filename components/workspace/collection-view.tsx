@@ -9,27 +9,40 @@ import {
   updateArtifactMutationOptions,
 } from "@/lib/data/artifacts"
 import { collectionsQueryOptions } from "@/lib/data/collections"
-import { favoritesQueryOptions, toggleFavoriteMutationOptions } from "@/lib/data/favorites"
+import {
+  favoritesQueryOptions,
+  toggleFavoriteMutationOptions,
+} from "@/lib/data/favorites"
 import { foldersQueryOptions } from "@/lib/data/folders"
-import { ArtifactListView, type ArtifactAction } from "./artifact-list-view"
+
+import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
 
 interface CollectionViewProps {
   workspaceId: string
   collectionId: string
 }
 
-export function CollectionView({ workspaceId, collectionId }: CollectionViewProps) {
+export function CollectionView({
+  workspaceId,
+  collectionId,
+}: CollectionViewProps) {
   const qc = useQueryClient()
-  const { data: artifacts = [], isLoading } = useQuery(artifactsQueryOptions(workspaceId))
+  const { data: artifacts = [], isLoading } = useQuery(
+    artifactsQueryOptions(workspaceId)
+  )
   const { data: folders = [] } = useQuery(foldersQueryOptions(workspaceId))
-  const { data: collections = [] } = useQuery(collectionsQueryOptions(workspaceId))
+  const { data: collections = [] } = useQuery(
+    collectionsQueryOptions(workspaceId)
+  )
   const { data: favorites = [] } = useQuery(favoritesQueryOptions(workspaceId))
 
   const favoriteIds = new Set(favorites.map((f) => f.id))
   const collection = collections.find((c) => c.id === collectionId)
 
   const invalidateArtifacts = () =>
-    qc.invalidateQueries({ queryKey: artifactsQueryOptions(workspaceId).queryKey })
+    qc.invalidateQueries({
+      queryKey: artifactsQueryOptions(workspaceId).queryKey,
+    })
 
   const updateMutation = useMutation({
     ...updateArtifactMutationOptions,
@@ -42,7 +55,9 @@ export function CollectionView({ workspaceId, collectionId }: CollectionViewProp
   const favoriteMutation = useMutation({
     ...toggleFavoriteMutationOptions,
     onSuccess: () =>
-      qc.invalidateQueries({ queryKey: favoritesQueryOptions(workspaceId).queryKey }),
+      qc.invalidateQueries({
+        queryKey: favoritesQueryOptions(workspaceId).queryKey,
+      }),
   })
 
   const displayedArtifacts = artifacts.filter(
@@ -53,12 +68,14 @@ export function CollectionView({ workspaceId, collectionId }: CollectionViewProp
     {
       type: "action",
       label: favoriteIds.has(art.id) ? "Unfavorite" : "Favorite",
-      onClick: () => favoriteMutation.mutate({ workspaceId, artifactId: art.id }),
+      onClick: () =>
+        favoriteMutation.mutate({ workspaceId, artifactId: art.id }),
     },
     {
       type: "action",
       label: "Archive",
-      onClick: () => updateMutation.mutate({ workspaceId, id: art.id, isArchived: true }),
+      onClick: () =>
+        updateMutation.mutate({ workspaceId, id: art.id, isArchived: true }),
     },
     {
       type: "action",

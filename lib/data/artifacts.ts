@@ -30,7 +30,9 @@ export const artifactQueryOptions = (workspaceId: string, artifactId: string) =>
   queryOptions({
     queryKey: ["workspaces", workspaceId, "artifacts", artifactId],
     queryFn: async (): Promise<Artifact> => {
-      const res = await fetch(`/api/workspaces/${workspaceId}/artifacts/${artifactId}`)
+      const res = await fetch(
+        `/api/workspaces/${workspaceId}/artifacts/${artifactId}`
+      )
       if (!res.ok) throw new Error("Failed to fetch artifact")
       return res.json()
     },

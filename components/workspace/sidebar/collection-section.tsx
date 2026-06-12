@@ -4,6 +4,7 @@ import { useState } from "react"
 
 import { PlusIcon } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { Button } from "@/components/ui/button"
@@ -28,7 +29,11 @@ import {
   collectionsQueryOptions,
   createCollectionMutationOptions,
 } from "@/lib/data/collections"
-import { COLLECTION_COLORS, CollectionColorPicker } from "./collection-color-picker"
+
+import {
+  COLLECTION_COLORS,
+  CollectionColorPicker,
+} from "./collection-color-picker"
 import { CollectionItem } from "./collection-item"
 
 interface CollectionSectionProps {
@@ -40,7 +45,9 @@ export function CollectionSection({ workspaceId }: CollectionSectionProps) {
   const searchParams = useSearchParams()
   const selectedCollectionId = searchParams.get("collectionId")
   const qc = useQueryClient()
-  const { data: collections = [], isLoading } = useQuery(collectionsQueryOptions(workspaceId))
+  const { data: collections = [], isLoading } = useQuery(
+    collectionsQueryOptions(workspaceId)
+  )
   const { data: artifacts = [] } = useQuery(artifactsQueryOptions(workspaceId))
 
   const [openCollections, setOpenCollections] = useState<Set<string>>(new Set())
@@ -54,7 +61,9 @@ export function CollectionSection({ workspaceId }: CollectionSectionProps) {
     })
 
   const invalidate = () =>
-    qc.invalidateQueries({ queryKey: collectionsQueryOptions(workspaceId).queryKey })
+    qc.invalidateQueries({
+      queryKey: collectionsQueryOptions(workspaceId).queryKey,
+    })
 
   const createMutation = useMutation({
     ...createCollectionMutationOptions,
@@ -83,7 +92,10 @@ export function CollectionSection({ workspaceId }: CollectionSectionProps) {
     <>
       <SidebarGroup>
         <SidebarGroupLabel>Collections</SidebarGroupLabel>
-        <SidebarGroupAction title="New collection" onClick={() => setCreateOpen(true)}>
+        <SidebarGroupAction
+          title="New collection"
+          onClick={() => setCreateOpen(true)}
+        >
           <PlusIcon />
           <span className="sr-only">New collection</span>
         </SidebarGroupAction>
@@ -96,19 +108,25 @@ export function CollectionSection({ workspaceId }: CollectionSectionProps) {
               </SidebarMenuItem>
             ))}
           {!isLoading && collections.length === 0 && (
-            <p className="px-2 py-1 text-xs text-muted-foreground">No collections yet</p>
+            <p className="px-2 py-1 text-xs text-muted-foreground">
+              No collections yet
+            </p>
           )}
           {collections.map((col) => (
             <CollectionItem
               key={col.id}
               collection={col}
-              artifacts={artifacts.filter((a) => a.collectionIds.includes(col.id))}
+              artifacts={artifacts.filter((a) =>
+                a.collectionIds.includes(col.id)
+              )}
               workspaceId={workspaceId}
               isOpen={openCollections.has(col.id)}
               isSelected={selectedCollectionId === col.id}
               onToggle={() => toggleOpen(col.id)}
               onSelect={() =>
-                router.push(`/workspace/${workspaceId}/collections?collectionId=${col.id}`)
+                router.push(
+                  `/workspace/${workspaceId}/collections?collectionId=${col.id}`
+                )
               }
             />
           ))}
@@ -136,9 +154,16 @@ export function CollectionSection({ workspaceId }: CollectionSectionProps) {
             onKeyDown={(e) => e.key === "Enter" && handleCreate()}
             autoFocus
           />
-          <CollectionColorPicker value={createColor} onChange={setCreateColor} />
+          <CollectionColorPicker
+            value={createColor}
+            onChange={setCreateColor}
+          />
           <DialogFooter>
-            <Button variant="outline" size="sm" onClick={() => setCreateOpen(false)}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setCreateOpen(false)}
+            >
               Cancel
             </Button>
             <Button

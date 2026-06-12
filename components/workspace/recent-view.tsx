@@ -1,6 +1,7 @@
 "use client"
 
 import { ClockIcon } from "lucide-react"
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import {
@@ -11,7 +12,8 @@ import {
 import { collectionsQueryOptions } from "@/lib/data/collections"
 import { foldersQueryOptions } from "@/lib/data/folders"
 import { recentArtifactIdsQueryOptions } from "@/lib/data/recent-artifacts"
-import { ArtifactListView, type ArtifactAction } from "./artifact-list-view"
+
+import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
 
 interface RecentViewProps {
   workspaceId: string
@@ -26,15 +28,21 @@ export function RecentView({ workspaceId }: RecentViewProps) {
     artifactsQueryOptions(workspaceId)
   )
   const { data: folders = [] } = useQuery(foldersQueryOptions(workspaceId))
-  const { data: collections = [] } = useQuery(collectionsQueryOptions(workspaceId))
+  const { data: collections = [] } = useQuery(
+    collectionsQueryOptions(workspaceId)
+  )
 
   const invalidateRecent = () =>
-    qc.invalidateQueries({ queryKey: recentArtifactIdsQueryOptions(workspaceId).queryKey })
+    qc.invalidateQueries({
+      queryKey: recentArtifactIdsQueryOptions(workspaceId).queryKey,
+    })
 
   const deleteMutation = useMutation({
     ...deleteArtifactMutationOptions,
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: artifactsQueryOptions(workspaceId).queryKey })
+      qc.invalidateQueries({
+        queryKey: artifactsQueryOptions(workspaceId).queryKey,
+      })
       invalidateRecent()
     },
   })

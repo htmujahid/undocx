@@ -1,9 +1,13 @@
 "use client"
 
-import { ChevronRightIcon, FileTextIcon, FolderIcon, FolderOpenIcon } from "lucide-react"
+import {
+  ChevronRightIcon,
+  FileTextIcon,
+  FolderIcon,
+  FolderOpenIcon,
+} from "lucide-react"
 import Link from "next/link"
 
-import { cn } from "@/lib/utils"
 import {
   SidebarMenuButton,
   SidebarMenuItem,
@@ -12,6 +16,8 @@ import {
 } from "@/components/ui/sidebar"
 import type { ArtifactSummary } from "@/lib/data/artifacts"
 import type { Folder } from "@/lib/data/folders"
+import { cn } from "@/lib/utils"
+
 import { FolderActionMenu } from "./folder-action-menu"
 
 export interface FolderCallbacks {
@@ -57,11 +63,28 @@ export function FolderItem({
           callbacks.onSelect?.(folder.id)
         }}
       >
-        {hasContent ? (
-          <ChevronRightIcon className={cn("transition-transform", isOpen && "rotate-90")} />
-        ) : (
-          isOpen ? <FolderOpenIcon /> : <FolderIcon />
-        )}
+        <span className="relative size-4 shrink-0">
+          <span
+            className={cn(
+              "absolute inset-0 flex items-center justify-center transition-opacity",
+              hasContent && "group-hover/menu-button:opacity-0"
+            )}
+          >
+            {isOpen ? (
+              <FolderOpenIcon className="size-4" />
+            ) : (
+              <FolderIcon className="size-4" />
+            )}
+          </span>
+          {hasContent && (
+            <ChevronRightIcon
+              className={cn(
+                "absolute inset-0 size-4 opacity-0 transition-[opacity,transform] group-hover/menu-button:opacity-100",
+                isOpen && "rotate-90"
+              )}
+            />
+          )}
+        </span>
         <span className="truncate">{folder.name}</span>
       </SidebarMenuButton>
 
@@ -85,7 +108,9 @@ export function FolderItem({
             <SidebarMenuSubItem key={artifact.id}>
               <SidebarMenuSubButton
                 size="sm"
-                render={<Link href={`/workspace/${workspaceId}/${artifact.id}`} />}
+                render={
+                  <Link href={`/workspace/${workspaceId}/${artifact.id}`} />
+                }
               >
                 <FileTextIcon className="size-4 shrink-0" />
                 <span className="truncate">{artifact.title}</span>

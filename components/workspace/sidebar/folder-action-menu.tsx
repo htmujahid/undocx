@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { SidebarMenuAction, useSidebar } from "@/components/ui/sidebar"
 import type { Folder } from "@/lib/data/folders"
+
 import type { FolderCallbacks } from "./folder-item"
 
 interface FolderActionMenuProps {
@@ -37,7 +38,9 @@ export function FolderActionMenu({ folder, callbacks }: FolderActionMenuProps) {
         align={isMobile ? "end" : "start"}
         className="w-48"
       >
-        <DropdownMenuItem onClick={() => callbacks.onCreateSubfolder(folder.id)}>
+        <DropdownMenuItem
+          onClick={() => callbacks.onCreateSubfolder(folder.id)}
+        >
           <FolderPlusIcon className="text-muted-foreground" />
           New subfolder
         </DropdownMenuItem>
@@ -47,7 +50,10 @@ export function FolderActionMenu({ folder, callbacks }: FolderActionMenuProps) {
           Rename
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" onClick={() => callbacks.onDelete(folder)}>
+        <DropdownMenuItem
+          variant="destructive"
+          onClick={() => callbacks.onDelete(folder)}
+        >
           <Trash2Icon />
           Delete
         </DropdownMenuItem>

@@ -18,14 +18,16 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string; collectionId: string }> }
 ) {
   const session = await getSession()
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id, collectionId } = await params
   const ws = await verifyWorkspaceOwner(id, session.user.id)
   if (!ws) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   const { name, color } = await req.json()
-  if (!name?.trim()) return NextResponse.json({ error: "Name is required" }, { status: 400 })
+  if (!name?.trim())
+    return NextResponse.json({ error: "Name is required" }, { status: 400 })
 
   const [updated] = await db
     .update(collection)
@@ -33,7 +35,8 @@ export async function PATCH(
     .where(and(eq(collection.id, collectionId), eq(collection.workspaceId, id)))
     .returning()
 
-  if (!updated) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  if (!updated)
+    return NextResponse.json({ error: "Not found" }, { status: 404 })
   return NextResponse.json(updated)
 }
 
@@ -42,7 +45,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string; collectionId: string }> }
 ) {
   const session = await getSession()
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id, collectionId } = await params
   const ws = await verifyWorkspaceOwner(id, session.user.id)
@@ -53,6 +57,7 @@ export async function DELETE(
     .where(and(eq(collection.id, collectionId), eq(collection.workspaceId, id)))
     .returning()
 
-  if (!deleted) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  if (!deleted)
+    return NextResponse.json({ error: "Not found" }, { status: 404 })
   return new NextResponse(null, { status: 204 })
 }

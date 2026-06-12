@@ -29,7 +29,12 @@ function relativeTime(iso: string): string {
 }
 
 export type ArtifactAction =
-  | { type: "action"; label: string; onClick: () => void; destructive?: boolean }
+  | {
+      type: "action"
+      label: string
+      onClick: () => void
+      destructive?: boolean
+    }
   | { type: "separator" }
 
 interface ArtifactListViewProps {
@@ -92,7 +97,9 @@ export function ArtifactListView({
             <div>
               <p className="text-sm font-medium">{emptyTitle}</p>
               {emptyDescription && (
-                <p className="mt-1 text-xs text-muted-foreground">{emptyDescription}</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {emptyDescription}
+                </p>
               )}
             </div>
           </div>
@@ -104,7 +111,9 @@ export function ArtifactListView({
                 artifact={art}
                 folders={folders}
                 collections={collections}
-                onClick={() => router.push(`/workspace/${workspaceId}/${art.id}`)}
+                onClick={() =>
+                  router.push(`/workspace/${workspaceId}/${art.id}`)
+                }
                 actions={getActions(art)}
               />
             ))}
@@ -136,7 +145,10 @@ function SimpleArtifactCard({
     .map((id) => collections.find((c) => c.id === id))
     .filter((c): c is Collection => !!c)
 
-  const realActions = actions as (Extract<ArtifactAction, { type: "action" }> | Extract<ArtifactAction, { type: "separator" }>)[]
+  const realActions = actions as (
+    | Extract<ArtifactAction, { type: "action" }>
+    | Extract<ArtifactAction, { type: "separator" }>
+  )[]
 
   return (
     <div className="group flex flex-col rounded-lg border bg-card transition-colors hover:bg-accent hover:text-accent-foreground">
@@ -154,7 +166,11 @@ function SimpleArtifactCard({
                 ) : (
                   <DropdownMenuItem
                     key={action.label}
-                    className={action.destructive ? "text-destructive focus:text-destructive" : ""}
+                    className={
+                      action.destructive
+                        ? "text-destructive focus:text-destructive"
+                        : ""
+                    }
                     onClick={action.onClick}
                   >
                     {action.label}
@@ -170,11 +186,15 @@ function SimpleArtifactCard({
         <p className="truncate text-sm font-medium leading-snug">
           {artifact.title || "Untitled"}
         </p>
-        <p className="mt-1 text-[11px] text-muted-foreground">{relativeTime(artifact.updatedAt)}</p>
+        <p className="mt-1 text-[11px] text-muted-foreground">
+          {relativeTime(artifact.updatedAt)}
+        </p>
         {artifactFolders.length > 0 && (
           <p className="mt-0.5 flex items-center gap-1 text-[11px] text-muted-foreground">
             <FolderIcon className="size-2.5 shrink-0" />
-            <span className="truncate">{artifactFolders.map((f) => f.name).join(", ")}</span>
+            <span className="truncate">
+              {artifactFolders.map((f) => f.name).join(", ")}
+            </span>
           </p>
         )}
         {artifactCollections.length > 0 && (

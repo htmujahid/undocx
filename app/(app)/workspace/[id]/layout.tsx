@@ -1,11 +1,11 @@
 import { and, eq } from "drizzle-orm"
 import { redirect } from "next/navigation"
 
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { WorkspaceSidebar } from "@/components/workspace/sidebar/workspace-sidebar"
 import { getSession } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { workspace } from "@/lib/db/schema"
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { WorkspaceSidebar } from "@/components/workspace/sidebar/workspace-sidebar"
 
 export default async function WorkspaceLayout({
   children,

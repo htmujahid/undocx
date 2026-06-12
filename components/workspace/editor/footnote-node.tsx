@@ -3,10 +3,7 @@
 import type { JSX } from "react"
 import { useSyncExternalStore } from "react"
 
-import type {
-  SerializedLexicalNode,
-  Spread,
-} from "lexical"
+import type { SerializedLexicalNode, Spread } from "lexical"
 import { DecoratorNode } from "lexical"
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"

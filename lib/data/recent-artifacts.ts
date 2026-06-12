@@ -33,7 +33,10 @@ export const addRecentArtifactMutationOptions = mutationOptions({
       const stored = localStorage.getItem(key)
       const ids: string[] = stored ? JSON.parse(stored) : []
       const filtered = ids.filter((id) => id !== artifactId)
-      localStorage.setItem(key, JSON.stringify([artifactId, ...filtered].slice(0, MAX_RECENT)))
+      localStorage.setItem(
+        key,
+        JSON.stringify([artifactId, ...filtered].slice(0, MAX_RECENT))
+      )
     } catch {}
   },
 })

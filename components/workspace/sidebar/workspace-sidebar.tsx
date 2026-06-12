@@ -2,12 +2,7 @@
 
 import { Suspense } from "react"
 
-import {
-  ArchiveIcon,
-  ClockIcon,
-  LayoutGridIcon,
-  StarIcon,
-} from "lucide-react"
+import { ArchiveIcon, ClockIcon, LayoutGridIcon, StarIcon } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -20,6 +15,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+
 import { CollectionSection } from "./collection-section"
 import { FolderSection } from "./folder-section"
 import { SidebarUserMenu } from "./sidebar-user-menu"

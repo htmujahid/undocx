@@ -18,7 +18,8 @@ export async function POST(
   { params }: { params: Promise<{ id: string; artifactId: string }> }
 ) {
   const session = await getSession()
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id, artifactId } = await params
   const ws = await verifyWorkspaceOwner(id, session.user.id)
@@ -34,7 +35,10 @@ export async function POST(
     .select()
     .from(artifactFavorite)
     .where(
-      and(eq(artifactFavorite.userId, session.user.id), eq(artifactFavorite.artifactId, artifactId))
+      and(
+        eq(artifactFavorite.userId, session.user.id),
+        eq(artifactFavorite.artifactId, artifactId)
+      )
     )
 
   if (existing) {
@@ -49,6 +53,8 @@ export async function POST(
     return NextResponse.json({ isFavorited: false })
   }
 
-  await db.insert(artifactFavorite).values({ userId: session.user.id, artifactId })
+  await db
+    .insert(artifactFavorite)
+    .values({ userId: session.user.id, artifactId })
   return NextResponse.json({ isFavorited: true })
 }

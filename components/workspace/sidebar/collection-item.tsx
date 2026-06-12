@@ -10,6 +10,7 @@ import {
   Trash2Icon,
 } from "lucide-react"
 import Link from "next/link"
+
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import {
@@ -54,7 +55,11 @@ import {
   updateCollectionMutationOptions,
 } from "@/lib/data/collections"
 import { cn } from "@/lib/utils"
-import { COLLECTION_COLORS, CollectionColorPicker } from "./collection-color-picker"
+
+import {
+  COLLECTION_COLORS,
+  CollectionColorPicker,
+} from "./collection-color-picker"
 
 interface CollectionItemProps {
   collection: Collection
@@ -79,7 +84,9 @@ export function CollectionItem({
   const qc = useQueryClient()
 
   const invalidate = () =>
-    qc.invalidateQueries({ queryKey: collectionsQueryOptions(workspaceId).queryKey })
+    qc.invalidateQueries({
+      queryKey: collectionsQueryOptions(workspaceId).queryKey,
+    })
 
   const updateMutation = useMutation({
     ...updateCollectionMutationOptions,
@@ -104,7 +111,12 @@ export function CollectionItem({
   const handleUpdate = () => {
     if (!editTarget || !editName.trim() || updateMutation.isPending) return
     updateMutation.mutate(
-      { workspaceId, id: editTarget.id, name: editName.trim(), color: editColor },
+      {
+        workspaceId,
+        id: editTarget.id,
+        name: editName.trim(),
+        color: editColor,
+      },
       { onSuccess: () => setEditTarget(null) }
     )
   }
@@ -121,9 +133,20 @@ export function CollectionItem({
           }}
         >
           {artifacts.length > 0 ? (
-            <ChevronRightIcon
-              className={cn("size-4 shrink-0 transition-transform", isOpen && "rotate-90")}
-            />
+            <span className="relative size-4 shrink-0">
+              <span className="absolute inset-0 flex items-center justify-center transition-opacity group-hover/menu-button:opacity-0">
+                <span
+                  className="size-2 rounded-full"
+                  style={{ backgroundColor: collection.color }}
+                />
+              </span>
+              <ChevronRightIcon
+                className={cn(
+                  "absolute inset-0 size-4 opacity-0 transition-[opacity,transform] group-hover/menu-button:opacity-100",
+                  isOpen && "rotate-90"
+                )}
+              />
+            </span>
           ) : (
             <span
               className="size-2 shrink-0 rounded-full"
@@ -131,12 +154,6 @@ export function CollectionItem({
             />
           )}
           <span className="truncate">{collection.name}</span>
-          {artifacts.length > 0 && (
-            <span
-              className="ml-auto size-2 shrink-0 rounded-full"
-              style={{ backgroundColor: collection.color }}
-            />
-          )}
         </SidebarMenuButton>
 
         <DropdownMenu>
@@ -154,7 +171,10 @@ export function CollectionItem({
               Edit
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive" onClick={() => setDeleteTarget(collection)}>
+            <DropdownMenuItem
+              variant="destructive"
+              onClick={() => setDeleteTarget(collection)}
+            >
               <Trash2Icon />
               Delete
             </DropdownMenuItem>
@@ -167,10 +187,14 @@ export function CollectionItem({
               <SidebarMenuSubItem key={artifact.id}>
                 <SidebarMenuSubButton
                   size="sm"
-                  render={<Link href={`/workspace/${workspaceId}/${artifact.id}`} />}
+                  render={
+                    <Link href={`/workspace/${workspaceId}/${artifact.id}`} />
+                  }
                 >
                   <FileTextIcon className="size-4 shrink-0" />
-                  <span className="truncate">{artifact.title || "Untitled"}</span>
+                  <span className="truncate">
+                    {artifact.title || "Untitled"}
+                  </span>
                 </SidebarMenuSubButton>
               </SidebarMenuSubItem>
             ))}
@@ -178,7 +202,10 @@ export function CollectionItem({
         )}
       </SidebarMenuItem>
 
-      <Dialog open={!!editTarget} onOpenChange={(open) => !open && setEditTarget(null)}>
+      <Dialog
+        open={!!editTarget}
+        onOpenChange={(open) => !open && setEditTarget(null)}
+      >
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
             <DialogTitle>Edit collection</DialogTitle>
@@ -192,7 +219,11 @@ export function CollectionItem({
           />
           <CollectionColorPicker value={editColor} onChange={setEditColor} />
           <DialogFooter>
-            <Button variant="outline" size="sm" onClick={() => setEditTarget(null)}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setEditTarget(null)}
+            >
               Cancel
             </Button>
             <Button
@@ -206,13 +237,16 @@ export function CollectionItem({
         </DialogContent>
       </Dialog>
 
-      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+      <AlertDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+      >
         <AlertDialogContent size="sm">
           <AlertDialogHeader>
             <AlertDialogTitle>Delete collection?</AlertDialogTitle>
             <AlertDialogDescription>
-              &ldquo;{deleteTarget?.name}&rdquo; will be permanently deleted. Artifacts in this
-              collection will be unlinked but not deleted.
+              &ldquo;{deleteTarget?.name}&rdquo; will be permanently deleted.
+              Artifacts in this collection will be unlinked but not deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

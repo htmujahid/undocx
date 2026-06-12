@@ -1,10 +1,6 @@
 "use client"
 
-import type {
-  LexicalNode,
-  SerializedElementNode,
-  Spread,
-} from "lexical"
+import type { LexicalNode, SerializedElementNode, Spread } from "lexical"
 import {
   ElementNode,
   addClassNamesToElement,

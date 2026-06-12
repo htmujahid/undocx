@@ -1,6 +1,7 @@
 "use client"
 
 import { FolderIcon } from "lucide-react"
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import {
@@ -10,9 +11,13 @@ import {
   updateArtifactMutationOptions,
 } from "@/lib/data/artifacts"
 import { collectionsQueryOptions } from "@/lib/data/collections"
-import { favoritesQueryOptions, toggleFavoriteMutationOptions } from "@/lib/data/favorites"
+import {
+  favoritesQueryOptions,
+  toggleFavoriteMutationOptions,
+} from "@/lib/data/favorites"
 import { foldersQueryOptions } from "@/lib/data/folders"
-import { ArtifactListView, type ArtifactAction } from "./artifact-list-view"
+
+import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
 
 interface FolderViewProps {
   workspaceId: string
@@ -21,16 +26,22 @@ interface FolderViewProps {
 
 export function FolderView({ workspaceId, folderId }: FolderViewProps) {
   const qc = useQueryClient()
-  const { data: artifacts = [], isLoading } = useQuery(artifactsQueryOptions(workspaceId))
+  const { data: artifacts = [], isLoading } = useQuery(
+    artifactsQueryOptions(workspaceId)
+  )
   const { data: folders = [] } = useQuery(foldersQueryOptions(workspaceId))
-  const { data: collections = [] } = useQuery(collectionsQueryOptions(workspaceId))
+  const { data: collections = [] } = useQuery(
+    collectionsQueryOptions(workspaceId)
+  )
   const { data: favorites = [] } = useQuery(favoritesQueryOptions(workspaceId))
 
   const favoriteIds = new Set(favorites.map((f) => f.id))
   const folder = folders.find((f) => f.id === folderId)
 
   const invalidateArtifacts = () =>
-    qc.invalidateQueries({ queryKey: artifactsQueryOptions(workspaceId).queryKey })
+    qc.invalidateQueries({
+      queryKey: artifactsQueryOptions(workspaceId).queryKey,
+    })
 
   const updateMutation = useMutation({
     ...updateArtifactMutationOptions,
@@ -43,7 +54,9 @@ export function FolderView({ workspaceId, folderId }: FolderViewProps) {
   const favoriteMutation = useMutation({
     ...toggleFavoriteMutationOptions,
     onSuccess: () =>
-      qc.invalidateQueries({ queryKey: favoritesQueryOptions(workspaceId).queryKey }),
+      qc.invalidateQueries({
+        queryKey: favoritesQueryOptions(workspaceId).queryKey,
+      }),
   })
 
   const displayedArtifacts = artifacts.filter(
@@ -54,12 +67,14 @@ export function FolderView({ workspaceId, folderId }: FolderViewProps) {
     {
       type: "action",
       label: favoriteIds.has(art.id) ? "Unfavorite" : "Favorite",
-      onClick: () => favoriteMutation.mutate({ workspaceId, artifactId: art.id }),
+      onClick: () =>
+        favoriteMutation.mutate({ workspaceId, artifactId: art.id }),
     },
     {
       type: "action",
       label: "Archive",
-      onClick: () => updateMutation.mutate({ workspaceId, id: art.id, isArchived: true }),
+      onClick: () =>
+        updateMutation.mutate({ workspaceId, id: art.id, isArchived: true }),
     },
     {
       type: "action",

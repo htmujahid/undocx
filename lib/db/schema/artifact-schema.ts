@@ -10,9 +10,9 @@ import {
   uuid,
 } from "drizzle-orm/pg-core"
 
+import { user } from "./auth-schema"
 import { collection } from "./collection-schema"
 import { folder } from "./folder-schema"
-import { user } from "./auth-schema"
 import { workspace } from "./workspace-schema"
 
 export const artifact = pgTable(
@@ -89,16 +89,19 @@ export const artifactFolderRelations = relations(artifactFolder, ({ one }) => ({
   }),
 }))
 
-export const artifactCollectionRelations = relations(artifactCollection, ({ one }) => ({
-  artifact: one(artifact, {
-    fields: [artifactCollection.artifactId],
-    references: [artifact.id],
-  }),
-  collection: one(collection, {
-    fields: [artifactCollection.collectionId],
-    references: [collection.id],
-  }),
-}))
+export const artifactCollectionRelations = relations(
+  artifactCollection,
+  ({ one }) => ({
+    artifact: one(artifact, {
+      fields: [artifactCollection.artifactId],
+      references: [artifact.id],
+    }),
+    collection: one(collection, {
+      fields: [artifactCollection.collectionId],
+      references: [collection.id],
+    }),
+  })
+)
 
 export const artifactFavorite = pgTable(
   "artifact_favorite",
@@ -117,13 +120,16 @@ export const artifactFavorite = pgTable(
   ]
 )
 
-export const artifactFavoriteRelations = relations(artifactFavorite, ({ one }) => ({
-  artifact: one(artifact, {
-    fields: [artifactFavorite.artifactId],
-    references: [artifact.id],
-  }),
-  user: one(user, {
-    fields: [artifactFavorite.userId],
-    references: [user.id],
-  }),
-}))
+export const artifactFavoriteRelations = relations(
+  artifactFavorite,
+  ({ one }) => ({
+    artifact: one(artifact, {
+      fields: [artifactFavorite.artifactId],
+      references: [artifact.id],
+    }),
+    user: one(user, {
+      fields: [artifactFavorite.userId],
+      references: [user.id],
+    }),
+  })
+)

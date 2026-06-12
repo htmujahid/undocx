@@ -24,7 +24,8 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getSession()
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id } = await params
   const ws = await verifyWorkspaceOwner(id, session.user.id)
@@ -54,7 +55,10 @@ export async function GET(
   const artifactIds = artifacts.map((a) => a.id)
   const [folderLinks, collectionLinks] = artifactIds.length
     ? await Promise.all([
-        db.select().from(artifactFolder).where(inArray(artifactFolder.artifactId, artifactIds)),
+        db
+          .select()
+          .from(artifactFolder)
+          .where(inArray(artifactFolder.artifactId, artifactIds)),
         db
           .select()
           .from(artifactCollection)
@@ -65,7 +69,9 @@ export async function GET(
   return NextResponse.json(
     artifacts.map((a) => ({
       ...a,
-      folderIds: folderLinks.filter((l) => l.artifactId === a.id).map((l) => l.folderId),
+      folderIds: folderLinks
+        .filter((l) => l.artifactId === a.id)
+        .map((l) => l.folderId),
       collectionIds: collectionLinks
         .filter((l) => l.artifactId === a.id)
         .map((l) => l.collectionId),

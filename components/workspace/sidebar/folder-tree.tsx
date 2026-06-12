@@ -35,6 +35,7 @@ import {
   foldersQueryOptions,
   updateFolderMutationOptions,
 } from "@/lib/data/folders"
+
 import { FolderItem } from "./folder-item"
 import type { FolderCallbacks } from "./folder-item"
 
@@ -66,7 +67,9 @@ export function FolderTree({
   const qc = useQueryClient()
 
   const invalidateFolders = () =>
-    qc.invalidateQueries({ queryKey: foldersQueryOptions(workspaceId).queryKey })
+    qc.invalidateQueries({
+      queryKey: foldersQueryOptions(workspaceId).queryKey,
+    })
 
   const updateFolderMutation = useMutation({
     ...updateFolderMutationOptions,
@@ -82,7 +85,8 @@ export function FolderTree({
   const [deleteTarget, setDeleteTarget] = useState<Folder | null>(null)
 
   const handleUpdateFolder = () => {
-    if (!editTarget || !editName.trim() || updateFolderMutation.isPending) return
+    if (!editTarget || !editName.trim() || updateFolderMutation.isPending)
+      return
     updateFolderMutation.mutate(
       { workspaceId, id: editTarget.id, name: editName.trim() },
       { onSuccess: () => setEditTarget(null) }
@@ -103,30 +107,35 @@ export function FolderTree({
   return (
     <>
       <SidebarMenu>
-          {isLoading &&
-            Array.from({ length: 3 }).map((_, i) => (
-              <SidebarMenuItem key={i}>
-                <SidebarMenuSkeleton showIcon className="h-7" />
-              </SidebarMenuItem>
-            ))}
-          {!isLoading && topLevel.length === 0 && (
-            <p className="px-2 py-1 text-xs text-muted-foreground">No folders yet</p>
-          )}
-          {topLevel.map((f) => (
-            <FolderItem
-              key={f.id}
-              folder={f}
-              allFolders={folders}
-              allArtifacts={artifacts}
-              openFolders={openFolders}
-              selectedFolderId={selectedFolderId}
-              workspaceId={workspaceId}
-              callbacks={callbacks}
-            />
+        {isLoading &&
+          Array.from({ length: 3 }).map((_, i) => (
+            <SidebarMenuItem key={i}>
+              <SidebarMenuSkeleton showIcon className="h-7" />
+            </SidebarMenuItem>
           ))}
+        {!isLoading && topLevel.length === 0 && (
+          <p className="px-2 py-1 text-xs text-muted-foreground">
+            No folders yet
+          </p>
+        )}
+        {topLevel.map((f) => (
+          <FolderItem
+            key={f.id}
+            folder={f}
+            allFolders={folders}
+            allArtifacts={artifacts}
+            openFolders={openFolders}
+            selectedFolderId={selectedFolderId}
+            workspaceId={workspaceId}
+            callbacks={callbacks}
+          />
+        ))}
       </SidebarMenu>
 
-      <Dialog open={!!editTarget} onOpenChange={(open) => !open && setEditTarget(null)}>
+      <Dialog
+        open={!!editTarget}
+        onOpenChange={(open) => !open && setEditTarget(null)}
+      >
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
             <DialogTitle>Rename folder</DialogTitle>
@@ -139,7 +148,11 @@ export function FolderTree({
             autoFocus
           />
           <DialogFooter>
-            <Button variant="outline" size="sm" onClick={() => setEditTarget(null)}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setEditTarget(null)}
+            >
               Cancel
             </Button>
             <Button
@@ -153,13 +166,16 @@ export function FolderTree({
         </DialogContent>
       </Dialog>
 
-      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+      <AlertDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+      >
         <AlertDialogContent size="sm">
           <AlertDialogHeader>
             <AlertDialogTitle>Delete folder?</AlertDialogTitle>
             <AlertDialogDescription>
-              &ldquo;{deleteTarget?.name}&rdquo; will be permanently deleted. Sub-folders will be
-              unlinked but not deleted.
+              &ldquo;{deleteTarget?.name}&rdquo; will be permanently deleted.
+              Sub-folders will be unlinked but not deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

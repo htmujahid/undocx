@@ -25,7 +25,8 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getSession()
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id } = await params
   const ws = await verifyWorkspaceOwner(id, session.user.id)
@@ -76,17 +77,22 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getSession()
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id } = await params
   const ws = await verifyWorkspaceOwner(id, session.user.id)
   if (!ws) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   const { title, content, folderIds, collectionIds } = await req.json()
-  if (!title?.trim()) return NextResponse.json({ error: "Title is required" }, { status: 400 })
+  if (!title?.trim())
+    return NextResponse.json({ error: "Title is required" }, { status: 400 })
 
   const validFolderIds = await filterWorkspaceFolderIds(id, folderIds)
-  const validCollectionIds = await filterWorkspaceCollectionIds(id, collectionIds)
+  const validCollectionIds = await filterWorkspaceCollectionIds(
+    id,
+    collectionIds
+  )
 
   const created = await db.transaction(async (tx) => {
     const [row] = await tx
@@ -101,7 +107,9 @@ export async function POST(
     if (validFolderIds.length) {
       await tx
         .insert(artifactFolder)
-        .values(validFolderIds.map((folderId) => ({ artifactId: row.id, folderId })))
+        .values(
+          validFolderIds.map((folderId) => ({ artifactId: row.id, folderId }))
+        )
     }
     if (validCollectionIds.length) {
       await tx.insert(artifactCollection).values(
@@ -115,7 +123,11 @@ export async function POST(
   })
 
   return NextResponse.json(
-    { ...created, folderIds: validFolderIds, collectionIds: validCollectionIds },
+    {
+      ...created,
+      folderIds: validFolderIds,
+      collectionIds: validCollectionIds,
+    },
     { status: 201 }
   )
 }
@@ -134,6 +146,8 @@ async function filterWorkspaceCollectionIds(workspaceId: string, ids: unknown) {
   const rows = await db
     .select({ id: collection.id })
     .from(collection)
-    .where(and(eq(collection.workspaceId, workspaceId), inArray(collection.id, ids)))
+    .where(
+      and(eq(collection.workspaceId, workspaceId), inArray(collection.id, ids))
+    )
   return rows.map((r) => r.id)
 }

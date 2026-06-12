@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { defineExtension } from "lexical"
 import { PanelRightIcon } from "lucide-react"
@@ -16,7 +15,8 @@ import { LexicalExtensionComposer } from "@lexical/react/LexicalExtensionCompose
 import { RichTextExtension } from "@lexical/rich-text"
 import { TableExtension } from "@lexical/table"
 
-import { addRecentArtifactMutationOptions, recentArtifactIdsQueryOptions } from "@/lib/data/recent-artifacts"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+
 import { Button } from "@/components/ui/button"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { CalloutExtension } from "@/components/workspace/editor/callout-extension"
@@ -25,6 +25,10 @@ import { FootnoteExtension } from "@/components/workspace/editor/footnote-extens
 import { MathExtension } from "@/components/workspace/editor/math-extension"
 import { SvgExtension } from "@/components/workspace/editor/svg-extension"
 import { editorTheme } from "@/components/workspace/editor/theme"
+import {
+  addRecentArtifactMutationOptions,
+  recentArtifactIdsQueryOptions,
+} from "@/lib/data/recent-artifacts"
 import { cn } from "@/lib/utils"
 
 import { ContentPreview } from "./content-preview"
@@ -50,7 +54,9 @@ export function Workspace({
   const { mutate: addRecent } = useMutation({
     ...addRecentArtifactMutationOptions,
     onSuccess: () =>
-      qc.invalidateQueries({ queryKey: recentArtifactIdsQueryOptions(workspaceId).queryKey }),
+      qc.invalidateQueries({
+        queryKey: recentArtifactIdsQueryOptions(workspaceId).queryKey,
+      }),
   })
 
   useEffect(() => {

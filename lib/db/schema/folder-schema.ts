@@ -1,5 +1,12 @@
 import { relations } from "drizzle-orm"
-import { AnyPgColumn, index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core"
+import {
+  AnyPgColumn,
+  index,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core"
 
 import { artifactFolder } from "./artifact-schema"
 import { workspace } from "./workspace-schema"

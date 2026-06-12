@@ -7,7 +7,8 @@ import { workspace } from "@/lib/db/schema"
 
 export async function GET() {
   const session = await getSession()
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const workspaces = await db
     .select()
@@ -20,7 +21,8 @@ export async function GET() {
 
 export async function POST(request: Request) {
   const session = await getSession()
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { name } = await request.json()
   if (!name?.trim()) {

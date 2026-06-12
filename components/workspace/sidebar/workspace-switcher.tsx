@@ -10,6 +10,7 @@ import {
   Trash2Icon,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import {
@@ -49,6 +50,7 @@ import {
   updateWorkspaceMutationOptions,
   workspacesQueryOptions,
 } from "@/lib/data/workspaces"
+
 import { CreateWorkspaceDialog } from "../create-workspace-dialog"
 
 function initials(name: string) {
@@ -60,18 +62,24 @@ function initials(name: string) {
     .toUpperCase()
 }
 
-export function WorkspaceSwitcher({ currentWorkspaceId }: { currentWorkspaceId: string }) {
+export function WorkspaceSwitcher({
+  currentWorkspaceId,
+}: {
+  currentWorkspaceId: string
+}) {
   const router = useRouter()
   const qc = useQueryClient()
   const { data: workspaces = [], isLoading } = useQuery(workspacesQueryOptions)
 
   const updateMutation = useMutation({
     ...updateWorkspaceMutationOptions,
-    onSuccess: () => qc.invalidateQueries({ queryKey: workspacesQueryOptions.queryKey }),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: workspacesQueryOptions.queryKey }),
   })
   const deleteMutation = useMutation({
     ...deleteWorkspaceMutationOptions,
-    onSuccess: () => qc.invalidateQueries({ queryKey: workspacesQueryOptions.queryKey }),
+    onSuccess: () =>
+      qc.invalidateQueries({ queryKey: workspacesQueryOptions.queryKey }),
   })
 
   const [createOpen, setCreateOpen] = useState(false)
@@ -79,7 +87,8 @@ export function WorkspaceSwitcher({ currentWorkspaceId }: { currentWorkspaceId: 
   const [editName, setEditName] = useState("")
   const [deleteTarget, setDeleteTarget] = useState<Workspace | null>(null)
 
-  const active = workspaces.find((w) => w.id === currentWorkspaceId) ?? workspaces[0]
+  const active =
+    workspaces.find((w) => w.id === currentWorkspaceId) ?? workspaces[0]
 
   const handleUpdate = () => {
     if (!editWorkspace || !editName.trim() || updateMutation.isPending) return
@@ -195,7 +204,9 @@ export function WorkspaceSwitcher({ currentWorkspaceId }: { currentWorkspaceId: 
                 deleteMutation.mutate(deleteTarget.id, {
                   onSuccess: () => {
                     if (currentWorkspaceId === deleteTarget.id) {
-                      const other = workspaces.find((w) => w.id !== deleteTarget.id)
+                      const other = workspaces.find(
+                        (w) => w.id !== deleteTarget.id
+                      )
                       if (other) router.push(`/workspace/${other.id}`)
                     }
                     setDeleteTarget(null)

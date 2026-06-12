@@ -1,6 +1,7 @@
 "use client"
 
 import { ArchiveIcon } from "lucide-react"
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import {
@@ -11,7 +12,8 @@ import {
 } from "@/lib/data/artifacts"
 import { collectionsQueryOptions } from "@/lib/data/collections"
 import { foldersQueryOptions } from "@/lib/data/folders"
-import { ArtifactListView, type ArtifactAction } from "./artifact-list-view"
+
+import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
 
 interface ArchiveViewProps {
   workspaceId: string
@@ -19,12 +21,18 @@ interface ArchiveViewProps {
 
 export function ArchiveView({ workspaceId }: ArchiveViewProps) {
   const qc = useQueryClient()
-  const { data: artifacts = [], isLoading } = useQuery(artifactsQueryOptions(workspaceId))
+  const { data: artifacts = [], isLoading } = useQuery(
+    artifactsQueryOptions(workspaceId)
+  )
   const { data: folders = [] } = useQuery(foldersQueryOptions(workspaceId))
-  const { data: collections = [] } = useQuery(collectionsQueryOptions(workspaceId))
+  const { data: collections = [] } = useQuery(
+    collectionsQueryOptions(workspaceId)
+  )
 
   const invalidate = () =>
-    qc.invalidateQueries({ queryKey: artifactsQueryOptions(workspaceId).queryKey })
+    qc.invalidateQueries({
+      queryKey: artifactsQueryOptions(workspaceId).queryKey,
+    })
 
   const updateMutation = useMutation({
     ...updateArtifactMutationOptions,
@@ -41,7 +49,8 @@ export function ArchiveView({ workspaceId }: ArchiveViewProps) {
     {
       type: "action",
       label: "Unarchive",
-      onClick: () => updateMutation.mutate({ workspaceId, id: art.id, isArchived: false }),
+      onClick: () =>
+        updateMutation.mutate({ workspaceId, id: art.id, isArchived: false }),
     },
     { type: "separator" },
     {

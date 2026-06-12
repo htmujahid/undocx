@@ -1,6 +1,11 @@
 "use client"
 
-import { ChevronsUpDownIcon, HomeIcon, LogOutIcon, SettingsIcon } from "lucide-react"
+import {
+  ChevronsUpDownIcon,
+  HomeIcon,
+  LogOutIcon,
+  SettingsIcon,
+} from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
@@ -75,7 +80,9 @@ export function SidebarUserMenu({ user }: SidebarUserMenuProps) {
               align="start"
             >
               <DropdownMenuLabel className="flex flex-col gap-0.5">
-                <span className="text-sm font-medium text-foreground">{user.name}</span>
+                <span className="text-sm font-medium text-foreground">
+                  {user.name}
+                </span>
                 <span className="text-xs font-normal text-muted-foreground">
                   {user.email}
                 </span>

@@ -21,9 +21,12 @@ export const toggleFavoriteMutationOptions = mutationOptions({
     workspaceId: string
     artifactId: string
   }): Promise<{ isFavorited: boolean }> => {
-    const res = await fetch(`/api/workspaces/${workspaceId}/favorites/${artifactId}`, {
-      method: "POST",
-    })
+    const res = await fetch(
+      `/api/workspaces/${workspaceId}/favorites/${artifactId}`,
+      {
+        method: "POST",
+      }
+    )
     if (!res.ok) throw new Error("Failed to toggle favorite")
     return res.json()
   },

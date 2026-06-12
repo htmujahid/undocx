@@ -1,13 +1,18 @@
 "use client"
 
 import { StarIcon } from "lucide-react"
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
-import { collectionsQueryOptions } from "@/lib/data/collections"
-import { foldersQueryOptions } from "@/lib/data/folders"
-import { favoritesQueryOptions, toggleFavoriteMutationOptions } from "@/lib/data/favorites"
 import { deleteArtifactMutationOptions } from "@/lib/data/artifacts"
-import { ArtifactListView, type ArtifactAction } from "./artifact-list-view"
+import { collectionsQueryOptions } from "@/lib/data/collections"
+import {
+  favoritesQueryOptions,
+  toggleFavoriteMutationOptions,
+} from "@/lib/data/favorites"
+import { foldersQueryOptions } from "@/lib/data/folders"
+
+import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
 
 interface FavoritesViewProps {
   workspaceId: string
@@ -15,12 +20,18 @@ interface FavoritesViewProps {
 
 export function FavoritesView({ workspaceId }: FavoritesViewProps) {
   const qc = useQueryClient()
-  const { data: favorites = [], isLoading } = useQuery(favoritesQueryOptions(workspaceId))
+  const { data: favorites = [], isLoading } = useQuery(
+    favoritesQueryOptions(workspaceId)
+  )
   const { data: folders = [] } = useQuery(foldersQueryOptions(workspaceId))
-  const { data: collections = [] } = useQuery(collectionsQueryOptions(workspaceId))
+  const { data: collections = [] } = useQuery(
+    collectionsQueryOptions(workspaceId)
+  )
 
   const invalidateFavorites = () =>
-    qc.invalidateQueries({ queryKey: favoritesQueryOptions(workspaceId).queryKey })
+    qc.invalidateQueries({
+      queryKey: favoritesQueryOptions(workspaceId).queryKey,
+    })
 
   const unfavoriteMutation = useMutation({
     ...toggleFavoriteMutationOptions,
@@ -35,7 +46,8 @@ export function FavoritesView({ workspaceId }: FavoritesViewProps) {
     {
       type: "action",
       label: "Unfavorite",
-      onClick: () => unfavoriteMutation.mutate({ workspaceId, artifactId: art.id }),
+      onClick: () =>
+        unfavoriteMutation.mutate({ workspaceId, artifactId: art.id }),
     },
     { type: "separator" },
     {
