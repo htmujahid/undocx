@@ -1,5 +1,7 @@
 import { mutationOptions, queryOptions } from "@tanstack/react-query"
 
+export type SortBy = "updated" | "created" | "name"
+
 export interface ArtifactSummary {
   id: string
   title: string
@@ -15,11 +17,16 @@ export interface Artifact extends ArtifactSummary {
   content: unknown
 }
 
-export const artifactsQueryOptions = (workspaceId: string) =>
+export const artifactsQueryOptions = (
+  workspaceId: string,
+  sort: SortBy = "updated"
+) =>
   queryOptions({
-    queryKey: ["workspaces", workspaceId, "artifacts"],
+    queryKey: ["workspaces", workspaceId, "artifacts", { sort }],
     queryFn: async (): Promise<ArtifactSummary[]> => {
-      const res = await fetch(`/api/workspaces/${workspaceId}/artifacts`)
+      const res = await fetch(
+        `/api/workspaces/${workspaceId}/artifacts?sort=${sort}`
+      )
       if (!res.ok) throw new Error("Failed to fetch artifacts")
       return res.json()
     },

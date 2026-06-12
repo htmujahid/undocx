@@ -5,23 +5,18 @@ import { StarIcon } from "lucide-react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { deleteArtifactMutationOptions } from "@/lib/data/artifacts"
-import { collectionsQueryOptions } from "@/lib/data/collections"
 import {
   favoritesQueryOptions,
   toggleFavoriteMutationOptions,
 } from "@/lib/data/favorites"
-import { foldersQueryOptions } from "@/lib/data/folders"
 
 import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
+import { ArtifactListNavbar } from "./artifact-list-navbar"
 
 export function FavoritesView({ workspaceId }: { workspaceId: string }) {
   const qc = useQueryClient()
   const { data: favorites = [], isLoading } = useQuery(
     favoritesQueryOptions(workspaceId)
-  )
-  const { data: folders = [] } = useQuery(foldersQueryOptions(workspaceId))
-  const { data: collections = [] } = useQuery(
-    collectionsQueryOptions(workspaceId)
   )
 
   const invalidateFavorites = () =>
@@ -55,15 +50,20 @@ export function FavoritesView({ workspaceId }: { workspaceId: string }) {
   ]
 
   return (
-    <ArtifactListView
-      workspaceId={workspaceId}
-      artifacts={favorites}
-      isLoading={isLoading}
-      headerLabel="Favorites"
-      headerIcon={<StarIcon className="size-3.5 text-muted-foreground" />}
-      emptyTitle="No favorites yet"
-      emptyDescription="Star artifacts from the All Items view to find them here."
-      getActions={getActions}
-    />
+    <div className="flex h-svh flex-col overflow-hidden">
+      <ArtifactListNavbar
+        workspaceId={workspaceId}
+        label="Favorites"
+        icon={<StarIcon className="size-3.5 text-muted-foreground" />}
+      />
+      <ArtifactListView
+        workspaceId={workspaceId}
+        artifacts={favorites}
+        isLoading={isLoading}
+        emptyTitle="No favorites yet"
+        emptyDescription="Star artifacts from the All Items view to find them here."
+        getActions={getActions}
+      />
+    </div>
   )
 }

@@ -1,9 +1,12 @@
 "use client"
 
+import { useSearchParams } from "next/navigation"
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import {
   type ArtifactSummary,
+  type SortBy,
   artifactsQueryOptions,
   deleteArtifactMutationOptions,
   updateArtifactMutationOptions,
@@ -16,6 +19,7 @@ import {
 import { foldersQueryOptions } from "@/lib/data/folders"
 
 import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
+import { ArtifactListNavbar } from "./artifact-list-navbar"
 
 export function CollectionView({
   workspaceId,
@@ -24,9 +28,11 @@ export function CollectionView({
   workspaceId: string
   collectionId: string
 }) {
+  const searchParams = useSearchParams()
+  const sort = (searchParams.get("sort") as SortBy | null) ?? "updated"
   const qc = useQueryClient()
   const { data: artifacts = [], isLoading } = useQuery(
-    artifactsQueryOptions(workspaceId)
+    artifactsQueryOptions(workspaceId, sort)
   )
   const { data: folders = [] } = useQuery(foldersQueryOptions(workspaceId))
   const { data: collections = [] } = useQuery(
@@ -39,7 +45,7 @@ export function CollectionView({
 
   const invalidateArtifacts = () =>
     qc.invalidateQueries({
-      queryKey: artifactsQueryOptions(workspaceId).queryKey,
+      queryKey: ["workspaces", workspaceId, "artifacts"],
     })
 
   const updateMutation = useMutation({
@@ -95,22 +101,27 @@ export function CollectionView({
   ]
 
   return (
-    <ArtifactListView
-      workspaceId={workspaceId}
-      artifacts={displayedArtifacts}
-      isLoading={isLoading}
-      headerLabel={collection?.name ?? "Collection"}
-      headerIcon={
-        collection ? (
-          <span
-            className="size-2 shrink-0 rounded-full"
-            style={{ backgroundColor: collection.color }}
-          />
-        ) : undefined
-      }
-      emptyTitle="No artifacts in this collection"
-      emptyDescription="Add artifacts to this collection from the All Items view."
-      getActions={getActions}
-    />
+    <div className="flex h-svh flex-col overflow-hidden">
+      <ArtifactListNavbar
+        workspaceId={workspaceId}
+        label={collection?.name ?? "Collection"}
+        icon={
+          collection ? (
+            <span
+              className="size-2 shrink-0 rounded-full"
+              style={{ backgroundColor: collection.color }}
+            />
+          ) : undefined
+        }
+      />
+      <ArtifactListView
+        workspaceId={workspaceId}
+        artifacts={displayedArtifacts}
+        isLoading={isLoading}
+        emptyTitle="No artifacts in this collection"
+        emptyDescription="Add artifacts to this collection from the All Items view."
+        getActions={getActions}
+      />
+    </div>
   )
 }

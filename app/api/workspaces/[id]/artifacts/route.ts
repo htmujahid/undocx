@@ -1,4 +1,4 @@
-import { and, eq, inArray } from "drizzle-orm"
+import { and, asc, desc, eq, inArray } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
@@ -21,7 +21,7 @@ async function verifyWorkspaceOwner(workspaceId: string, userId: string) {
 }
 
 export async function GET(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getSession()
@@ -31,6 +31,14 @@ export async function GET(
   const { id } = await params
   const ws = await verifyWorkspaceOwner(id, session.user.id)
   if (!ws) return NextResponse.json({ error: "Not found" }, { status: 404 })
+
+  const sort = new URL(req.url).searchParams.get("sort")
+  const orderBy =
+    sort === "name"
+      ? asc(artifact.title)
+      : sort === "created"
+        ? desc(artifact.createdAt)
+        : desc(artifact.updatedAt)
 
   const artifacts = await db
     .select({
@@ -42,8 +50,8 @@ export async function GET(
       updatedAt: artifact.updatedAt,
     })
     .from(artifact)
-    .where(eq(artifact.workspaceId, id))
-    .orderBy(artifact.updatedAt)
+    .where(and(eq(artifact.workspaceId, id), eq(artifact.isArchived, false)))
+    .orderBy(orderBy)
 
   const artifactIds = artifacts.map((a) => a.id)
   const [folderLinks, collectionLinks] = artifactIds.length

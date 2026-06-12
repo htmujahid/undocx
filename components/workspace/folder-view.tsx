@@ -1,11 +1,13 @@
 "use client"
 
 import { FolderIcon } from "lucide-react"
+import { useSearchParams } from "next/navigation"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import {
   type ArtifactSummary,
+  type SortBy,
   artifactsQueryOptions,
   deleteArtifactMutationOptions,
   updateArtifactMutationOptions,
@@ -18,14 +20,17 @@ import {
 import { foldersQueryOptions } from "@/lib/data/folders"
 
 import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
+import { ArtifactListNavbar } from "./artifact-list-navbar"
 
 export function FolderView({ workspaceId, folderId }: {
   workspaceId: string
   folderId: string
 }) {
+  const searchParams = useSearchParams()
+  const sort = (searchParams.get("sort") as SortBy | null) ?? "updated"
   const qc = useQueryClient()
   const { data: artifacts = [], isLoading } = useQuery(
-    artifactsQueryOptions(workspaceId)
+    artifactsQueryOptions(workspaceId, sort)
   )
   const { data: folders = [] } = useQuery(foldersQueryOptions(workspaceId))
   const { data: collections = [] } = useQuery(
@@ -38,7 +43,7 @@ export function FolderView({ workspaceId, folderId }: {
 
   const invalidateArtifacts = () =>
     qc.invalidateQueries({
-      queryKey: artifactsQueryOptions(workspaceId).queryKey,
+      queryKey: ["workspaces", workspaceId, "artifacts"],
     })
 
   const updateMutation = useMutation({
@@ -94,15 +99,20 @@ export function FolderView({ workspaceId, folderId }: {
   ]
 
   return (
-    <ArtifactListView
-      workspaceId={workspaceId}
-      artifacts={displayedArtifacts}
-      isLoading={isLoading}
-      headerLabel={folder?.name ?? "Folder"}
-      headerIcon={<FolderIcon className="size-3.5 text-muted-foreground" />}
-      emptyTitle="No artifacts in this folder"
-      emptyDescription="Move artifacts here from the All Items view."
-      getActions={getActions}
-    />
+    <div className="flex h-svh flex-col overflow-hidden">
+      <ArtifactListNavbar
+        workspaceId={workspaceId}
+        label={folder?.name ?? "Folder"}
+        icon={<FolderIcon className="size-3.5 text-muted-foreground" />}
+      />
+      <ArtifactListView
+        workspaceId={workspaceId}
+        artifacts={displayedArtifacts}
+        isLoading={isLoading}
+        emptyTitle="No artifacts in this folder"
+        emptyDescription="Move artifacts here from the All Items view."
+        getActions={getActions}
+      />
+    </div>
   )
 }

@@ -1,33 +1,32 @@
 "use client"
 
 import { ArchiveIcon } from "lucide-react"
+import { useSearchParams } from "next/navigation"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import {
   type ArtifactSummary,
+  type SortBy,
   artifactsQueryOptions,
   deleteArtifactMutationOptions,
   updateArtifactMutationOptions,
 } from "@/lib/data/artifacts"
-import { collectionsQueryOptions } from "@/lib/data/collections"
-import { foldersQueryOptions } from "@/lib/data/folders"
 
 import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
+import { ArtifactListNavbar } from "./artifact-list-navbar"
 
 export function ArchiveView({ workspaceId }: { workspaceId: string }) {
+  const searchParams = useSearchParams()
+  const sort = (searchParams.get("sort") as SortBy | null) ?? "updated"
   const qc = useQueryClient()
   const { data: artifacts = [], isLoading } = useQuery(
-    artifactsQueryOptions(workspaceId)
-  )
-  const { data: folders = [] } = useQuery(foldersQueryOptions(workspaceId))
-  const { data: collections = [] } = useQuery(
-    collectionsQueryOptions(workspaceId)
+    artifactsQueryOptions(workspaceId, sort)
   )
 
   const invalidate = () =>
     qc.invalidateQueries({
-      queryKey: artifactsQueryOptions(workspaceId).queryKey,
+      queryKey: ["workspaces", workspaceId, "artifacts"],
     })
 
   const updateMutation = useMutation({
@@ -58,15 +57,20 @@ export function ArchiveView({ workspaceId }: { workspaceId: string }) {
   ]
 
   return (
-    <ArtifactListView
-      workspaceId={workspaceId}
-      artifacts={archivedArtifacts}
-      isLoading={isLoading}
-      headerLabel="Archive"
-      headerIcon={<ArchiveIcon className="size-3.5 text-muted-foreground" />}
-      emptyTitle="Archive is empty"
-      emptyDescription="Archived artifacts will appear here."
-      getActions={getActions}
-    />
+    <div className="flex h-svh flex-col overflow-hidden">
+      <ArtifactListNavbar
+        workspaceId={workspaceId}
+        label="Archive"
+        icon={<ArchiveIcon className="size-3.5 text-muted-foreground" />}
+      />
+      <ArtifactListView
+        workspaceId={workspaceId}
+        artifacts={archivedArtifacts}
+        isLoading={isLoading}
+        emptyTitle="Archive is empty"
+        emptyDescription="Archived artifacts will appear here."
+        getActions={getActions}
+      />
+    </div>
   )
 }
