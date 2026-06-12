@@ -3,10 +3,14 @@ import { cache } from "react"
 import { and, eq } from "drizzle-orm"
 import { notFound, redirect } from "next/navigation"
 
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
+
 import { Workspace } from "@/components/workspace/workspace"
 import { getSession } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { artifact, workspace } from "@/lib/db/schema"
+import { artifactQueryOptions } from "@/lib/data/artifacts"
+import { getQueryClient } from "@/lib/data/get-query-client"
 
 const getArtifact = cache(async (id: string, artifactId: string) => {
   const [art] = await db
@@ -47,12 +51,13 @@ export default async function ArtifactPage({
 
   if (!art) notFound()
 
+  const queryClient = getQueryClient()
+
+  await queryClient.prefetchQuery(artifactQueryOptions(id, artifactId))
+
   return (
-    <Workspace
-      workspaceId={id}
-      artifactId={art.id}
-      initialTitle={art.title}
-      initialContent={art.content}
-    />
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Workspace workspaceId={id} artifactId={artifactId} />
+    </HydrationBoundary>
   )
 }

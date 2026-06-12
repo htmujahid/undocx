@@ -16,7 +16,7 @@ import { LexicalExtensionComposer } from "@lexical/react/LexicalExtensionCompose
 import { RichTextExtension } from "@lexical/rich-text"
 import { TableExtension } from "@lexical/table"
 
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { Button } from "@/components/ui/button"
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
@@ -28,6 +28,7 @@ import { RENDERICAL_TRANSFORMERS } from "@/components/workspace/editor/markdown-
 import { MathExtension } from "@/components/workspace/editor/math-extension"
 import { SvgExtension } from "@/components/workspace/editor/svg-extension"
 import { editorTheme } from "@/components/workspace/editor/theme"
+import { artifactQueryOptions } from "@/lib/data/artifacts"
 import {
   addRecentArtifactMutationOptions,
   recentArtifactIdsQueryOptions,
@@ -40,16 +41,16 @@ import { UpdatePromptSidebar } from "./update-prompt-sidebar"
 export function Workspace({
   workspaceId,
   artifactId,
-  initialTitle,
-  initialContent,
 }: {
   workspaceId: string
   artifactId: string
-  initialTitle: string
-  initialContent: string | null
 }) {
   const qc = useQueryClient()
   const [rightOpen, setRightOpen] = useState(true)
+
+  // Hydrated by the server component — available synchronously on first render.
+  const { data: art } = useQuery(artifactQueryOptions(workspaceId, artifactId))
+  const title = art?.title ?? ""
 
   const { mutate: addRecent } = useMutation({
     ...addRecentArtifactMutationOptions,
@@ -70,11 +71,11 @@ export function Workspace({
         namespace: "content-editor",
         theme: editorTheme,
         editable: false,
-        ...(initialContent
+        ...(art?.content
           ? {
               $initialEditorState: () =>
                 $convertFromMarkdownString(
-                  initialContent,
+                  art.content!,
                   RENDERICAL_TRANSFORMERS
                 ),
             }
@@ -106,7 +107,7 @@ export function Workspace({
         <header className="flex h-11 shrink-0 items-center border-b px-2">
           <SidebarTrigger />
           <span className="ml-2 flex-1 truncate text-xs text-muted-foreground">
-            {initialTitle}
+            {title}
           </span>
           <Button
             variant="ghost"
@@ -130,7 +131,7 @@ export function Workspace({
           style={{ "--sidebar-width": "24rem" } as React.CSSProperties}
           className="min-h-0 flex-1"
         >
-          <ContentPreview title={initialTitle} />
+          <ContentPreview title={title} />
           <UpdatePromptSidebar
             workspaceId={workspaceId}
             artifactId={artifactId}
