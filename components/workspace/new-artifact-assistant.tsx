@@ -18,11 +18,12 @@ import { outputSchema } from "@/lib/ai-schema"
 import {
   artifactQueryOptions,
   artifactsQueryOptions,
+  fetchContextDocuments,
   updateArtifactMutationOptions,
 } from "@/lib/data/artifacts"
 import { cn } from "@/lib/utils"
 
-import { DocumentOutline } from "./document-outline"
+import { CopilotPanels } from "./copilot-panels"
 import { RENDERICAL_TRANSFORMERS } from "./editor/markdown-transformers"
 
 export function NewArtifactAssistant({
@@ -40,6 +41,15 @@ export function NewArtifactAssistant({
   const qc = useQueryClient()
   const [editor] = useLexicalComposerContext()
   const [prompt, setPrompt] = useState("")
+  const [contextIds, setContextIds] = useState<Set<string>>(new Set())
+
+  const toggleContext = (id: string) =>
+    setContextIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
 
   const saveMutation = useMutation({
     ...updateArtifactMutationOptions,
@@ -108,10 +118,17 @@ export function NewArtifactAssistant({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [object])
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const text = prompt.trim()
     if (!text || isLoading) return
-    submit({ prompt: `Topic: ${text}` })
+    let context
+    try {
+      context = await fetchContextDocuments(qc, workspaceId, contextIds)
+    } catch {
+      toast.error("Failed to load context artifacts.")
+      return
+    }
+    submit({ prompt: `Topic: ${text}`, context })
     setPrompt("")
   }
 
@@ -137,8 +154,13 @@ export function NewArtifactAssistant({
         </div>
       </SidebarHeader>
 
-      {/* ── Outline ── */}
-      <DocumentOutline />
+      {/* ── Outline / Context ── */}
+      <CopilotPanels
+        workspaceId={workspaceId}
+        excludeId={artifactId}
+        contextIds={contextIds}
+        onToggleContext={toggleContext}
+      />
 
       {/* ── Prompt input ── */}
       <SidebarFooter className="p-0">

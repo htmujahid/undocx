@@ -2,6 +2,15 @@ import { z } from "zod"
 
 // ── System prompts ────────────────────────────────────────────────────────────
 
+const SVG_FIGURE_RULES = `SVG figure rules (charts, diagrams, flowcharts, timelines, architectures):
+- Prefer an SVG figure over prose whenever a concept is inherently visual — processes and flows, system architectures, hierarchies, cycles, timelines, comparisons, and data trends
+- Plan the layout on a coordinate grid first: use a viewBox roughly 700 wide (height as the content requires), leave generous spacing, and never let shapes or labels overlap
+- Flowcharts and diagrams: rounded <rect> nodes with centred <text> labels; connect nodes edge-to-edge (not centre-to-centre) with lines or paths ending in an arrowhead <marker> defined once in <defs>
+- Charts: draw real axes with tick marks, tick labels, and axis titles; scale the data accurately to the coordinate space; add a legend whenever more than one series is plotted
+- Text: font-size 12–14, text-anchor="middle" for centred labels; keep labels short enough to fit their shapes
+- Use currentColor for all strokes and fills, distinguishing elements with fill-opacity (e.g. 0.08–0.3) and stroke-width instead of hard-coded colors, so figures adapt to the theme
+- Every figure must be self-contained and readable on its own; follow it with a one-line italic caption paragraph`
+
 export const SYSTEM_PROMPT = `You are Renderical Copilot, an expert content generation assistant.
 
 Given a topic, generate a comprehensive document and respond with a JSON object of two fields:
@@ -40,11 +49,13 @@ Supported syntax (GitHub-flavoured Markdown plus Renderical extensions):
 CRITICAL math rule: all math must be MathML markup as shown above — never LaTeX, never KaTeX, never \\(..\\) or \\[..\\] syntax.
 CRITICAL security rule: SVG and MathML content is rendered directly in the browser via innerHTML — never include event handlers (onload, onclick, onerror, etc.), javascript: URIs, <script> tags, external resource references, or any other construct that could execute code or trigger network requests.
 
+${SVG_FIGURE_RULES}
+
 Document style rules:
 - Choose the richest mix of block types that genuinely fits the topic — don't force every feature into every document
 - Use tables for comparisons and structured data, with context paragraphs around them
 - Use fenced code blocks for any code, commands, or configuration
-- Use SVG figures for charts, diagrams, and visualisations
+- Use SVG figures for charts, diagrams, flowcharts, and visualisations, following the SVG figure rules above
 - Use math (block or inline) for formulas and equations
 - Add callouts (note/tip/warning/danger) to highlight key insights
 - Use footnotes for citations and references`
@@ -64,7 +75,9 @@ Respond with a JSON object of one field:
 
 Supported syntax is identical to the main document format (headings, paragraphs, blockquotes, hr, bold, italic, inline code, links, bullet/numbered lists, fenced code blocks, tables, callouts :::note/tip/warning/danger, block math $$…$$, inline math $…$, footnotes ^[…], SVG figures). Images (![alt](url)) are NOT supported.
 CRITICAL math rule: all math must be MathML — never LaTeX, never \\(..\\) or \\[..\\].
-CRITICAL security rule: SVG and MathML content is rendered directly in the browser via innerHTML — never include event handlers, javascript: URIs, <script> tags, external resource references, or any other construct that could execute code or trigger network requests.`
+CRITICAL security rule: SVG and MathML content is rendered directly in the browser via innerHTML — never include event handlers, javascript: URIs, <script> tags, external resource references, or any other construct that could execute code or trigger network requests.
+
+${SVG_FIGURE_RULES}`
 
 export const REPLACE_SYSTEM_PROMPT = `You are Renderical Copilot, an expert content generation assistant.
 
@@ -81,7 +94,29 @@ Respond with a JSON object of one field:
 
 Supported syntax is identical to the main document format (headings, paragraphs, blockquotes, hr, bold, italic, inline code, links, bullet/numbered lists, fenced code blocks, tables, callouts :::note/tip/warning/danger, block math $$…$$, inline math $…$, footnotes ^[…], SVG figures). Images (![alt](url)) are NOT supported.
 CRITICAL math rule: all math must be MathML — never LaTeX, never \\(..\\) or \\[..\\].
-CRITICAL security rule: SVG and MathML content is rendered directly in the browser via innerHTML — never include event handlers, javascript: URIs, <script> tags, external resource references, or any other construct that could execute code or trigger network requests.`
+CRITICAL security rule: SVG and MathML content is rendered directly in the browser via innerHTML — never include event handlers, javascript: URIs, <script> tags, external resource references, or any other construct that could execute code or trigger network requests.
+
+${SVG_FIGURE_RULES}`
+
+// ── Context formatting ────────────────────────────────────────────────────────
+
+export interface ContextDocument {
+  title: string
+  content: string
+}
+
+/** Formats user-selected reference artifacts into a prompt section. */
+export function formatContext(context: unknown): string | null {
+  if (!Array.isArray(context)) return null
+  const docs = (context as ContextDocument[]).filter(
+    (doc) => typeof doc?.content === "string" && doc.content.trim()
+  )
+  if (docs.length === 0) return null
+  return [
+    "Reference documents (use as background context):",
+    ...docs.map((doc) => `### ${doc.title || "Untitled"}\n\n${doc.content}`),
+  ].join("\n\n")
+}
 
 // ── Output schemas ────────────────────────────────────────────────────────────
 

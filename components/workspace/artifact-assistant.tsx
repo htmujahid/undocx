@@ -10,7 +10,7 @@ import { Sidebar, SidebarFooter, SidebarHeader } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
 
 import { ModeBadge } from "./copilot-mode-badge"
-import { DocumentOutline } from "./document-outline"
+import { CopilotPanels } from "./copilot-panels"
 import { useCopilotSubmit } from "./use-copilot-submit"
 
 export function ArtifactAssistant({
@@ -21,6 +21,15 @@ export function ArtifactAssistant({
   artifactId: string
 }) {
   const [prompt, setPrompt] = useState("")
+  const [contextIds, setContextIds] = useState<Set<string>>(new Set())
+
+  const toggleContext = (id: string) =>
+    setContextIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
 
   const {
     hasStart,
@@ -32,7 +41,7 @@ export function ArtifactAssistant({
     placeholder,
     submitLabel,
     handleSubmit,
-  } = useCopilotSubmit({ workspaceId, artifactId })
+  } = useCopilotSubmit({ workspaceId, artifactId, contextIds })
 
   const onSubmit = () => {
     handleSubmit(prompt)
@@ -60,7 +69,12 @@ export function ArtifactAssistant({
         </div>
       </SidebarHeader>
 
-      <DocumentOutline />
+      <CopilotPanels
+        workspaceId={workspaceId}
+        excludeId={artifactId}
+        contextIds={contextIds}
+        onToggleContext={toggleContext}
+      />
 
       <SidebarFooter className="p-0">
         <Separator />

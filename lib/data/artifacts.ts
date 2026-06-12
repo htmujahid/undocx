@@ -1,4 +1,10 @@
-import { mutationOptions, queryOptions } from "@tanstack/react-query"
+import {
+  type QueryClient,
+  mutationOptions,
+  queryOptions,
+} from "@tanstack/react-query"
+
+import type { ContextDocument } from "@/lib/ai-schema"
 
 export type SortBy = "updated" | "created" | "name"
 
@@ -46,6 +52,20 @@ export const artifactQueryOptions = (workspaceId: string, artifactId: string) =>
     },
     enabled: !!workspaceId && !!artifactId,
   })
+
+/** Resolves selected artifacts to reference documents for the copilot. */
+export async function fetchContextDocuments(
+  qc: QueryClient,
+  workspaceId: string,
+  ids: Set<string>
+): Promise<ContextDocument[]> {
+  const artifacts = await Promise.all(
+    [...ids].map((id) => qc.fetchQuery(artifactQueryOptions(workspaceId, id)))
+  )
+  return artifacts
+    .filter((a) => a.content?.trim())
+    .map((a) => ({ title: a.title, content: a.content as string }))
+}
 
 export const createArtifactMutationOptions = mutationOptions({
   mutationFn: async ({

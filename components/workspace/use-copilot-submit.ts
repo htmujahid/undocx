@@ -17,6 +17,7 @@ import { insertOutputSchema, replaceOutputSchema } from "@/lib/ai-schema"
 import {
   artifactQueryOptions,
   artifactsQueryOptions,
+  fetchContextDocuments,
   updateArtifactMutationOptions,
 } from "@/lib/data/artifacts"
 
@@ -78,9 +79,11 @@ export interface CopilotSubmitState {
 export function useCopilotSubmit({
   workspaceId,
   artifactId,
+  contextIds,
 }: {
   workspaceId: string
   artifactId: string
+  contextIds?: Set<string>
 }): CopilotSubmitState {
   const qc = useQueryClient()
   const [editor] = useLexicalComposerContext()
@@ -219,9 +222,21 @@ export function useCopilotSubmit({
 
   const isLoading = insertObj.isLoading || replaceObj.isLoading
 
-  const handleSubmit = (prompt: string) => {
+  const handleSubmit = async (prompt: string) => {
     const text = prompt.trim()
     if (!text || isLoading || disabled) return
+
+    let context
+    try {
+      context = await fetchContextDocuments(
+        qc,
+        workspaceId,
+        contextIds ?? new Set()
+      )
+    } catch {
+      toast.error("Failed to load context artifacts.")
+      return
+    }
 
     const fullMarkdown = getMarkdown()
     const {
@@ -240,12 +255,14 @@ export function useCopilotSubmit({
         selectedContent: selected,
         afterContent: after,
         prompt: text,
+        context,
       })
     } else if (hs) {
       insertObj.submit({
         beforeContent: before,
         afterContent: after,
         prompt: text,
+        context,
       })
     }
   }

@@ -66,12 +66,7 @@ export function DocumentOutline() {
 
   return (
     <SidebarContent className="p-0">
-      <div className="px-4 py-2">
-        <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-          Outline
-        </span>
-      </div>
-      <ScrollArea className="h-full border-t">
+      <ScrollArea className="h-full">
         {outline.length === 0 ? (
           <div className="flex flex-col items-center justify-center px-4 py-12 text-center">
             <p className="text-xs text-muted-foreground">No headings yet.</p>

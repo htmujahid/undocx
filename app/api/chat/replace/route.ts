@@ -1,13 +1,18 @@
 import { openai } from "@ai-sdk/openai"
 import { Output, streamText } from "ai"
 
-import { REPLACE_SYSTEM_PROMPT, replaceOutputSchema } from "@/lib/ai-schema"
+import {
+  REPLACE_SYSTEM_PROMPT,
+  formatContext,
+  replaceOutputSchema,
+} from "@/lib/ai-schema"
 
 export async function POST(request: Request) {
-  const { beforeContent, selectedContent, afterContent, prompt } =
+  const { beforeContent, selectedContent, afterContent, prompt, context } =
     await request.json()
 
   const parts = [
+    formatContext(context),
     beforeContent?.trim()
       ? `Content BEFORE the selected section:\n\n${beforeContent}`
       : null,
