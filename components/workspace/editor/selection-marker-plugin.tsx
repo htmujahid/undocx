@@ -1,9 +1,16 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react"
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react"
+
+import { createPortal } from "react-dom"
 
 import { $getNodeByKey, $getRoot } from "lexical"
-import { createPortal } from "react-dom"
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 
@@ -40,6 +47,9 @@ export function SelectionMarkerPlugin({
   const [indicator, setIndicator] = useState<IndicatorState | null>(null)
   const [highlight, setHighlight] = useState<HighlightState | null>(null)
   const indicatorRef = useRef<IndicatorState | null>(null)
+  // Mirror the latest indicator into a ref so the click handler reads current
+  // state synchronously — an effect would lag by a render. Intentional.
+  // eslint-disable-next-line react-hooks/refs
   indicatorRef.current = indicator
 
   const { startKey, endKey } = useSyncExternalStore(
@@ -100,6 +110,7 @@ export function SelectionMarkerPlugin({
 
   // Scroll / resize listeners + initial calculation
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- initial sync calc
     updateHighlight()
     window.addEventListener("scroll", updateHighlight, true)
     window.addEventListener("resize", updateHighlight)
@@ -137,7 +148,7 @@ export function SelectionMarkerPlugin({
         return
       }
 
-      let keys: string[] = []
+      const keys: string[] = []
       let startAfterNonMarkerCount = -1
 
       editor.getEditorState().read(() => {
@@ -171,9 +182,11 @@ export function SelectionMarkerPlugin({
 
         if (mouseY >= zoneTop && mouseY <= zoneBottom) {
           const y =
-            i === 0 ? nextTop - 8
-            : i === keys.length ? prevBottom
-            : (prevBottom + nextTop) / 2
+            i === 0
+              ? nextTop - 8
+              : i === keys.length
+                ? prevBottom
+                : (prevBottom + nextTop) / 2
 
           if (sKey !== null) {
             if (i <= startAfterNonMarkerCount) {
@@ -280,7 +293,11 @@ export function SelectionMarkerPlugin({
               <div className="mx-2 flex shrink-0 items-center gap-1.5 rounded-full border border-primary/20 bg-background px-2.5 py-0.5 text-[10px] font-medium text-primary/45 shadow-sm transition-all group-hover:border-primary/50 group-hover:text-primary/85">
                 {indicator.mode === "start" ? (
                   <>
-                    <svg viewBox="0 0 8 8" className="size-2 fill-current" aria-hidden="true">
+                    <svg
+                      viewBox="0 0 8 8"
+                      className="size-2 fill-current"
+                      aria-hidden="true"
+                    >
                       <rect x="0" y="4.5" width="8" height="1.2" />
                       <polygon points="4,0.5 7,4.5 1,4.5" />
                     </svg>
@@ -288,7 +305,11 @@ export function SelectionMarkerPlugin({
                   </>
                 ) : (
                   <>
-                    <svg viewBox="0 0 8 8" className="size-2 fill-current" aria-hidden="true">
+                    <svg
+                      viewBox="0 0 8 8"
+                      className="size-2 fill-current"
+                      aria-hidden="true"
+                    >
                       <rect x="0" y="2.3" width="8" height="1.2" />
                       <polygon points="4,7.5 7,3.5 1,3.5" />
                     </svg>

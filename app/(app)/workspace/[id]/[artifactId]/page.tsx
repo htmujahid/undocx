@@ -7,10 +7,10 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
 
 import { Workspace } from "@/components/workspace/workspace"
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { artifact, workspace } from "@/lib/db/schema"
 import { artifactQueryOptions } from "@/lib/data/artifacts"
 import { getQueryClient } from "@/lib/data/get-query-client"
+import { db } from "@/lib/db"
+import { artifact, workspace } from "@/lib/db/schema"
 
 const getArtifact = cache(async (id: string, artifactId: string) => {
   const [art] = await db

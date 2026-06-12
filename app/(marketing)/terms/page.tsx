@@ -51,8 +51,7 @@ const SECTIONS = [
 
 export const metadata = {
   title: "Terms of Service",
-  description:
-    "The terms and conditions that govern your use of Renderical.",
+  description: "The terms and conditions that govern your use of Renderical.",
 }
 
 export default function TermsPage() {

@@ -6,9 +6,10 @@ import type { EditorState, LexicalNode } from "lexical"
 import { SelectionMarkerNode } from "./selection-marker-node"
 import { publishSelectionMarkers } from "./selection-marker-store"
 
-function findMarkerKeys(
-  state: EditorState
-): { startKey: string | null; endKey: string | null } {
+function findMarkerKeys(state: EditorState): {
+  startKey: string | null
+  endKey: string | null
+} {
   return state.read(() => {
     let startKey: string | null = null
     let endKey: string | null = null

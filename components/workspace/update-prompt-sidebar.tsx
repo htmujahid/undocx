@@ -6,11 +6,7 @@ import { ArrowUpIcon, MousePointerClickIcon, SparklesIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import {
-  Sidebar,
-  SidebarFooter,
-  SidebarHeader,
-} from "@/components/ui/sidebar"
+import { Sidebar, SidebarFooter, SidebarHeader } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
 
 import { ModeBadge } from "./copilot-mode-badge"

@@ -3,6 +3,7 @@
 import { useState } from "react"
 
 import { CheckIcon } from "lucide-react"
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { Button } from "@/components/ui/button"
@@ -13,7 +14,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { type ArtifactSummary, updateArtifactMutationOptions } from "@/lib/data/artifacts"
+import {
+  type ArtifactSummary,
+  updateArtifactMutationOptions,
+} from "@/lib/data/artifacts"
 import { collectionsQueryOptions } from "@/lib/data/collections"
 
 export function AddToCollectionDialog({
@@ -28,7 +32,9 @@ export function AddToCollectionDialog({
   onClose: () => void
 }) {
   const qc = useQueryClient()
-  const { data: collections = [] } = useQuery(collectionsQueryOptions(workspaceId))
+  const { data: collections = [] } = useQuery(
+    collectionsQueryOptions(workspaceId)
+  )
   const [selected, setSelected] = useState<Set<string>>(
     new Set(artifact?.collectionIds ?? [])
   )
@@ -36,7 +42,9 @@ export function AddToCollectionDialog({
   const mutation = useMutation({
     ...updateArtifactMutationOptions,
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["workspaces", workspaceId, "artifacts"] })
+      qc.invalidateQueries({
+        queryKey: ["workspaces", workspaceId, "artifacts"],
+      })
       onClose()
     },
   })
@@ -98,7 +106,11 @@ export function AddToCollectionDialog({
             disabled={mutation.isPending}
             onClick={() => {
               if (!artifact) return
-              mutation.mutate({ workspaceId, id: artifact.id, collectionIds: [...selected] })
+              mutation.mutate({
+                workspaceId,
+                id: artifact.id,
+                collectionIds: [...selected],
+              })
             }}
           >
             Save

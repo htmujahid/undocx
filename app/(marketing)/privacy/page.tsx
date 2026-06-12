@@ -47,8 +47,7 @@ const SECTIONS = [
 
 export const metadata = {
   title: "Privacy Policy",
-  description:
-    "How Renderical collects, uses, and protects your data.",
+  description: "How Renderical collects, uses, and protects your data.",
 }
 
 export default function PrivacyPage() {

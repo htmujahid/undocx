@@ -19,7 +19,10 @@ import {
   $convertToMarkdownString,
   TRANSFORMERS,
 } from "@lexical/markdown"
-import type { TableCellNode as TableCellNodeType, TableNode as TableNodeType } from "@lexical/table"
+import type {
+  TableCellNode as TableCellNodeType,
+  TableNode as TableNodeType,
+} from "@lexical/table"
 import {
   $createTableCellNode,
   $createTableNode,

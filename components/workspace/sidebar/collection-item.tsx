@@ -123,11 +123,7 @@ export function CollectionItem({
   return (
     <>
       <SidebarMenuItem>
-        <SidebarMenuButton
-          size="sm"
-          isActive={isSelected}
-          onClick={onToggle}
-        >
+        <SidebarMenuButton size="sm" isActive={isSelected} onClick={onToggle}>
           {artifacts.length > 0 ? (
             <span className="relative size-4 shrink-0">
               <span className="absolute inset-0 flex items-center justify-center transition-opacity group-hover/menu-button:opacity-0">

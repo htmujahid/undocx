@@ -8,9 +8,15 @@ export async function POST(request: Request) {
     await request.json()
 
   const parts = [
-    beforeContent?.trim() ? `Content BEFORE the selected section:\n\n${beforeContent}` : null,
-    selectedContent?.trim() ? `SELECTED section to replace:\n\n${selectedContent}` : null,
-    afterContent?.trim() ? `Content AFTER the selected section:\n\n${afterContent}` : null,
+    beforeContent?.trim()
+      ? `Content BEFORE the selected section:\n\n${beforeContent}`
+      : null,
+    selectedContent?.trim()
+      ? `SELECTED section to replace:\n\n${selectedContent}`
+      : null,
+    afterContent?.trim()
+      ? `Content AFTER the selected section:\n\n${afterContent}`
+      : null,
     `Instruction: ${prompt}`,
   ]
     .filter(Boolean)

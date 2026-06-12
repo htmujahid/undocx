@@ -5,7 +5,10 @@ import { useEffect, useRef, useSyncExternalStore } from "react"
 import { experimental_useObject as useObject } from "@ai-sdk/react"
 import { toast } from "sonner"
 
-import { $convertFromMarkdownString, $convertToMarkdownString } from "@lexical/markdown"
+import {
+  $convertFromMarkdownString,
+  $convertToMarkdownString,
+} from "@lexical/markdown"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -37,7 +40,13 @@ function splitAtMarkers(md: string): {
   const endIdx = md.indexOf(END_PLACEHOLDER)
 
   if (startIdx === -1)
-    return { before: md, selected: "", after: "", hasStart: false, hasEnd: false }
+    return {
+      before: md,
+      selected: "",
+      after: "",
+      hasStart: false,
+      hasEnd: false,
+    }
 
   const before = md.slice(0, startIdx).trim()
 
@@ -99,7 +108,9 @@ export function useCopilotSubmit({
   const saveMutation = useMutation({
     ...updateArtifactMutationOptions,
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: artifactsQueryOptions(workspaceId).queryKey })
+      qc.invalidateQueries({
+        queryKey: artifactsQueryOptions(workspaceId).queryKey,
+      })
       qc.invalidateQueries({
         queryKey: artifactQueryOptions(workspaceId, artifactId).queryKey,
       })
@@ -135,7 +146,9 @@ export function useCopilotSubmit({
       }
       try {
         const { before, after } = snapshotRef.current
-        const final = [before, result.content, after].filter(Boolean).join("\n\n")
+        const final = [before, result.content, after]
+          .filter(Boolean)
+          .join("\n\n")
         applyMarkdown(final)
         saveMutation.mutate({ workspaceId, id: artifactId, content: final })
       } catch (err) {
@@ -174,7 +187,9 @@ export function useCopilotSubmit({
       }
       try {
         const { before, after } = snapshotRef.current
-        const final = [before, result.content, after].filter(Boolean).join("\n\n")
+        const final = [before, result.content, after]
+          .filter(Boolean)
+          .join("\n\n")
         applyMarkdown(final)
         saveMutation.mutate({ workspaceId, id: artifactId, content: final })
       } catch (err) {
@@ -209,15 +224,29 @@ export function useCopilotSubmit({
     if (!text || isLoading || disabled) return
 
     const fullMarkdown = getMarkdown()
-    const { before, selected, after, hasStart: hs, hasEnd: he } =
-      splitAtMarkers(fullMarkdown)
+    const {
+      before,
+      selected,
+      after,
+      hasStart: hs,
+      hasEnd: he,
+    } = splitAtMarkers(fullMarkdown)
 
     snapshotRef.current = { existing: fullMarkdown, before, selected, after }
 
     if (hs && he) {
-      replaceObj.submit({ beforeContent: before, selectedContent: selected, afterContent: after, prompt: text })
+      replaceObj.submit({
+        beforeContent: before,
+        selectedContent: selected,
+        afterContent: after,
+        prompt: text,
+      })
     } else if (hs) {
-      insertObj.submit({ beforeContent: before, afterContent: after, prompt: text })
+      insertObj.submit({
+        beforeContent: before,
+        afterContent: after,
+        prompt: text,
+      })
     }
   }
 

@@ -5,10 +5,10 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
 
 import { WorkspaceHome } from "@/components/workspace/workspace-home"
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { workspace } from "@/lib/db/schema"
 import { favoritesQueryOptions } from "@/lib/data/favorites"
 import { getQueryClient } from "@/lib/data/get-query-client"
+import { db } from "@/lib/db"
+import { workspace } from "@/lib/db/schema"
 
 export default async function WorkspacePage({
   params,

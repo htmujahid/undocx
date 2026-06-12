@@ -13,11 +13,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import {
-  Sidebar,
-  SidebarFooter,
-  SidebarHeader,
-} from "@/components/ui/sidebar"
+import { Sidebar, SidebarFooter, SidebarHeader } from "@/components/ui/sidebar"
 import { outputSchema } from "@/lib/ai-schema"
 import {
   artifactQueryOptions,
@@ -164,7 +160,7 @@ export function CopilotSidebar({
             />
             <div className="flex items-center justify-between px-2 pb-2">
               <span className="text-[10px] text-muted-foreground">
-                {(isLoading || saveMutation.isPending) ? (
+                {isLoading || saveMutation.isPending ? (
                   <span className="animate-pulse">
                     {saveMutation.isPending ? "Saving…" : "Generating…"}
                   </span>

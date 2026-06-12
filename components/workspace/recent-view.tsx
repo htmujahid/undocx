@@ -13,8 +13,8 @@ import {
 } from "@/lib/data/artifacts"
 import { recentArtifactIdsQueryOptions } from "@/lib/data/recent-artifacts"
 
-import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
 import { ArtifactListNavbar } from "./artifact-list-navbar"
+import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
 
 export function RecentView({ workspaceId }: { workspaceId: string }) {
   const searchParams = useSearchParams()

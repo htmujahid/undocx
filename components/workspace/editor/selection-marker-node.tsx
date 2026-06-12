@@ -2,9 +2,14 @@
 
 import type { ReactElement } from "react"
 
-import { XIcon } from "lucide-react"
-import type { LexicalNode, NodeKey, SerializedLexicalNode, Spread } from "lexical"
+import type {
+  LexicalNode,
+  NodeKey,
+  SerializedLexicalNode,
+  Spread,
+} from "lexical"
 import { $getRoot, DecoratorNode } from "lexical"
+import { XIcon } from "lucide-react"
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 
@@ -27,7 +32,9 @@ function SelectionMarkerComponent({
     editor.update(() => {
       $getRoot()
         .getChildren()
-        .filter((n): n is SelectionMarkerNode => n instanceof SelectionMarkerNode)
+        .filter(
+          (n): n is SelectionMarkerNode => n instanceof SelectionMarkerNode
+        )
         .forEach((n) => n.remove())
     })
   }
@@ -160,7 +167,9 @@ export class SelectionMarkerNode extends DecoratorNode<ReactElement> {
   }
 }
 
-export function $createSelectionMarkerNode(role: MarkerRole): SelectionMarkerNode {
+export function $createSelectionMarkerNode(
+  role: MarkerRole
+): SelectionMarkerNode {
   return new SelectionMarkerNode(role)
 }
 

@@ -6,13 +6,13 @@ import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { WorkspaceSidebar } from "@/components/workspace/sidebar/workspace-sidebar"
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { workspace } from "@/lib/db/schema"
 import { artifactsQueryOptions } from "@/lib/data/artifacts"
 import { collectionsQueryOptions } from "@/lib/data/collections"
 import { foldersQueryOptions } from "@/lib/data/folders"
 import { getQueryClient } from "@/lib/data/get-query-client"
 import { workspacesQueryOptions } from "@/lib/data/workspaces"
+import { db } from "@/lib/db"
+import { workspace } from "@/lib/db/schema"
 
 export const metadata = {
   title: "Workspace",

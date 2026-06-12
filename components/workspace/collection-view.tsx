@@ -18,8 +18,8 @@ import {
 } from "@/lib/data/favorites"
 import { foldersQueryOptions } from "@/lib/data/folders"
 
-import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
 import { ArtifactListNavbar } from "./artifact-list-navbar"
+import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
 
 export function CollectionView({
   workspaceId,
@@ -34,7 +34,8 @@ export function CollectionView({
   const { data: artifacts = [], isLoading } = useQuery(
     artifactsQueryOptions(workspaceId, sort)
   )
-  const { data: folders = [] } = useQuery(foldersQueryOptions(workspaceId))
+  // Warms the folders cache for descendant dialogs (move-to-folder, etc.)
+  useQuery(foldersQueryOptions(workspaceId))
   const { data: collections = [] } = useQuery(
     collectionsQueryOptions(workspaceId)
   )

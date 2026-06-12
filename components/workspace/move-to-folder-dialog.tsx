@@ -3,6 +3,7 @@
 import { useState } from "react"
 
 import { CheckIcon, FolderIcon } from "lucide-react"
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { Button } from "@/components/ui/button"
@@ -13,7 +14,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { type ArtifactSummary, updateArtifactMutationOptions } from "@/lib/data/artifacts"
+import {
+  type ArtifactSummary,
+  updateArtifactMutationOptions,
+} from "@/lib/data/artifacts"
 import { type Folder, foldersQueryOptions } from "@/lib/data/folders"
 
 function buildFolderTree(
@@ -50,7 +54,9 @@ export function MoveToFolderDialog({
   const mutation = useMutation({
     ...updateArtifactMutationOptions,
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["workspaces", workspaceId, "artifacts"] })
+      qc.invalidateQueries({
+        queryKey: ["workspaces", workspaceId, "artifacts"],
+      })
       onClose()
     },
   })
@@ -113,7 +119,11 @@ export function MoveToFolderDialog({
             disabled={mutation.isPending}
             onClick={() => {
               if (!artifact) return
-              mutation.mutate({ workspaceId, id: artifact.id, folderIds: [...selected] })
+              mutation.mutate({
+                workspaceId,
+                id: artifact.id,
+                folderIds: [...selected],
+              })
             }}
           >
             Save

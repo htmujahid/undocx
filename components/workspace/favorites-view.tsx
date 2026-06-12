@@ -10,8 +10,8 @@ import {
   toggleFavoriteMutationOptions,
 } from "@/lib/data/favorites"
 
-import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
 import { ArtifactListNavbar } from "./artifact-list-navbar"
+import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
 
 export function FavoritesView({ workspaceId }: { workspaceId: string }) {
   const qc = useQueryClient()

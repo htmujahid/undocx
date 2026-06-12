@@ -21,8 +21,8 @@ import {
 } from "@/lib/data/favorites"
 
 import { AddToCollectionDialog } from "./add-to-collection-dialog"
-import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
 import { ArtifactListNavbar } from "./artifact-list-navbar"
+import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
 import { MoveToFolderDialog } from "./move-to-folder-dialog"
 
 export function WorkspaceHome({ workspaceId }: { workspaceId: string }) {
