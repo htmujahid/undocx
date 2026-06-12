@@ -46,6 +46,7 @@ export async function GET(
       title: artifact.title,
       workspaceId: artifact.workspaceId,
       isArchived: artifact.isArchived,
+      isPublic: artifact.isPublic,
       createdAt: artifact.createdAt,
       updatedAt: artifact.updatedAt,
     })

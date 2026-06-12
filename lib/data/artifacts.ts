@@ -9,6 +9,7 @@ export interface ArtifactSummary {
   folderIds: string[]
   collectionIds: string[]
   isArchived: boolean
+  isPublic: boolean
   createdAt: string
   updatedAt: string
 }
@@ -81,6 +82,7 @@ export const updateArtifactMutationOptions = mutationOptions({
     title?: string
     content?: string | null
     isArchived?: boolean
+    isPublic?: boolean
     folderIds?: string[]
     collectionIds?: string[]
   }): Promise<Artifact> => {

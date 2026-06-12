@@ -25,6 +25,9 @@ export const artifact = pgTable(
       .notNull()
       .references(() => workspace.id, { onDelete: "cascade" }),
     isArchived: boolean("is_archived").default(false).notNull(),
+    // Anyone with the link can view the artifact at /share/[artifactId]
+    // without signing in. Mutations still require workspace ownership.
+    isPublic: boolean("is_public").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()

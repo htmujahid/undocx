@@ -8,6 +8,13 @@
       "when": 1781260203743,
       "tag": "0000_sour_mac_gargan",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1781273387685,
+      "tag": "0001_aspiring_firebird",
+      "breakpoints": true
     }
   ]
 }

@@ -72,7 +72,7 @@ export async function PATCH(
   const ws = await verifyWorkspaceOwner(id, session.user.id)
   if (!ws) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
-  const { title, content, isArchived, folderIds, collectionIds } =
+  const { title, content, isArchived, isPublic, folderIds, collectionIds } =
     await req.json()
   if (title !== undefined && !title?.trim()) {
     return NextResponse.json(
@@ -94,6 +94,7 @@ export async function PATCH(
     ...(title !== undefined && { title: title.trim() }),
     ...(content !== undefined && { content }),
     ...(isArchived !== undefined && { isArchived: !!isArchived }),
+    ...(isPublic !== undefined && { isPublic: !!isPublic }),
   }
   const hasScalarPatch = Object.keys(scalarPatch).length > 0
 
