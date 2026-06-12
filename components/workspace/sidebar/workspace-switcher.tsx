@@ -49,7 +49,7 @@ import {
   updateWorkspaceMutationOptions,
   workspacesQueryOptions,
 } from "@/lib/data/workspaces"
-import { CreateWorkspaceDialog } from "./create-workspace-dialog"
+import { CreateWorkspaceDialog } from "../create-workspace-dialog"
 
 function initials(name: string) {
   return name
@@ -60,11 +60,7 @@ function initials(name: string) {
     .toUpperCase()
 }
 
-interface WorkspaceSwitcherProps {
-  currentWorkspaceId: string
-}
-
-export function WorkspaceSwitcher({ currentWorkspaceId }: WorkspaceSwitcherProps) {
+export function WorkspaceSwitcher({ currentWorkspaceId }: { currentWorkspaceId: string }) {
   const router = useRouter()
   const qc = useQueryClient()
   const { data: workspaces = [], isLoading } = useQuery(workspacesQueryOptions)

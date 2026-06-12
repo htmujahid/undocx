@@ -1,10 +1,11 @@
 import { and, eq } from "drizzle-orm"
 import { redirect } from "next/navigation"
 
-import { WorkspaceSidebarLayout } from "@/components/workspace/workspace-sidebar-layout"
 import { getSession } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { workspace } from "@/lib/db/schema"
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import { WorkspaceSidebar } from "@/components/workspace/sidebar/workspace-sidebar"
 
 export default async function WorkspaceLayout({
   children,
@@ -26,15 +27,16 @@ export default async function WorkspaceLayout({
   if (!ws) redirect("/workspace")
 
   return (
-    <WorkspaceSidebarLayout
-      workspaceId={ws.id}
-      user={{
-        name: session.user.name,
-        email: session.user.email,
-        image: session.user.image ?? null,
-      }}
-    >
-      {children}
-    </WorkspaceSidebarLayout>
+    <SidebarProvider>
+      <WorkspaceSidebar
+        user={{
+          name: session.user.name,
+          email: session.user.email,
+          image: session.user.image ?? null,
+        }}
+        workspaceId={ws.id}
+      />
+      <SidebarInset>{children}</SidebarInset>
+    </SidebarProvider>
   )
 }

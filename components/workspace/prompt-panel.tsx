@@ -136,7 +136,6 @@ export function PromptPanel({ workspaceId, artifactId, onTitleChange }: PromptPa
   }, [object])
 
   // Keep the outline in sync with editor headings
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const buildOutline = () => {
       editor.getEditorState().read(() => {

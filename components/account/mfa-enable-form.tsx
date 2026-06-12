@@ -45,7 +45,7 @@ export function MfaEnableForm() {
   async function handleVerify() {
     if (verifyCode.length !== 6) return
     setLoading(true)
-    const { data, error } = await authClient.twoFactor.verifyTotp({
+    const { error } = await authClient.twoFactor.verifyTotp({
       code: verifyCode,
     })
     setLoading(false)

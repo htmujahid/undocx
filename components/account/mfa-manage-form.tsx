@@ -59,7 +59,7 @@ export function MfaManageForm() {
           <div className="rounded-xl border bg-muted/30 p-4">
             <p className="mb-3 text-sm font-medium">Your new backup codes</p>
             <p className="mb-3 text-xs text-muted-foreground">
-              Save these now — they won't be shown again.
+              Save these now — they won&apos;t be shown again.
             </p>
             <div className="grid grid-cols-2 gap-1.5">
               {newBackupCodes.map((code) => (

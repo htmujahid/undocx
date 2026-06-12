@@ -1,7 +1,6 @@
 "use client"
 
 import type {
-  EditorConfig,
   LexicalNode,
   SerializedElementNode,
   Spread,
@@ -98,7 +97,7 @@ export class CalloutNode extends ElementNode {
     }
   }
 
-  createDOM(_config: EditorConfig): HTMLElement {
+  createDOM(): HTMLElement {
     const outer = document.createElement("div")
     addClassNamesToElement(
       outer,

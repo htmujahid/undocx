@@ -41,7 +41,7 @@ function OrganizationVisual() {
             key={i}
             style={{ paddingLeft: item.indent * 16 + 8 }}
             className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-xs ${
-              (item as any).active
+              (item as { active?: boolean }).active
                 ? "bg-primary/8 text-primary font-medium"
                 : "text-muted-foreground hover:bg-muted/60"
             }`}

@@ -2,7 +2,6 @@
 
 import {
   EditIcon,
-  FilePlusIcon,
   FolderPlusIcon,
   MoreHorizontalIcon,
   Trash2Icon,
@@ -17,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { SidebarMenuAction, useSidebar } from "@/components/ui/sidebar"
 import type { Folder } from "@/lib/data/folders"
-import type { FolderCallbacks } from "./types"
+import type { FolderCallbacks } from "./folder-item"
 
 interface FolderActionMenuProps {
   folder: Folder
@@ -38,10 +37,6 @@ export function FolderActionMenu({ folder, callbacks }: FolderActionMenuProps) {
         align={isMobile ? "end" : "start"}
         className="w-48"
       >
-        <DropdownMenuItem onClick={() => callbacks.onCreateArtifact(folder.id)}>
-          <FilePlusIcon className="text-muted-foreground" />
-          New artifact
-        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => callbacks.onCreateSubfolder(folder.id)}>
           <FolderPlusIcon className="text-muted-foreground" />
           New subfolder

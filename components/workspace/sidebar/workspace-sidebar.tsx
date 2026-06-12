@@ -1,11 +1,15 @@
 "use client"
 
+import { Suspense } from "react"
+
 import {
   ArchiveIcon,
   ClockIcon,
   LayoutGridIcon,
   StarIcon,
 } from "lucide-react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 
 import {
   Sidebar,
@@ -22,31 +26,26 @@ import { SidebarUserMenu } from "./sidebar-user-menu"
 import { WorkspaceSwitcher } from "./workspace-switcher"
 
 const NAV_ITEMS = [
-  { icon: LayoutGridIcon, label: "All Items" },
-  { icon: StarIcon, label: "Favorites" },
-  { icon: ClockIcon, label: "Recent" },
-  { icon: ArchiveIcon, label: "Archive" },
+  { icon: LayoutGridIcon, label: "All Items", path: "" },
+  { icon: StarIcon, label: "Favorites", path: "/favorites" },
+  { icon: ClockIcon, label: "Recent", path: "/recent" },
+  { icon: ArchiveIcon, label: "Archive", path: "/archive" },
 ]
 
 interface AppSidebarProps {
   user: { name: string; email: string; image?: string | null }
   workspaceId: string
-  onSignOut: () => void
-  selectedFolderId?: string | null
-  onFolderSelect?: (folderId: string | null) => void
-  selectedCollectionId?: string | null
-  onCollectionSelect?: (collectionId: string | null) => void
 }
 
-export function AppSidebar({
-  user,
-  workspaceId,
-  onSignOut,
-  selectedFolderId,
-  onFolderSelect,
-  selectedCollectionId,
-  onCollectionSelect,
-}: AppSidebarProps) {
+export function WorkspaceSidebar({ user, workspaceId }: AppSidebarProps) {
+  const pathname = usePathname()
+  const basePath = `/workspace/${workspaceId}`
+
+  const isActive = (path: string) => {
+    const fullPath = basePath + path
+    return path === "" ? pathname === fullPath : pathname.startsWith(fullPath)
+  }
+
   return (
     <Sidebar collapsible="offcanvas">
       <SidebarHeader>
@@ -60,8 +59,8 @@ export function AppSidebar({
               <SidebarMenuItem key={item.label}>
                 <SidebarMenuButton
                   size="sm"
-                  isActive={item.label === "All Items" && selectedFolderId === null}
-                  onClick={() => item.label === "All Items" && onFolderSelect?.(null)}
+                  isActive={isActive(item.path)}
+                  render={<Link href={basePath + item.path} />}
                 >
                   <item.icon />
                   <span>{item.label}</span>
@@ -71,20 +70,17 @@ export function AppSidebar({
           </SidebarMenu>
         </SidebarGroup>
 
-        <FolderSection
-          workspaceId={workspaceId}
-          selectedFolderId={selectedFolderId}
-          onFolderSelect={onFolderSelect}
-        />
+        {/* Suspense required because children use useSearchParams(); fallback=null avoids a flash of placeholder content */}
+        <Suspense fallback={null}>
+          <FolderSection workspaceId={workspaceId} />
+        </Suspense>
 
-        <CollectionSection
-          workspaceId={workspaceId}
-          selectedCollectionId={selectedCollectionId}
-          onCollectionSelect={onCollectionSelect}
-        />
+        <Suspense fallback={null}>
+          <CollectionSection workspaceId={workspaceId} />
+        </Suspense>
       </SidebarContent>
 
-      <SidebarUserMenu user={user} onSignOut={onSignOut} />
+      <SidebarUserMenu user={user} />
     </Sidebar>
   )
 }

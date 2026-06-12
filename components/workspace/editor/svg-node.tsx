@@ -3,8 +3,6 @@
 import type { JSX } from "react"
 
 import type {
-  EditorConfig,
-  LexicalEditor,
   SerializedLexicalNode,
   Spread,
 } from "lexical"
@@ -45,7 +43,7 @@ export class SvgNode extends DecoratorNode<JSX.Element> {
     return { type: "svg", version: 1, html: this.__html }
   }
 
-  createDOM(_config: EditorConfig): HTMLElement {
+  createDOM(): HTMLElement {
     return document.createElement("div")
   }
 
@@ -57,7 +55,7 @@ export class SvgNode extends DecoratorNode<JSX.Element> {
     return false
   }
 
-  decorate(_editor: LexicalEditor, _config: EditorConfig): JSX.Element {
+  decorate(): JSX.Element {
     return <SvgRenderer html={this.__html} />
   }
 }

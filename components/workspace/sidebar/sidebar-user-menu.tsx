@@ -2,6 +2,7 @@
 
 import { ChevronsUpDownIcon, HomeIcon, LogOutIcon, SettingsIcon } from "lucide-react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -20,13 +21,19 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { signOut } from "@/lib/auth-client"
 
 interface SidebarUserMenuProps {
   user: { name: string; email: string; image?: string | null }
-  onSignOut: () => void
 }
 
-export function SidebarUserMenu({ user, onSignOut }: SidebarUserMenuProps) {
+export function SidebarUserMenu({ user }: SidebarUserMenuProps) {
+  const router = useRouter()
+
+  const handleSignOut = async () => {
+    await signOut()
+    router.push("/")
+  }
   const { isMobile } = useSidebar()
 
   const initials = user.name
@@ -85,7 +92,7 @@ export function SidebarUserMenu({ user, onSignOut }: SidebarUserMenuProps) {
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem variant="destructive" onClick={onSignOut}>
+              <DropdownMenuItem variant="destructive" onClick={handleSignOut}>
                 <LogOutIcon />
                 Sign out
               </DropdownMenuItem>

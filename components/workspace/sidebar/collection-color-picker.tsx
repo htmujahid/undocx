@@ -20,7 +20,7 @@ interface ColorPickerProps {
   onChange: (color: string) => void
 }
 
-export function ColorPicker({ value, onChange }: ColorPickerProps) {
+export function CollectionColorPicker({ value, onChange }: ColorPickerProps) {
   return (
     <div className="flex flex-wrap gap-2">
       {COLLECTION_COLORS.map((color) => (

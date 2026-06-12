@@ -12,6 +12,7 @@ import {
 
 import { collection } from "./collection-schema"
 import { folder } from "./folder-schema"
+import { user } from "./auth-schema"
 import { workspace } from "./workspace-schema"
 
 export const artifact = pgTable(
@@ -96,5 +97,33 @@ export const artifactCollectionRelations = relations(artifactCollection, ({ one 
   collection: one(collection, {
     fields: [artifactCollection.collectionId],
     references: [collection.id],
+  }),
+}))
+
+export const artifactFavorite = pgTable(
+  "artifact_favorite",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    artifactId: uuid("artifact_id")
+      .notNull()
+      .references(() => artifact.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.userId, table.artifactId] }),
+    index("artifactFavorite_userId_idx").on(table.userId),
+  ]
+)
+
+export const artifactFavoriteRelations = relations(artifactFavorite, ({ one }) => ({
+  artifact: one(artifact, {
+    fields: [artifactFavorite.artifactId],
+    references: [artifact.id],
+  }),
+  user: one(user, {
+    fields: [artifactFavorite.userId],
+    references: [user.id],
   }),
 }))

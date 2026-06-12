@@ -13,7 +13,14 @@ import {
 import type { ArtifactSummary } from "@/lib/data/artifacts"
 import type { Folder } from "@/lib/data/folders"
 import { FolderActionMenu } from "./folder-action-menu"
-import type { FolderCallbacks } from "./types"
+
+export interface FolderCallbacks {
+  onToggle: (id: string) => void
+  onSelect?: (folderId: string | null) => void
+  onCreateSubfolder: (parentId: string | null) => void
+  onEdit: (folder: Folder) => void
+  onDelete: (folder: Folder) => void
+}
 
 interface FolderItemProps {
   folder: Folder

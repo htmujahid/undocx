@@ -4,8 +4,6 @@ import type { JSX } from "react"
 import { useSyncExternalStore } from "react"
 
 import type {
-  EditorConfig,
-  LexicalEditor,
   SerializedLexicalNode,
   Spread,
 } from "lexical"
@@ -68,7 +66,7 @@ export class FootnoteNode extends DecoratorNode<JSX.Element> {
     }
   }
 
-  createDOM(_config: EditorConfig): HTMLElement {
+  createDOM(): HTMLElement {
     return document.createElement("span")
   }
 
@@ -80,7 +78,7 @@ export class FootnoteNode extends DecoratorNode<JSX.Element> {
     return true
   }
 
-  decorate(_editor: LexicalEditor, _config: EditorConfig): JSX.Element {
+  decorate(): JSX.Element {
     return <FootnoteRenderer nodeKey={this.__key} />
   }
 }

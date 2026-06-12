@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 
-import { CheckIcon, FileTextIcon, FolderIcon, LayersIcon, PlusIcon } from "lucide-react"
+import { ArchiveIcon, CheckIcon, FileTextIcon, FolderIcon, LayersIcon, PlusIcon, StarIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
@@ -30,7 +30,7 @@ import {
 } from "@/lib/data/artifacts"
 import { type Collection, collectionsQueryOptions } from "@/lib/data/collections"
 import { type Folder, foldersQueryOptions } from "@/lib/data/folders"
-import { useFolderSelection } from "./workspace-sidebar-layout"
+import { favoritesQueryOptions, toggleFavoriteMutationOptions } from "@/lib/data/favorites"
 
 function relativeTime(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime()
@@ -54,13 +54,18 @@ export function WorkspaceHome({ workspaceId }: WorkspaceHomeProps) {
   const { data: artifacts = [], isLoading } = useQuery(artifactsQueryOptions(workspaceId))
   const { data: folders = [] } = useQuery(foldersQueryOptions(workspaceId))
   const { data: collections = [] } = useQuery(collectionsQueryOptions(workspaceId))
+  const { data: favorites = [] } = useQuery(favoritesQueryOptions(workspaceId))
 
-  const { selectedFolderId, selectedCollectionId } = useFolderSelection()
   const [moveTarget, setMoveTarget] = useState<ArtifactSummary | null>(null)
   const [collectionTarget, setCollectionTarget] = useState<ArtifactSummary | null>(null)
 
+  const favoriteIds = new Set(favorites.map((f) => f.id))
+
   const invalidateArtifacts = () =>
     qc.invalidateQueries({ queryKey: artifactsQueryOptions(workspaceId).queryKey })
+
+  const invalidateFavorites = () =>
+    qc.invalidateQueries({ queryKey: favoritesQueryOptions(workspaceId).queryKey })
 
   const updateMutation = useMutation({
     ...updateArtifactMutationOptions,
@@ -70,18 +75,12 @@ export function WorkspaceHome({ workspaceId }: WorkspaceHomeProps) {
     ...deleteArtifactMutationOptions,
     onSuccess: invalidateArtifacts,
   })
-
-  const displayedArtifacts = artifacts.filter((a) => {
-    if (selectedFolderId !== null) return a.folderIds.includes(selectedFolderId)
-    if (selectedCollectionId !== null) return a.collectionIds.includes(selectedCollectionId)
-    return true
+  const favoriteMutation = useMutation({
+    ...toggleFavoriteMutationOptions,
+    onSuccess: invalidateFavorites,
   })
 
-  const selectedFolder = selectedFolderId ? folders.find((f) => f.id === selectedFolderId) : null
-  const selectedCollection = selectedCollectionId
-    ? collections.find((c) => c.id === selectedCollectionId)
-    : null
-  const headerLabel = selectedFolder?.name ?? selectedCollection?.name ?? "All artifacts"
+  const displayedArtifacts = artifacts.filter((a) => !a.isArchived)
 
   const handleMoveToFolders = (folderIds: string[]) => {
     if (!moveTarget) return
@@ -105,14 +104,7 @@ export function WorkspaceHome({ workspaceId }: WorkspaceHomeProps) {
         <header className="flex h-11 shrink-0 items-center justify-between border-b px-3">
           <div className="flex items-center gap-2">
             <SidebarTrigger />
-            {selectedFolder && <FolderIcon className="size-3.5 text-muted-foreground" />}
-            {selectedCollection && (
-              <span
-                className="size-2 shrink-0 rounded-full"
-                style={{ backgroundColor: selectedCollection.color }}
-              />
-            )}
-            <span className="text-xs text-muted-foreground">{headerLabel}</span>
+            <span className="text-xs text-muted-foreground">All artifacts</span>
           </div>
           <Button
             size="sm"
@@ -141,9 +133,12 @@ export function WorkspaceHome({ workspaceId }: WorkspaceHomeProps) {
                   artifact={art}
                   folders={folders}
                   collections={collections}
+                  isFavorited={favoriteIds.has(art.id)}
                   onClick={() => router.push(`/workspace/${workspaceId}/${art.id}`)}
                   onMove={() => setMoveTarget(art)}
                   onAddToCollection={() => setCollectionTarget(art)}
+                  onFavoriteToggle={() => favoriteMutation.mutate({ workspaceId, artifactId: art.id })}
+                  onArchive={() => updateMutation.mutate({ workspaceId, id: art.id, isArchived: true })}
                   onDelete={() => deleteMutation.mutate({ workspaceId, id: art.id })}
                 />
               ))}
@@ -189,17 +184,23 @@ function ArtifactCard({
   artifact,
   folders,
   collections,
+  isFavorited,
   onClick,
   onMove,
   onAddToCollection,
+  onFavoriteToggle,
+  onArchive,
   onDelete,
 }: {
   artifact: ArtifactSummary
   folders: Folder[]
   collections: Collection[]
+  isFavorited?: boolean
   onClick: () => void
   onMove: () => void
   onAddToCollection: () => void
+  onFavoriteToggle?: () => void
+  onArchive?: () => void
   onDelete: () => void
 }) {
   const artifactFolders = artifact.folderIds
@@ -227,6 +228,18 @@ function ArtifactCard({
               <LayersIcon className="mr-2 size-3.5" />
               Add to collection
             </DropdownMenuItem>
+            {onFavoriteToggle && (
+              <DropdownMenuItem onClick={onFavoriteToggle}>
+                <StarIcon className="mr-2 size-3.5" />
+                {isFavorited ? "Unfavorite" : "Favorite"}
+              </DropdownMenuItem>
+            )}
+            {onArchive && (
+              <DropdownMenuItem onClick={onArchive}>
+                <ArchiveIcon className="mr-2 size-3.5" />
+                Archive
+              </DropdownMenuItem>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="text-destructive focus:text-destructive"
@@ -347,7 +360,8 @@ function MoveToFolderDialog({
   const toggle = (folderId: string) =>
     setSelected((prev) => {
       const next = new Set(prev)
-      next.has(folderId) ? next.delete(folderId) : next.add(folderId)
+      if (next.has(folderId)) next.delete(folderId)
+      else next.add(folderId)
       return next
     })
 
@@ -422,7 +436,8 @@ function AddToCollectionDialog({
   const toggle = (id: string) =>
     setSelected((prev) => {
       const next = new Set(prev)
-      next.has(id) ? next.delete(id) : next.add(id)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
       return next
     })
 

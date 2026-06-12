@@ -3,8 +3,6 @@
 import type { JSX } from "react"
 
 import type {
-  EditorConfig,
-  LexicalEditor,
   SerializedLexicalNode,
   Spread,
 } from "lexical"
@@ -71,7 +69,7 @@ export class MathNode extends DecoratorNode<JSX.Element> {
     }
   }
 
-  createDOM(_config: EditorConfig): HTMLElement {
+  createDOM(): HTMLElement {
     return this.__display === "inline"
       ? document.createElement("span")
       : document.createElement("div")
@@ -87,7 +85,7 @@ export class MathNode extends DecoratorNode<JSX.Element> {
       : false
   }
 
-  decorate(_editor: LexicalEditor, _config: EditorConfig): JSX.Element {
+  decorate(): JSX.Element {
     return <MathRenderer html={this.__html} display={this.__display} />
   }
 }
