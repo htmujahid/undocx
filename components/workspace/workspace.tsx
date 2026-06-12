@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState } from "react"
 
 import { defineExtension } from "lexical"
-import { PanelLeftIcon, PanelRightIcon } from "lucide-react"
+import { DownloadIcon, PanelLeftIcon, PanelRightIcon } from "lucide-react"
+import { toast } from "sonner"
 
 import {
   HorizontalRuleExtension,
@@ -68,6 +69,28 @@ export function Workspace({
     addRecent({ workspaceId, artifactId })
   }, [workspaceId, artifactId]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  function downloadMarkdown() {
+    if (!art?.content) {
+      toast.error("Nothing to download yet.")
+      return
+    }
+    const filename =
+      (title
+        .trim()
+        .replace(/[\\/:*?"<>|]/g, "")
+        .replace(/\s+/g, "-")
+        .toLowerCase() || "document") + ".md"
+    const url = URL.createObjectURL(
+      new Blob([art.content], { type: "text/markdown;charset=utf-8" })
+    )
+    const anchor = document.createElement("a")
+    anchor.href = url
+    anchor.download = filename
+    anchor.click()
+    URL.revokeObjectURL(url)
+    toast.success(`Downloaded ${filename}`)
+  }
+
   const extension = useMemo(
     () =>
       defineExtension({
@@ -128,6 +151,15 @@ export function Workspace({
               <span className="ml-2 flex-1 truncate text-xs text-muted-foreground">
                 {title}
               </span>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={downloadMarkdown}
+                disabled={!art?.content}
+                aria-label="Download as Markdown"
+              >
+                <DownloadIcon className="text-muted-foreground" />
+              </Button>
               <SharePopover
                 workspaceId={workspaceId}
                 artifactId={artifactId}

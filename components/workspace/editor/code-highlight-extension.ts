@@ -1,8 +1,8 @@
 "use client"
 
-import { $getRoot, configExtension, defineExtension } from "lexical"
+import { $nodesOfType, configExtension, defineExtension } from "lexical"
 
-import { $isCodeNode } from "@lexical/code"
+import { CodeNode } from "@lexical/code"
 import { CodeShikiExtension, ShikiTokenizer } from "@lexical/code-shiki"
 import { getExtensionDependencyFromEditor } from "@lexical/extension"
 
@@ -16,6 +16,10 @@ function isDarkMode(): boolean {
   )
 }
 
+function currentTheme(): string {
+  return isDarkMode() ? DARK_THEME : LIGHT_THEME
+}
+
 export const CodeHighlightExtension = defineExtension({
   name: "renderical/code-highlight",
   dependencies: [configExtension(CodeShikiExtension, { disabled: true })],
@@ -25,32 +29,30 @@ export const CodeHighlightExtension = defineExtension({
       CodeShikiExtension
     )
 
-    // Pick the right default theme before enabling so the first highlight uses
-    // the correct palette when the page already starts in dark mode.
     output.tokenizer.value = {
       ...ShikiTokenizer,
-      defaultTheme: isDarkMode() ? DARK_THEME : LIGHT_THEME,
+      defaultTheme: currentTheme(),
     }
     output.disabled.value = false
 
-    // Re-highlight all code nodes whenever the .dark class is toggled on <html>.
-    // Guard: MutationObserver is only available in the browser.
+    const applyThemeToAllCodeNodes = () => {
+      const theme = currentTheme()
+      editor.update(() => {
+        for (const node of $nodesOfType(CodeNode)) {
+          node.setTheme(theme)
+        }
+      })
+    }
+
+    applyThemeToAllCodeNodes()
+
     if (typeof document === "undefined") {
       return () => {
         output.disabled.value = true
       }
     }
 
-    const observer = new MutationObserver(() => {
-      const newTheme = isDarkMode() ? DARK_THEME : LIGHT_THEME
-      editor.update(() => {
-        for (const node of $getRoot().getChildren()) {
-          if ($isCodeNode(node)) {
-            node.setTheme(newTheme)
-          }
-        }
-      })
-    })
+    const observer = new MutationObserver(applyThemeToAllCodeNodes)
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class"],
