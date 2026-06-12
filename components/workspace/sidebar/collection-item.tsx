@@ -61,16 +61,6 @@ import {
   CollectionColorPicker,
 } from "./collection-color-picker"
 
-interface CollectionItemProps {
-  collection: Collection
-  artifacts: ArtifactSummary[]
-  workspaceId: string
-  isOpen: boolean
-  isSelected: boolean
-  onToggle: () => void
-  onSelect: () => void
-}
-
 export function CollectionItem({
   collection,
   artifacts,
@@ -79,7 +69,15 @@ export function CollectionItem({
   isSelected,
   onToggle,
   onSelect,
-}: CollectionItemProps) {
+}: {
+  collection: Collection
+  artifacts: ArtifactSummary[]
+  workspaceId: string
+  isOpen: boolean
+  isSelected: boolean
+  onToggle: () => void
+  onSelect: () => void
+}) {
   const { isMobile } = useSidebar()
   const qc = useQueryClient()
 

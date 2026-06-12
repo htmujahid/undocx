@@ -35,13 +35,11 @@ function GoogleIcon() {
   )
 }
 
-interface GoogleButtonProps {
-  label?: string
-}
-
 export function GoogleButton({
   label = "Continue with Google",
-}: GoogleButtonProps) {
+}: {
+  label?: string
+}) {
   const [loading, setLoading] = useState(false)
 
   const handleClick = async () => {

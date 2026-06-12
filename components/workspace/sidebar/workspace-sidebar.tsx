@@ -28,12 +28,13 @@ const NAV_ITEMS = [
   { icon: ArchiveIcon, label: "Archive", path: "/archive" },
 ]
 
-interface AppSidebarProps {
+export function WorkspaceSidebar({
+  user,
+  workspaceId,
+}: {
   user: { name: string; email: string; image?: string | null }
   workspaceId: string
-}
-
-export function WorkspaceSidebar({ user, workspaceId }: AppSidebarProps) {
+}) {
   const pathname = usePathname()
   const basePath = `/workspace/${workspaceId}`
 

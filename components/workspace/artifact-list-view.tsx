@@ -37,19 +37,6 @@ export type ArtifactAction =
     }
   | { type: "separator" }
 
-interface ArtifactListViewProps {
-  workspaceId: string
-  artifacts: ArtifactSummary[]
-  folders: Folder[]
-  collections: Collection[]
-  isLoading: boolean
-  headerLabel: string
-  headerIcon?: React.ReactNode
-  emptyTitle?: string
-  emptyDescription?: string
-  getActions: (artifact: ArtifactSummary) => ArtifactAction[]
-}
-
 export function ArtifactListView({
   workspaceId,
   artifacts,
@@ -61,7 +48,18 @@ export function ArtifactListView({
   emptyTitle = "No artifacts",
   emptyDescription,
   getActions,
-}: ArtifactListViewProps) {
+}: {
+  workspaceId: string
+  artifacts: ArtifactSummary[]
+  folders: Folder[]
+  collections: Collection[]
+  isLoading: boolean
+  headerLabel: string
+  headerIcon?: React.ReactNode
+  emptyTitle?: string
+  emptyDescription?: string
+  getActions: (artifact: ArtifactSummary) => ArtifactAction[]
+}) {
   const router = useRouter()
 
   return (

@@ -28,16 +28,6 @@ export interface FolderCallbacks {
   onDelete: (folder: Folder) => void
 }
 
-interface FolderItemProps {
-  folder: Folder
-  allFolders: Folder[]
-  allArtifacts: ArtifactSummary[]
-  openFolders: Set<string>
-  selectedFolderId?: string | null
-  workspaceId: string
-  callbacks: FolderCallbacks
-}
-
 export function FolderItem({
   folder,
   allFolders,
@@ -46,7 +36,15 @@ export function FolderItem({
   selectedFolderId,
   workspaceId,
   callbacks,
-}: FolderItemProps) {
+}: {
+  folder: Folder
+  allFolders: Folder[]
+  allArtifacts: ArtifactSummary[]
+  openFolders: Set<string>
+  selectedFolderId?: string | null
+  workspaceId: string
+  callbacks: FolderCallbacks
+}) {
   const isOpen = openFolders.has(folder.id)
   const isSelected = selectedFolderId === folder.id
   const children = allFolders.filter((f) => f.parentId === folder.id)

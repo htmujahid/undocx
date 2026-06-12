@@ -36,11 +36,7 @@ import {
 } from "./collection-color-picker"
 import { CollectionItem } from "./collection-item"
 
-interface CollectionSectionProps {
-  workspaceId: string
-}
-
-export function CollectionSection({ workspaceId }: CollectionSectionProps) {
+export function CollectionSection({ workspaceId }: { workspaceId: string }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const selectedCollectionId = searchParams.get("collectionId")

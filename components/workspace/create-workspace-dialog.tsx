@@ -18,17 +18,15 @@ import {
   workspacesQueryOptions,
 } from "@/lib/data/workspaces"
 
-interface CreateWorkspaceDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onCreated?: (id: string) => void
-}
-
 export function CreateWorkspaceDialog({
   open,
   onOpenChange,
   onCreated,
-}: CreateWorkspaceDialogProps) {
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  onCreated?: (id: string) => void
+}) {
   const qc = useQueryClient()
   const [name, setName] = useState("")
 

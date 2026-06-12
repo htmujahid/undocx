@@ -19,12 +19,10 @@ import { foldersQueryOptions } from "@/lib/data/folders"
 
 import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
 
-interface FolderViewProps {
+export function FolderView({ workspaceId, folderId }: {
   workspaceId: string
   folderId: string
-}
-
-export function FolderView({ workspaceId, folderId }: FolderViewProps) {
+}) {
   const qc = useQueryClient()
   const { data: artifacts = [], isLoading } = useQuery(
     artifactsQueryOptions(workspaceId)

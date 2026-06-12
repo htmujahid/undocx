@@ -28,11 +28,11 @@ import {
 } from "@/components/ui/sidebar"
 import { signOut } from "@/lib/auth-client"
 
-interface SidebarUserMenuProps {
+export function SidebarUserMenu({
+  user,
+}: {
   user: { name: string; email: string; image?: string | null }
-}
-
-export function SidebarUserMenu({ user }: SidebarUserMenuProps) {
+}) {
   const router = useRouter()
 
   const handleSignOut = async () => {

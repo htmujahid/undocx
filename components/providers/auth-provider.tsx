@@ -18,12 +18,13 @@ const AuthContext = createContext<AuthContextValue>({
   user: null,
 })
 
-interface AuthProviderProps {
+export function AuthProvider({
+  children,
+  session = null,
+}: {
   children: React.ReactNode
   session?: Session | null
-}
-
-export function AuthProvider({ children, session = null }: AuthProviderProps) {
+}) {
   return (
     <AuthContext.Provider
       value={{

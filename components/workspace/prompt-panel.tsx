@@ -57,17 +57,15 @@ const LEVEL_TEXT: Record<OutlineItem["tag"], string> = {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-interface PromptPanelProps {
-  workspaceId: string
-  artifactId: string
-  onTitleChange: (title: string) => void
-}
-
 export function PromptPanel({
   workspaceId,
   artifactId,
   onTitleChange,
-}: PromptPanelProps) {
+}: {
+  workspaceId: string
+  artifactId: string
+  onTitleChange: (title: string) => void
+}) {
   const qc = useQueryClient()
   const [editor] = useLexicalComposerContext()
   const [prompt, setPrompt] = useState("")

@@ -34,19 +34,17 @@ import { cn } from "@/lib/utils"
 import { ContentPreview } from "./content-preview"
 import { PromptPanel } from "./prompt-panel"
 
-interface WorkspaceProps {
-  workspaceId: string
-  artifactId: string
-  initialTitle: string
-  initialContent: unknown
-}
-
 export function Workspace({
   workspaceId,
   artifactId,
   initialTitle,
   initialContent,
-}: WorkspaceProps) {
+}: {
+  workspaceId: string
+  artifactId: string
+  initialTitle: string
+  initialContent: unknown
+}) {
   const qc = useQueryClient()
   const [rightOpen, setRightOpen] = useState(true)
   const [title, setTitle] = useState(initialTitle)

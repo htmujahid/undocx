@@ -30,11 +30,7 @@ const resetPasswordSchema = z
 
 type ResetPasswordValues = z.infer<typeof resetPasswordSchema>
 
-interface ResetPasswordFormProps {
-  token: string
-}
-
-export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
+export function ResetPasswordForm({ token }: { token: string }) {
   const router = useRouter()
 
   const form = useForm<ResetPasswordValues>({

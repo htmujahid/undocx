@@ -19,12 +19,13 @@ import type { Folder } from "@/lib/data/folders"
 
 import type { FolderCallbacks } from "./folder-item"
 
-interface FolderActionMenuProps {
+export function FolderActionMenu({
+  folder,
+  callbacks,
+}: {
   folder: Folder
   callbacks: FolderCallbacks
-}
-
-export function FolderActionMenu({ folder, callbacks }: FolderActionMenuProps) {
+}) {
   const { isMobile } = useSidebar()
 
   return (

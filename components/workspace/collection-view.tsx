@@ -17,15 +17,13 @@ import { foldersQueryOptions } from "@/lib/data/folders"
 
 import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
 
-interface CollectionViewProps {
-  workspaceId: string
-  collectionId: string
-}
-
 export function CollectionView({
   workspaceId,
   collectionId,
-}: CollectionViewProps) {
+}: {
+  workspaceId: string
+  collectionId: string
+}) {
   const qc = useQueryClient()
   const { data: artifacts = [], isLoading } = useQuery(
     artifactsQueryOptions(workspaceId)

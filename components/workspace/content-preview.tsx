@@ -69,11 +69,7 @@ function FootnoteList() {
   )
 }
 
-interface ContentPreviewProps {
-  title: string
-}
-
-export function ContentPreview({ title }: ContentPreviewProps) {
+export function ContentPreview({ title }: { title: string }) {
   return (
     <div className="min-h-0 flex-1 overflow-hidden">
       <ScrollArea className="h-full">

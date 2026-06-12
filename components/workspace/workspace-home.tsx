@@ -59,11 +59,7 @@ function relativeTime(iso: string): string {
   return `${Math.floor(days / 30)}mo ago`
 }
 
-interface WorkspaceHomeProps {
-  workspaceId: string
-}
-
-export function WorkspaceHome({ workspaceId }: WorkspaceHomeProps) {
+export function WorkspaceHome({ workspaceId }: { workspaceId: string }) {
   const router = useRouter()
   const qc = useQueryClient()
   const { data: artifacts = [], isLoading } = useQuery(

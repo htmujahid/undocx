@@ -29,11 +29,7 @@ import {
 
 import { FolderTree } from "./folder-tree"
 
-interface FolderSectionProps {
-  workspaceId: string
-}
-
-export function FolderSection({ workspaceId }: FolderSectionProps) {
+export function FolderSection({ workspaceId }: { workspaceId: string }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const selectedFolderId = searchParams.get("folderId")

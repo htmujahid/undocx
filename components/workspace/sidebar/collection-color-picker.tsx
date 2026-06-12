@@ -15,12 +15,13 @@ export const COLLECTION_COLORS = [
   "#64748b",
 ]
 
-interface ColorPickerProps {
+export function CollectionColorPicker({
+  value,
+  onChange,
+}: {
   value: string
   onChange: (color: string) => void
-}
-
-export function CollectionColorPicker({ value, onChange }: ColorPickerProps) {
+}) {
   return (
     <div className="flex flex-wrap gap-2">
       {COLLECTION_COLORS.map((color) => (

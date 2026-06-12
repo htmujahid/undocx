@@ -10,12 +10,13 @@ import { ThemeProvider } from "./theme-provider"
 
 type Session = React.ComponentProps<typeof AuthProvider>["session"]
 
-interface ProvidersProps {
+export function Providers({
+  children,
+  initialSession,
+}: {
   children: React.ReactNode
   initialSession?: Session
-}
-
-export function Providers({ children, initialSession }: ProvidersProps) {
+}) {
   return (
     <ThemeProvider>
       <QueryProvider>

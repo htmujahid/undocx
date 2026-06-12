@@ -15,11 +15,7 @@ import { foldersQueryOptions } from "@/lib/data/folders"
 
 import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
 
-interface ArchiveViewProps {
-  workspaceId: string
-}
-
-export function ArchiveView({ workspaceId }: ArchiveViewProps) {
+export function ArchiveView({ workspaceId }: { workspaceId: string }) {
   const qc = useQueryClient()
   const { data: artifacts = [], isLoading } = useQuery(
     artifactsQueryOptions(workspaceId)

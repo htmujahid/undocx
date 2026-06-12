@@ -15,11 +15,7 @@ import { recentArtifactIdsQueryOptions } from "@/lib/data/recent-artifacts"
 
 import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
 
-interface RecentViewProps {
-  workspaceId: string
-}
-
-export function RecentView({ workspaceId }: RecentViewProps) {
+export function RecentView({ workspaceId }: { workspaceId: string }) {
   const qc = useQueryClient()
   const { data: recentIds = [], isLoading: idsLoading } = useQuery(
     recentArtifactIdsQueryOptions(workspaceId)

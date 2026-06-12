@@ -39,19 +39,6 @@ import {
 import { FolderItem } from "./folder-item"
 import type { FolderCallbacks } from "./folder-item"
 
-interface FolderTreeProps {
-  folders: Folder[]
-  artifacts: ArtifactSummary[]
-  topLevel: Folder[]
-  openFolders: Set<string>
-  selectedFolderId?: string | null
-  workspaceId: string
-  isLoading?: boolean
-  onToggle: (id: string) => void
-  onSelect: (folderId: string | null) => void
-  onCreateSubfolder: (parentId: string | null) => void
-}
-
 export function FolderTree({
   folders,
   artifacts,
@@ -63,7 +50,18 @@ export function FolderTree({
   onToggle,
   onSelect,
   onCreateSubfolder,
-}: FolderTreeProps) {
+}: {
+  folders: Folder[]
+  artifacts: ArtifactSummary[]
+  topLevel: Folder[]
+  openFolders: Set<string>
+  selectedFolderId?: string | null
+  workspaceId: string
+  isLoading?: boolean
+  onToggle: (id: string) => void
+  onSelect: (folderId: string | null) => void
+  onCreateSubfolder: (parentId: string | null) => void
+}) {
   const qc = useQueryClient()
 
   const invalidateFolders = () =>

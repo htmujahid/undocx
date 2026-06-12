@@ -14,11 +14,7 @@ import { foldersQueryOptions } from "@/lib/data/folders"
 
 import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
 
-interface FavoritesViewProps {
-  workspaceId: string
-}
-
-export function FavoritesView({ workspaceId }: FavoritesViewProps) {
+export function FavoritesView({ workspaceId }: { workspaceId: string }) {
   const qc = useQueryClient()
   const { data: favorites = [], isLoading } = useQuery(
     favoritesQueryOptions(workspaceId)
