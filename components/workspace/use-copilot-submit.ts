@@ -1,9 +1,11 @@
 "use client"
 
-import { useEffect, useRef, useSyncExternalStore } from "react"
+import { useEffect, useRef, useState, useSyncExternalStore } from "react"
 
 import { experimental_useObject as useObject } from "@ai-sdk/react"
 import { toast } from "sonner"
+
+import { $getRoot } from "lexical"
 
 import {
   $convertFromMarkdownString,
@@ -22,6 +24,7 @@ import {
 } from "@/lib/data/artifacts"
 
 import { RENDERICAL_TRANSFORMERS } from "./editor/markdown-transformers"
+import { $isSelectionMarkerNode } from "./editor/selection-marker-node"
 import {
   snapshotSelectionMarkers,
   subscribeSelectionMarkers,
@@ -74,6 +77,9 @@ export interface CopilotSubmitState {
   placeholder: string
   submitLabel: string
   handleSubmit: (prompt: string) => void
+  pendingMode: "insert" | "replace" | null
+  acceptPending: () => void
+  rejectPending: () => void
 }
 
 export function useCopilotSubmit({
@@ -107,6 +113,32 @@ export function useCopilotSubmit({
     after: string
   }>({ existing: "", before: "", selected: "", after: "" })
 
+  // ── Pending review (generated content awaiting accept/reject) ───────────────
+  const [pending, setPending] = useState<{
+    mode: "insert" | "replace"
+    final: string
+    keys: string[]
+  } | null>(null)
+
+  // Highlight the generated blocks while they await accept/reject. Classes are
+  // re-applied after every reconcile since Lexical may recreate the DOM nodes.
+  useEffect(() => {
+    if (!pending) return
+    const apply = () => {
+      for (const key of pending.keys)
+        editor.getElementByKey(key)?.classList.add("copilot-pending-highlight")
+    }
+    apply()
+    const unregister = editor.registerUpdateListener(apply)
+    return () => {
+      unregister()
+      for (const key of pending.keys)
+        editor
+          .getElementByKey(key)
+          ?.classList.remove("copilot-pending-highlight")
+    }
+  }, [pending, editor])
+
   // ── Save mutation ─────────────────────────────────────────────────────────────
   const saveMutation = useMutation({
     ...updateArtifactMutationOptions,
@@ -136,6 +168,41 @@ export function useCopilotSubmit({
     })
   }
 
+  // Applies the final document but wraps the generated content in selection
+  // placeholders first, so the blocks between them can be identified for the
+  // review highlight. The markers are removed again within the same update.
+  const applyPendingMarkdown = (
+    before: string,
+    content: string,
+    after: string
+  ): string[] => {
+    const keys: string[] = []
+    editor.update(() => {
+      const md = [before, START_PLACEHOLDER, content, END_PLACEHOLDER, after]
+        .filter(Boolean)
+        .join("\n\n")
+      $convertFromMarkdownString(md, RENDERICAL_TRANSFORMERS)
+
+      const children = $getRoot().getChildren()
+      const start = children.find(
+        (n) => $isSelectionMarkerNode(n) && n.__role === "start"
+      )
+      const end = children.find(
+        (n) => $isSelectionMarkerNode(n) && n.__role === "end"
+      )
+      if (!start || !end) return
+
+      let node = start.getNextSibling()
+      while (node && node !== end) {
+        keys.push(node.getKey())
+        node = node.getNextSibling()
+      }
+      start.remove()
+      end.remove()
+    })
+    return keys
+  }
+
   // ── INSERT mode (start marker only) ──────────────────────────────────────────
 
   const insertObj = useObject({
@@ -152,8 +219,8 @@ export function useCopilotSubmit({
         const final = [before, result.content, after]
           .filter(Boolean)
           .join("\n\n")
-        applyMarkdown(final)
-        saveMutation.mutate({ workspaceId, id: artifactId, content: final })
+        const keys = applyPendingMarkdown(before, result.content, after)
+        setPending({ mode: "insert", final, keys })
       } catch (err) {
         toast.error("Failed to apply content.")
         console.error("[Insert]", err)
@@ -193,8 +260,8 @@ export function useCopilotSubmit({
         const final = [before, result.content, after]
           .filter(Boolean)
           .join("\n\n")
-        applyMarkdown(final)
-        saveMutation.mutate({ workspaceId, id: artifactId, content: final })
+        const keys = applyPendingMarkdown(before, result.content, after)
+        setPending({ mode: "replace", final, keys })
       } catch (err) {
         toast.error("Failed to apply content.")
         console.error("[Replace]", err)
@@ -218,13 +285,31 @@ export function useCopilotSubmit({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [replaceObj.object])
 
+  // ── Accept / Reject ──────────────────────────────────────────────────────────
+
+  const acceptPending = () => {
+    if (!pending) return
+    saveMutation.mutate({
+      workspaceId,
+      id: artifactId,
+      content: pending.final,
+    })
+    setPending(null)
+  }
+
+  const rejectPending = () => {
+    if (!pending) return
+    applyMarkdown(snapshotRef.current.existing)
+    setPending(null)
+  }
+
   // ── Submit ─────────────────────────────────────────────────────────────────────
 
   const isLoading = insertObj.isLoading || replaceObj.isLoading
 
   const handleSubmit = async (prompt: string) => {
     const text = prompt.trim()
-    if (!text || isLoading || disabled) return
+    if (!text || isLoading || disabled || pending) return
 
     let context
     try {
@@ -286,5 +371,8 @@ export function useCopilotSubmit({
     placeholder,
     submitLabel,
     handleSubmit,
+    pendingMode: pending?.mode ?? null,
+    acceptPending,
+    rejectPending,
   }
 }

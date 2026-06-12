@@ -2,7 +2,13 @@
 
 import { useState } from "react"
 
-import { ArrowUpIcon, MousePointerClickIcon, SparklesIcon } from "lucide-react"
+import {
+  ArrowUpIcon,
+  CheckIcon,
+  MousePointerClickIcon,
+  SparklesIcon,
+  XIcon,
+} from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -41,6 +47,9 @@ export function ArtifactAssistant({
     placeholder,
     submitLabel,
     handleSubmit,
+    pendingMode,
+    acceptPending,
+    rejectPending,
   } = useCopilotSubmit({ workspaceId, artifactId, contextIds })
 
   const onSubmit = () => {
@@ -79,11 +88,41 @@ export function ArtifactAssistant({
       <SidebarFooter className="p-0">
         <Separator />
 
-        {hasStart && !hasBoth && <ModeBadge mode="insert" />}
-        {hasBoth && <ModeBadge mode="replace" />}
+        {!pendingMode && hasStart && !hasBoth && <ModeBadge mode="insert" />}
+        {!pendingMode && hasBoth && <ModeBadge mode="replace" />}
 
         <div className="px-3 py-3">
-          {disabled ? (
+          {pendingMode ? (
+            <div className="rounded-xl border bg-muted/20 p-3">
+              <p className="text-xs font-medium">
+                {pendingMode === "insert"
+                  ? "Content inserted"
+                  : "Section replaced"}
+              </p>
+              <p className="mt-0.5 text-[10px] text-muted-foreground">
+                Review the change in the document, then accept or reject it.
+              </p>
+              <div className="mt-2.5 flex gap-2">
+                <Button
+                  size="sm"
+                  className="flex-1"
+                  disabled={isSaving}
+                  onClick={acceptPending}
+                >
+                  <CheckIcon /> Accept
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="flex-1"
+                  disabled={isSaving}
+                  onClick={rejectPending}
+                >
+                  <XIcon /> Reject
+                </Button>
+              </div>
+            </div>
+          ) : disabled ? (
             <div className="flex flex-col items-center gap-2.5 rounded-xl border border-dashed py-6 text-center">
               <MousePointerClickIcon className="size-5 text-muted-foreground/40" />
               <p className="text-xs text-muted-foreground">
