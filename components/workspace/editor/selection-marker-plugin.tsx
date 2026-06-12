@@ -62,7 +62,6 @@ export function SelectionMarkerPlugin({
   const hasEnd = endKey !== null
   const hasBoth = hasStart && hasEnd
 
-  // ── Highlight calculation ──────────────────────────────────────────────────
   // Extracted as a stable callback so it can be referenced by both the
   // registerUpdateListener effect and the scroll/resize effect without
   // conditionally returning cleanup functions.
@@ -108,7 +107,6 @@ export function SelectionMarkerPlugin({
     })
   }, [editor, updateHighlight])
 
-  // Scroll / resize listeners + initial calculation
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- initial sync calc
     updateHighlight()
@@ -119,8 +117,6 @@ export function SelectionMarkerPlugin({
       window.removeEventListener("resize", updateHighlight)
     }
   }, [updateHighlight])
-
-  // ── Hover indicator ────────────────────────────────────────────────────────
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {

@@ -141,7 +141,6 @@ export function NewArtifactAssistant({
 
   return (
     <Sidebar side="right" collapsible="offcanvas">
-      {/* ── Header ── */}
       <SidebarHeader className="border-b px-4 py-3">
         <div className="flex items-center gap-2">
           <SparklesIcon className="size-3.5 text-primary" />
@@ -154,7 +153,6 @@ export function NewArtifactAssistant({
         </div>
       </SidebarHeader>
 
-      {/* ── Outline / Context ── */}
       <CopilotPanels
         workspaceId={workspaceId}
         excludeId={artifactId}
@@ -162,7 +160,6 @@ export function NewArtifactAssistant({
         onToggleContext={toggleContext}
       />
 
-      {/* ── Prompt input ── */}
       <SidebarFooter className="p-0">
         <Separator />
         <div className="px-3 py-3">

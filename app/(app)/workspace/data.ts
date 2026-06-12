@@ -2,7 +2,6 @@ export const data = {
   editorState: {
     root: {
       children: [
-        // ── Opening ──────────────────────────────────────────────────────────
         {
           children: [
             {
@@ -53,7 +52,6 @@ export const data = {
 
         { type: "horizontalrule", version: 1 },
 
-        // ── H1 ───────────────────────────────────────────────────────────────
         {
           children: [
             {
@@ -215,7 +213,6 @@ export const data = {
           ],
         },
 
-        // ── H2: Supervised Learning ──────────────────────────────────────────
         {
           children: [
             {
@@ -391,7 +388,6 @@ export const data = {
           textStyle: "",
         },
 
-        // ── H2: Unsupervised Learning ────────────────────────────────────────
         {
           children: [
             {
@@ -468,7 +464,6 @@ export const data = {
           textStyle: "",
         },
 
-        // ── H2: Key Algorithms ───────────────────────────────────────────────
         {
           children: [
             {
@@ -633,7 +628,6 @@ export const data = {
           tag: "ul",
         },
 
-        // ── H2: Training Pipeline ────────────────────────────────────────────
         {
           children: [
             {
@@ -817,7 +811,6 @@ export const data = {
           tag: "ol",
         },
 
-        // ── H2: Algorithm Comparison ────────────────────────────────────────
         {
           children: [
             {
@@ -866,7 +859,6 @@ export const data = {
           colWidths: [200, 130, 150, 150],
           rowStriping: true,
           children: [
-            // Header row
             {
               direction: "ltr",
               format: "",
@@ -1009,7 +1001,6 @@ export const data = {
                 },
               ],
             },
-            // Row 1 — Linear Regression
             {
               direction: "ltr",
               format: "",
@@ -1152,7 +1143,6 @@ export const data = {
                 },
               ],
             },
-            // Row 2 — Decision Trees
             {
               direction: "ltr",
               format: "",
@@ -1295,7 +1285,6 @@ export const data = {
                 },
               ],
             },
-            // Row 3 — Random Forest
             {
               direction: "ltr",
               format: "",
@@ -1438,7 +1427,6 @@ export const data = {
                 },
               ],
             },
-            // Row 4 — SVM
             {
               direction: "ltr",
               format: "",
@@ -1584,7 +1572,6 @@ export const data = {
           ],
         },
 
-        // ── H2: Code Example ────────────────────────────────────────────────
         {
           children: [
             {
@@ -1662,7 +1649,6 @@ export const data = {
           ],
         },
 
-        // ── H2: Visualizations ───────────────────────────────────────────────
         {
           children: [
             {
@@ -1734,7 +1720,6 @@ export const data = {
           html: '<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>θ</mi><mrow><mi>t</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>=</mo><msub><mi>θ</mi><mi>t</mi></msub><mo>−</mo><mi>η</mi><msub><mo>∇</mo><mi>θ</mi></msub><mi mathvariant="script">L</mi><mo>(</mo><msub><mi>θ</mi><mi>t</mi></msub><mo>)</mo></mrow></math>',
         },
 
-        // ── H2: Quick Reference ──────────────────────────────────────────────
         {
           children: [
             {

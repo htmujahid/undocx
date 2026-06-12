@@ -3,9 +3,8 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react"
 
 import { experimental_useObject as useObject } from "@ai-sdk/react"
-import { toast } from "sonner"
-
 import { $getRoot } from "lexical"
+import { toast } from "sonner"
 
 import {
   $convertFromMarkdownString,
@@ -64,8 +63,6 @@ function splitAtMarkers(md: string): {
   return { before, selected, after, hasStart: true, hasEnd: true }
 }
 
-// ── Hook ──────────────────────────────────────────────────────────────────────
-
 export interface CopilotSubmitState {
   hasStart: boolean
   hasEnd: boolean
@@ -94,7 +91,6 @@ export function useCopilotSubmit({
   const qc = useQueryClient()
   const [editor] = useLexicalComposerContext()
 
-  // ── Marker state ────────────────────────────────────────────────────────────
   const { startKey, endKey } = useSyncExternalStore(
     (cb) => subscribeSelectionMarkers(editor, cb),
     () => snapshotSelectionMarkers(editor),
@@ -105,7 +101,6 @@ export function useCopilotSubmit({
   const hasBoth = hasStart && hasEnd
   const disabled = !hasStart && !hasEnd
 
-  // ── Snapshot captured at submit time ─────────────────────────────────────────
   const snapshotRef = useRef<{
     existing: string
     before: string
@@ -113,7 +108,6 @@ export function useCopilotSubmit({
     after: string
   }>({ existing: "", before: "", selected: "", after: "" })
 
-  // ── Pending review (generated content awaiting accept/reject) ───────────────
   const [pending, setPending] = useState<{
     mode: "insert" | "replace"
     final: string
@@ -139,7 +133,6 @@ export function useCopilotSubmit({
     }
   }, [pending, editor])
 
-  // ── Save mutation ─────────────────────────────────────────────────────────────
   const saveMutation = useMutation({
     ...updateArtifactMutationOptions,
     onSuccess: () => {
@@ -153,7 +146,6 @@ export function useCopilotSubmit({
     onError: () => toast.error("Failed to save."),
   })
 
-  // ── Editor helpers ─────────────────────────────────────────────────────────
   const getMarkdown = (): string => {
     let md = ""
     editor.getEditorState().read(() => {
@@ -203,8 +195,6 @@ export function useCopilotSubmit({
     return keys
   }
 
-  // ── INSERT mode (start marker only) ──────────────────────────────────────────
-
   const insertObj = useObject({
     api: "/api/chat/insert",
     schema: insertOutputSchema,
@@ -243,8 +233,6 @@ export function useCopilotSubmit({
     applyMarkdown([before, partial, after].filter(Boolean).join("\n\n"))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [insertObj.object])
-
-  // ── REPLACE mode (both markers) ───────────────────────────────────────────────
 
   const replaceObj = useObject({
     api: "/api/chat/replace",
@@ -285,8 +273,6 @@ export function useCopilotSubmit({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [replaceObj.object])
 
-  // ── Accept / Reject ──────────────────────────────────────────────────────────
-
   const acceptPending = () => {
     if (!pending) return
     saveMutation.mutate({
@@ -302,8 +288,6 @@ export function useCopilotSubmit({
     applyMarkdown(snapshotRef.current.existing)
     setPending(null)
   }
-
-  // ── Submit ─────────────────────────────────────────────────────────────────────
 
   const isLoading = insertObj.isLoading || replaceObj.isLoading
 
@@ -351,8 +335,6 @@ export function useCopilotSubmit({
       })
     }
   }
-
-  // ── Derived labels ─────────────────────────────────────────────────────────────
 
   const loadingLabel = hasBoth ? "Replacing…" : "Inserting…"
   const placeholder = hasBoth

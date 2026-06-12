@@ -51,7 +51,7 @@ import {
 } from "./selection-marker-node"
 import { $createSvgNode, $isSvgNode, SvgNode } from "./svg-node"
 
-// ── Selection markers: ephemeral, never persisted in saved documents ─────────
+// Selection markers are ephemeral and never persisted in saved documents.
 
 export const SELECTION_MARKER_START: ElementTransformer = {
   dependencies: [SelectionMarkerNode],
@@ -79,8 +79,6 @@ export const SELECTION_MARKER_END: ElementTransformer = {
   type: "element",
 }
 
-// ── Horizontal rule: `---` ────────────────────────────────────────────────────
-
 export const HR: ElementTransformer = {
   dependencies: [HorizontalRuleNode],
   export: (node) => ($isHorizontalRuleNode(node) ? "---" : null),
@@ -96,8 +94,6 @@ export const HR: ElementTransformer = {
   },
   type: "element",
 }
-
-// ── Callout: `:::note` … `:::` (note | tip | warning | danger) ───────────────
 
 export const CALLOUT: MultilineElementTransformer = {
   dependencies: [CalloutNode],
@@ -127,8 +123,6 @@ export const CALLOUT: MultilineElementTransformer = {
   type: "multiline-element",
 }
 
-// ── Block math: `$$` … MathML … `$$` ─────────────────────────────────────────
-
 export const MATH_BLOCK: MultilineElementTransformer = {
   dependencies: [MathNode],
   export: (node) => {
@@ -145,8 +139,6 @@ export const MATH_BLOCK: MultilineElementTransformer = {
   type: "multiline-element",
 }
 
-// ── Inline math: `$<math …>…</math>$` ────────────────────────────────────────
-
 export const MATH_INLINE: TextMatchTransformer = {
   dependencies: [MathNode],
   export: (node) => {
@@ -161,8 +153,6 @@ export const MATH_INLINE: TextMatchTransformer = {
   trigger: "$",
   type: "text-match",
 }
-
-// ── Footnote: `^[footnote text]` ─────────────────────────────────────────────
 
 export const FOOTNOTE: TextMatchTransformer = {
   dependencies: [FootnoteNode],
@@ -179,8 +169,6 @@ export const FOOTNOTE: TextMatchTransformer = {
   type: "text-match",
 }
 
-// ── SVG figure: raw `<svg …>…</svg>` block ───────────────────────────────────
-
 export const SVG: MultilineElementTransformer = {
   dependencies: [SvgNode],
   export: (node) => ($isSvgNode(node) ? node.__html : null),
@@ -195,7 +183,7 @@ export const SVG: MultilineElementTransformer = {
   type: "multiline-element",
 }
 
-// ── GFM table (adapted from the Lexical playground) ──────────────────────────
+// GFM table support, adapted from the Lexical playground.
 
 const TABLE_ROW_REG_EXP = /^\|(.+)\|\s?$/
 const TABLE_ROW_DIVIDER_REG_EXP = /^(\| ?:?-*:? ?)+\|\s*$/

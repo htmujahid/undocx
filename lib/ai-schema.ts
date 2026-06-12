@@ -1,7 +1,5 @@
 import { z } from "zod"
 
-// ── System prompts ────────────────────────────────────────────────────────────
-
 const PROMPT_HEADER = `You are Renderical Copilot, an expert content generation assistant.`
 
 const SVG_FIGURE_RULES = `SVG figure rules (charts, diagrams, flowcharts, timelines, architectures):
@@ -99,8 +97,6 @@ Respond with a JSON object of one field:
 
 ${BASE_PROMPT_RULES}`
 
-// ── Context formatting ────────────────────────────────────────────────────────
-
 export interface ContextDocument {
   title: string
   content: string
@@ -119,8 +115,6 @@ export function formatContext(context: unknown): string | null {
   ].join("\n\n")
 }
 
-// ── Output schemas ────────────────────────────────────────────────────────────
-
 export const outputSchema = z.object({
   title: z.string().min(1),
   content: z.string(),
@@ -133,7 +127,5 @@ export const insertOutputSchema = z.object({
 export const replaceOutputSchema = z.object({
   content: z.string(),
 })
-
-// ── Types ─────────────────────────────────────────────────────────────────────
 
 export type GeneratedOutput = z.infer<typeof outputSchema>
