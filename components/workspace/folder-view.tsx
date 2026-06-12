@@ -97,8 +97,6 @@ export function FolderView({ workspaceId, folderId }: {
     <ArtifactListView
       workspaceId={workspaceId}
       artifacts={displayedArtifacts}
-      folders={folders}
-      collections={collections}
       isLoading={isLoading}
       headerLabel={folder?.name ?? "Folder"}
       headerIcon={<FolderIcon className="size-3.5 text-muted-foreground" />}

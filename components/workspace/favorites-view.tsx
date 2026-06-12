@@ -58,8 +58,6 @@ export function FavoritesView({ workspaceId }: { workspaceId: string }) {
     <ArtifactListView
       workspaceId={workspaceId}
       artifacts={favorites}
-      folders={folders}
-      collections={collections}
       isLoading={isLoading}
       headerLabel="Favorites"
       headerIcon={<StarIcon className="size-3.5 text-muted-foreground" />}

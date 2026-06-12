@@ -98,8 +98,6 @@ export function CollectionView({
     <ArtifactListView
       workspaceId={workspaceId}
       artifacts={displayedArtifacts}
-      folders={folders}
-      collections={collections}
       isLoading={isLoading}
       headerLabel={collection?.name ?? "Collection"}
       headerIcon={

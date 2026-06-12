@@ -9,8 +9,6 @@ import {
   artifactsQueryOptions,
   deleteArtifactMutationOptions,
 } from "@/lib/data/artifacts"
-import { collectionsQueryOptions } from "@/lib/data/collections"
-import { foldersQueryOptions } from "@/lib/data/folders"
 import { recentArtifactIdsQueryOptions } from "@/lib/data/recent-artifacts"
 
 import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
@@ -23,15 +21,6 @@ export function RecentView({ workspaceId }: { workspaceId: string }) {
   const { data: artifacts = [], isLoading: artifactsLoading } = useQuery(
     artifactsQueryOptions(workspaceId)
   )
-  const { data: folders = [] } = useQuery(foldersQueryOptions(workspaceId))
-  const { data: collections = [] } = useQuery(
-    collectionsQueryOptions(workspaceId)
-  )
-
-  const invalidateRecent = () =>
-    qc.invalidateQueries({
-      queryKey: recentArtifactIdsQueryOptions(workspaceId).queryKey,
-    })
 
   const deleteMutation = useMutation({
     ...deleteArtifactMutationOptions,
@@ -39,7 +28,9 @@ export function RecentView({ workspaceId }: { workspaceId: string }) {
       qc.invalidateQueries({
         queryKey: artifactsQueryOptions(workspaceId).queryKey,
       })
-      invalidateRecent()
+      qc.invalidateQueries({
+        queryKey: recentArtifactIdsQueryOptions(workspaceId).queryKey,
+      })
     },
   })
 
@@ -60,8 +51,6 @@ export function RecentView({ workspaceId }: { workspaceId: string }) {
     <ArtifactListView
       workspaceId={workspaceId}
       artifacts={recentArtifacts}
-      folders={folders}
-      collections={collections}
       isLoading={idsLoading || artifactsLoading}
       headerLabel="Recent"
       headerIcon={<ClockIcon className="size-3.5 text-muted-foreground" />}

@@ -61,8 +61,6 @@ export function ArchiveView({ workspaceId }: { workspaceId: string }) {
     <ArtifactListView
       workspaceId={workspaceId}
       artifacts={archivedArtifacts}
-      folders={folders}
-      collections={collections}
       isLoading={isLoading}
       headerLabel="Archive"
       headerIcon={<ArchiveIcon className="size-3.5 text-muted-foreground" />}
