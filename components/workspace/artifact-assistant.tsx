@@ -13,7 +13,7 @@ import { ModeBadge } from "./copilot-mode-badge"
 import { DocumentOutline } from "./document-outline"
 import { useCopilotSubmit } from "./use-copilot-submit"
 
-export function UpdatePromptSidebar({
+export function ArtifactAssistant({
   workspaceId,
   artifactId,
 }: {

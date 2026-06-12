@@ -33,7 +33,7 @@ import {
 } from "@/lib/data/artifacts"
 
 import { ContentPreview } from "./content-preview"
-import { CopilotSidebar } from "./copilot-sidebar"
+import { NewArtifactAssistant } from "./new-artifact-assistant"
 
 export function WorkspaceNew({ workspaceId }: { workspaceId: string }) {
   const router = useRouter()
@@ -106,7 +106,7 @@ export function WorkspaceNew({ workspaceId }: { workspaceId: string }) {
           className="min-h-0 flex-1"
         >
           <ContentPreview title={title} />
-          <CopilotSidebar
+          <NewArtifactAssistant
             workspaceId={workspaceId}
             onTitleChange={setTitle}
             onGenerated={(generatedTitle, content) =>

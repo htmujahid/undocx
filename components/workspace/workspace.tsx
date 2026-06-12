@@ -35,9 +35,9 @@ import {
 } from "@/lib/data/recent-artifacts"
 import { cn } from "@/lib/utils"
 
+import { ArtifactAssistant } from "./artifact-assistant"
 import { ContentPreview } from "./content-preview"
 import { SharePopover } from "./share-popover"
-import { UpdatePromptSidebar } from "./update-prompt-sidebar"
 
 export function Workspace({
   workspaceId,
@@ -149,7 +149,7 @@ export function Workspace({
             </header>
             <ContentPreview title={title} />
           </div>
-          <UpdatePromptSidebar
+          <ArtifactAssistant
             workspaceId={workspaceId}
             artifactId={artifactId}
           />

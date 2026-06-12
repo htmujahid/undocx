@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils"
 import { DocumentOutline } from "./document-outline"
 import { RENDERICAL_TRANSFORMERS } from "./editor/markdown-transformers"
 
-export function CopilotSidebar({
+export function NewArtifactAssistant({
   workspaceId,
   artifactId,
   onTitleChange,
