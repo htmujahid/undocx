@@ -31,6 +31,7 @@ export function UpdatePromptSidebar({
     hasBoth,
     disabled,
     isLoading,
+    isSaving,
     loadingLabel,
     placeholder,
     submitLabel,
@@ -55,9 +56,9 @@ export function UpdatePromptSidebar({
         <div className="flex items-center gap-2">
           <SparklesIcon className="size-3.5 text-primary" />
           <span className="text-sm font-semibold">Copilot</span>
-          {isLoading && (
+          {(isLoading || isSaving) && (
             <span className="ml-auto animate-pulse text-[10px] text-muted-foreground">
-              {loadingLabel}
+              {isSaving ? "Saving…" : loadingLabel}
             </span>
           )}
         </div>
@@ -97,8 +98,10 @@ export function UpdatePromptSidebar({
                 />
                 <div className="flex items-center justify-between px-2 pb-2">
                   <span className="text-[10px] text-muted-foreground">
-                    {isLoading && (
-                      <span className="animate-pulse">{loadingLabel}</span>
+                    {(isLoading || isSaving) && (
+                      <span className="animate-pulse">
+                        {isSaving ? "Saving…" : loadingLabel}
+                      </span>
                     )}
                   </span>
                   <Button

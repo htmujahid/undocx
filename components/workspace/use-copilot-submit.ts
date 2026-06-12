@@ -59,6 +59,7 @@ export interface CopilotSubmitState {
   hasBoth: boolean
   disabled: boolean
   isLoading: boolean
+  isSaving: boolean
   loadingLabel: string
   placeholder: string
   submitLabel: string
@@ -234,6 +235,7 @@ export function useCopilotSubmit({
     hasBoth,
     disabled,
     isLoading,
+    isSaving: saveMutation.isPending,
     loadingLabel,
     placeholder,
     submitLabel,

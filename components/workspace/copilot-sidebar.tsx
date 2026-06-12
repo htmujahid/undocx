@@ -133,9 +133,9 @@ export function CopilotSidebar({
         <div className="flex items-center gap-2">
           <SparklesIcon className="size-3.5 text-primary" />
           <span className="text-sm font-semibold">Copilot</span>
-          {isLoading && (
+          {(isLoading || saveMutation.isPending) && (
             <span className="ml-auto animate-pulse text-[10px] text-muted-foreground">
-              Generating…
+              {saveMutation.isPending ? "Saving…" : "Generating…"}
             </span>
           )}
         </div>
@@ -164,8 +164,10 @@ export function CopilotSidebar({
             />
             <div className="flex items-center justify-between px-2 pb-2">
               <span className="text-[10px] text-muted-foreground">
-                {isLoading ? (
-                  <span className="animate-pulse">Generating…</span>
+                {(isLoading || saveMutation.isPending) ? (
+                  <span className="animate-pulse">
+                    {saveMutation.isPending ? "Saving…" : "Generating…"}
+                  </span>
                 ) : null}
               </span>
               <Button

@@ -170,13 +170,18 @@ export function SelectionMarkerPlugin({
         const zoneBottom = nextTop + PAD
 
         if (mouseY >= zoneTop && mouseY <= zoneBottom) {
+          const y =
+            i === 0 ? nextTop - 8
+            : i === keys.length ? prevBottom
+            : (prevBottom + nextTop) / 2
+
           if (sKey !== null) {
             if (i <= startAfterNonMarkerCount) {
               matched = null
               break
             }
             matched = {
-              y: (prevBottom + nextTop) / 2,
+              y,
               left: containerRect.left,
               width: containerRect.width,
               insertBeforeKey: i < keys.length ? keys[i] : null,
@@ -184,7 +189,7 @@ export function SelectionMarkerPlugin({
             }
           } else {
             matched = {
-              y: (prevBottom + nextTop) / 2,
+              y,
               left: containerRect.left,
               width: containerRect.width,
               insertBeforeKey: i < keys.length ? keys[i] : null,
