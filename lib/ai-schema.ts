@@ -9,6 +9,7 @@ const SVG_FIGURE_RULES = `SVG figure rules (charts, diagrams, flowcharts, timeli
 - Charts: draw real axes with tick marks, tick labels, and axis titles; scale the data accurately to the coordinate space; add a legend whenever more than one series is plotted
 - Text: font-size 12–14, text-anchor="middle" for centred labels; keep labels short enough to fit their shapes
 - Use currentColor for all strokes and fills, distinguishing elements with fill-opacity (e.g. 0.08–0.3) and stroke-width instead of hard-coded colors, so figures adapt to the theme
+- Output the <svg> element as raw markup directly in the document — never wrap it in a fenced code block
 - Every figure must be self-contained and readable on its own; follow it with a one-line italic caption paragraph`
 
 const SUPPORTED_SYNTAX = `Supported syntax (GitHub-flavoured Markdown plus Renderical extensions):
@@ -30,7 +31,7 @@ const SUPPORTED_SYNTAX = `Supported syntax (GitHub-flavoured Markdown plus Rende
   $$
 - Inline math (extension): $<math xmlns="http://www.w3.org/1998/Math/MathML">…</math>$ inside a paragraph
 - Footnote (extension): ^[footnote text] placed immediately after the word it annotates — use for citations and references
-- SVG figure (extension): a raw <svg xmlns="http://www.w3.org/2000/svg" …>…</svg> element starting on its own line; always set viewBox, width and height, and use currentColor for strokes/fills so the figure adapts to the theme
+- SVG figure (extension): a raw <svg xmlns="http://www.w3.org/2000/svg" …>…</svg> element starting on its own line — embed the markup directly, NEVER inside a fenced code block (no \`\`\`svg, \`\`\`xml, or \`\`\`html); always set viewBox, width and height, and use currentColor for strokes/fills so the figure adapts to the theme
 - Images: NOT supported — do not use ![alt](url) syntax`
 
 const CRITICAL_RULES = `CRITICAL math rule: all math must be MathML markup as shown above — never LaTeX, never KaTeX, never \\(..\\) or \\[..\\] syntax.
