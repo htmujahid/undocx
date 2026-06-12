@@ -33,10 +33,13 @@ export function CopilotSidebar({
   workspaceId,
   artifactId,
   onTitleChange,
+  onGenerated,
 }: {
   workspaceId: string
-  artifactId: string
+  artifactId?: string
   onTitleChange: (title: string) => void
+  /** When provided, called instead of persisting — used for the new-document flow */
+  onGenerated?: (title: string, content: string) => void
 }) {
   const qc = useQueryClient()
   const [editor] = useLexicalComposerContext()
@@ -48,9 +51,11 @@ export function CopilotSidebar({
       qc.invalidateQueries({
         queryKey: artifactsQueryOptions(workspaceId).queryKey,
       })
-      qc.invalidateQueries({
-        queryKey: artifactQueryOptions(workspaceId, artifactId).queryKey,
-      })
+      if (artifactId) {
+        qc.invalidateQueries({
+          queryKey: artifactQueryOptions(workspaceId, artifactId).queryKey,
+        })
+      }
     },
     onError: () => toast.error("Failed to save artifact."),
   })
@@ -73,12 +78,16 @@ export function CopilotSidebar({
         applyMarkdown(result.content)
         const title = result.title.trim() || "Untitled"
         onTitleChange(title)
-        saveMutation.mutate({
-          workspaceId,
-          id: artifactId,
-          title,
-          content: result.content,
-        })
+        if (onGenerated) {
+          onGenerated(title, result.content)
+        } else if (artifactId) {
+          saveMutation.mutate({
+            workspaceId,
+            id: artifactId,
+            title,
+            content: result.content,
+          })
+        }
       } catch (err) {
         toast.error("Failed to apply generated content.")
         console.error("[Editor]", err)

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useSyncExternalStore } from "react"
+import { useEffect, useRef, useState, useSyncExternalStore } from "react"
 
 import { $getRoot } from "lexical"
 
@@ -13,6 +13,7 @@ import {
   snapshotFootnotes,
   subscribeFootnotes,
 } from "@/components/workspace/editor/footnote-store"
+import { SelectionMarkerPlugin } from "@/components/workspace/editor/selection-marker-plugin"
 
 function countWords(text: string): number {
   return text.trim() === "" ? 0 : text.trim().split(/\s+/).length
@@ -73,10 +74,12 @@ function FootnoteList() {
 }
 
 export function ContentPreview({ title }: { title: string }) {
+  const contentRef = useRef<HTMLDivElement>(null!)
+
   return (
     <div className="min-h-0 flex-1 overflow-hidden">
       <ScrollArea className="h-full">
-        <div className="mx-auto max-w-[720px] px-8 py-8">
+        <div ref={contentRef} className="mx-auto max-w-[720px] px-8 py-8">
           <div className="mb-6">
             <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
               Generated document
@@ -92,6 +95,8 @@ export function ContentPreview({ title }: { title: string }) {
           <Separator className="mb-6" />
 
           <ContentEditable className="space-y-3 outline-none" />
+
+          <SelectionMarkerPlugin containerRef={contentRef} />
 
           <FootnoteList />
         </div>

@@ -1,9 +1,11 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 
 import { defineExtension } from "lexical"
 import { PanelRightIcon } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 import {
   HorizontalRuleExtension,
@@ -11,7 +13,6 @@ import {
 } from "@lexical/extension"
 import { LinkExtension } from "@lexical/link"
 import { ListExtension } from "@lexical/list"
-import { $convertFromMarkdownString } from "@lexical/markdown"
 import { LexicalExtensionComposer } from "@lexical/react/LexicalExtensionComposer"
 import { RichTextExtension } from "@lexical/rich-text"
 import { TableExtension } from "@lexical/table"
@@ -23,45 +24,34 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { CalloutExtension } from "@/components/workspace/editor/callout-extension"
 import { CodeHighlightExtension } from "@/components/workspace/editor/code-highlight-extension"
 import { FootnoteExtension } from "@/components/workspace/editor/footnote-extension"
-import { SelectionMarkerExtension } from "@/components/workspace/editor/selection-marker-extension"
 import { RENDERICAL_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
 import { MathExtension } from "@/components/workspace/editor/math-extension"
 import { SvgExtension } from "@/components/workspace/editor/svg-extension"
 import { editorTheme } from "@/components/workspace/editor/theme"
 import {
-  addRecentArtifactMutationOptions,
-  recentArtifactIdsQueryOptions,
-} from "@/lib/data/recent-artifacts"
-import { cn } from "@/lib/utils"
+  artifactsQueryOptions,
+  createArtifactMutationOptions,
+} from "@/lib/data/artifacts"
 
 import { ContentPreview } from "./content-preview"
-import { UpdatePromptSidebar } from "./update-prompt-sidebar"
+import { CopilotSidebar } from "./copilot-sidebar"
 
-export function Workspace({
-  workspaceId,
-  artifactId,
-  initialTitle,
-  initialContent,
-}: {
-  workspaceId: string
-  artifactId: string
-  initialTitle: string
-  initialContent: string | null
-}) {
+export function WorkspaceNew({ workspaceId }: { workspaceId: string }) {
+  const router = useRouter()
   const qc = useQueryClient()
   const [rightOpen, setRightOpen] = useState(true)
+  const [title, setTitle] = useState("Untitled")
 
-  const { mutate: addRecent } = useMutation({
-    ...addRecentArtifactMutationOptions,
-    onSuccess: () =>
+  const createMutation = useMutation({
+    ...createArtifactMutationOptions,
+    onSuccess: (artifact) => {
       qc.invalidateQueries({
-        queryKey: recentArtifactIdsQueryOptions(workspaceId).queryKey,
-      }),
+        queryKey: artifactsQueryOptions(workspaceId).queryKey,
+      })
+      router.push(`/workspace/${workspaceId}/${artifact.id}`)
+    },
+    onError: () => toast.error("Failed to save document."),
   })
-
-  useEffect(() => {
-    addRecent({ workspaceId, artifactId })
-  }, [workspaceId, artifactId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const extension = useMemo(
     () =>
@@ -70,15 +60,6 @@ export function Workspace({
         namespace: "content-editor",
         theme: editorTheme,
         editable: false,
-        ...(initialContent
-          ? {
-              $initialEditorState: () =>
-                $convertFromMarkdownString(
-                  initialContent,
-                  RENDERICAL_TRANSFORMERS
-                ),
-            }
-          : {}),
         onError: (error: Error) => console.error("[Lexical]", error),
         dependencies: [
           RichTextExtension,
@@ -92,21 +73,18 @@ export function Workspace({
           TabIndentationExtension,
           CalloutExtension,
           FootnoteExtension,
-          SelectionMarkerExtension,
         ],
       }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 
   return (
     <LexicalExtensionComposer extension={extension} contentEditable={null}>
       <div className="flex h-svh min-w-0 flex-1 flex-col overflow-hidden">
-        {/* Header outside the right SidebarProvider so SidebarTrigger reaches the layout's left sidebar context */}
         <header className="flex h-11 shrink-0 items-center border-b px-2">
           <SidebarTrigger />
           <span className="ml-2 flex-1 truncate text-xs text-muted-foreground">
-            {initialTitle}
+            {title}
           </span>
           <Button
             variant="ghost"
@@ -115,25 +93,30 @@ export function Workspace({
             aria-label="Toggle copilot panel"
           >
             <PanelRightIcon
-              className={cn(
-                "transition-colors",
+              className={
                 rightOpen ? "text-foreground" : "text-muted-foreground"
-              )}
+              }
             />
           </Button>
         </header>
 
-        {/* Right sidebar provider wraps content + prompt panel */}
         <SidebarProvider
           open={rightOpen}
           onOpenChange={setRightOpen}
           style={{ "--sidebar-width": "24rem" } as React.CSSProperties}
           className="min-h-0 flex-1"
         >
-          <ContentPreview title={initialTitle} />
-          <UpdatePromptSidebar
+          <ContentPreview title={title} />
+          <CopilotSidebar
             workspaceId={workspaceId}
-            artifactId={artifactId}
+            onTitleChange={setTitle}
+            onGenerated={(generatedTitle, content) =>
+              createMutation.mutate({
+                workspaceId,
+                title: generatedTitle,
+                content,
+              })
+            }
           />
         </SidebarProvider>
       </div>

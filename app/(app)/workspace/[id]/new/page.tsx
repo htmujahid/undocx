@@ -1,9 +1,10 @@
 import { and, eq } from "drizzle-orm"
 import { redirect } from "next/navigation"
 
+import { WorkspaceNew } from "@/components/workspace/workspace-new"
 import { getSession } from "@/lib/auth"
 import { db } from "@/lib/db"
-import { artifact, workspace } from "@/lib/db/schema"
+import { workspace } from "@/lib/db/schema"
 
 export default async function NewArtifactPage({
   params,
@@ -22,10 +23,5 @@ export default async function NewArtifactPage({
 
   if (!ws) redirect("/workspace")
 
-  const [created] = await db
-    .insert(artifact)
-    .values({ title: "Untitled", workspaceId: id })
-    .returning({ id: artifact.id })
-
-  redirect(`/workspace/${id}/${created.id}`)
+  return <WorkspaceNew workspaceId={id} />
 }

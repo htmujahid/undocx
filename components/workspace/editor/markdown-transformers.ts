@@ -41,7 +41,40 @@ import {
   FootnoteNode,
 } from "./footnote-node"
 import { $createMathNode, $isMathNode, MathNode } from "./math-node"
+import {
+  $createSelectionMarkerNode,
+  $isSelectionMarkerNode,
+  SelectionMarkerNode,
+} from "./selection-marker-node"
 import { $createSvgNode, $isSvgNode, SvgNode } from "./svg-node"
+
+// ── Selection markers: ephemeral, never persisted in saved documents ─────────
+
+export const SELECTION_MARKER_START: ElementTransformer = {
+  dependencies: [SelectionMarkerNode],
+  export: (node) =>
+    $isSelectionMarkerNode(node) && node.__role === "start"
+      ? "<!-- @selection:start -->"
+      : null,
+  regExp: /^<!--\s*@selection:start\s*-->$/,
+  replace: (parentNode, _children, _match, isImport) => {
+    if (isImport) parentNode.replace($createSelectionMarkerNode("start"))
+  },
+  type: "element",
+}
+
+export const SELECTION_MARKER_END: ElementTransformer = {
+  dependencies: [SelectionMarkerNode],
+  export: (node) =>
+    $isSelectionMarkerNode(node) && node.__role === "end"
+      ? "<!-- @selection:end -->"
+      : null,
+  regExp: /^<!--\s*@selection:end\s*-->$/,
+  replace: (parentNode, _children, _match, isImport) => {
+    if (isImport) parentNode.replace($createSelectionMarkerNode("end"))
+  },
+  type: "element",
+}
 
 // ── Horizontal rule: `---` ────────────────────────────────────────────────────
 
@@ -300,6 +333,8 @@ export const TABLE: ElementTransformer = {
 // Custom transformers come first so they win over the defaults (e.g. an SVG or
 // math block must not be swallowed by the paragraph/code fallbacks).
 export const RENDERICAL_TRANSFORMERS: Transformer[] = [
+  SELECTION_MARKER_START,
+  SELECTION_MARKER_END,
   TABLE,
   HR,
   CALLOUT,
