@@ -14,7 +14,7 @@ export interface ArtifactSummary {
 }
 
 export interface Artifact extends ArtifactSummary {
-  content: unknown
+  content: string | null
 }
 
 export const artifactsQueryOptions = (
@@ -56,7 +56,7 @@ export const createArtifactMutationOptions = mutationOptions({
   }: {
     workspaceId: string
     title: string
-    content?: unknown
+    content?: string | null
     folderIds?: string[]
     collectionIds?: string[]
   }): Promise<Artifact> => {
@@ -79,7 +79,7 @@ export const updateArtifactMutationOptions = mutationOptions({
     workspaceId: string
     id: string
     title?: string
-    content?: unknown
+    content?: string | null
     isArchived?: boolean
     folderIds?: string[]
     collectionIds?: string[]

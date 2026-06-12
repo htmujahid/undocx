@@ -2,7 +2,6 @@ import { relations } from "drizzle-orm"
 import {
   boolean,
   index,
-  jsonb,
   pgTable,
   primaryKey,
   text,
@@ -20,7 +19,8 @@ export const artifact = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
     title: text("title").notNull(),
-    content: jsonb("content"),
+    // Markdown source (Renderical dialect — see editor/markdown-transformers.ts)
+    content: text("content"),
     workspaceId: uuid("workspace_id")
       .notNull()
       .references(() => workspace.id, { onDelete: "cascade" }),

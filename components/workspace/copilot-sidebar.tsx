@@ -6,6 +6,7 @@ import { experimental_useObject as useObject } from "@ai-sdk/react"
 import { ArrowUpIcon, SparklesIcon } from "lucide-react"
 import { toast } from "sonner"
 
+import { $convertFromMarkdownString } from "@lexical/markdown"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -26,6 +27,7 @@ import {
 import { cn } from "@/lib/utils"
 
 import { DocumentOutline } from "./document-outline"
+import { RENDERICAL_TRANSFORMERS } from "./editor/markdown-transformers"
 
 export function CopilotSidebar({
   workspaceId,
@@ -53,6 +55,12 @@ export function CopilotSidebar({
     onError: () => toast.error("Failed to save artifact."),
   })
 
+  const applyMarkdown = (markdown: string) => {
+    editor.update(() => {
+      $convertFromMarkdownString(markdown, RENDERICAL_TRANSFORMERS)
+    })
+  }
+
   const { object, submit, isLoading } = useObject({
     api: "/api/chat",
     schema: outputSchema,
@@ -62,16 +70,14 @@ export function CopilotSidebar({
         return
       }
       try {
-        editor.setEditorState(
-          editor.parseEditorState(JSON.stringify(result.editorState))
-        )
-        const title = result.title ?? "Untitled"
+        applyMarkdown(result.content)
+        const title = result.title.trim() || "Untitled"
         onTitleChange(title)
         saveMutation.mutate({
           workspaceId,
           id: artifactId,
           title,
-          content: result.editorState,
+          content: result.content,
         })
       } catch (err) {
         toast.error("Failed to apply generated content.")
@@ -84,28 +90,16 @@ export function CopilotSidebar({
     },
   })
 
-  // Stream completed root children into the editor as they arrive.
-  // In a streaming JSON array every element except the last is fully closed
-  // (its `}` has been received), so slice(0, -1) always gives valid nodes.
+  // Stream the partial markdown into the editor as it arrives. Everything up
+  // to the last blank line is made of completed blocks; the trailing block may
+  // still be mid-token, so it is held back until the next frame.
   useEffect(() => {
     if (!isLoading) return
-    const children = object?.editorState?.root?.children
-    if (!children || children.length < 2) return
-    const partialState = {
-      ...object!.editorState,
-      root: {
-        ...object!.editorState!.root,
-        children: children.slice(0, -1),
-      },
-    }
-    try {
-      editor.setEditorState(
-        editor.parseEditorState(JSON.stringify(partialState))
-      )
-      if (object!.title) onTitleChange(object!.title)
-    } catch {
-      // not parseable yet — skip this frame
-    }
+    if (object?.title) onTitleChange(object.title)
+    const markdown = object?.content
+    if (!markdown) return
+    const cut = markdown.lastIndexOf("\n\n")
+    if (cut > 0) applyMarkdown(markdown.slice(0, cut))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [object])
 

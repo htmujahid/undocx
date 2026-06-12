@@ -11,6 +11,7 @@ import {
 } from "@lexical/extension"
 import { LinkExtension } from "@lexical/link"
 import { ListExtension } from "@lexical/list"
+import { $convertFromMarkdownString } from "@lexical/markdown"
 import { LexicalExtensionComposer } from "@lexical/react/LexicalExtensionComposer"
 import { RichTextExtension } from "@lexical/rich-text"
 import { TableExtension } from "@lexical/table"
@@ -22,6 +23,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { CalloutExtension } from "@/components/workspace/editor/callout-extension"
 import { CodeHighlightExtension } from "@/components/workspace/editor/code-highlight-extension"
 import { FootnoteExtension } from "@/components/workspace/editor/footnote-extension"
+import { RENDERICAL_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
 import { MathExtension } from "@/components/workspace/editor/math-extension"
 import { SvgExtension } from "@/components/workspace/editor/svg-extension"
 import { editorTheme } from "@/components/workspace/editor/theme"
@@ -43,7 +45,7 @@ export function Workspace({
   workspaceId: string
   artifactId: string
   initialTitle: string
-  initialContent: unknown
+  initialContent: string | null
 }) {
   const qc = useQueryClient()
   const [rightOpen, setRightOpen] = useState(true)
@@ -69,7 +71,13 @@ export function Workspace({
         theme: editorTheme,
         editable: false,
         ...(initialContent
-          ? { $initialEditorState: JSON.stringify(initialContent) }
+          ? {
+              $initialEditorState: () =>
+                $convertFromMarkdownString(
+                  initialContent,
+                  RENDERICAL_TRANSFORMERS
+                ),
+            }
           : {}),
         onError: (error: Error) => console.error("[Lexical]", error),
         dependencies: [
