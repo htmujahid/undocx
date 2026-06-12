@@ -117,8 +117,8 @@ export const MATH_INLINE: TextMatchTransformer = {
     if (!$isMathNode(node) || node.__display !== "inline") return null
     return `$${node.__html}$`
   },
-  importRegExp: /\$(<math[\s\S]*?<\/math>)\$/,
-  regExp: /\$(<math[\s\S]*?<\/math>)\$$/,
+  importRegExp: /\$(<math[\s\S]*?<\/math>|[^$\n]+)\$/,
+  regExp: /\$(<math[\s\S]*?<\/math>|[^$\n]+)\$$/,
   replace: (textNode, match) => {
     textNode.replace($createMathNode(match[1], "inline"))
   },

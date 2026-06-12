@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1781224733891,
-      "tag": "0000_famous_harry_osborn",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1781224733892,
-      "tag": "0001_add_artifact_favorite",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1781257612165,
-      "tag": "0002_artifact_content_to_markdown_text",
+      "when": 1781260203743,
+      "tag": "0000_sour_mac_gargan",
       "breakpoints": true
     }
   ]

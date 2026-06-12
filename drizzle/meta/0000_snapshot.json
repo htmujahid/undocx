@@ -1,5 +1,5 @@
 {
-  "id": "5404b90a-3eed-453c-99f7-cae7b3e633ee",
+  "id": "cbd16149-9e5d-4342-8e69-95101cb0020c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -23,7 +23,7 @@
         },
         "content": {
           "name": "content",
-          "type": "jsonb",
+          "type": "text",
           "primaryKey": false,
           "notNull": false
         },
@@ -168,6 +168,89 @@
           "columns": [
             "artifact_id",
             "collection_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.artifact_favorite": {
+      "name": "artifact_favorite",
+      "schema": "",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "artifact_id": {
+          "name": "artifact_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "artifactFavorite_userId_idx": {
+          "name": "artifactFavorite_userId_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "artifact_favorite_user_id_user_id_fk": {
+          "name": "artifact_favorite_user_id_user_id_fk",
+          "tableFrom": "artifact_favorite",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "artifact_favorite_artifact_id_artifact_id_fk": {
+          "name": "artifact_favorite_artifact_id_artifact_id_fk",
+          "tableFrom": "artifact_favorite",
+          "tableTo": "artifact",
+          "columnsFrom": [
+            "artifact_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "artifact_favorite_user_id_artifact_id_pk": {
+          "name": "artifact_favorite_user_id_artifact_id_pk",
+          "columns": [
+            "user_id",
+            "artifact_id"
           ]
         }
       },

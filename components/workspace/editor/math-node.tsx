@@ -22,14 +22,14 @@ function MathRenderer({
   if (display === "inline") {
     return (
       <span
-        className="inline-block align-middle [&_math]:text-sm"
+        className="inline-block align-middle font-serif italic [&_math]:text-sm"
         dangerouslySetInnerHTML={{ __html: html }}
       />
     )
   }
   return (
     <div
-      className="my-4 overflow-x-auto [&_math]:text-sm"
+      className="my-4 overflow-x-auto font-serif [&_math]:text-sm"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   )
