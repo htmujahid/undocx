@@ -1,9 +1,11 @@
 import { and, asc, desc, eq, inArray } from "drizzle-orm"
+import { after } from "next/server"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { canEdit, getWorkspaceAccess, getWorkspaceRole } from "@/lib/db/access"
+import { syncArtifactChunks } from "@/lib/embeddings"
 import {
   artifact,
   artifactCollection,
@@ -122,6 +124,7 @@ export async function POST(
         title: title.trim(),
         content: content ?? null,
         workspaceId: id,
+        ownerId: session.user.id,
       })
       .returning()
 
@@ -142,6 +145,12 @@ export async function POST(
     }
     return row
   })
+
+  after(() =>
+    syncArtifactChunks(created.id, created.title, created.content).catch(
+      (err) => console.error("chunk sync failed for artifact", created.id, err)
+    )
+  )
 
   return NextResponse.json(
     {

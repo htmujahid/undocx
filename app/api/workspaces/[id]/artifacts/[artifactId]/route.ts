@@ -1,9 +1,11 @@
 import { and, eq, inArray } from "drizzle-orm"
+import { after } from "next/server"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { canEdit, getArtifactRole, getWorkspaceRole } from "@/lib/db/access"
+import { syncArtifactChunks } from "@/lib/embeddings"
 import {
   artifact,
   artifactCollection,
@@ -145,6 +147,14 @@ export async function PATCH(
 
   if (!updated)
     return NextResponse.json({ error: "Not found" }, { status: 404 })
+
+  if (content !== undefined) {
+    after(() =>
+      syncArtifactChunks(updated.id, updated.title, updated.content).catch(
+        (err) => console.error("chunk sync failed for artifact", updated.id, err)
+      )
+    )
+  }
 
   const links = await getArtifactLinks(artifactId)
   return NextResponse.json({ ...updated, role, ...links })

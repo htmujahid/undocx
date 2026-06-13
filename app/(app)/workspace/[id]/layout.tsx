@@ -54,6 +54,7 @@ export default async function WorkspaceLayout({
       <HydrationBoundary state={dehydrate(queryClient)}>
         <WorkspaceSidebar
           user={{
+            id: session.user.id,
             name: session.user.name,
             email: session.user.email,
             image: session.user.image ?? null,

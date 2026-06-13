@@ -2,16 +2,18 @@
 
 import { Suspense } from "react"
 
-import { ArchiveIcon, ClockIcon, LayoutGridIcon, StarIcon } from "lucide-react"
+import { ArchiveIcon, ClockIcon, LayoutGridIcon, MessageSquareIcon, PlusIcon, StarIcon } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
+import { Button } from "@/components/ui/button"
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarHeader,
   SidebarMenu,
+  SidebarGroupContent,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
@@ -27,13 +29,14 @@ const NAV_ITEMS = [
   { icon: StarIcon, label: "Favorites", path: "/favorites" },
   { icon: ClockIcon, label: "Recent", path: "/recent" },
   { icon: ArchiveIcon, label: "Archive", path: "/archive" },
+  { icon: MessageSquareIcon, label: "Chat", path: "/chat" },
 ]
 
 export function WorkspaceSidebar({
   user,
   workspaceId,
 }: {
-  user: { name: string; email: string; image?: string | null }
+  user: { id: string; name: string; email: string; image?: string | null }
   workspaceId: string
 }) {
   const pathname = usePathname()
@@ -52,20 +55,45 @@ export function WorkspaceSidebar({
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarMenu>
-            {NAV_ITEMS.map((item) => (
-              <SidebarMenuItem key={item.label}>
+          <SidebarGroupContent className="flex flex-col gap-2">
+            <SidebarMenu>
+              <SidebarMenuItem className="flex items-center gap-2">
                 <SidebarMenuButton
-                  size="sm"
-                  isActive={isActive(item.path)}
-                  render={<Link href={basePath + item.path} />}
+                  tooltip="All Items"
+                  className="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
+                  render={<Link href={basePath} />}
                 >
-                  <item.icon />
-                  <span>{item.label}</span>
+                  <LayoutGridIcon />
+                  <span>All Items</span>
                 </SidebarMenuButton>
+                <Button
+                  size="icon"
+                  className="size-8 group-data-[collapsible=icon]:opacity-0"
+                  variant="outline"
+                >
+                  <Link href={`${basePath}/new`}>
+                    <PlusIcon />
+                    <span className="sr-only">New Artifact</span>
+                  </Link>
+                </Button>
               </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
+            </SidebarMenu>
+
+            <SidebarMenu>
+              {NAV_ITEMS.filter((item) => item.path !== "").map((item) => (
+                <SidebarMenuItem key={item.label}>
+                  <SidebarMenuButton
+                    size="sm"
+                    isActive={isActive(item.path)}
+                    render={<Link href={basePath + item.path} />}
+                  >
+                    <item.icon />
+                    <span>{item.label}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
         </SidebarGroup>
 
         {/* Suspense required because children use useSearchParams(); fallback=null avoids a flash of placeholder content */}

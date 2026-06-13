@@ -3,6 +3,7 @@
 import {
   ChevronsUpDownIcon,
   HomeIcon,
+  LinkIcon,
   LogOutIcon,
   SettingsIcon,
 } from "lucide-react"
@@ -26,12 +27,14 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { toast } from "sonner"
+
 import { signOut } from "@/lib/auth-client"
 
 export function SidebarUserMenu({
   user,
 }: {
-  user: { name: string; email: string; image?: string | null }
+  user: { id: string; name: string; email: string; image?: string | null }
 }) {
   const router = useRouter()
 
@@ -79,14 +82,16 @@ export function SidebarUserMenu({
               side={isMobile ? "bottom" : "top"}
               align="start"
             >
-              <DropdownMenuLabel className="flex flex-col gap-0.5">
-                <span className="text-sm font-medium text-foreground">
-                  {user.name}
-                </span>
-                <span className="text-xs font-normal text-muted-foreground">
-                  {user.email}
-                </span>
-              </DropdownMenuLabel>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className="flex flex-col gap-0.5">
+                  <span className="text-sm font-medium text-foreground">
+                    {user.name}
+                  </span>
+                  <span className="text-xs font-normal text-muted-foreground">
+                    {user.email}
+                  </span>
+                </DropdownMenuLabel>
+              </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuItem render={<Link href="/workspace" />}>
@@ -97,12 +102,25 @@ export function SidebarUserMenu({
                   <SettingsIcon className="text-muted-foreground" />
                   Account settings
                 </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      `${window.location.origin}/chat/${user.id}`
+                    )
+                    toast.success("Chat link copied to clipboard")
+                  }}
+                >
+                  <LinkIcon className="text-muted-foreground" />
+                  Copy chat link
+                </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem variant="destructive" onClick={handleSignOut}>
-                <LogOutIcon />
-                Sign out
-              </DropdownMenuItem>
+              <DropdownMenuGroup>
+                <DropdownMenuItem variant="destructive" onClick={handleSignOut}>
+                  <LogOutIcon />
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
         </SidebarMenuItem>

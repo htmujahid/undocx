@@ -1,12 +1,15 @@
-import { relations } from "drizzle-orm"
+import { relations, sql } from "drizzle-orm"
 import {
   boolean,
   index,
+  integer,
   pgTable,
   primaryKey,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
+  vector,
 } from "drizzle-orm/pg-core"
 
 import { user } from "./auth-schema"
@@ -24,6 +27,9 @@ export const artifact = pgTable(
     workspaceId: uuid("workspace_id")
       .notNull()
       .references(() => workspace.id, { onDelete: "cascade" }),
+    ownerId: text("owner_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
     isArchived: boolean("is_archived").default(false).notNull(),
     // Anyone with the link can view the artifact at /share/[artifactId]
     // without signing in. Mutations still require workspace ownership.
@@ -72,6 +78,31 @@ export const artifactCollection = pgTable(
   ]
 )
 
+export const artifactChunk = pgTable(
+  "artifact_chunk",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    artifactId: uuid("artifact_id")
+      .notNull()
+      .references(() => artifact.id, { onDelete: "cascade" }),
+    chunkIndex: integer("chunk_index").notNull(),
+    heading: text("heading"),
+    content: text("content").notNull(),
+    hash: text("hash").notNull(),
+    embedding: vector("embedding", { dimensions: 1536 }),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("artifactChunk_artifactId_idx").on(table.artifactId),
+    uniqueIndex("artifactChunk_artifactId_heading_unique")
+      .on(table.artifactId, table.heading)
+      .where(sql`heading IS NOT NULL`),
+  ]
+)
+
 export const artifactRelations = relations(artifact, ({ one, many }) => ({
   workspace: one(workspace, {
     fields: [artifact.workspaceId],
@@ -79,6 +110,14 @@ export const artifactRelations = relations(artifact, ({ one, many }) => ({
   }),
   artifactFolders: many(artifactFolder),
   artifactCollections: many(artifactCollection),
+  chunks: many(artifactChunk),
+}))
+
+export const artifactChunkRelations = relations(artifactChunk, ({ one }) => ({
+  artifact: one(artifact, {
+    fields: [artifactChunk.artifactId],
+    references: [artifact.id],
+  }),
 }))
 
 export const artifactFolderRelations = relations(artifactFolder, ({ one }) => ({
