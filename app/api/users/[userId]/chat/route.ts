@@ -59,6 +59,7 @@ export async function POST(
     .where(
       and(
         eq(artifact.ownerId, userId),
+        eq(artifact.isPublic, true),
         eq(artifact.isArchived, false)
       )
     )

@@ -5,7 +5,7 @@ import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
 import { db } from "@/lib/db"
-import { getWorkspaceAccess } from "@/lib/db/access"
+import { getWorkspaceRole } from "@/lib/db/access"
 import { artifact, artifactChunk } from "@/lib/db/schema"
 
 const SYSTEM_PROMPT = `You are a helpful assistant for a personal knowledge base. Answer questions using only the provided context from the user's documents. If the context does not contain enough information to answer confidently, say so clearly rather than guessing. Be concise and accurate.`
@@ -19,8 +19,8 @@ export async function POST(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id: workspaceId } = await params
-  const access = await getWorkspaceAccess(workspaceId, session.user.id)
-  if (!access)
+  const role = await getWorkspaceRole(workspaceId, session.user.id)
+  if (!role)
     return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   const { messages } = await req.json()
