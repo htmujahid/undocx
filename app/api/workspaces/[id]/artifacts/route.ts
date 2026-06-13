@@ -3,22 +3,14 @@ import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
 import { db } from "@/lib/db"
+import { canEdit, getWorkspaceAccess, getWorkspaceRole } from "@/lib/db/access"
 import {
   artifact,
   artifactCollection,
   artifactFolder,
   collection,
   folder,
-  workspace,
 } from "@/lib/db/schema"
-
-async function verifyWorkspaceOwner(workspaceId: string, userId: string) {
-  const [ws] = await db
-    .select({ id: workspace.id })
-    .from(workspace)
-    .where(and(eq(workspace.id, workspaceId), eq(workspace.ownerId, userId)))
-  return ws ?? null
-}
 
 export async function GET(
   req: Request,
@@ -29,8 +21,8 @@ export async function GET(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id } = await params
-  const ws = await verifyWorkspaceOwner(id, session.user.id)
-  if (!ws) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  const access = await getWorkspaceAccess(id, session.user.id)
+  if (!access) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   const sort = new URL(req.url).searchParams.get("sort")
   const orderBy =
@@ -51,7 +43,21 @@ export async function GET(
       updatedAt: artifact.updatedAt,
     })
     .from(artifact)
-    .where(and(eq(artifact.workspaceId, id), eq(artifact.isArchived, false)))
+    .where(
+      and(
+        eq(artifact.workspaceId, id),
+        eq(artifact.isArchived, false),
+        // Artifact-level members only see what was shared with them.
+        ...(access.sharedArtifacts
+          ? [
+              inArray(
+                artifact.id,
+                access.sharedArtifacts.map((s) => s.artifactId)
+              ),
+            ]
+          : [])
+      )
+    )
     .orderBy(orderBy)
 
   const artifactIds = artifacts.map((a) => a.id)
@@ -70,6 +76,10 @@ export async function GET(
 
   const result = artifacts.map((a) => ({
     ...a,
+    role:
+      access.role ??
+      access.sharedArtifacts.find((s) => s.artifactId === a.id)?.role ??
+      "viewer",
     folderIds: folderLinks
       .filter((l) => l.artifactId === a.id)
       .map((l) => l.folderId),
@@ -90,8 +100,10 @@ export async function POST(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id } = await params
-  const ws = await verifyWorkspaceOwner(id, session.user.id)
-  if (!ws) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  const role = await getWorkspaceRole(id, session.user.id)
+  if (!role) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  if (!canEdit(role))
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const { title, content, folderIds, collectionIds } = await req.json()
   if (!title?.trim())

@@ -3,21 +3,13 @@ import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
 import { db } from "@/lib/db"
+import { getWorkspaceAccess } from "@/lib/db/access"
 import {
   artifact,
   artifactCollection,
   artifactFavorite,
   artifactFolder,
-  workspace,
 } from "@/lib/db/schema"
-
-async function verifyWorkspaceOwner(workspaceId: string, userId: string) {
-  const [ws] = await db
-    .select({ id: workspace.id })
-    .from(workspace)
-    .where(and(eq(workspace.id, workspaceId), eq(workspace.ownerId, userId)))
-  return ws ?? null
-}
 
 export async function GET(
   _req: Request,
@@ -28,15 +20,22 @@ export async function GET(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id } = await params
-  const ws = await verifyWorkspaceOwner(id, session.user.id)
-  if (!ws) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  const access = await getWorkspaceAccess(id, session.user.id)
+  if (!access) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   const favorites = await db
     .select({ artifactId: artifactFavorite.artifactId })
     .from(artifactFavorite)
     .where(eq(artifactFavorite.userId, session.user.id))
 
-  const favoriteIds = favorites.map((f) => f.artifactId)
+  // Artifact-only members can only favorite what was shared with them.
+  const visibleIds = access.sharedArtifacts
+    ? new Set(access.sharedArtifacts.map((s) => s.artifactId))
+    : null
+
+  const favoriteIds = favorites
+    .map((f) => f.artifactId)
+    .filter((artifactId) => !visibleIds || visibleIds.has(artifactId))
   if (!favoriteIds.length) return NextResponse.json([])
 
   const artifacts = await db

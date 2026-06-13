@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react"
 
 import { defineExtension } from "lexical"
-import { DownloadIcon, PanelLeftIcon, PanelRightIcon } from "lucide-react"
+import { DownloadIcon, PanelLeftIcon } from "lucide-react"
 import { toast } from "sonner"
 
 import {
@@ -34,11 +34,12 @@ import {
   addRecentArtifactMutationOptions,
   recentArtifactIdsQueryOptions,
 } from "@/lib/data/recent-artifacts"
-import { cn } from "@/lib/utils"
 
 import { ArtifactAssistant } from "./artifact-assistant"
+import { AssistantToggle } from "./assistant-toggle"
 import { ContentPreview } from "./content-preview"
 import { SharePopover } from "./share-popover"
+import { useAssistantAutoCollapse } from "./use-assistant-auto-collapse"
 
 export function Workspace({
   workspaceId,
@@ -49,6 +50,7 @@ export function Workspace({
 }) {
   const qc = useQueryClient()
   const [rightOpen, setRightOpen] = useState(true)
+  useAssistantAutoCollapse(setRightOpen)
   // Captured from the layout's left sidebar context — the header lives inside
   // the right SidebarProvider, where SidebarTrigger would toggle the wrong one.
   const { toggleSidebar: toggleLeftSidebar } = useSidebar()
@@ -56,6 +58,9 @@ export function Workspace({
   // Hydrated by the server component — available synchronously on first render.
   const { data: art } = useQuery(artifactQueryOptions(workspaceId, artifactId))
   const title = art?.title ?? ""
+  // Sharing is owner-only; the assistant mutates content, so viewers don't get it.
+  const isOwner = art?.role === "owner"
+  const canEdit = isOwner || art?.role === "editor"
 
   const { mutate: addRecent } = useMutation({
     ...addRecentArtifactMutationOptions,
@@ -123,7 +128,11 @@ export function Workspace({
           SelectionMarkerExtension,
         ],
       }),
-    [art]
+    // Only content feeds the editor's initial state — depending on the whole
+    // artifact would rebuild the editor (remounting the entire subtree, e.g.
+    // closing the share popover) whenever any field like isPublic changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [art?.content]
   )
 
   return (
@@ -160,31 +169,23 @@ export function Workspace({
               >
                 <DownloadIcon className="text-muted-foreground" />
               </Button>
-              <SharePopover
-                workspaceId={workspaceId}
-                artifactId={artifactId}
-                isPublic={art?.isPublic ?? false}
-              />
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                onClick={() => setRightOpen((o) => !o)}
-                aria-label="Toggle copilot panel"
-              >
-                <PanelRightIcon
-                  className={cn(
-                    "transition-colors",
-                    rightOpen ? "text-foreground" : "text-muted-foreground"
-                  )}
+              {isOwner && (
+                <SharePopover
+                  workspaceId={workspaceId}
+                  artifactId={artifactId}
+                  isPublic={art?.isPublic ?? false}
                 />
-              </Button>
+              )}
+              {canEdit && <AssistantToggle />}
             </header>
             <ContentPreview title={title} />
           </div>
-          <ArtifactAssistant
-            workspaceId={workspaceId}
-            artifactId={artifactId}
-          />
+          {canEdit && (
+            <ArtifactAssistant
+              workspaceId={workspaceId}
+              artifactId={artifactId}
+            />
+          )}
         </SidebarProvider>
       </div>
     </LexicalExtensionComposer>

@@ -15,9 +15,9 @@ import { Separator } from "@/components/ui/separator"
 import { Sidebar, SidebarFooter, SidebarHeader } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
 
-import { ModeBadge } from "./copilot-mode-badge"
-import { CopilotPanels } from "./copilot-panels"
-import { useCopilotSubmit } from "./use-copilot-submit"
+import { ModeBadge } from "./assistant-mode-badge"
+import { AssistantPanels } from "./assistant-panels"
+import { useAssistantSubmit } from "./use-assistant-submit"
 
 export function ArtifactAssistant({
   workspaceId,
@@ -50,7 +50,7 @@ export function ArtifactAssistant({
     pendingMode,
     acceptPending,
     rejectPending,
-  } = useCopilotSubmit({ workspaceId, artifactId, contextIds })
+  } = useAssistantSubmit({ workspaceId, artifactId, contextIds })
 
   const onSubmit = () => {
     handleSubmit(prompt)
@@ -69,7 +69,7 @@ export function ArtifactAssistant({
       <SidebarHeader className="border-b px-4 py-3">
         <div className="flex items-center gap-2">
           <SparklesIcon className="size-3.5 text-primary" />
-          <span className="text-sm font-semibold">Copilot</span>
+          <span className="text-sm font-semibold">Assistant</span>
           {(isLoading || isSaving) && (
             <span className="ml-auto animate-pulse text-[10px] text-muted-foreground">
               {isSaving ? "Saving…" : loadingLabel}
@@ -78,7 +78,7 @@ export function ArtifactAssistant({
         </div>
       </SidebarHeader>
 
-      <CopilotPanels
+      <AssistantPanels
         workspaceId={workspaceId}
         excludeId={artifactId}
         contextIds={contextIds}

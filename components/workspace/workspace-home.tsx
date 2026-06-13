@@ -24,6 +24,7 @@ import { AddToCollectionDialog } from "./add-to-collection-dialog"
 import { ArtifactListNavbar } from "./artifact-list-navbar"
 import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
 import { MoveToFolderDialog } from "./move-to-folder-dialog"
+import { PendingInvitations } from "./pending-invitations"
 
 export function WorkspaceHome({ workspaceId }: { workspaceId: string }) {
   const router = useRouter()
@@ -100,6 +101,7 @@ export function WorkspaceHome({ workspaceId }: { workspaceId: string }) {
     <>
       <div className="flex h-svh flex-col overflow-hidden">
         <ArtifactListNavbar workspaceId={workspaceId} label="All artifacts" />
+        <PendingInvitations />
         <ArtifactListView
           workspaceId={workspaceId}
           artifacts={artifacts}

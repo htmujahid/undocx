@@ -10,7 +10,8 @@ import { getSession } from "@/lib/auth"
 import { artifactQueryOptions } from "@/lib/data/artifacts"
 import { getQueryClient } from "@/lib/data/get-query-client"
 import { db } from "@/lib/db"
-import { artifact, workspace } from "@/lib/db/schema"
+import { getArtifactRole } from "@/lib/db/access"
+import { artifact } from "@/lib/db/schema"
 
 const getArtifact = cache(async (id: string, artifactId: string) => {
   const [art] = await db
@@ -40,12 +41,8 @@ export default async function ArtifactPage({
 
   const { id, artifactId } = await params
 
-  const [ws] = await db
-    .select({ id: workspace.id })
-    .from(workspace)
-    .where(and(eq(workspace.id, id), eq(workspace.ownerId, session.user.id)))
-
-  if (!ws) redirect("/workspace")
+  const role = await getArtifactRole(id, artifactId, session.user.id)
+  if (!role) redirect("/workspace")
 
   const art = await getArtifact(id, artifactId)
 

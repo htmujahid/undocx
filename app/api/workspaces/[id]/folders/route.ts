@@ -1,17 +1,10 @@
-import { and, eq } from "drizzle-orm"
+import { eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
 import { db } from "@/lib/db"
-import { folder, workspace } from "@/lib/db/schema"
-
-async function verifyWorkspaceOwner(workspaceId: string, userId: string) {
-  const [ws] = await db
-    .select({ id: workspace.id })
-    .from(workspace)
-    .where(and(eq(workspace.id, workspaceId), eq(workspace.ownerId, userId)))
-  return ws ?? null
-}
+import { canEdit, getWorkspaceAccess, getWorkspaceRole } from "@/lib/db/access"
+import { folder } from "@/lib/db/schema"
 
 export async function GET(
   _req: Request,
@@ -22,8 +15,10 @@ export async function GET(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id } = await params
-  const ws = await verifyWorkspaceOwner(id, session.user.id)
-  if (!ws) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  const access = await getWorkspaceAccess(id, session.user.id)
+  if (!access) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  // Artifact-only members don't get the workspace's folder tree.
+  if (!access.role) return NextResponse.json([])
 
   const folders = await db
     .select()
@@ -43,8 +38,10 @@ export async function POST(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id } = await params
-  const ws = await verifyWorkspaceOwner(id, session.user.id)
-  if (!ws) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  const role = await getWorkspaceRole(id, session.user.id)
+  if (!role) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  if (!canEdit(role))
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const { name, parentId } = await req.json()
   if (!name?.trim())

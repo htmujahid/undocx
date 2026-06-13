@@ -22,6 +22,8 @@ import {
   updateArtifactMutationOptions,
 } from "@/lib/data/artifacts"
 
+import { ShareMembers } from "./share-members"
+
 export function SharePopover({
   workspaceId,
   artifactId,
@@ -69,8 +71,23 @@ export function SharePopover({
           <Share2Icon className="text-muted-foreground" />
         )}
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-80">
-        <div className="flex items-center justify-between gap-4">
+      <PopoverContent align="end" className="w-96">
+        <div className="space-y-0.5">
+          <Label className="text-sm">Share with people</Label>
+          <p className="text-xs text-muted-foreground">
+            Invite people to this document only — they won&apos;t see the rest
+            of the workspace.
+          </p>
+        </div>
+        <div className="mt-3">
+          <ShareMembers
+            workspaceId={workspaceId}
+            artifactId={artifactId}
+            canManage
+          />
+        </div>
+
+        <div className="mt-4 flex items-center justify-between gap-4 border-t pt-4">
           <div className="space-y-0.5">
             <Label htmlFor="share-public-toggle" className="text-sm">
               Public access

@@ -8,6 +8,7 @@ import {
   EditIcon,
   PlusIcon,
   Trash2Icon,
+  UsersIcon,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 
@@ -52,6 +53,7 @@ import {
 } from "@/lib/data/workspaces"
 
 import { CreateWorkspaceDialog } from "../create-workspace-dialog"
+import { MembersDialog } from "../members-dialog"
 
 function initials(name: string) {
   return name
@@ -83,6 +85,7 @@ export function WorkspaceSwitcher({
   })
 
   const [createOpen, setCreateOpen] = useState(false)
+  const [membersOpen, setMembersOpen] = useState(false)
   const [editWorkspace, setEditWorkspace] = useState<Workspace | null>(null)
   const [editName, setEditName] = useState("")
   const [deleteTarget, setDeleteTarget] = useState<Workspace | null>(null)
@@ -139,20 +142,27 @@ export function WorkspaceSwitcher({
                   onClick={() => router.push(`/workspace/${ws.id}`)}
                 >
                   <span className="flex-1 truncate">{ws.name}</span>
+                  {ws.role !== "owner" && (
+                    <span className="shrink-0 text-[10px] text-muted-foreground">
+                      shared
+                    </span>
+                  )}
                   {ws.id === active?.id && (
                     <CheckIcon className="size-3.5 shrink-0" />
                   )}
-                  <button
-                    className="hidden size-5 items-center justify-center rounded-sm text-muted-foreground hover:text-foreground group-hover:flex"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setEditWorkspace(ws)
-                      setEditName(ws.name)
-                    }}
-                  >
-                    <EditIcon className="size-3.5" />
-                  </button>
-                  {workspaces.length > 1 && (
+                  {ws.role === "owner" && (
+                    <button
+                      className="hidden size-5 items-center justify-center rounded-sm text-muted-foreground hover:text-foreground group-hover:flex"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setEditWorkspace(ws)
+                        setEditName(ws.name)
+                      }}
+                    >
+                      <EditIcon className="size-3.5" />
+                    </button>
+                  )}
+                  {ws.role === "owner" && workspaces.length > 1 && (
                     <button
                       className="hidden size-5 items-center justify-center rounded-sm text-destructive group-hover:flex"
                       onClick={(e) => {
@@ -166,6 +176,12 @@ export function WorkspaceSwitcher({
                 </DropdownMenuItem>
               ))}
               <DropdownMenuSeparator />
+              {active && (
+                <DropdownMenuItem onClick={() => setMembersOpen(true)}>
+                  <UsersIcon className="text-muted-foreground" />
+                  Members
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem onClick={() => setCreateOpen(true)}>
                 <PlusIcon className="text-muted-foreground" />
                 New workspace
@@ -180,6 +196,16 @@ export function WorkspaceSwitcher({
         onOpenChange={setCreateOpen}
         onCreated={(id) => router.push(`/workspace/${id}`)}
       />
+
+      {active && (
+        <MembersDialog
+          workspaceId={active.id}
+          workspaceName={active.name}
+          isOwner={active.role === "owner"}
+          open={membersOpen}
+          onOpenChange={setMembersOpen}
+        />
+      )}
 
       {/* Delete confirmation */}
       <AlertDialog

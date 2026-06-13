@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react"
 
 import { defineExtension } from "lexical"
-import { PanelRightIcon } from "lucide-react"
+import { PanelLeftIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
@@ -20,7 +20,7 @@ import { TableExtension } from "@lexical/table"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { Button } from "@/components/ui/button"
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { SidebarProvider, useSidebar } from "@/components/ui/sidebar"
 import { CalloutExtension } from "@/components/workspace/editor/callout-extension"
 import { CodeHighlightExtension } from "@/components/workspace/editor/code-highlight-extension"
 import { FootnoteExtension } from "@/components/workspace/editor/footnote-extension"
@@ -32,14 +32,20 @@ import {
   createArtifactMutationOptions,
 } from "@/lib/data/artifacts"
 
+import { AssistantToggle } from "./assistant-toggle"
 import { ContentPreview } from "./content-preview"
 import { NewArtifactAssistant } from "./new-artifact-assistant"
+import { useAssistantAutoCollapse } from "./use-assistant-auto-collapse"
 
 export function WorkspaceNew({ workspaceId }: { workspaceId: string }) {
   const router = useRouter()
   const qc = useQueryClient()
   const [rightOpen, setRightOpen] = useState(true)
+  useAssistantAutoCollapse(setRightOpen)
   const [title, setTitle] = useState("Untitled")
+  // Captured from the layout's left sidebar context — the header lives inside
+  // the right SidebarProvider, where SidebarTrigger would toggle the wrong one.
+  const { toggleSidebar: toggleLeftSidebar } = useSidebar()
 
   const createMutation = useMutation({
     ...createArtifactMutationOptions,
@@ -80,32 +86,32 @@ export function WorkspaceNew({ workspaceId }: { workspaceId: string }) {
   return (
     <LexicalExtensionComposer extension={extension} contentEditable={null}>
       <div className="flex h-svh min-w-0 flex-1 flex-col overflow-hidden">
-        <header className="flex h-11 shrink-0 items-center border-b px-2">
-          <SidebarTrigger />
-          <span className="ml-2 flex-1 truncate text-xs text-muted-foreground">
-            {title}
-          </span>
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            onClick={() => setRightOpen((o) => !o)}
-            aria-label="Toggle copilot panel"
-          >
-            <PanelRightIcon
-              className={
-                rightOpen ? "text-foreground" : "text-muted-foreground"
-              }
-            />
-          </Button>
-        </header>
-
+        {/* The prompt sidebar is position:fixed and spans the full viewport
+            height, so the header must live inside the provider's content
+            column — otherwise its right-side buttons render underneath it. */}
         <SidebarProvider
           open={rightOpen}
           onOpenChange={setRightOpen}
           style={{ "--sidebar-width": "24rem" } as React.CSSProperties}
           className="min-h-0 flex-1"
         >
-          <ContentPreview title={title} />
+          <div className="flex min-w-0 flex-1 flex-col">
+            <header className="flex h-11 shrink-0 items-center border-b px-2">
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                onClick={toggleLeftSidebar}
+                aria-label="Toggle sidebar"
+              >
+                <PanelLeftIcon />
+              </Button>
+              <span className="ml-2 flex-1 truncate text-xs text-muted-foreground">
+                {title}
+              </span>
+              <AssistantToggle />
+            </header>
+            <ContentPreview title={title} />
+          </div>
           <NewArtifactAssistant
             workspaceId={workspaceId}
             onTitleChange={setTitle}

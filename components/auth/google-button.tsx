@@ -37,8 +37,10 @@ function GoogleIcon() {
 
 export function GoogleButton({
   label = "Continue with Google",
+  callbackURL = "/",
 }: {
   label?: string
+  callbackURL?: string
 }) {
   const [loading, setLoading] = useState(false)
 
@@ -46,7 +48,7 @@ export function GoogleButton({
     setLoading(true)
     const { error } = await signIn.social({
       provider: "google",
-      callbackURL: "/",
+      callbackURL,
     })
     if (error) {
       toast.error(error.message ?? "Google sign-in failed. Please try again.")

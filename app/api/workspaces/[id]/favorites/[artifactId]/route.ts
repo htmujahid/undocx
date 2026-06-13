@@ -3,15 +3,8 @@ import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
 import { db } from "@/lib/db"
-import { artifact, artifactFavorite, workspace } from "@/lib/db/schema"
-
-async function verifyWorkspaceOwner(workspaceId: string, userId: string) {
-  const [ws] = await db
-    .select({ id: workspace.id })
-    .from(workspace)
-    .where(and(eq(workspace.id, workspaceId), eq(workspace.ownerId, userId)))
-  return ws ?? null
-}
+import { getArtifactRole } from "@/lib/db/access"
+import { artifact, artifactFavorite } from "@/lib/db/schema"
 
 export async function POST(
   _req: Request,
@@ -22,8 +15,9 @@ export async function POST(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id, artifactId } = await params
-  const ws = await verifyWorkspaceOwner(id, session.user.id)
-  if (!ws) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  // Favorites are per-user — any role (even viewer) can toggle their own.
+  const role = await getArtifactRole(id, artifactId, session.user.id)
+  if (!role) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   const [art] = await db
     .select({ id: artifact.id })

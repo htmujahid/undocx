@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ContextArtifactList } from "./context-artifact-list"
 import { DocumentOutline } from "./document-outline"
 
-export function CopilotPanels({
+export function AssistantPanels({
   workspaceId,
   excludeId,
   contextIds,

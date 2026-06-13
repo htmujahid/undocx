@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm"
+import { eq } from "drizzle-orm"
 import { redirect } from "next/navigation"
 
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
@@ -12,6 +12,7 @@ import { foldersQueryOptions } from "@/lib/data/folders"
 import { getQueryClient } from "@/lib/data/get-query-client"
 import { workspacesQueryOptions } from "@/lib/data/workspaces"
 import { db } from "@/lib/db"
+import { getWorkspaceAccess } from "@/lib/db/access"
 import { workspace } from "@/lib/db/schema"
 
 export const metadata = {
@@ -30,12 +31,14 @@ export default async function WorkspaceLayout({
 
   const { id } = await params
 
-  const [ws] = await db
-    .select()
-    .from(workspace)
-    .where(and(eq(workspace.id, id), eq(workspace.ownerId, session.user.id)))
+  // Members and artifact-level shares get in too — the APIs scope what
+  // each role can actually see and do.
+  const [[ws], access] = await Promise.all([
+    db.select().from(workspace).where(eq(workspace.id, id)),
+    getWorkspaceAccess(id, session.user.id),
+  ])
 
-  if (!ws) redirect("/workspace")
+  if (!ws || !access) redirect("/workspace")
 
   const queryClient = getQueryClient()
 

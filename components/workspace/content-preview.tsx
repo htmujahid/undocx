@@ -17,9 +17,12 @@ export function ContentPreview({ title }: { title: string }) {
   const contentRef = useRef<HTMLDivElement>(null!)
 
   return (
-    <div className="min-h-0 flex-1 overflow-hidden">
+    <div className="min-h-0 min-w-0 flex-1 overflow-hidden">
       <ScrollArea className="h-full">
-        <div ref={contentRef} className="mx-auto max-w-[720px] px-8 py-8">
+        <div
+          ref={contentRef}
+          className="mx-auto max-w-[720px] px-4 py-6 sm:px-8 sm:py-8"
+        >
           <div className="mb-6">
             <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
               Generated document

@@ -16,6 +16,8 @@ export interface ArtifactSummary {
   collectionIds: string[]
   isArchived: boolean
   isPublic: boolean
+  // The current user's effective role on this artifact.
+  role: "owner" | "editor" | "viewer"
   createdAt: string
   updatedAt: string
 }
@@ -53,7 +55,7 @@ export const artifactQueryOptions = (workspaceId: string, artifactId: string) =>
     enabled: !!workspaceId && !!artifactId,
   })
 
-/** Resolves selected artifacts to reference documents for the copilot. */
+/** Resolves selected artifacts to reference documents for the assistant. */
 export async function fetchContextDocuments(
   qc: QueryClient,
   workspaceId: string,

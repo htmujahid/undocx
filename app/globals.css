@@ -134,12 +134,12 @@ html {
     @apply font-sans;
     }
 }
-.copilot-pending-highlight {
+.assistant-pending-highlight {
   border-radius: 0.25rem;
   background-color: oklch(0.723 0.219 149.579 / 10%);
   transition: background-color 150ms;
 }
 
-.dark .copilot-pending-highlight {
+.dark .assistant-pending-highlight {
   background-color: oklch(0.723 0.219 149.579 / 14%);
 }

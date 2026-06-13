@@ -18,6 +18,7 @@ import {
 
 import { CollectionSection } from "./collection-section"
 import { FolderSection } from "./folder-section"
+import { SharedSection } from "./shared-section"
 import { SidebarUserMenu } from "./sidebar-user-menu"
 import { WorkspaceSwitcher } from "./workspace-switcher"
 
@@ -75,6 +76,8 @@ export function WorkspaceSidebar({
         <Suspense fallback={null}>
           <CollectionSection workspaceId={workspaceId} />
         </Suspense>
+
+        <SharedSection />
       </SidebarContent>
 
       <SidebarUserMenu user={user} />

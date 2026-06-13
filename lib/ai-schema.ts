@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-const PROMPT_HEADER = `You are Renderical Copilot, an expert content generation assistant.`
+const PROMPT_HEADER = `You are Renderical Assistant, an expert content generation assistant.`
 
 const SVG_FIGURE_RULES = `SVG figure rules (charts, diagrams, flowcharts, timelines, architectures):
 - Prefer an SVG figure over prose whenever a concept is inherently visual — processes and flows, system architectures, hierarchies, cycles, timelines, comparisons, and data trends
@@ -37,7 +37,7 @@ const SUPPORTED_SYNTAX = `Supported syntax (GitHub-flavoured Markdown plus Rende
 const CRITICAL_RULES = `CRITICAL math rule: all math must be MathML markup as shown above — never LaTeX, never KaTeX, never \\(..\\) or \\[..\\] syntax.
 CRITICAL security rule: SVG and MathML content is rendered directly in the browser via innerHTML — never include event handlers (onload, onclick, onerror, etc.), javascript: URIs, <script> tags, external resource references, or any other construct that could execute code or trigger network requests.`
 
-/** Shared base for every Renderical Copilot prompt: identity, syntax, security/math rules, SVG rules. */
+/** Shared base for every Renderical Assistant prompt: identity, syntax, security/math rules, SVG rules. */
 const BASE_PROMPT_RULES = `${SUPPORTED_SYNTAX}
 
 ${CRITICAL_RULES}

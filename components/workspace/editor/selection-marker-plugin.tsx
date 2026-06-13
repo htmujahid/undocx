@@ -46,6 +46,7 @@ export function SelectionMarkerPlugin({
   const [editor] = useLexicalComposerContext()
   const [indicator, setIndicator] = useState<IndicatorState | null>(null)
   const [highlight, setHighlight] = useState<HighlightState | null>(null)
+  const indicatorElRef = useRef<HTMLDivElement | null>(null)
   const indicatorRef = useRef<IndicatorState | null>(null)
   // Mirror the latest indicator into a ref so the click handler reads current
   // state synchronously — an effect would lag by a render. Intentional.
@@ -139,6 +140,21 @@ export function SelectionMarkerPlugin({
         e.clientX > containerRect.right ||
         e.clientY < containerRect.top ||
         e.clientY > containerRect.bottom
+      ) {
+        setIndicator(null)
+        return
+      }
+
+      // Coordinates alone can't tell whether a dialog/popover is covering the
+      // content — only show the marker when the cursor is actually over the
+      // container (or the marker itself, which is portalled to body).
+      const target = e.target as Node | null
+      if (
+        !target ||
+        !(
+          container.contains(target) ||
+          indicatorElRef.current?.contains(target)
+        )
       ) {
         setIndicator(null)
         return
@@ -264,13 +280,15 @@ export function SelectionMarkerPlugin({
       {indicator &&
         createPortal(
           <div
+            ref={indicatorElRef}
             style={{
               position: "fixed",
               top: indicator.y,
               left: indicator.left,
               width: indicator.width,
               transform: "translateY(-50%)",
-              zIndex: 50,
+              // Below dialogs/popovers (z-50) so overlays cover the marker.
+              zIndex: 40,
               pointerEvents: "none",
             }}
           >

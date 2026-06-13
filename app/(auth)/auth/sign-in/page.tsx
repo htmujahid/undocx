@@ -4,6 +4,11 @@ export const metadata = {
   title: "Sign in",
 }
 
-export default function SignInPage() {
-  return <SignInForm />
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ redirect?: string }>
+}) {
+  const { redirect } = await searchParams
+  return <SignInForm redirectTo={redirect} />
 }

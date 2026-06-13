@@ -3,22 +3,14 @@ import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
 import { db } from "@/lib/db"
+import { canEdit, getArtifactRole, getWorkspaceRole } from "@/lib/db/access"
 import {
   artifact,
   artifactCollection,
   artifactFolder,
   collection,
   folder,
-  workspace,
 } from "@/lib/db/schema"
-
-async function verifyWorkspaceOwner(workspaceId: string, userId: string) {
-  const [ws] = await db
-    .select({ id: workspace.id })
-    .from(workspace)
-    .where(and(eq(workspace.id, workspaceId), eq(workspace.ownerId, userId)))
-  return ws ?? null
-}
 
 async function getArtifactLinks(artifactId: string) {
   const [folderLinks, collectionLinks] = await Promise.all([
@@ -46,8 +38,8 @@ export async function GET(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id, artifactId } = await params
-  const ws = await verifyWorkspaceOwner(id, session.user.id)
-  if (!ws) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  const role = await getArtifactRole(id, artifactId, session.user.id)
+  if (!role) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   const [found] = await db
     .select()
@@ -57,7 +49,7 @@ export async function GET(
   if (!found) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   const links = await getArtifactLinks(artifactId)
-  return NextResponse.json({ ...found, ...links })
+  return NextResponse.json({ ...found, role, ...links })
 }
 
 export async function PATCH(
@@ -69,8 +61,10 @@ export async function PATCH(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id, artifactId } = await params
-  const ws = await verifyWorkspaceOwner(id, session.user.id)
-  if (!ws) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  const role = await getArtifactRole(id, artifactId, session.user.id)
+  if (!role) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  if (!canEdit(role))
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const { title, content, isArchived, isPublic, folderIds, collectionIds } =
     await req.json()
@@ -80,6 +74,9 @@ export async function PATCH(
       { status: 400 }
     )
   }
+  // Public exposure is an owner decision, not an editor one.
+  if (isPublic !== undefined && role !== "owner")
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const validFolderIds =
     folderIds !== undefined
@@ -150,7 +147,7 @@ export async function PATCH(
     return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   const links = await getArtifactLinks(artifactId)
-  return NextResponse.json({ ...updated, ...links })
+  return NextResponse.json({ ...updated, role, ...links })
 }
 
 export async function DELETE(
@@ -162,8 +159,11 @@ export async function DELETE(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id, artifactId } = await params
-  const ws = await verifyWorkspaceOwner(id, session.user.id)
-  if (!ws) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  // Deleting is a workspace-level action — artifact-only editors can't.
+  const role = await getWorkspaceRole(id, session.user.id)
+  if (!role) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  if (!canEdit(role))
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const [deleted] = await db
     .delete(artifact)

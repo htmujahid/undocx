@@ -23,7 +23,7 @@ import {
 } from "@/lib/data/artifacts"
 import { cn } from "@/lib/utils"
 
-import { CopilotPanels } from "./copilot-panels"
+import { AssistantPanels } from "./assistant-panels"
 import { RENDERICAL_TRANSFORMERS } from "./editor/markdown-transformers"
 
 export function NewArtifactAssistant({
@@ -101,7 +101,7 @@ export function NewArtifactAssistant({
     },
     onError: (error: Error) => {
       toast.error("Generation failed. Please try again.")
-      console.error("[Copilot]", error)
+      console.error("[Assistant]", error)
     },
   })
 
@@ -144,7 +144,7 @@ export function NewArtifactAssistant({
       <SidebarHeader className="border-b px-4 py-3">
         <div className="flex items-center gap-2">
           <SparklesIcon className="size-3.5 text-primary" />
-          <span className="text-sm font-semibold">Copilot</span>
+          <span className="text-sm font-semibold">Assistant</span>
           {(isLoading || saveMutation.isPending) && (
             <span className="ml-auto animate-pulse text-[10px] text-muted-foreground">
               {saveMutation.isPending ? "Saving…" : "Generating…"}
@@ -153,7 +153,7 @@ export function NewArtifactAssistant({
         </div>
       </SidebarHeader>
 
-      <CopilotPanels
+      <AssistantPanels
         workspaceId={workspaceId}
         excludeId={artifactId}
         contextIds={contextIds}

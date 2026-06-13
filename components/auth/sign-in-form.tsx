@@ -26,8 +26,10 @@ const signInSchema = z.object({
 
 type SignInValues = z.infer<typeof signInSchema>
 
-export function SignInForm() {
+export function SignInForm({ redirectTo }: { redirectTo?: string }) {
   const router = useRouter()
+  // Only allow same-origin paths — anything else falls back to the app.
+  const destination = redirectTo?.startsWith("/") ? redirectTo : "/workspace"
 
   const form = useForm<SignInValues>({
     resolver: standardSchemaResolver(signInSchema),
@@ -48,7 +50,7 @@ export function SignInForm() {
             router.push("/auth/two-factor")
             return
           }
-          router.push("/workspace")
+          router.push(destination)
         },
         onError(ctx) {
           toast.error(ctx.error.message)
@@ -66,7 +68,7 @@ export function SignInForm() {
         </p>
       </div>
 
-      <GoogleButton />
+      <GoogleButton callbackURL={destination} />
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">

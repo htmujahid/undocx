@@ -63,7 +63,7 @@ function splitAtMarkers(md: string): {
   return { before, selected, after, hasStart: true, hasEnd: true }
 }
 
-export interface CopilotSubmitState {
+export interface AssistantSubmitState {
   hasStart: boolean
   hasEnd: boolean
   hasBoth: boolean
@@ -79,7 +79,7 @@ export interface CopilotSubmitState {
   rejectPending: () => void
 }
 
-export function useCopilotSubmit({
+export function useAssistantSubmit({
   workspaceId,
   artifactId,
   contextIds,
@@ -87,7 +87,7 @@ export function useCopilotSubmit({
   workspaceId: string
   artifactId: string
   contextIds?: Set<string>
-}): CopilotSubmitState {
+}): AssistantSubmitState {
   const qc = useQueryClient()
   const [editor] = useLexicalComposerContext()
 
@@ -120,7 +120,7 @@ export function useCopilotSubmit({
     if (!pending) return
     const apply = () => {
       for (const key of pending.keys)
-        editor.getElementByKey(key)?.classList.add("copilot-pending-highlight")
+        editor.getElementByKey(key)?.classList.add("assistant-pending-highlight")
     }
     apply()
     const unregister = editor.registerUpdateListener(apply)
@@ -129,7 +129,7 @@ export function useCopilotSubmit({
       for (const key of pending.keys)
         editor
           .getElementByKey(key)
-          ?.classList.remove("copilot-pending-highlight")
+          ?.classList.remove("assistant-pending-highlight")
     }
   }, [pending, editor])
 
