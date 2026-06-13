@@ -31,6 +31,8 @@ import {
 
 const START_PLACEHOLDER = "<!-- @selection:start -->"
 const END_PLACEHOLDER = "<!-- @selection:end -->"
+const REMOVED_START_PLACEHOLDER = "<!-- @removed:start -->"
+const REMOVED_END_PLACEHOLDER = "<!-- @removed:end -->"
 
 function splitAtMarkers(md: string): {
   before: string
@@ -111,7 +113,8 @@ export function useAssistantSubmit({
   const [pending, setPending] = useState<{
     mode: "insert" | "replace"
     final: string
-    keys: string[]
+    addedKeys: string[]
+    removedKeys: string[]
   } | null>(null)
 
   // Highlight the generated blocks while they await accept/reject. Classes are
@@ -119,17 +122,19 @@ export function useAssistantSubmit({
   useEffect(() => {
     if (!pending) return
     const apply = () => {
-      for (const key of pending.keys)
+      for (const key of pending.addedKeys)
         editor.getElementByKey(key)?.classList.add("assistant-pending-highlight")
+      for (const key of pending.removedKeys)
+        editor.getElementByKey(key)?.classList.add("assistant-removed-highlight")
     }
     apply()
     const unregister = editor.registerUpdateListener(apply)
     return () => {
       unregister()
-      for (const key of pending.keys)
-        editor
-          .getElementByKey(key)
-          ?.classList.remove("assistant-pending-highlight")
+      for (const key of pending.addedKeys)
+        editor.getElementByKey(key)?.classList.remove("assistant-pending-highlight")
+      for (const key of pending.removedKeys)
+        editor.getElementByKey(key)?.classList.remove("assistant-removed-highlight")
     }
   }, [pending, editor])
 
@@ -166,33 +171,57 @@ export function useAssistantSubmit({
   const applyPendingMarkdown = (
     before: string,
     content: string,
-    after: string
-  ): string[] => {
-    const keys: string[] = []
+    after: string,
+    removedContent?: string
+  ): { addedKeys: string[]; removedKeys: string[] } => {
+    const addedKeys: string[] = []
+    const removedKeys: string[] = []
     editor.update(() => {
-      const md = [before, START_PLACEHOLDER, content, END_PLACEHOLDER, after]
-        .filter(Boolean)
-        .join("\n\n")
-      $convertFromMarkdownString(md, RENDERICAL_TRANSFORMERS)
+      const parts: string[] = []
+      if (before) parts.push(before)
+      if (removedContent) {
+        parts.push(REMOVED_START_PLACEHOLDER, removedContent, REMOVED_END_PLACEHOLDER)
+      }
+      parts.push(START_PLACEHOLDER, content, END_PLACEHOLDER)
+      if (after) parts.push(after)
+      $convertFromMarkdownString(parts.join("\n\n"), RENDERICAL_TRANSFORMERS)
 
       const children = $getRoot().getChildren()
+
+      const removedStart = children.find(
+        (n) => $isSelectionMarkerNode(n) && n.__role === "removed-start"
+      )
+      const removedEnd = children.find(
+        (n) => $isSelectionMarkerNode(n) && n.__role === "removed-end"
+      )
       const start = children.find(
         (n) => $isSelectionMarkerNode(n) && n.__role === "start"
       )
       const end = children.find(
         (n) => $isSelectionMarkerNode(n) && n.__role === "end"
       )
-      if (!start || !end) return
 
-      let node = start.getNextSibling()
-      while (node && node !== end) {
-        keys.push(node.getKey())
-        node = node.getNextSibling()
+      if (removedStart && removedEnd) {
+        let node = removedStart.getNextSibling()
+        while (node && node !== removedEnd) {
+          removedKeys.push(node.getKey())
+          node = node.getNextSibling()
+        }
+        removedStart.remove()
+        removedEnd.remove()
       }
-      start.remove()
-      end.remove()
+
+      if (start && end) {
+        let node = start.getNextSibling()
+        while (node && node !== end) {
+          addedKeys.push(node.getKey())
+          node = node.getNextSibling()
+        }
+        start.remove()
+        end.remove()
+      }
     })
-    return keys
+    return { addedKeys, removedKeys }
   }
 
   const insertObj = useObject({
@@ -209,8 +238,8 @@ export function useAssistantSubmit({
         const final = [before, result.content, after]
           .filter(Boolean)
           .join("\n\n")
-        const keys = applyPendingMarkdown(before, result.content, after)
-        setPending({ mode: "insert", final, keys })
+        const { addedKeys, removedKeys } = applyPendingMarkdown(before, result.content, after)
+        setPending({ mode: "insert", final, addedKeys, removedKeys })
       } catch (err) {
         toast.error("Failed to apply content.")
         console.error("[Insert]", err)
@@ -244,12 +273,12 @@ export function useAssistantSubmit({
         return
       }
       try {
-        const { before, after } = snapshotRef.current
+        const { before, selected, after } = snapshotRef.current
         const final = [before, result.content, after]
           .filter(Boolean)
           .join("\n\n")
-        const keys = applyPendingMarkdown(before, result.content, after)
-        setPending({ mode: "replace", final, keys })
+        const { addedKeys, removedKeys } = applyPendingMarkdown(before, result.content, after, selected)
+        setPending({ mode: "replace", final, addedKeys, removedKeys })
       } catch (err) {
         toast.error("Failed to apply content.")
         console.error("[Replace]", err)

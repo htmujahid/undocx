@@ -79,6 +79,32 @@ export const SELECTION_MARKER_END: ElementTransformer = {
   type: "element",
 }
 
+export const REMOVED_MARKER_START: ElementTransformer = {
+  dependencies: [SelectionMarkerNode],
+  export: (node) =>
+    $isSelectionMarkerNode(node) && node.__role === "removed-start"
+      ? "<!-- @removed:start -->"
+      : null,
+  regExp: /^<!--\s*@removed:start\s*-->$/,
+  replace: (parentNode, _children, _match, isImport) => {
+    if (isImport) parentNode.replace($createSelectionMarkerNode("removed-start"))
+  },
+  type: "element",
+}
+
+export const REMOVED_MARKER_END: ElementTransformer = {
+  dependencies: [SelectionMarkerNode],
+  export: (node) =>
+    $isSelectionMarkerNode(node) && node.__role === "removed-end"
+      ? "<!-- @removed:end -->"
+      : null,
+  regExp: /^<!--\s*@removed:end\s*-->$/,
+  replace: (parentNode, _children, _match, isImport) => {
+    if (isImport) parentNode.replace($createSelectionMarkerNode("removed-end"))
+  },
+  type: "element",
+}
+
 export const HR: ElementTransformer = {
   dependencies: [HorizontalRuleNode],
   export: (node) => ($isHorizontalRuleNode(node) ? "---" : null),
@@ -326,6 +352,8 @@ export const TABLE: ElementTransformer = {
 export const RENDERICAL_TRANSFORMERS: Transformer[] = [
   SELECTION_MARKER_START,
   SELECTION_MARKER_END,
+  REMOVED_MARKER_START,
+  REMOVED_MARKER_END,
   TABLE,
   HR,
   CALLOUT,

@@ -13,7 +13,7 @@ import { XIcon } from "lucide-react"
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 
-export type MarkerRole = "start" | "end"
+export type MarkerRole = "start" | "end" | "removed-start" | "removed-end"
 
 export type SerializedSelectionMarkerNode = Spread<
   { type: "selection-marker"; role: MarkerRole; version: 1 },

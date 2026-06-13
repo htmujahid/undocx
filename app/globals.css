@@ -143,3 +143,13 @@ html {
 .dark .assistant-pending-highlight {
   background-color: oklch(0.723 0.219 149.579 / 14%);
 }
+
+.assistant-removed-highlight {
+  border-radius: 0.25rem;
+  background-color: oklch(0.627 0.258 29.234 / 10%);
+  transition: background-color 150ms;
+}
+
+.dark .assistant-removed-highlight {
+  background-color: oklch(0.627 0.258 29.234 / 14%);
+}
