@@ -65,8 +65,6 @@ export async function POST(
     .orderBy(sql`${artifactChunk.embedding} <=> ${vectorString}::vector`)
     .limit(6)
 
-  console.log({ chunks })
-
   const context = chunks
     .map(
       (c) =>
