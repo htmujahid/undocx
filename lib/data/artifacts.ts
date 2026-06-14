@@ -4,7 +4,7 @@ import {
   queryOptions,
 } from "@tanstack/react-query"
 
-import type { ContextDocument } from "@/lib/ai-schema"
+import type { ContextDocument } from "@/lib/ai/ai-schema"
 
 export type SortBy = "updated" | "created" | "name"
 

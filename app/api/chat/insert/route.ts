@@ -5,7 +5,7 @@ import {
   INSERT_SYSTEM_PROMPT,
   formatContext,
   insertOutputSchema,
-} from "@/lib/ai-schema"
+} from "@/lib/ai/ai-schema"
 
 export async function POST(request: Request) {
   const { beforeContent, afterContent, prompt, context } = await request.json()

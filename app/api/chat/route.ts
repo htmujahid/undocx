@@ -1,7 +1,7 @@
 import { openai } from "@ai-sdk/openai"
 import { Output, streamText } from "ai"
 
-import { SYSTEM_PROMPT, formatContext, outputSchema } from "@/lib/ai-schema"
+import { SYSTEM_PROMPT, formatContext, outputSchema } from "@/lib/ai/ai-schema"
 
 export async function POST(request: Request) {
   const { prompt, context } = await request.json()

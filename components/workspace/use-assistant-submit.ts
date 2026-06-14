@@ -14,7 +14,7 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { insertOutputSchema, replaceOutputSchema } from "@/lib/ai-schema"
+import { insertOutputSchema, replaceOutputSchema } from "@/lib/ai/ai-schema"
 import {
   artifactQueryOptions,
   artifactsQueryOptions,

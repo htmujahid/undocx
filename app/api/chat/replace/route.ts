@@ -5,7 +5,7 @@ import {
   REPLACE_SYSTEM_PROMPT,
   formatContext,
   replaceOutputSchema,
-} from "@/lib/ai-schema"
+} from "@/lib/ai/ai-schema"
 
 export async function POST(request: Request) {
   const { beforeContent, selectedContent, afterContent, prompt, context } =

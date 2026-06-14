@@ -14,7 +14,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Sidebar, SidebarFooter, SidebarHeader } from "@/components/ui/sidebar"
-import { outputSchema } from "@/lib/ai-schema"
+import { outputSchema } from "@/lib/ai/ai-schema"
 import {
   artifactQueryOptions,
   artifactsQueryOptions,

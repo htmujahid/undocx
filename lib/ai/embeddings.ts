@@ -2,9 +2,10 @@ import { openai } from "@ai-sdk/openai"
 import { embedMany } from "ai"
 import { and, eq, inArray, isNull, sql } from "drizzle-orm"
 
+import { db } from "@/lib/db"
+import { artifactChunk } from "@/lib/db/schema"
+
 import { chunkMarkdown } from "./chunking"
-import { db } from "./db"
-import { artifactChunk } from "./db/schema"
 
 export async function syncArtifactChunks(
   artifactId: string,
