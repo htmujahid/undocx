@@ -49,8 +49,6 @@ export async function PATCH(
   return NextResponse.json(updated)
 }
 
-// Let an affected member know about a workspace membership change. Best-effort,
-// off the response path.
 function notifyMember(
   type: NotificationType,
   userId: string,
@@ -83,7 +81,6 @@ export async function DELETE(
   const role = await getWorkspaceRole(id, session.user.id)
   if (!role) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
-  // Owners remove anyone; members may remove themselves (leave).
   if (role !== "owner" && userId !== session.user.id)
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
@@ -92,7 +89,6 @@ export async function DELETE(
   if (!deleted)
     return NextResponse.json({ error: "Not found" }, { status: 404 })
 
-  // Only notify when an owner removed someone — not when a member leaves.
   if (userId !== session.user.id)
     notifyMember(
       "workspace_removed",

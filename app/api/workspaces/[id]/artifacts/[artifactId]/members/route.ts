@@ -115,7 +115,6 @@ export async function POST(
     })
   )
 
-  // The token only travels via email — never back to the inviter's browser.
   return NextResponse.json(
     {
       id: created.id,

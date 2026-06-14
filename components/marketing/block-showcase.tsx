@@ -24,7 +24,7 @@ const BLOCKS = [
   {
     title: "Code",
     description:
-      "Snippets, commands, and config arrive in fenced, syntax-highlighted blocks — ready to copy and run.",
+      "Snippets, commands, and config arrive in fenced, syntax-highlighted blocks, ready to copy and run.",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -84,7 +84,7 @@ const BLOCKS = [
   {
     title: "Math",
     description:
-      "Formulas and equations are typeset properly with block and inline math — no broken ASCII approximations.",
+      "Formulas and equations are typeset properly with block and inline math, no broken ASCII approximations.",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"

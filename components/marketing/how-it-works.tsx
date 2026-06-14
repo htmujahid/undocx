@@ -11,7 +11,7 @@ const STEPS = [
     step: "02",
     title: "Get a structured document",
     description:
-      "The AI builds the response with the right blocks for the topic — tables, code, diagrams, callouts, math, and footnotes — instead of a flat wall of text.",
+      "The AI builds the response with the right blocks for the topic (tables, code, diagrams, callouts, math, and footnotes) instead of a flat wall of text.",
   },
   {
     step: "03",

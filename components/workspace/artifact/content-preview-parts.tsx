@@ -82,8 +82,6 @@ export function EditableTitle({ title }: { title: string }) {
   const params = useParams<{ id: string; artifactId?: string }>()
   const workspaceId = params.id
   const artifactId = params.artifactId
-  // The title is only editable for a persisted artifact. On the /new route there
-  // is no artifactId yet, so the document title is read-only.
   const editable = Boolean(artifactId)
 
   const qc = useQueryClient()
@@ -106,9 +104,6 @@ export function EditableTitle({ title }: { title: string }) {
   const [value, setValue] = useState(title)
   const [syncedTitle, setSyncedTitle] = useState(title)
 
-  // Re-sync the draft whenever the persisted title changes — e.g. after a save
-  // invalidates the artifact query and a fresh title flows down via props.
-  // Adjusting state during render (vs. an effect) avoids an extra paint.
   if (title !== syncedTitle) {
     setSyncedTitle(title)
     setValue(title)

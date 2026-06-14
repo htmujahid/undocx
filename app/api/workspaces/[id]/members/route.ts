@@ -31,7 +31,6 @@ export async function GET(
   const [owner, members, invitations] = await Promise.all([
     getWorkspaceOwnerProfile(id),
     listWorkspaceMembers(id),
-    // Pending invitations are a management concern — owner's eyes only.
     role === "owner" ? listWorkspaceInvitations(id) : Promise.resolve([]),
   ])
 
@@ -107,7 +106,6 @@ export async function POST(
     })
   )
 
-  // The token only travels via email — never back to the inviter's browser.
   return NextResponse.json(
     {
       id: created.id,

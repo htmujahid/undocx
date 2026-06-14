@@ -39,7 +39,6 @@ export async function POST(
   if (!lastUserMessage)
     return NextResponse.json({ error: "No user message" }, { status: 400 })
 
-  // Extract plain text from UIMessage parts (AI SDK v6 format)
   const userText = (lastUserMessage.parts ?? [])
     .filter((p: { type: string }) => p.type === "text")
     .map((p: { type: string; text: string }) => p.text)
@@ -62,7 +61,7 @@ export async function POST(
   const context = chunks
     .map(
       (c, i) =>
-        `[${i + 1}] ${c.artifactTitle}${c.heading ? ` — ${c.heading}` : ""}\n\n${c.content}`
+        `[${i + 1}] ${c.artifactTitle}${c.heading ? `: ${c.heading}` : ""}\n\n${c.content}`
     )
     .join("\n\n---\n\n")
 
@@ -74,8 +73,6 @@ export async function POST(
 
   const stream = createUIMessageStream({
     execute: ({ writer }) => {
-      // Emit the cited sources up front so the client can render citation
-      // links as the answer streams in.
       if (sources.length > 0) {
         writer.write({ type: "data-sources", data: sources })
       }

@@ -13,7 +13,6 @@ function ContentBlocksVisual() {
       </div>
 
       <div className="space-y-3 p-5">
-        {/* Callout block */}
         <div className="rounded-lg border border-primary/20 bg-primary/5 px-3 py-2">
           <div className="flex items-center gap-1.5">
             <svg
@@ -38,7 +37,6 @@ function ContentBlocksVisual() {
           </p>
         </div>
 
-        {/* Table block */}
         <div className="overflow-hidden rounded-lg border border-border">
           <div className="grid grid-cols-3 bg-muted/50 text-[10px] font-semibold text-muted-foreground">
             {["Quarter", "Revenue", "Δ"].map((h) => (
@@ -68,7 +66,6 @@ function ContentBlocksVisual() {
           ))}
         </div>
 
-        {/* Chart figure (SVG) */}
         <div className="rounded-lg border border-border px-3 pb-2 pt-3">
           <svg viewBox="0 0 200 56" className="w-full">
             {[
@@ -100,7 +97,6 @@ function ContentBlocksVisual() {
           </svg>
         </div>
 
-        {/* Code line */}
         <div className="rounded-lg bg-muted/60 px-3 py-2 font-mono text-[10px] text-foreground/70">
           <span className="text-primary">SELECT</span> sum(amount){" "}
           <span className="text-primary">FROM</span> revenue;
@@ -235,11 +231,9 @@ function EditingVisual() {
         <div className="h-2.5 w-11/12 rounded-full bg-muted/70" />
         <div className="h-2.5 w-4/5 rounded-full bg-muted/70" />
 
-        {/* Selected range */}
         <div className="relative py-1">
           <div className="h-2.5 w-3/4 rounded-full bg-primary/20 ring-1 ring-primary/30" />
 
-          {/* Free-form instruction popover */}
           <div className="absolute -top-2 left-0 w-64 translate-y-[-100%] overflow-hidden rounded-xl border border-border bg-background shadow-lg">
             <div className="flex items-center gap-2 border-b border-border px-3 py-2">
               <svg
@@ -270,7 +264,6 @@ function EditingVisual() {
           </div>
         </div>
 
-        {/* Proposed change preview */}
         <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 px-3 py-2">
           <div className="h-2 w-5/6 rounded-full bg-emerald-500/30" />
           <div className="mt-1.5 h-2 w-2/3 rounded-full bg-emerald-500/20" />
@@ -313,14 +306,12 @@ function ChatVisual() {
       </div>
 
       <div className="space-y-4 p-5">
-        {/* User question */}
         <div className="flex justify-end">
           <div className="max-w-[80%] rounded-2xl rounded-br-sm bg-primary px-3 py-2 text-[11px] leading-snug text-primary-foreground">
             How did revenue trend last quarter?
           </div>
         </div>
 
-        {/* Assistant answer with inline citations */}
         <div className="flex justify-start">
           <div className="max-w-[88%] space-y-2.5">
             <div className="rounded-2xl rounded-bl-sm border border-border bg-muted/40 px-3 py-2 text-[11px] leading-relaxed text-foreground/85">
@@ -379,7 +370,7 @@ const FEATURES = [
     ),
     title: "Structured by default",
     description:
-      "Renderical doesn't return a wall of text. It composes each document from the blocks that fit the topic — tables for comparisons, syntax-highlighted code, SVG diagrams and charts, callouts, math, and footnoted citations — so the answer is usable the moment it lands.",
+      "Renderical doesn't return a wall of text. It composes each document from the blocks that fit the topic (tables for comparisons, syntax-highlighted code, SVG diagrams and charts, callouts, math, and footnoted citations) so the answer is usable the moment it lands.",
     visual: <ContentBlocksVisual />,
   },
   {
@@ -420,7 +411,7 @@ const FEATURES = [
     ),
     title: "Edit with AI, line by line",
     description:
-      "Select any part of a document — a sentence, a table row, a paragraph — and tell the AI what to change in plain language. It rewrites just that range and shows the proposed change inline, so you can accept or reject before anything is saved. You can also point it at other documents for context.",
+      "Select any part of a document (a sentence, a table row, a paragraph) and tell the AI what to change in plain language. It rewrites just that range and shows the proposed change inline, so you can accept or reject before anything is saved. You can also point it at other documents for context.",
     visual: <EditingVisual />,
   },
   {

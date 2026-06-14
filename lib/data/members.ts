@@ -33,7 +33,6 @@ export interface SharedArtifact {
   updatedAt: string
 }
 
-// An invitation addressed to the current user, waiting to be answered.
 export interface MyInvitation {
   id: string
   token: string
@@ -121,7 +120,6 @@ export const inviteMemberMutationOptions = mutationOptions({
     role,
   }: {
     workspaceId: string
-    // When set, invites to a single document instead of the whole workspace.
     artifactId?: string
     email: string
     role: MemberRole

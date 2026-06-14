@@ -22,7 +22,6 @@ export async function GET(
 
   const favorites = await listFavoriteArtifactIds(session.user.id)
 
-  // Artifact-only members can only favorite what was shared with them.
   const visibleIds = access.sharedArtifacts
     ? new Set(access.sharedArtifacts.map((s) => s.artifactId))
     : null

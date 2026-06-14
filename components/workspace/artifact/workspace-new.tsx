@@ -43,8 +43,6 @@ export function WorkspaceNew({ workspaceId }: { workspaceId: string }) {
   const [rightOpen, setRightOpen] = useState(true)
   useAssistantAutoCollapse(setRightOpen)
   const [title, setTitle] = useState("Untitled")
-  // Captured from the layout's left sidebar context — the header lives inside
-  // the right SidebarProvider, where SidebarTrigger would toggle the wrong one.
   const { toggleSidebar: toggleLeftSidebar } = useSidebar()
 
   const createMutation = useMutation({
@@ -86,9 +84,6 @@ export function WorkspaceNew({ workspaceId }: { workspaceId: string }) {
   return (
     <LexicalExtensionComposer extension={extension} contentEditable={null}>
       <div className="flex h-svh min-w-0 flex-1 flex-col overflow-hidden">
-        {/* The prompt sidebar is position:fixed and spans the full viewport
-            height, so the header must live inside the provider's content
-            column — otherwise its right-side buttons render underneath it. */}
         <SidebarProvider
           open={rightOpen}
           onOpenChange={setRightOpen}

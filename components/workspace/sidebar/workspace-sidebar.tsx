@@ -109,7 +109,6 @@ export function WorkspaceSidebar({
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Suspense required because children use useSearchParams(); fallback=null avoids a flash of placeholder content */}
         <Suspense fallback={null}>
           <FolderSection workspaceId={workspaceId} />
         </Suspense>

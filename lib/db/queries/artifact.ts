@@ -11,8 +11,6 @@ function artifactOrderBy(sort: string | null) {
       : desc(artifact.updatedAt)
 }
 
-// Active (non-archived) artifacts in a workspace. When restrictIds is given,
-// only those artifacts are returned (used for artifact-level shares).
 export function listActiveArtifacts({
   workspaceId,
   sort = null,
@@ -43,8 +41,6 @@ export function listActiveArtifacts({
     .orderBy(artifactOrderBy(sort))
 }
 
-// Active artifacts by explicit id list (for favorites). Caller must ensure ids
-// is non-empty.
 export function listArtifactsByIds(workspaceId: string, ids: string[]) {
   return db
     .select({
@@ -62,8 +58,6 @@ export function listArtifactsByIds(workspaceId: string, ids: string[]) {
     .orderBy(artifact.updatedAt)
 }
 
-// Title/content for active artifacts in a workspace, restricted to an id list.
-// Used to assemble reference context for the assistant.
 export async function getArtifactContentsByIds(
   workspaceId: string,
   ids: string[]
@@ -85,8 +79,6 @@ export async function getArtifactContentsByIds(
     )
 }
 
-// Folder/collection link rows for a set of artifacts (raw rows, caller groups
-// by artifactId).
 export async function getArtifactLinksForIds(ids: string[]) {
   if (!ids.length) {
     return {
@@ -107,7 +99,6 @@ export async function getArtifactLinksForIds(ids: string[]) {
   return { folderLinks, collectionLinks }
 }
 
-// Folder/collection ids for a single artifact.
 export async function getArtifactLinks(artifactId: string) {
   const [folderLinks, collectionLinks] = await Promise.all([
     db
@@ -161,7 +152,6 @@ export async function getArtifactTitle(
   return art ?? null
 }
 
-// The workspace an artifact belongs to (regardless of workspace scoping).
 export async function getArtifactWorkspaceId(artifactId: string) {
   const [art] = await db
     .select({ workspaceId: artifact.workspaceId })
@@ -178,7 +168,6 @@ export async function getArtifactRef(artifactId: string) {
   return art ?? null
 }
 
-// A publicly shared, non-archived artifact for the public share page.
 export async function getPublicArtifact(artifactId: string) {
   const [art] = await db
     .select({
@@ -255,9 +244,6 @@ export async function createArtifactWithLinks({
   })
 }
 
-// Updates scalar fields and/or replaces folder/collection links. A null
-// folderIds/collectionIds means "leave links untouched". Returns null when the
-// artifact doesn't exist in the workspace.
 export async function updateArtifactWithLinks({
   workspaceId,
   artifactId,

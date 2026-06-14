@@ -6,8 +6,6 @@ import {
   listNotifications,
 } from "@/lib/db/queries/notification"
 
-// The signed-in user's recent notifications plus the unread count that drives
-// the bell badge.
 export async function GET() {
   const session = await getSession()
   if (!session)

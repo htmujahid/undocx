@@ -23,7 +23,7 @@ export function SubscriptionPage() {
             </span>
             <p className="mt-4 text-sm font-medium">Subscription management</p>
             <p className="mt-1 max-w-xs text-sm text-muted-foreground">
-              View your current plan, upgrade or downgrade, and manage billing —
+              View your current plan, upgrade or downgrade, and manage billing,
               all in one place. We&apos;re working on it.
             </p>
           </div>

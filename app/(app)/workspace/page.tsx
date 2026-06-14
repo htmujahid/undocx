@@ -11,7 +11,6 @@ export default async function WorkspacePage() {
 
   if (first) redirect(`/workspace/${first.id}`)
 
-  // No workspaces yet — user needs to create one via the workspace switcher
   return (
     <div className="flex h-screen flex-col items-center justify-center gap-2">
       <p className="text-sm font-medium">No workspaces found</p>

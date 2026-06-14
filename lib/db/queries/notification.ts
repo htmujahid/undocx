@@ -19,8 +19,6 @@ interface NewNotification {
   data: NotificationData
 }
 
-// Persist one notification. Trigger sites call this from `after()` so a failed
-// insert never affects the originating request.
 export async function createNotification(input: NewNotification) {
   await db.insert(notification).values({
     userId: input.userId,
@@ -32,7 +30,6 @@ export async function createNotification(input: NewNotification) {
   })
 }
 
-// Fan-out: one row per recipient. No-op when there are no recipients.
 export async function createNotifications(inputs: NewNotification[]) {
   if (!inputs.length) return
   await db.insert(notification).values(
@@ -47,8 +44,6 @@ export async function createNotifications(inputs: NewNotification[]) {
   )
 }
 
-// Everyone with workspace-wide access (owner + members) except the actor —
-// the audience for workspace-level activity like a new document.
 export async function listWorkspaceNotifyRecipients(
   workspaceId: string,
   exceptUserId: string
@@ -86,7 +81,6 @@ export interface NotificationRow {
   actorImage: string | null
 }
 
-// A user's most recent notifications, newest first.
 export function listNotifications(
   userId: string,
   limit = 30
@@ -119,8 +113,6 @@ export async function countUnreadNotifications(userId: string) {
   return row?.value ?? 0
 }
 
-// Mark the user's unread notifications read. Scoped to userId so a caller can
-// never touch another user's feed.
 export async function markNotificationsRead(userId: string) {
   await db
     .update(notification)

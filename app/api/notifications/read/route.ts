@@ -3,7 +3,6 @@ import { NextResponse } from "next/server"
 import { getSession } from "@/lib/auth"
 import { markNotificationsRead } from "@/lib/db/queries/notification"
 
-// Mark all of the signed-in user's notifications as read.
 export async function POST() {
   const session = await getSession()
   if (!session)

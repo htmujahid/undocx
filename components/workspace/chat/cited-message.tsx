@@ -5,8 +5,6 @@ import type { ReactNode } from "react"
 import { type UIMessage, isTextUIPart } from "ai"
 import Link from "next/link"
 
-// A single retrieved source backing a cited answer. Streamed from the chat
-// route as a `data-sources` part on the assistant message.
 export type ChatSource = {
   id: number
   artifactId: string
@@ -30,8 +28,6 @@ function getMessageSources(message: UIMessage): ChatSource[] {
   return []
 }
 
-// Replace inline [n] markers with superscript links to the cited source.
-// Markers without a matching source are left as plain text.
 function renderWithCitations(
   text: string,
   byId: Map<number, ChatSource>,
@@ -98,7 +94,7 @@ export function CitedMessage({
                   className="text-primary hover:underline"
                 >
                   {source.title}
-                  {source.heading ? ` — ${source.heading}` : ""}
+                  {source.heading ? `: ${source.heading}` : ""}
                 </Link>
               </li>
             ))}

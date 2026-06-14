@@ -51,8 +51,6 @@ import {
 } from "./selection-marker-node"
 import { $createSvgNode, $isSvgNode, SvgNode } from "./svg-node"
 
-// Selection markers are ephemeral and never persisted in saved documents.
-
 export const SELECTION_MARKER_START: ElementTransformer = {
   dependencies: [SelectionMarkerNode],
   export: (node) =>
@@ -202,15 +200,12 @@ export const SVG: MultilineElementTransformer = {
   regExpStart: /^<svg[\s>]/,
   regExpEnd: /<\/svg>\s*$/,
   replace: (rootNode, _children, startMatch, endMatch, linesInBetween) => {
-    // linesInBetween excludes both matches, so stitch the full markup back.
     const html =
       startMatch[0] + (linesInBetween ?? []).join("\n") + (endMatch?.[0] ?? "")
     rootNode.append($createSvgNode(html.trim()))
   },
   type: "multiline-element",
 }
-
-// GFM table support, adapted from the Lexical playground.
 
 const TABLE_ROW_REG_EXP = /^\|(.+)\|\s?$/
 const TABLE_ROW_DIVIDER_REG_EXP = /^(\| ?:?-*:? ?)+\|\s*$/
@@ -270,7 +265,6 @@ export const TABLE: ElementTransformer = {
   },
   regExp: TABLE_ROW_REG_EXP,
   replace: (parentNode, _children, match, isImport) => {
-    // Divider row (`| --- | --- |`) marks the previous row as the header.
     if (TABLE_ROW_DIVIDER_REG_EXP.test(match[0])) {
       const table = parentNode.getPreviousSibling()
       if (!table || !$isTableNode(table)) return
@@ -298,7 +292,6 @@ export const TABLE: ElementTransformer = {
     let sibling = parentNode.getPreviousSibling()
     let maxCells = matchCells.length
 
-    // Pull preceding plain-text rows (not yet converted) into this table.
     while (sibling) {
       if (!$isParagraphNode(sibling) || sibling.getChildrenSize() !== 1) break
 
@@ -333,9 +326,6 @@ export const TABLE: ElementTransformer = {
       parentNode.remove()
     } else {
       parentNode.insertBefore(table)
-      // During import the source paragraph must go immediately, otherwise it
-      // sits between this table and the next row/divider line and prevents
-      // them from finding the table as their previous sibling.
       if (isImport) {
         parentNode.remove()
       }
@@ -348,8 +338,6 @@ export const TABLE: ElementTransformer = {
   type: "element",
 }
 
-// Custom transformers come first so they win over the defaults (e.g. an SVG or
-// math block must not be swallowed by the paragraph/code fallbacks).
 export const RENDERICAL_TRANSFORMERS: Transformer[] = [
   SELECTION_MARKER_START,
   SELECTION_MARKER_END,

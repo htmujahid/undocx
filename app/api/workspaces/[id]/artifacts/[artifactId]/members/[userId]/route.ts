@@ -15,8 +15,6 @@ import {
   type NotificationType,
 } from "@/lib/db/schema"
 
-// Let an affected member know about a document share change. Best-effort, off
-// the response path — a notification failure must never fail the mutation.
 function notifyMember(
   type: NotificationType,
   userId: string,
@@ -90,7 +88,6 @@ export async function DELETE(
 
   const { id, artifactId, userId } = await params
 
-  // Owners remove anyone; a member may remove themselves (leave the share).
   if (userId !== session.user.id) {
     const role = await getWorkspaceRole(id, session.user.id)
     if (!role) return NextResponse.json({ error: "Not found" }, { status: 404 })
@@ -105,7 +102,6 @@ export async function DELETE(
   if (!deleted)
     return NextResponse.json({ error: "Not found" }, { status: 404 })
 
-  // Only notify when an owner removed someone — not when a member leaves.
   if (userId !== session.user.id)
     notifyMember(
       "artifact_removed",

@@ -207,7 +207,6 @@ export function WorkspaceSwitcher({
         />
       )}
 
-      {/* Delete confirmation */}
       <AlertDialog
         open={!!deleteTarget}
         onOpenChange={(open) => !open && setDeleteTarget(null)}
@@ -246,7 +245,6 @@ export function WorkspaceSwitcher({
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Rename dialog */}
       <Dialog
         open={!!editWorkspace}
         onOpenChange={(open) => !open && setEditWorkspace(null)}

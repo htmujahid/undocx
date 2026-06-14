@@ -28,8 +28,6 @@ export interface NotificationsResponse {
   unreadCount: number
 }
 
-// Polled — the app has no realtime channel, so the bell refreshes on an
-// interval (and on window focus, React Query's default).
 export const notificationsQueryOptions = queryOptions({
   queryKey: ["notifications"],
   queryFn: async (): Promise<NotificationsResponse> => {

@@ -9,7 +9,7 @@ const SECTIONS = [
   },
   {
     title: "3. AI-generated content",
-    body: `Your prompts and the content generated from them are stored to provide the Service — specifically, to populate your knowledge base, generate embeddings that power semantic search and document chat, and support history features. We do not use your content to train AI models. Your content is private to you unless you choose to share it — for example, by inviting collaborators to a workspace or document, or by enabling a public read-only link. We do not otherwise share your content with other users or third parties except where required by law.`,
+    body: `Your prompts and the content generated from them are stored to provide the Service: specifically, to populate your knowledge base, generate embeddings that power semantic search and document chat, and support history features. We do not use your content to train AI models. Your content is private to you unless you choose to share it, for example, by inviting collaborators to a workspace or document, or by enabling a public read-only link. We do not otherwise share your content with other users or third parties except where required by law.`,
   },
   {
     title: "4. Sharing your information",

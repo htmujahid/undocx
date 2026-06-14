@@ -75,7 +75,7 @@ export function SharePopover({
         <div className="space-y-0.5">
           <Label className="text-sm">Share with people</Label>
           <p className="text-xs text-muted-foreground">
-            Invite people to this document only — they won&apos;t see the rest
+            Invite people to this document only, they won&apos;t see the rest
             of the workspace.
           </p>
         </div>

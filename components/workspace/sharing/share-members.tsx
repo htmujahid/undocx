@@ -43,9 +43,6 @@ function initials(name: string) {
     .toUpperCase()
 }
 
-// Invite form + member list + pending invitations for either a workspace
-// (artifactId omitted) or a single document. Management controls only render
-// for the workspace owner.
 export function ShareMembers({
   workspaceId,
   artifactId,

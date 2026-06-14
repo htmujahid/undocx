@@ -14,7 +14,7 @@ export function ModeBadge({ mode }: { mode: "insert" | "replace" }) {
             <polygon points="4,0.5 7,4.5 1,4.5" />
           </svg>
           <span className="text-[10px] font-medium text-primary/80">
-            Insert point set — content will be placed at the marker
+            Insert point set, content will be placed at the marker
           </span>
         </div>
       </div>
@@ -35,7 +35,7 @@ export function ModeBadge({ mode }: { mode: "insert" | "replace" }) {
           <polygon points="7,14 12,9 2,9" />
         </svg>
         <span className="text-[10px] font-medium text-primary/80">
-          Section selected — content between markers will be replaced
+          Section selected, content between markers will be replaced
         </span>
       </div>
     </div>

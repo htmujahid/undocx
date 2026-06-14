@@ -116,8 +116,6 @@ export function useAssistantSubmit({
     removedKeys: string[]
   } | null>(null)
 
-  // Highlight the generated blocks while they await accept/reject. Classes are
-  // re-applied after every reconcile since Lexical may recreate the DOM nodes.
   useEffect(() => {
     if (!pending) return
     const apply = () => {
@@ -172,9 +170,6 @@ export function useAssistantSubmit({
     })
   }
 
-  // Applies the final document but wraps the generated content in selection
-  // placeholders first, so the blocks between them can be identified for the
-  // review highlight. The markers are removed again within the same update.
   const applyPendingMarkdown = (
     before: string,
     content: string,

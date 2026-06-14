@@ -22,7 +22,6 @@ export const artifact = pgTable(
   {
     id: uuid("id").primaryKey().defaultRandom(),
     title: text("title").notNull(),
-    // Markdown source (Renderical dialect — see editor/markdown-transformers.ts)
     content: text("content"),
     workspaceId: uuid("workspace_id")
       .notNull()
@@ -31,8 +30,6 @@ export const artifact = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     isArchived: boolean("is_archived").default(false).notNull(),
-    // Anyone with the link can view the artifact at /share/[artifactId]
-    // without signing in. Mutations still require workspace ownership.
     isPublic: boolean("is_public").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
@@ -43,7 +40,6 @@ export const artifact = pgTable(
   (table) => [index("artifact_workspaceId_idx").on(table.workspaceId)]
 )
 
-// An artifact can live in multiple folders at once (knowledge-base style)
 export const artifactFolder = pgTable(
   "artifact_folder",
   {

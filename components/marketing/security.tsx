@@ -45,7 +45,7 @@ const ITEMS = [
   {
     title: "Never used to train AI",
     description:
-      "Your prompts and documents power your knowledge base — never a training set. We don't sell your data either.",
+      "Your prompts and documents power your knowledge base, never a training set. We don't sell your data either.",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"

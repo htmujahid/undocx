@@ -18,7 +18,6 @@ export async function POST(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id, artifactId } = await params
-  // Favorites are per-user — any role (even viewer) can toggle their own.
   const role = await getArtifactRole(id, artifactId, session.user.id)
   if (!role) return NextResponse.json({ error: "Not found" }, { status: 404 })
 

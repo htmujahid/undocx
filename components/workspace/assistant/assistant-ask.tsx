@@ -14,8 +14,6 @@ import { cn } from "@/lib/utils"
 
 import { RENDERICAL_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
 
-// Strip the editor-only selection/insert markers so they never leak into the
-// document we hand to the model.
 const MARKER_RE = /<!-- @(?:selection|removed):(?:start|end) -->/g
 
 function getMessageText(message: UIMessage): string {

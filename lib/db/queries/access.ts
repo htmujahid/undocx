@@ -15,8 +15,6 @@ export function canEdit(role: WorkspaceRole | null | undefined) {
   return role === "owner" || role === "editor"
 }
 
-// Role across the whole workspace, or null when the user has (at most)
-// direct artifact-level shares.
 export async function getWorkspaceRole(
   workspaceId: string,
   userId: string
@@ -40,7 +38,6 @@ export async function getWorkspaceRole(
   return member?.role ?? null
 }
 
-// Effective role on a single artifact: workspace role wins, then direct share.
 export async function getArtifactRole(
   workspaceId: string,
   artifactId: string,
@@ -63,7 +60,6 @@ export async function getArtifactRole(
   return member?.role ?? null
 }
 
-// Artifacts in the workspace shared directly with the user (with their role).
 export async function getSharedArtifacts(workspaceId: string, userId: string) {
   return db
     .select({
@@ -81,9 +77,7 @@ export async function getSharedArtifacts(workspaceId: string, userId: string) {
 }
 
 export type WorkspaceAccess =
-  // Full membership — role applies to everything in the workspace.
   | { role: WorkspaceRole; sharedArtifacts: null }
-  // Artifact-level shares only — access is limited to these artifacts.
   | { role: null; sharedArtifacts: { artifactId: string; role: MemberRole }[] }
 
 export async function getWorkspaceAccess(

@@ -22,7 +22,6 @@ export async function GET(
   const { id } = await params
   const access = await getWorkspaceAccess(id, session.user.id)
   if (!access) return NextResponse.json({ error: "Not found" }, { status: 404 })
-  // Artifact-only members don't get the workspace's collections.
   if (!access.role) return NextResponse.json([])
 
   const collections = await listWorkspaceCollections(id)

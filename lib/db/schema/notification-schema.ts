@@ -5,10 +5,6 @@ import { artifact } from "./artifact-schema"
 import { user } from "./auth-schema"
 import { workspace } from "./workspace-schema"
 
-// In-app notifications. One row per recipient — fan-out events (e.g. a new
-// document) insert one row per member. Display fields are denormalized into
-// `data` so a notification still reads correctly after the actor, workspace,
-// or artifact it refers to has been deleted.
 export const NOTIFICATION_TYPES = [
   "invitation_accepted",
   "workspace_role_changed",
@@ -19,7 +15,6 @@ export const NOTIFICATION_TYPES = [
 ] as const
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number]
 
-// Snapshot of everything the UI needs to render a notification without joins.
 export interface NotificationData {
   actorName: string
   resourceName: string
@@ -30,16 +25,13 @@ export const notification = pgTable(
   "notification",
   {
     id: uuid("id").primaryKey().defaultRandom(),
-    // Recipient.
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     type: text("type", { enum: NOTIFICATION_TYPES }).notNull(),
-    // Who triggered it (nullable so the row survives the actor being deleted).
     actorId: text("actor_id").references(() => user.id, {
       onDelete: "set null",
     }),
-    // Link targets — null once the resource is gone (the UI drops the link).
     workspaceId: uuid("workspace_id").references(() => workspace.id, {
       onDelete: "set null",
     }),
@@ -51,7 +43,6 @@ export const notification = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (table) => [
-    // Drives the bell: a user's feed, newest first, and the unread count.
     index("notification_userId_createdAt_idx").on(
       table.userId,
       table.createdAt

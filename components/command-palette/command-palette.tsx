@@ -53,7 +53,6 @@ type CommandPaletteContextValue = {
 const CommandPaletteContext =
   React.createContext<CommandPaletteContextValue | null>(null)
 
-/** Open/close the workspace command palette from anywhere in the layout. */
 export function useCommandPalette() {
   const ctx = React.useContext(CommandPaletteContext)
   if (!ctx) {
@@ -78,7 +77,6 @@ export function CommandPalette({
 
   const [open, setOpen] = React.useState(false)
 
-  // Cmd/Ctrl+K toggles the palette.
   React.useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key.toLowerCase() !== "k") {
@@ -96,8 +94,6 @@ export function CommandPalette({
     return () => window.removeEventListener("keydown", onKeyDown)
   }, [])
 
-  // Both lists are prefetched by the workspace layout, so this reads from
-  // the hydrated cache; `enabled` just avoids refetching while closed.
   const { data: artifacts = [] } = useQuery({
     ...artifactsQueryOptions(workspaceId),
     enabled: open,

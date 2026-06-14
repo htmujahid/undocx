@@ -36,7 +36,6 @@ export function FolderView({
     artifactsQueryOptions(workspaceId, sort)
   )
   const { data: folders = [] } = useQuery(foldersQueryOptions(workspaceId))
-  // Warms the collections cache for descendant dialogs (move-to-collection, etc.)
   useQuery(collectionsQueryOptions(workspaceId))
   const { data: favorites = [] } = useQuery(favoritesQueryOptions(workspaceId))
 

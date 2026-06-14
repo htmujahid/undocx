@@ -8,8 +8,6 @@ import {
   getInvitationById,
 } from "@/lib/db/queries/invitation"
 
-// Revokes a pending invitation — works for both workspace invitations and
-// invitations to any artifact inside this workspace.
 export async function DELETE(
   _req: Request,
   { params }: { params: Promise<{ id: string; invitationId: string }> }

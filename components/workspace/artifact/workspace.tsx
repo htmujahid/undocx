@@ -51,14 +51,10 @@ export function Workspace({
   const qc = useQueryClient()
   const [rightOpen, setRightOpen] = useState(true)
   useAssistantAutoCollapse(setRightOpen)
-  // Captured from the layout's left sidebar context — the header lives inside
-  // the right SidebarProvider, where SidebarTrigger would toggle the wrong one.
   const { toggleSidebar: toggleLeftSidebar } = useSidebar()
 
-  // Hydrated by the server component — available synchronously on first render.
   const { data: art } = useQuery(artifactQueryOptions(workspaceId, artifactId))
   const title = art?.title ?? ""
-  // Sharing is owner-only; the assistant mutates content, so viewers don't get it.
   const isOwner = art?.role === "owner"
   const canEdit = isOwner || art?.role === "editor"
 
@@ -128,9 +124,6 @@ export function Workspace({
           SelectionMarkerExtension,
         ],
       }),
-    // Only content feeds the editor's initial state — depending on the whole
-    // artifact would rebuild the editor (remounting the entire subtree, e.g.
-    // closing the share popover) whenever any field like isPublic changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [art?.content]
   )
@@ -138,9 +131,6 @@ export function Workspace({
   return (
     <LexicalExtensionComposer extension={extension} contentEditable={null}>
       <div className="flex h-svh min-w-0 flex-1 flex-col overflow-hidden">
-        {/* The prompt sidebar is position:fixed and spans the full viewport
-            height, so the header must live inside the provider's content
-            column — otherwise its right-side buttons render underneath it. */}
         <SidebarProvider
           open={rightOpen}
           onOpenChange={setRightOpen}

@@ -10,7 +10,6 @@ export interface ArtifactSummary {
   collectionIds: string[]
   isArchived: boolean
   isPublic: boolean
-  // The current user's effective role on this artifact.
   role: "owner" | "editor" | "viewer"
   createdAt: string
   updatedAt: string

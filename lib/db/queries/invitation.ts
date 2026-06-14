@@ -12,8 +12,6 @@ import {
 
 const INVITATION_TTL_MS = 7 * 24 * 60 * 60 * 1000
 
-// One pending invitation per email per target — re-inviting refreshes the
-// role, token, and expiry instead of stacking rows.
 export async function upsertInvitation({
   email,
   role,
@@ -63,7 +61,6 @@ export async function upsertInvitation({
   return created
 }
 
-// Pending invitations on a workspace (owner-only management view).
 export function listWorkspaceInvitations(workspaceId: string) {
   return db
     .select({
@@ -78,7 +75,6 @@ export function listWorkspaceInvitations(workspaceId: string) {
     .orderBy(invitation.createdAt)
 }
 
-// Pending invitations on a single artifact.
 export function listArtifactInvitations(artifactId: string) {
   return db
     .select({
@@ -117,8 +113,6 @@ export async function deleteInvitation(id: string) {
   await db.delete(invitation).where(eq(invitation.id, id))
 }
 
-// Pending, unexpired invitations addressed to a given email, with the inviter
-// and resource names resolved for display.
 export function listUserPendingInvitations(email: string) {
   return db
     .select({
@@ -143,8 +137,6 @@ export function listUserPendingInvitations(email: string) {
     .orderBy(invitation.createdAt)
 }
 
-// A single invitation by token with resource/inviter details for the invite
-// landing page.
 export async function getInvitationDetailsByToken(token: string) {
   const [inv] = await db
     .select({

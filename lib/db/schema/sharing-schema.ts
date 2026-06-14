@@ -13,12 +13,9 @@ import { artifact } from "./artifact-schema"
 import { user } from "./auth-schema"
 import { workspace } from "./workspace-schema"
 
-// Roles a member can be granted. The workspace owner (workspace.ownerId) is
-// implicit, always outranks these, and is the only one who can manage sharing.
 export const MEMBER_ROLES = ["editor", "viewer"] as const
 export type MemberRole = (typeof MEMBER_ROLES)[number]
 
-// Workspace membership grants the role on every artifact in the workspace.
 export const workspaceMember = pgTable(
   "workspace_member",
   {
@@ -37,7 +34,6 @@ export const workspaceMember = pgTable(
   ]
 )
 
-// Direct share of a single artifact — no access to the rest of the workspace.
 export const artifactMember = pgTable(
   "artifact_member",
   {
@@ -56,8 +52,6 @@ export const artifactMember = pgTable(
   ]
 )
 
-// Pending email invitation. Exactly one of workspaceId/artifactId is set;
-// the row is deleted once accepted, declined, or revoked.
 export const invitation = pgTable(
   "invitation",
   {

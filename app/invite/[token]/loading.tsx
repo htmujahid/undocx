@@ -2,7 +2,6 @@ import Link from "next/link"
 
 import { Skeleton } from "@/components/ui/skeleton"
 
-// Mirrors the InviteShell layout so the card doesn't jump when content loads.
 export default function Loading() {
   return (
     <div className="flex min-h-svh flex-col">

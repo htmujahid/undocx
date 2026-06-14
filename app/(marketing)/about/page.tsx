@@ -20,7 +20,7 @@ const VALUES = [
 const CAPABILITIES = [
   {
     title: "Structured generation",
-    body: "Documents composed from tables, code, diagrams, callouts, math, and citations — not flat text.",
+    body: "Documents composed from tables, code, diagrams, callouts, math, and citations, not flat text.",
   },
   {
     title: "AI inline editing",
@@ -79,7 +79,6 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <main>
-      {/* Hero */}
       <section className="border-b border-border/40">
         <div className="mx-auto max-w-3xl px-6 py-24 text-center lg:py-32">
           <p className="mb-4 text-sm font-medium text-muted-foreground">
@@ -96,7 +95,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Mission */}
       <section className="border-b border-border/40">
         <div className="mx-auto max-w-5xl px-6 py-20">
           <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
@@ -107,7 +105,7 @@ export default function AboutPage() {
               <p className="mt-4 leading-relaxed text-muted-foreground">
                 Renderical is an intelligent content generation and knowledge
                 management platform. When you give it a prompt, the AI writes a
-                structured document — composing tables, code, diagrams,
+                structured document, composing tables, code, diagrams,
                 callouts, math, and footnoted citations into whatever mix the
                 topic actually needs.
               </p>
@@ -125,7 +123,7 @@ export default function AboutPage() {
               <p className="mt-4 leading-relaxed text-muted-foreground">
                 Most AI tools treat every question the same way: return text,
                 let the user figure out the rest. That creates cognitive
-                overhead — you still have to restructure the response before
+                overhead, you still have to restructure the response before
                 it&apos;s useful.
               </p>
               <p className="mt-4 leading-relaxed text-muted-foreground">
@@ -138,7 +136,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* What's inside */}
       <section className="border-b border-border/40">
         <div className="mx-auto max-w-5xl px-6 py-20">
           <h2 className="text-2xl font-semibold tracking-tight">
@@ -175,7 +172,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Values */}
       <section className="border-b border-border/40">
         <div className="mx-auto max-w-5xl px-6 py-20">
           <h2 className="mb-12 text-2xl font-semibold tracking-tight">
@@ -194,7 +190,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Timeline */}
       <section className="border-b border-border/40">
         <div className="mx-auto max-w-5xl px-6 py-20">
           <h2 className="mb-12 text-2xl font-semibold tracking-tight">
@@ -216,7 +211,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section>
         <div className="mx-auto max-w-3xl px-6 py-24 text-center">
           <h2 className="text-2xl font-semibold tracking-tight">

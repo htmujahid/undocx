@@ -44,8 +44,6 @@ export async function deleteFolder(id: string, workspaceId: string) {
   return deleted ?? null
 }
 
-// Filters arbitrary input down to folder ids that actually belong to the
-// workspace.
 export async function filterWorkspaceFolderIds(
   workspaceId: string,
   ids: unknown

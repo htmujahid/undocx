@@ -3,12 +3,10 @@ import { and, count, eq } from "drizzle-orm"
 import { db } from "@/lib/db"
 import { workspace, workspaceMember } from "@/lib/db/schema"
 
-// Workspaces owned by the user.
 export function listOwnedWorkspaces(userId: string) {
   return db.select().from(workspace).where(eq(workspace.ownerId, userId))
 }
 
-// Workspaces the user is a (non-owner) member of, with their role.
 export function listWorkspaceMemberships(userId: string) {
   return db
     .select({ workspace: workspace, role: workspaceMember.role })

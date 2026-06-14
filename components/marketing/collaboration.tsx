@@ -8,7 +8,7 @@ const CAPABILITIES = [
   {
     title: "Multiple workspaces",
     description:
-      "Keep separate spaces for personal projects, a team, or a client — each with its own documents and members.",
+      "Keep separate spaces for personal projects, a team, or a client, each with its own documents and members.",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +71,7 @@ const CAPABILITIES = [
   {
     title: "Public links",
     description:
-      "Flip on public access to get a read-only link anyone can open — no account required. Turn it off to make it private again.",
+      "Flip on public access to get a read-only link anyone can open (no account required). Turn it off to make it private again.",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -106,7 +106,7 @@ export function Collaboration() {
               Renderical isn&apos;t just for one person. Spin up workspaces,
               invite collaborators with the right level of access, and keep
               everyone working from the same structured, searchable source of
-              truth — with activity notifications so nothing slips by.
+              truth, with activity notifications so nothing slips by.
             </p>
             <div className="mt-8">
               <Link

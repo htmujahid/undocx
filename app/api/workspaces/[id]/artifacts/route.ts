@@ -37,7 +37,6 @@ export async function GET(
   const artifacts = await listActiveArtifacts({
     workspaceId: id,
     sort,
-    // Artifact-level members only see what was shared with them.
     restrictIds: access.sharedArtifacts
       ? access.sharedArtifacts.map((s) => s.artifactId)
       : null,
@@ -103,8 +102,6 @@ export async function POST(
     )
   )
 
-  // Tell the rest of the workspace a new document landed. Best-effort, off the
-  // response path — a notification failure must never fail the create.
   after(async () => {
     const recipients = await listWorkspaceNotifyRecipients(id, session.user.id)
     await createNotifications(

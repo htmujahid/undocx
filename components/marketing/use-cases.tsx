@@ -179,7 +179,7 @@ const USE_CASES = [
     audience: "Students & learners",
     headline: "Turn dense material into clear notes",
     description:
-      "Ask for an explanation and get structured notes — headings, lists, callouts, and diagrams — saved and searchable for when you study again.",
+      "Ask for an explanation and get structured notes (headings, lists, callouts, and diagrams) saved and searchable for when you study again.",
     visual: <NotesVisual />,
     span: "lg:col-span-2",
   },
@@ -195,7 +195,7 @@ const USE_CASES = [
     audience: "Engineers",
     headline: "Docs with real code and diagrams",
     description:
-      "Generate technical write-ups with syntax-highlighted code, tables, and SVG diagrams — not vague prose you have to rebuild.",
+      "Generate technical write-ups with syntax-highlighted code, tables, and SVG diagrams, not vague prose you have to rebuild.",
     visual: <CodeVisual />,
     span: "lg:col-span-1",
   },

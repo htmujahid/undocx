@@ -82,7 +82,6 @@ export async function upsertArtifactMember(
     })
 }
 
-// Documents shared directly with a user, across all workspaces.
 export function listSharedWithUser(userId: string) {
   return db
     .select({

@@ -48,8 +48,6 @@ export function SelectionMarkerPlugin({
   const [highlight, setHighlight] = useState<HighlightState | null>(null)
   const indicatorElRef = useRef<HTMLDivElement | null>(null)
   const indicatorRef = useRef<IndicatorState | null>(null)
-  // Mirror the latest indicator into a ref so the click handler reads current
-  // state synchronously — an effect would lag by a render. Intentional.
   // eslint-disable-next-line react-hooks/refs
   indicatorRef.current = indicator
 
@@ -62,10 +60,6 @@ export function SelectionMarkerPlugin({
   const hasStart = startKey !== null
   const hasEnd = endKey !== null
   const hasBoth = hasStart && hasEnd
-
-  // Extracted as a stable callback so it can be referenced by both the
-  // registerUpdateListener effect and the scroll/resize effect without
-  // conditionally returning cleanup functions.
 
   const updateHighlight = useCallback(() => {
     if (!hasBoth || !startKey || !endKey) {
@@ -100,8 +94,6 @@ export function SelectionMarkerPlugin({
     })
   }, [editor, hasBoth, startKey, endKey, containerRef])
 
-  // Always-registered update listener — never conditionally returned so the
-  // cleanup function is always a valid () => void.
   useEffect(() => {
     return editor.registerUpdateListener(() => {
       requestAnimationFrame(updateHighlight)
@@ -145,9 +137,6 @@ export function SelectionMarkerPlugin({
         return
       }
 
-      // Coordinates alone can't tell whether a dialog/popover is covering the
-      // content — only show the marker when the cursor is actually over the
-      // container (or the marker itself, which is portalled to body).
       const target = e.target as Node | null
       if (
         !target ||
@@ -286,7 +275,6 @@ export function SelectionMarkerPlugin({
               left: indicator.left,
               width: indicator.width,
               transform: "translateY(-50%)",
-              // Below dialogs/popovers (z-50) so overlays cover the marker.
               zIndex: 40,
               pointerEvents: "none",
             }}

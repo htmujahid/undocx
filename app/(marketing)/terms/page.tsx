@@ -13,7 +13,7 @@ const SECTIONS = [
   },
   {
     title: "4. Content you generate",
-    body: `You retain ownership of the content you create using the Service. By using the Service, you grant Renderical a limited, non-exclusive license to store and process your content solely to provide the Service to you. You control how your content is shared — including inviting collaborators and enabling public read-only links — and you are responsible for what you choose to share. We do not use your content to train AI models or share it with third parties without your consent.`,
+    body: `You retain ownership of the content you create using the Service. By using the Service, you grant Renderical a limited, non-exclusive license to store and process your content solely to provide the Service to you. You control how your content is shared (including inviting collaborators and enabling public read-only links) and you are responsible for what you choose to share. We do not use your content to train AI models or share it with third parties without your consent.`,
   },
   {
     title: "5. Prohibited activities",

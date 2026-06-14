@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og"
 
-export const alt = "Renderical — AI content. Every format."
+export const alt = "Renderical: AI content. Every format."
 export const size = {
   width: 1200,
   height: 630,
@@ -70,7 +70,7 @@ export default function Image() {
           lineHeight: 1.4,
         }}
       >
-        Generate, organize, and edit AI content in adaptive layout formats — all
+        Generate, organize, and edit AI content in adaptive layout formats, all
         in one knowledge base.
       </div>
     </div>,

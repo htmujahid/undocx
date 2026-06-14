@@ -34,7 +34,6 @@ export function NewArtifactAssistant({
   workspaceId: string
   artifactId?: string
   onTitleChange: (title: string) => void
-  /** When provided, called instead of persisting — used for the new-document flow */
   onGenerated?: (title: string, content: string) => void
 }) {
   const qc = useQueryClient()
@@ -104,9 +103,6 @@ export function NewArtifactAssistant({
     },
   })
 
-  // Stream the partial markdown into the editor as it arrives. Everything up
-  // to the last blank line is made of completed blocks; the trailing block may
-  // still be mid-token, so it is held back until the next frame.
   useEffect(() => {
     if (!isLoading) return
     if (object?.title) onTitleChange(object.title)

@@ -48,7 +48,6 @@ function SelectionMarkerComponent({
     >
       {role === "start" ? (
         <>
-          {/* Start badge — left side */}
           <div className="flex shrink-0 items-center gap-1.5 rounded-sm border border-primary/20 bg-primary/5 px-2 py-0.5">
             <svg
               viewBox="0 0 8 8"
@@ -62,7 +61,6 @@ function SelectionMarkerComponent({
               Start
             </span>
           </div>
-          {/* Dashed gradient line */}
           <div
             className="h-px flex-1"
             style={{
@@ -89,7 +87,6 @@ function SelectionMarkerComponent({
           >
             <XIcon className="size-3 text-muted-foreground" />
           </button>
-          {/* Dashed gradient line */}
           <div
             className="h-px flex-1"
             style={{
@@ -97,7 +94,6 @@ function SelectionMarkerComponent({
                 "repeating-linear-gradient(90deg, hsl(var(--primary)/0.25) 0, hsl(var(--primary)/0.25) 4px, transparent 4px, transparent 8px)",
             }}
           />
-          {/* End badge — right side */}
           <div className="flex shrink-0 items-center gap-1.5 rounded-sm border border-primary/20 bg-primary/5 px-2 py-0.5">
             <span className="text-[9px] font-bold uppercase tracking-widest text-primary/65">
               End

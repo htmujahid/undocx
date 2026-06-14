@@ -19,7 +19,6 @@ export async function GET(
   const { id } = await params
   const access = await getWorkspaceAccess(id, session.user.id)
   if (!access) return NextResponse.json({ error: "Not found" }, { status: 404 })
-  // Artifact-only members don't get the workspace's folder tree.
   if (!access.role) return NextResponse.json([])
 
   const folders = await listWorkspaceFolders(id)

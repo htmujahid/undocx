@@ -4,7 +4,6 @@ export interface Workspace {
   id: string
   name: string
   ownerId: string
-  // The current user's role in this workspace.
   role: "owner" | "editor" | "viewer"
   createdAt: string
   updatedAt: string

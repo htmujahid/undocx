@@ -7,7 +7,6 @@ function vectorLiteral(embedding: number[]) {
   return `[${embedding.join(",")}]`
 }
 
-// Nearest chunks (cosine distance) across a workspace's active artifacts.
 export function searchWorkspaceChunks(
   workspaceId: string,
   embedding: number[],
@@ -30,8 +29,6 @@ export function searchWorkspaceChunks(
     .limit(limit)
 }
 
-// Nearest chunks (cosine distance) within a specific set of artifacts. Used to
-// scope retrieval to the reference documents a user explicitly selected.
 export function searchChunksInArtifacts(
   artifactIds: string[],
   embedding: number[],
@@ -53,7 +50,6 @@ export function searchChunksInArtifacts(
     .limit(limit)
 }
 
-// Nearest chunks across a user's public, active artifacts.
 export function searchPublicUserChunks(
   userId: string,
   embedding: number[],

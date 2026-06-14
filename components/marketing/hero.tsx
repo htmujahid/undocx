@@ -7,7 +7,6 @@ import { buttonVariants } from "@/components/ui/button"
 export function Hero() {
   return (
     <section className="relative overflow-hidden border-b border-border/40">
-      {/* Background */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div
           className="absolute inset-0 opacity-[0.025]"
@@ -33,8 +32,8 @@ export function Hero() {
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-          Stop getting walls of text. Renderical writes structured documents —
-          with tables, diagrams, code, callouts, and citations — then saves
+          Stop getting walls of text. Renderical writes structured documents
+          (with tables, diagrams, code, callouts, and citations) then saves
           everything to a knowledge base you can organize, search, share, and
           ask questions across.
         </p>

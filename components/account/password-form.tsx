@@ -76,7 +76,7 @@ export function PasswordForm({ hasCredential }: { hasCredential: boolean }) {
     try {
       await setPassword(value.newPassword)
       toast.success(
-        "Password set — you can now sign in with email and password"
+        "Password set, you can now sign in with email and password"
       )
       setForm.reset()
       router.refresh()

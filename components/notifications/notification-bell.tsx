@@ -18,8 +18,6 @@ import {
 } from "@/lib/data/notifications"
 import { cn } from "@/lib/utils"
 
-// One-line message for each notification type, built from the denormalized
-// snapshot so it reads correctly even after the resource is gone.
 function describe(n: AppNotification): string {
   const { actorName, resourceName, role } = n.data
   switch (n.type) {
@@ -38,8 +36,6 @@ function describe(n: AppNotification): string {
   }
 }
 
-// Where clicking a notification takes you — null when the user no longer has
-// access (removals) or the resource has been deleted.
 function linkFor(n: AppNotification): string | null {
   if (n.type === "workspace_removed" || n.type === "artifact_removed")
     return null
@@ -76,7 +72,6 @@ export function NotificationBell() {
   const markRead = useMutation({
     ...markNotificationsReadMutationOptions,
     onSuccess: () => {
-      // Reflect the read state locally without waiting for the next poll.
       qc.setQueryData(
         notificationsQueryOptions.queryKey,
         (prev) =>
@@ -91,7 +86,6 @@ export function NotificationBell() {
     },
   })
 
-  // Opening the panel clears the unread badge.
   const onOpenChange = (open: boolean) => {
     if (open && unreadCount > 0 && !markRead.isPending) markRead.mutate()
   }

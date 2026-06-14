@@ -10,11 +10,11 @@ import {
 const QUESTIONS = [
   {
     q: "How does the AI decide how to structure a response?",
-    a: "It reads the intent of your prompt and composes the document from the blocks that fit — tables for comparisons and data, fenced code for anything technical, SVG figures for charts and diagrams, callouts for key points, math for formulas, and footnotes for references. You don't pick a format; the model builds the right mix for the topic.",
+    a: "It reads the intent of your prompt and composes the document from the blocks that fit: tables for comparisons and data, fenced code for anything technical, SVG figures for charts and diagrams, callouts for key points, math for formulas, and footnotes for references. You don't pick a format; the model builds the right mix for the topic.",
   },
   {
     q: "Can I edit specific parts of the output?",
-    a: "Yes. Select any portion of a document — a sentence, a table row, a paragraph — and tell the AI what to change in plain language. It rewrites just that range and shows the proposed change inline, so you can accept or reject it before anything is saved. The rest of the document stays untouched.",
+    a: "Yes. Select any portion of a document (a sentence, a table row, a paragraph) and tell the AI what to change in plain language. It rewrites just that range and shows the proposed change inline, so you can accept or reject it before anything is saved. The rest of the document stays untouched.",
   },
   {
     q: "Is my generated content saved automatically?",
@@ -22,7 +22,7 @@ const QUESTIONS = [
   },
   {
     q: "Can I ask questions about my own documents?",
-    a: "Yes. Renderical can chat across your knowledge base — it searches your documents semantically and answers with inline citations, so you can trace every claim back to the source it came from.",
+    a: "Yes. Renderical can chat across your knowledge base, it searches your documents semantically and answers with inline citations, so you can trace every claim back to the source it came from.",
   },
   {
     q: "Can I collaborate with a team?",
@@ -30,11 +30,11 @@ const QUESTIONS = [
   },
   {
     q: "Can I share something publicly?",
-    a: "Yes. Turn on public access for any document to get a read-only link that anyone can open — no account or sign-in required. Turn it off anytime to make it private again.",
+    a: "Yes. Turn on public access for any document to get a read-only link that anyone can open (no account or sign-in required). Turn it off anytime to make it private again.",
   },
   {
     q: "How do you handle my data and security?",
-    a: "Your content is yours — we don't use it to train AI models or share it with other users. Sign in with email and password or with Google, secure your account with two-factor authentication, and export any document to Markdown whenever you want.",
+    a: "Your content is yours, we don't use it to train AI models or share it with other users. Sign in with email and password or with Google, secure your account with two-factor authentication, and export any document to Markdown whenever you want.",
   },
   {
     q: "How is this different from ChatGPT or other AI tools?",

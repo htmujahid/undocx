@@ -6,7 +6,6 @@ import { notFound } from "next/navigation"
 import { PublicArtifactView } from "@/components/workspace/artifact/public-artifact-view"
 import { getPublicArtifact } from "@/lib/db/queries/artifact"
 
-// Content can be unshared at any moment — always check the flag at request time.
 export const dynamic = "force-dynamic"
 
 const UUID_RE =

@@ -28,7 +28,6 @@ type SignInValues = z.infer<typeof signInSchema>
 
 export function SignInForm({ redirectTo }: { redirectTo?: string }) {
   const router = useRouter()
-  // Only allow same-origin paths — anything else falls back to the app.
   const destination = redirectTo?.startsWith("/") ? redirectTo : "/workspace"
 
   const form = useForm<SignInValues>({

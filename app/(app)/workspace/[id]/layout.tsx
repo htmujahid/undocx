@@ -30,8 +30,6 @@ export default async function WorkspaceLayout({
 
   const { id } = await params
 
-  // Members and artifact-level shares get in too — the APIs scope what
-  // each role can actually see and do.
   const [workspace, access] = await Promise.all([
     getWorkspaceById(id),
     getWorkspaceAccess(id, session.user.id),

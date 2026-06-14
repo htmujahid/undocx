@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils"
 export function ArtifactListPageSkeleton() {
   return (
     <div className="flex h-svh min-w-0 flex-1 flex-col overflow-hidden">
-      {/* Navbar */}
       <header className="flex h-11 shrink-0 items-center justify-between gap-2 border-b px-3">
         <div className="flex items-center gap-2">
           <Skeleton className="size-6 rounded" />
@@ -16,7 +15,6 @@ export function ArtifactListPageSkeleton() {
         </div>
       </header>
 
-      {/* Artifact list */}
       <div className="min-h-0 flex-1 overflow-auto p-4">
         <div className="mx-auto max-w-3xl">
           <div className="overflow-hidden rounded-lg border">
@@ -43,7 +41,6 @@ export function ArtifactListPageSkeleton() {
 export function ArtifactEditorSkeleton() {
   return (
     <div className="flex h-svh min-w-0 flex-1 flex-col overflow-hidden">
-      {/* Header */}
       <header className="flex h-11 shrink-0 items-center border-b px-2 gap-2">
         <Skeleton className="h-6 w-6 rounded" />
         <Skeleton className="h-4 w-32" />
@@ -51,9 +48,7 @@ export function ArtifactEditorSkeleton() {
         <Skeleton className="h-6 w-6 rounded" />
       </header>
 
-      {/* Body: editor + right panel */}
       <div className="flex min-h-0 flex-1">
-        {/* Editor area */}
         <div className="flex min-h-0 flex-1 flex-col px-16 py-10 gap-4">
           <Skeleton className="h-8 w-56" />
           <div className="flex flex-col gap-3 mt-2">
@@ -69,7 +64,6 @@ export function ArtifactEditorSkeleton() {
           </div>
         </div>
 
-        {/* Right panel */}
         <div className="hidden w-96 shrink-0 flex-col border-l px-4 py-6 gap-4 lg:flex">
           <Skeleton className="h-5 w-24" />
           <Skeleton className="h-10 w-full rounded-md" />
@@ -87,7 +81,6 @@ export function ArtifactEditorSkeleton() {
 export function WorkspaceShellSkeleton() {
   return (
     <div className="flex h-svh w-full overflow-hidden">
-      {/* Sidebar */}
       <div className="hidden h-full w-64 shrink-0 flex-col border-r bg-sidebar md:flex">
         <div className="flex flex-col gap-2 p-2">
           <div className="flex items-center gap-2 rounded-md p-2">
@@ -123,7 +116,6 @@ export function WorkspaceShellSkeleton() {
         </div>
       </div>
 
-      {/* Main content */}
       <ArtifactListPageSkeleton />
     </div>
   )

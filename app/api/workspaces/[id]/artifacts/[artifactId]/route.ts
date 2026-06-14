@@ -58,7 +58,6 @@ export async function PATCH(
       { status: 400 }
     )
   }
-  // Public exposure is an owner decision, not an editor one.
   if (isPublic !== undefined && role !== "owner")
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
@@ -111,7 +110,6 @@ export async function DELETE(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const { id, artifactId } = await params
-  // Deleting is a workspace-level action — artifact-only editors can't.
   const role = await getWorkspaceRole(id, session.user.id)
   if (!role) return NextResponse.json({ error: "Not found" }, { status: 404 })
   if (!canEdit(role))

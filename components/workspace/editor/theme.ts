@@ -2,7 +2,6 @@
 
 import type { EditorThemeClasses } from "lexical"
 
-// Single body text size — everything except headings derives from this.
 const BODY_TEXT = "text-sm leading-relaxed"
 
 export const editorTheme: EditorThemeClasses = {

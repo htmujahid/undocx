@@ -15,8 +15,6 @@ import {
 } from "@/components/ui/sidebar"
 import { sharedWithMeQueryOptions } from "@/lib/data/members"
 
-// Documents shared directly with the current user, across all workspaces.
-// Hidden entirely when nothing has been shared.
 export function SharedSection() {
   const pathname = usePathname()
   const { data: shared = [] } = useQuery(sharedWithMeQueryOptions)
@@ -35,7 +33,7 @@ export function SharedSection() {
                 size="sm"
                 isActive={pathname === href}
                 render={<Link href={href} />}
-                title={`${item.title} — ${item.workspaceName}`}
+                title={`${item.title}: ${item.workspaceName}`}
               >
                 <FileTextIcon />
                 <span className="truncate">{item.title}</span>

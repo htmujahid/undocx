@@ -32,15 +32,12 @@ export async function POST(
     return NextResponse.json({ error: "Invitation expired" }, { status: 410 })
   }
 
-  // The invitation belongs to the invited address, not whoever holds the link.
   if (inv.email !== session.user.email.toLowerCase())
     return NextResponse.json(
       { error: `This invitation was sent to ${inv.email}` },
       { status: 403 }
     )
 
-  // Tell the inviter their invitation was taken up. Best-effort, off the
-  // response path — a notification failure must never fail the accept.
   const notifyInviter = (
     type: "invitation_accepted",
     resourceName: string,
@@ -86,7 +83,6 @@ export async function POST(
     return NextResponse.json({ error: "Not found" }, { status: 404 })
   }
 
-  // Skip the direct share if the user already has workspace-wide access.
   const workspaceRole = await getWorkspaceRole(art.workspaceId, session.user.id)
   if (!workspaceRole) {
     await upsertArtifactMember(art.id, session.user.id, inv.role)
