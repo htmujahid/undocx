@@ -8,6 +8,7 @@ import {
 } from "ai"
 import { NextResponse } from "next/server"
 
+import { enforceDailyAiLimit } from "@/lib/ai/usage-limit"
 import { getSession } from "@/lib/auth"
 import { searchPublicUserChunks } from "@/lib/db/queries/artifact-chunk"
 import { getUserById } from "@/lib/db/queries/user"
@@ -27,6 +28,9 @@ export async function POST(
   const targetUser = await getUserById(userId)
   if (!targetUser)
     return NextResponse.json({ error: "Not found" }, { status: 404 })
+
+  const limited = await enforceDailyAiLimit(session.user.id)
+  if (limited) return limited
 
   const { messages } = await req.json()
 

@@ -8,6 +8,7 @@ import {
 } from "ai"
 import { NextResponse } from "next/server"
 
+import { enforceDailyAiLimit } from "@/lib/ai/usage-limit"
 import { getSession } from "@/lib/auth"
 import { getWorkspaceRole } from "@/lib/db/queries/access"
 import { searchWorkspaceChunks } from "@/lib/db/queries/artifact-chunk"
@@ -25,6 +26,9 @@ export async function POST(
   const { id: workspaceId } = await params
   const role = await getWorkspaceRole(workspaceId, session.user.id)
   if (!role) return NextResponse.json({ error: "Not found" }, { status: 404 })
+
+  const limited = await enforceDailyAiLimit(session.user.id)
+  if (limited) return limited
 
   const { messages } = await req.json()
 

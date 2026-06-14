@@ -8,12 +8,16 @@ import {
   replaceOutputSchema,
 } from "@/lib/ai/ai-schema"
 import { resolveContextDocuments } from "@/lib/ai/resolve-context"
+import { enforceDailyAiLimit } from "@/lib/ai/usage-limit"
 import { getSession } from "@/lib/auth"
 
 export async function POST(request: Request) {
   const session = await getSession()
   if (!session)
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
+  const limited = await enforceDailyAiLimit(session.user.id)
+  if (limited) return limited
 
   const {
     workspaceId,
