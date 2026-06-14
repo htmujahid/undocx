@@ -4,12 +4,11 @@ Undocx is a collaborative, AI-powered document workspace. Teams create workspace
 
 ## Demo
 
-<!-- Theme-aware: the dark video is used in dark mode, the light video in light mode. -->
+<!-- Theme-aware: GitHub shows the light video in light mode and the dark video in dark mode. -->
 
-<video width="100%" controls muted playsinline>
-  <source media="(prefers-color-scheme: dark)" src="public/undocx-dark.mp4" type="video/mp4">
-  <source src="public/undocx-light.mp4" type="video/mp4">
-</video>
+<video src="https://github.com/htmujahid/renderical/raw/main/public/undocx-light.mp4#gh-light-mode-only" controls muted playsinline width="100%"></video>
+
+<video src="https://github.com/htmujahid/renderical/raw/main/public/undocx-dark.mp4#gh-dark-mode-only" controls muted playsinline width="100%"></video>
 
 ## Features
 
