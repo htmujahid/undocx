@@ -13,7 +13,9 @@ import { getSession } from "@/lib/auth"
 import { getWorkspaceRole } from "@/lib/db/queries/access"
 import { searchWorkspaceChunks } from "@/lib/db/queries/artifact-chunk"
 
-const SYSTEM_PROMPT = `You are a helpful assistant for a personal knowledge base. Answer questions using only the provided context from the user's documents. Each context block is labelled with a numbered source like [1]. When a statement is supported by the context, cite the source inline using its bracketed number, e.g. "Revenue grew last quarter [2]." Cite every claim you draw from the context, and place the citation immediately after the relevant sentence. If the context does not contain enough information to answer confidently, say so clearly rather than guessing. Be concise and accurate.`
+const MAX_PROMPT_LENGTH = 8000
+
+const SYSTEM_PROMPT =`You are a helpful assistant for a personal knowledge base. Answer questions using only the provided context from the user's documents. Each context block is labelled with a numbered source like [1]. When a statement is supported by the context, cite the source inline using its bracketed number, e.g. "Revenue grew last quarter [2]." Cite every claim you draw from the context, and place the citation immediately after the relevant sentence. If the context does not contain enough information to answer confidently, say so clearly rather than guessing. Be concise and accurate.`
 
 export async function POST(
   req: Request,
@@ -43,6 +45,9 @@ export async function POST(
     .filter((p: { type: string }) => p.type === "text")
     .map((p: { type: string; text: string }) => p.text)
     .join("")
+
+  if (userText.length > MAX_PROMPT_LENGTH)
+    return NextResponse.json({ error: "Prompt is too long" }, { status: 413 })
 
   const { embedding: queryEmbedding } = await embed({
     model: openai.embedding("text-embedding-3-small"),

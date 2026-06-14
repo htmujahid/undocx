@@ -11,6 +11,8 @@ import { resolveContextDocuments } from "@/lib/ai/resolve-context"
 import { enforceDailyAiLimit } from "@/lib/ai/usage-limit"
 import { getSession } from "@/lib/auth"
 
+const MAX_PROMPT_LENGTH = 8000
+
 export async function POST(request: Request) {
   const session = await getSession()
   if (!session)
@@ -21,6 +23,9 @@ export async function POST(request: Request) {
 
   const { workspaceId, contextIds, beforeContent, afterContent, prompt } =
     await request.json()
+
+  if (typeof prompt === "string" && prompt.length > MAX_PROMPT_LENGTH)
+    return NextResponse.json({ error: "Prompt is too long" }, { status: 413 })
 
   const context = await resolveContextDocuments({
     workspaceId,
