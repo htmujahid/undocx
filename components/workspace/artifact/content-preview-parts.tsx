@@ -136,7 +136,7 @@ export function EditableTitle({ title }: { title: string }) {
       rows={1}
       value={value}
       aria-label="Document title"
-      placeholder="Untitled"
+      placeholder="..."
       spellCheck={false}
       onChange={(e) => setValue(e.target.value)}
       onBlur={commit}
