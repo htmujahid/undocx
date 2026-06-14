@@ -50,6 +50,28 @@ export function Hero() {
           </Link>
         </div>
       </div>
+
+      <div className="mx-auto max-w-5xl px-6 pb-24">
+        <div className="overflow-hidden rounded-xl border border-border/60 shadow-2xl shadow-primary/5">
+          {/* Theme-aware demo: light video in light mode, dark video in dark mode. */}
+          <video
+            className="-mt-5.5 block h-auto w-full dark:hidden"
+            src="/undocx-light.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+          />
+          <video
+            className="-mt-5.5 hidden h-auto w-full dark:block"
+            src="/undocx-dark.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+          />
+        </div>
+      </div>
     </section>
   )
 }
