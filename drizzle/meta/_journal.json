@@ -29,6 +29,13 @@
       "when": 1781405941764,
       "tag": "0003_legal_bishop",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1781411961380,
+      "tag": "0004_fearless_justin_hammer",
+      "breakpoints": true
     }
   ]
 }
