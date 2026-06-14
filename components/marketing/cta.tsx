@@ -20,8 +20,9 @@ export function CTA() {
               Start building your knowledge base
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-primary-foreground/70">
-              Generate content that fits your intent. Organize everything in one
-              place. Refine with AI as you go.
+              Generate structured documents, organize everything in one place,
+              edit with AI, and ask questions across it all. Free during early
+              access.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Link

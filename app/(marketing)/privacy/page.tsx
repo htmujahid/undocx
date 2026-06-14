@@ -5,11 +5,11 @@ const SECTIONS = [
   },
   {
     title: "2. How we use your information",
-    body: `We use your information to: provide and improve the Service; authenticate your identity; send transactional emails (password resets, billing receipts); send product updates and announcements (you can opt out at any time); detect and prevent fraud or abuse; and comply with legal obligations. We do not sell your personal data.`,
+    body: `We use your information to: provide and improve the Service; authenticate your identity, including two-factor authentication and email verification; send transactional emails (email verification, password resets, two-factor codes, collaboration invitations, and account-change confirmations); send product updates and announcements (you can opt out at any time); detect and prevent fraud or abuse; and comply with legal obligations. We do not sell your personal data.`,
   },
   {
     title: "3. AI-generated content",
-    body: `Your prompts and the content generated from them are stored to provide the Service — specifically, to populate your knowledge base, enable search, and support history features. We do not use your content to train AI models. We do not share your content with other users or third parties except where required by law.`,
+    body: `Your prompts and the content generated from them are stored to provide the Service — specifically, to populate your knowledge base, generate embeddings that power semantic search and document chat, and support history features. We do not use your content to train AI models. Your content is private to you unless you choose to share it — for example, by inviting collaborators to a workspace or document, or by enabling a public read-only link. We do not otherwise share your content with other users or third parties except where required by law.`,
   },
   {
     title: "4. Sharing your information",
@@ -25,7 +25,7 @@ const SECTIONS = [
   },
   {
     title: "7. Security",
-    body: `We implement industry-standard technical and organizational measures to protect your data, including encryption in transit (TLS) and at rest. No method of transmission over the internet is completely secure. We will notify you promptly in the event of a data breach that affects your personal information.`,
+    body: `We implement industry-standard technical and organizational measures to protect your data, including encryption in transit (TLS) and at rest. We support optional two-factor authentication, email verification, and session management to help keep your account secure. No method of transmission over the internet is completely secure. We will notify you promptly in the event of a data breach that affects your personal information.`,
   },
   {
     title: "8. Your rights",

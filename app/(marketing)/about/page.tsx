@@ -17,6 +17,33 @@ const VALUES = [
   },
 ]
 
+const CAPABILITIES = [
+  {
+    title: "Structured generation",
+    body: "Documents composed from tables, code, diagrams, callouts, math, and citations — not flat text.",
+  },
+  {
+    title: "AI inline editing",
+    body: "Select any part of a document and rewrite just that range, with an accept-or-reject preview.",
+  },
+  {
+    title: "Chat with your documents",
+    body: "Ask questions across your knowledge base and get answers grounded in your own sources, with citations.",
+  },
+  {
+    title: "Organized knowledge base",
+    body: "Nested folders, color-coded collections, favorites, archive, and a ⌘K command palette.",
+  },
+  {
+    title: "Team collaboration",
+    body: "Multiple workspaces, email invitations, editor and viewer roles, and per-document sharing.",
+  },
+  {
+    title: "Public links & export",
+    body: "Publish read-only links anyone can open, and export any document to Markdown anytime.",
+  },
+]
+
 const MILESTONES = [
   {
     year: "2024",
@@ -32,12 +59,14 @@ const MILESTONES = [
   {
     year: "2025 Q3",
     label: "Early access",
-    detail: "Opened to the public with six adaptive content formats.",
+    detail:
+      "Opened to the public with structured generation and a searchable knowledge base.",
   },
   {
     year: "Now",
     label: "Building",
-    detail: "Adding collaboration, more formats, and a richer knowledge base.",
+    detail:
+      "Shipping team collaboration, document chat with citations, and a richer editing experience.",
   },
 ]
 
@@ -77,15 +106,16 @@ export default function AboutPage() {
               </h2>
               <p className="mt-4 leading-relaxed text-muted-foreground">
                 Renderical is an intelligent content generation and knowledge
-                management platform. When you ask a question or give a prompt,
-                our AI decides the best way to present the answer — prose,
-                table, flowchart, flashcards, kanban, or a mix of several
-                formats at once.
+                management platform. When you give it a prompt, the AI writes a
+                structured document — composing tables, code, diagrams,
+                callouts, math, and footnoted citations into whatever mix the
+                topic actually needs.
               </p>
               <p className="mt-4 leading-relaxed text-muted-foreground">
-                Every response is saved to a personal knowledge base you can
-                organize, search, and build on. Think of it as a second brain
-                that speaks your language and remembers everything.
+                Every response is saved to a knowledge base you can organize,
+                search, edit with AI, share with a team, and ask questions
+                across. Think of it as a second brain that speaks your language
+                and remembers everything.
               </p>
             </div>
             <div>
@@ -104,6 +134,43 @@ export default function AboutPage() {
                 usable instead of something you have to process first.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* What's inside */}
+      <section className="border-b border-border/40">
+        <div className="mx-auto max-w-5xl px-6 py-20">
+          <h2 className="text-2xl font-semibold tracking-tight">
+            What&apos;s inside
+          </h2>
+          <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground">
+            Renderical is one place to generate, refine, organize, and share
+            structured knowledge. Here&apos;s what you get.
+          </p>
+          <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {CAPABILITIES.map((c) => (
+              <div key={c.title}>
+                <h3 className="flex items-center gap-2 font-semibold">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="size-4 shrink-0 text-primary"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  {c.title}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  {c.body}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

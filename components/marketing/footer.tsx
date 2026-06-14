@@ -35,8 +35,8 @@ export function Footer() {
               <span className="text-sm font-semibold">Renderical</span>
             </Link>
             <p className="text-xs leading-relaxed text-muted-foreground">
-              AI content that adapts its format to your question — prose,
-              tables, flowcharts, flashcards, and more.
+              AI that writes structured documents — tables, diagrams, code, and
+              citations — in a knowledge base you organize, share, and search.
             </p>
           </div>
 

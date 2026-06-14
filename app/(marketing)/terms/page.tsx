@@ -13,7 +13,7 @@ const SECTIONS = [
   },
   {
     title: "4. Content you generate",
-    body: `You retain ownership of the content you create using the Service. By using the Service, you grant Renderical a limited, non-exclusive license to store and process your content solely to provide the Service to you. We do not use your content to train AI models or share it with third parties without your consent.`,
+    body: `You retain ownership of the content you create using the Service. By using the Service, you grant Renderical a limited, non-exclusive license to store and process your content solely to provide the Service to you. You control how your content is shared — including inviting collaborators and enabling public read-only links — and you are responsible for what you choose to share. We do not use your content to train AI models or share it with third parties without your consent.`,
   },
   {
     title: "5. Prohibited activities",
@@ -25,7 +25,7 @@ const SECTIONS = [
   },
   {
     title: "7. Paid subscriptions",
-    body: `Paid plans are billed in advance on a monthly or annual basis. All charges are non-refundable except where required by law. We reserve the right to change pricing with at least 30 days' notice. If you cancel, you will retain access until the end of your current billing period.`,
+    body: `Renderical is currently in early access and free to use; paid plans are not yet available. When paid plans launch, they will be billed in advance on a monthly or annual basis. All charges are non-refundable except where required by law. We reserve the right to change pricing with at least 30 days' notice. If you cancel, you will retain access until the end of your current billing period.`,
   },
   {
     title: "8. Disclaimers",

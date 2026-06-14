@@ -33,9 +33,10 @@ export function Hero() {
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-          Stop getting walls of text. Renderical reads your intent and responds
-          in the format that actually fits, then keeps everything organized in a
-          knowledge base you own.
+          Stop getting walls of text. Renderical writes structured documents —
+          with tables, diagrams, code, callouts, and citations — then saves
+          everything to a knowledge base you can organize, search, share, and
+          ask questions across.
         </p>
 
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">

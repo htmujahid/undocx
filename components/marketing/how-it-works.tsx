@@ -5,19 +5,19 @@ const STEPS = [
     step: "01",
     title: "Ask anything",
     description:
-      "Type your question, topic, or task naturally. No special syntax, no format flags, no prompt engineering required.",
+      "Type your question, topic, or task in plain language. No special syntax, no format flags, no prompt engineering required.",
   },
   {
     step: "02",
-    title: "The AI picks the right format",
+    title: "Get a structured document",
     description:
-      "Renderical analyzes your query's intent and responds in the layout that best serves it: a flowchart, table, timeline, or guide.",
+      "The AI builds the response with the right blocks for the topic — tables, code, diagrams, callouts, math, and footnotes — instead of a flat wall of text.",
   },
   {
     step: "03",
-    title: "Organize and refine",
+    title: "Organize, refine, and share",
     description:
-      "Save to your knowledge base, edit any section inline with AI, and convert between formats as your needs evolve.",
+      "Everything saves to your knowledge base. Edit any section inline with AI, sort into folders and collections, chat with your documents, and share with your team or the world.",
   },
 ]
 
@@ -30,7 +30,7 @@ export function HowItWorks() {
             How it works
           </p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-            From query to knowledge base
+            From a prompt to a knowledge base
           </h2>
           <p className="mt-4 text-muted-foreground">
             Three steps. No configuration. No prompt engineering.

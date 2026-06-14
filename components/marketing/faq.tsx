@@ -9,28 +9,40 @@ import {
 
 const QUESTIONS = [
   {
-    q: "How does the AI decide which format to use?",
-    a: "It analyzes the intent of your query. A sequence gets a step-by-step or timeline format. A comparison gets a table. A concept gets a mind map. You don't need to specify; the model picks what fits.",
-  },
-  {
-    q: "Can I change the format after generation?",
-    a: "Yes. Any piece of content can be converted to a different layout after it's been generated. The AI reformats the existing content to fit the new structure.",
-  },
-  {
-    q: "Is my generated content saved automatically?",
-    a: "Everything you generate is stored in your personal knowledge base. Organize it with folders, tags, and collections. Search across all of it at any time.",
-  },
-  {
-    q: "How is this different from ChatGPT or other AI tools?",
-    a: "Most AI tools return text and nothing else. Renderical treats every response as a structured document and keeps it in an organized knowledge base. The focus is on both the shape of the output and what happens to it afterward.",
+    q: "How does the AI decide how to structure a response?",
+    a: "It reads the intent of your prompt and composes the document from the blocks that fit — tables for comparisons and data, fenced code for anything technical, SVG figures for charts and diagrams, callouts for key points, math for formulas, and footnotes for references. You don't pick a format; the model builds the right mix for the topic.",
   },
   {
     q: "Can I edit specific parts of the output?",
-    a: "Yes. Highlight any portion (a sentence, a table row, a list item) and prompt the AI to rewrite just that section, leaving everything else unchanged.",
+    a: "Yes. Select any portion of a document — a sentence, a table row, a paragraph — and tell the AI what to change in plain language. It rewrites just that range and shows the proposed change inline, so you can accept or reject it before anything is saved. The rest of the document stays untouched.",
+  },
+  {
+    q: "Is my generated content saved automatically?",
+    a: "Everything you generate is saved to your knowledge base as a document you own. Organize it with nested folders and color-coded collections, star favorites, archive what you're done with, and jump to anything instantly with the ⌘K command palette.",
+  },
+  {
+    q: "Can I ask questions about my own documents?",
+    a: "Yes. Renderical can chat across your knowledge base — it searches your documents semantically and answers with inline citations, so you can trace every claim back to the source it came from.",
+  },
+  {
+    q: "Can I collaborate with a team?",
+    a: "Yes. Create multiple workspaces and invite teammates by email as editors or viewers. You can share an entire workspace or just a single document, and roles control exactly who can edit versus view.",
+  },
+  {
+    q: "Can I share something publicly?",
+    a: "Yes. Turn on public access for any document to get a read-only link that anyone can open — no account or sign-in required. Turn it off anytime to make it private again.",
+  },
+  {
+    q: "How do you handle my data and security?",
+    a: "Your content is yours — we don't use it to train AI models or share it with other users. Sign in with email and password or with Google, secure your account with two-factor authentication, and export any document to Markdown whenever you want.",
+  },
+  {
+    q: "How is this different from ChatGPT or other AI tools?",
+    a: "Most AI tools return text and forget it. Renderical treats every response as a structured document, keeps it in an organized knowledge base you can search and share, lets you edit it with AI, and lets you ask questions back across everything you've saved.",
   },
   {
     q: "Is there a free plan?",
-    a: "Pricing is being finalized. Sign up now to get early access and be the first to know about launch details.",
+    a: "Renderical is in early access and free to use while we finalize pricing. Sign up now to get in and be the first to know about launch details.",
   },
 ]
 

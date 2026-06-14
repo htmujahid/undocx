@@ -2,24 +2,29 @@
 
 const ROWS = [
   {
-    label: "Output formats",
-    conventional: "Text or image only",
-    renderical: "Adaptive output layouts",
+    label: "Output",
+    conventional: "Plain walls of text",
+    renderical: "Tables, diagrams, code & math",
   },
   {
     label: "Organization",
     conventional: "No organization",
-    renderical: "Folders, tags, collections",
+    renderical: "Folders, collections, favorites",
   },
   {
     label: "Editing",
-    conventional: "Static responses",
-    renderical: "AI-assisted inline editing",
+    conventional: "Regenerate the whole reply",
+    renderical: "Select a part, edit just that",
   },
   {
-    label: "Workflow",
-    conventional: "One-shot generation",
-    renderical: "Iterative refinement",
+    label: "Q&A",
+    conventional: "Forgets past chats",
+    renderical: "Chat across your docs, with citations",
+  },
+  {
+    label: "Collaboration",
+    conventional: "Copy-paste into other tools",
+    renderical: "Shared workspaces & public links",
   },
   {
     label: "History",
