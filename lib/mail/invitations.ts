@@ -1,5 +1,6 @@
 import { type MemberRole } from "@/lib/db/schema"
-import { mailer } from "@/lib/mailer"
+
+import { mailer } from "./mailer"
 
 export function isInvitationExpired(inv: { expiresAt: Date }) {
   return inv.expiresAt.getTime() < Date.now()

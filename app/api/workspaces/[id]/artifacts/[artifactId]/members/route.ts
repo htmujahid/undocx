@@ -14,7 +14,7 @@ import {
 import { getUserByEmail } from "@/lib/db/queries/user"
 import { getWorkspaceMember } from "@/lib/db/queries/workspace-member"
 import { MEMBER_ROLES, type MemberRole } from "@/lib/db/schema"
-import { sendInvitationEmail } from "@/lib/invitations"
+import { sendInvitationEmail } from "@/lib/mail/invitations"
 
 export async function GET(
   _req: Request,

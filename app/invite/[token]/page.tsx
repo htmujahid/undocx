@@ -5,7 +5,7 @@ import { InvitationActions } from "@/components/invite/invitation-actions"
 import { buttonVariants } from "@/components/ui/button"
 import { getSession } from "@/lib/auth"
 import { getInvitationDetailsByToken } from "@/lib/db/queries/invitation"
-import { isInvitationExpired } from "@/lib/invitations"
+import { isInvitationExpired } from "@/lib/mail/invitations"
 
 // Invitations can be revoked at any moment — always resolve at request time.
 export const dynamic = "force-dynamic"

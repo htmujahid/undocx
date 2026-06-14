@@ -8,7 +8,13 @@ import { headers } from "next/headers"
 
 import { db } from "@/lib/db"
 import { workspace } from "@/lib/db/schema"
-import { mailer } from "@/lib/mailer"
+import {
+  sendChangeEmailVerification,
+  sendDeleteAccountVerification,
+  sendOtpEmail,
+  sendResetPasswordEmail,
+  sendVerificationEmail,
+} from "@/lib/mail/auth-emails"
 
 export const auth = betterAuth({
   appName: "Renderical",
@@ -19,12 +25,7 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: true,
     sendResetPassword: async ({ user, url }) => {
-      void mailer.sendMail({
-        from: "noreply@renderical.com",
-        to: user.email,
-        subject: "Reset your password",
-        html: `<p>Hi ${user.name},</p><p>Click <a href="${url}">here</a> to reset your password</p><p>Or copy and paste the link below into your browser:</p><p>${url}</p>`,
-      })
+      sendResetPasswordEmail({ user, url })
     },
   },
   user: {
@@ -40,24 +41,14 @@ export const auth = betterAuth({
         newEmail: string
         url: string
       }) => {
-        void mailer.sendMail({
-          from: "noreply@renderical.com",
-          to: user.email,
-          subject: "Change your email address",
-          html: `<p>Hi ${user.name},</p><p>Click <a href="${url}">here</a> to change your email to ${newEmail}</p><p>Or copy and paste the link below into your browser:</p><p>${url}</p>`,
-        })
+        sendChangeEmailVerification({ user, newEmail, url })
       },
     },
     deleteUser: {
       enabled: true,
       deleteSessions: true,
       sendDeleteAccountVerification: async ({ user, url }) => {
-        void mailer.sendMail({
-          from: "noreply@renderical.com",
-          to: user.email,
-          subject: "Delete your account",
-          html: `<p>Hi ${user.name},</p><p>Click <a href="${url}">here</a> to delete your account</p><p>Or copy and paste the link below into your browser:</p><p>${url}</p>`,
-        })
+        sendDeleteAccountVerification({ user, url })
       },
     },
   },
@@ -65,12 +56,7 @@ export const auth = betterAuth({
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
-      void mailer.sendMail({
-        from: "noreply@renderical.com",
-        to: user.email,
-        subject: "Verify your email address",
-        html: `<p>Hi ${user.name},</p><p>Click <a href="${url}">here</a> to verify your email</p><p>Or copy and paste the link below into your browser:</p><p>${url}</p>`,
-      })
+      sendVerificationEmail({ user, url })
     },
   },
   databaseHooks: {
@@ -99,12 +85,7 @@ export const auth = betterAuth({
     twoFactor({
       otpOptions: {
         async sendOTP({ user, otp }) {
-          void mailer.sendMail({
-            from: "noreply@renderical.com",
-            to: user.email,
-            subject: "Your verification code",
-            html: `<p>Hi ${user.name},</p><p>Your verification code is: <strong>${otp}</strong></p><p>This code expires in 3 minutes. Do not share it with anyone.</p>`,
-          })
+          sendOtpEmail({ user, otp })
         },
       },
     }),

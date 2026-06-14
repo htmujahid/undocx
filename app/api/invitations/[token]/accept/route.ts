@@ -9,7 +9,7 @@ import {
   getInvitationByToken,
 } from "@/lib/db/queries/invitation"
 import { upsertWorkspaceMember } from "@/lib/db/queries/workspace-member"
-import { isInvitationExpired } from "@/lib/invitations"
+import { isInvitationExpired } from "@/lib/mail/invitations"
 
 export async function POST(
   _req: Request,
