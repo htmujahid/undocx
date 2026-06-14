@@ -2,6 +2,15 @@
 
 Undocx is a collaborative, AI-powered document workspace. Teams create workspaces, write and organize rich Markdown documents ("artifacts"), and use an AI assistant to generate content, ask questions, and edit sections in place. Artifacts can be shared with members, organized into folders and collections, and published as read-only public links.
 
+## Demo
+
+<!-- Theme-aware: the dark video is used in dark mode, the light video in light mode. -->
+
+<video width="100%" controls muted playsinline>
+  <source media="(prefers-color-scheme: dark)" src="public/undocx-dark.mp4" type="video/mp4">
+  <source src="public/undocx-light.mp4" type="video/mp4">
+</video>
+
 ## Features
 
 - **Workspaces & collaboration** — invite members by email with editor/viewer roles; per-artifact access control on top of workspace roles.
