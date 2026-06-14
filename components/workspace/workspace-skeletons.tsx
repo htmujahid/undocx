@@ -41,36 +41,63 @@ export function ArtifactListPageSkeleton() {
 export function ArtifactEditorSkeleton() {
   return (
     <div className="flex h-svh min-w-0 flex-1 flex-col overflow-hidden">
-      <header className="flex h-11 shrink-0 items-center border-b px-2 gap-2">
-        <Skeleton className="h-6 w-6 rounded" />
-        <Skeleton className="h-4 w-32" />
+      <header className="flex h-11 shrink-0 items-center gap-1 border-b px-2">
+        <Skeleton className="size-7 rounded" />
+        <Skeleton className="ml-1 h-3.5 w-36" />
         <div className="flex-1" />
-        <Skeleton className="h-6 w-6 rounded" />
+        <Skeleton className="size-7 rounded" />
+        <Skeleton className="size-7 rounded" />
+        <Skeleton className="size-7 rounded" />
       </header>
 
       <div className="flex min-h-0 flex-1">
-        <div className="flex min-h-0 flex-1 flex-col px-16 py-10 gap-4">
-          <Skeleton className="h-8 w-56" />
-          <div className="flex flex-col gap-3 mt-2">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-5/6" />
-            <Skeleton className="h-4 w-4/6" />
-          </div>
-          <div className="flex flex-col gap-3 mt-4">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-3/4" />
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-2/3" />
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+          <div className="mx-auto w-full max-w-[720px] px-4 py-6 sm:px-8 sm:py-8">
+            <div className="mb-6">
+              <Skeleton className="mb-3 h-2.5 w-28" />
+              <Skeleton className="h-8 w-64" />
+              <div className="mt-2 flex items-center gap-3">
+                <Skeleton className="h-2.5 w-16" />
+                <Skeleton className="h-2.5 w-12" />
+              </div>
+            </div>
+
+            <div className="mb-6 h-px bg-border" />
+
+            <div className="space-y-3">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6" />
+              <Skeleton className="h-4 w-4/5" />
+            </div>
+            <div className="mt-6 space-y-3">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-2/3" />
+            </div>
+            <div className="mt-6 space-y-3">
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6" />
+              <Skeleton className="h-4 w-3/5" />
+            </div>
           </div>
         </div>
 
-        <div className="hidden w-96 shrink-0 flex-col border-l px-4 py-6 gap-4 lg:flex">
-          <Skeleton className="h-5 w-24" />
-          <Skeleton className="h-10 w-full rounded-md" />
-          <div className="flex flex-col gap-2 mt-2">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-5/6" />
-            <Skeleton className="h-4 w-4/6" />
+        <div className="hidden w-96 shrink-0 flex-col border-l lg:flex">
+          <div className="flex h-11 shrink-0 items-center gap-2 border-b px-3">
+            <Skeleton className="h-3.5 w-20" />
+            <div className="flex-1" />
+            <Skeleton className="size-7 rounded" />
+          </div>
+          <div className="flex flex-1 flex-col gap-3 p-4">
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-5/6" />
+              <Skeleton className="h-4 w-2/3" />
+            </div>
+            <div className="mt-auto">
+              <Skeleton className="h-9 w-full rounded-md" />
+            </div>
           </div>
         </div>
       </div>

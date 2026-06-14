@@ -5,9 +5,8 @@ import { useState } from "react"
 import {
   ArrowUpIcon,
   CheckIcon,
-  MessageCircleIcon,
-  MousePointerClickIcon,
-  PencilIcon,
+  ChevronDownIcon,
+  ScanTextIcon,
   SparklesIcon,
   XIcon,
 } from "lucide-react"
@@ -18,11 +17,13 @@ import { Sidebar, SidebarFooter, SidebarHeader } from "@/components/ui/sidebar"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { AssistantAsk } from "@/components/workspace/assistant/assistant-ask"
 import { ModeBadge } from "@/components/workspace/assistant/assistant-mode-badge"
-import { AssistantPanels } from "@/components/workspace/assistant/assistant-panels"
+import { ContextArtifactList } from "@/components/workspace/assistant/context-artifact-list"
+import { DocumentOutline } from "@/components/workspace/assistant/document-outline"
 import { useAssistantSubmit } from "@/components/workspace/assistant/use-assistant-submit"
 import { cn } from "@/lib/utils"
 
-type AssistantMode = "ask" | "edit"
+type MainTab = "outline" | "copilot"
+type CopilotMode = "ask" | "edit"
 
 export function ArtifactAssistant({
   workspaceId,
@@ -31,7 +32,8 @@ export function ArtifactAssistant({
   workspaceId: string
   artifactId: string
 }) {
-  const [mode, setMode] = useState<AssistantMode>("ask")
+  const [tab, setTab] = useState<MainTab>("copilot")
+  const [copilotMode, setCopilotMode] = useState<CopilotMode>("ask")
   const [prompt, setPrompt] = useState("")
   const [contextIds, setContextIds] = useState<Set<string>>(new Set())
 
@@ -72,45 +74,45 @@ export function ArtifactAssistant({
 
   return (
     <Sidebar side="right" collapsible="offcanvas">
-      <SidebarHeader className="gap-2.5 border-b px-4 py-3">
-        <div className="flex items-center gap-2">
-          <SparklesIcon className="size-3.5 text-primary" />
-          <span className="text-sm font-semibold">Assistant</span>
-          {mode === "edit" && (isLoading || isSaving) && (
-            <span className="ml-auto animate-pulse text-[10px] text-muted-foreground">
-              {isSaving ? "Saving…" : loadingLabel}
-            </span>
-          )}
+      <SidebarHeader className="gap-0 border-b p-0">
+        <div className="px-3 pt-3 pb-2.5">
+          <ToggleGroup
+            value={[tab]}
+            onValueChange={(value) => {
+              const next = (value as MainTab[])[0]
+              if (next) setTab(next)
+            }}
+            spacing={0}
+            variant="outline"
+            size="sm"
+            className="w-full"
+          >
+            <ToggleGroupItem value="outline" className="flex-1 text-xs">
+              <ScanTextIcon className="size-3.5" /> Outline
+            </ToggleGroupItem>
+            <ToggleGroupItem value="copilot" className="flex-1 text-xs">
+              <SparklesIcon className="size-3.5" /> Copilot
+            </ToggleGroupItem>
+          </ToggleGroup>
         </div>
-        <ToggleGroup
-          value={[mode]}
-          onValueChange={(value) => {
-            const next = (value as AssistantMode[])[0]
-            if (next) setMode(next)
-          }}
-          spacing={0}
-          variant="outline"
-          size="sm"
-          className="w-full"
-        >
-          <ToggleGroupItem value="ask" className="flex-1 text-xs">
-            <MessageCircleIcon className="size-3.5" /> Ask
-          </ToggleGroupItem>
-          <ToggleGroupItem value="edit" className="flex-1 text-xs">
-            <PencilIcon className="size-3.5" /> Edit
-          </ToggleGroupItem>
-        </ToggleGroup>
       </SidebarHeader>
 
-      {mode === "ask" ? (
-        <AssistantAsk workspaceId={workspaceId} contextIds={contextIds} />
+      {tab === "outline" ? (
+        <DocumentOutline />
+      ) : copilotMode === "ask" ? (
+        <AssistantAsk
+          workspaceId={workspaceId}
+          contextIds={contextIds}
+          copilotMode={copilotMode}
+          onModeChange={setCopilotMode}
+        />
       ) : (
         <>
-          <AssistantPanels
+          <ContextArtifactList
             workspaceId={workspaceId}
             excludeId={artifactId}
-            contextIds={contextIds}
-            onToggleContext={toggleContext}
+            selectedIds={contextIds}
+            onToggle={toggleContext}
           />
 
           <SidebarFooter className="p-0">
@@ -152,13 +154,6 @@ export function ArtifactAssistant({
                     </Button>
                   </div>
                 </div>
-              ) : disabled ? (
-                <div className="flex flex-col items-center gap-2.5 rounded-xl border border-dashed py-6 text-center">
-                  <MousePointerClickIcon className="size-5 text-muted-foreground/40" />
-                  <p className="text-xs text-muted-foreground">
-                    Hover the document to place a marker
-                  </p>
-                </div>
               ) : (
                 <>
                   <div
@@ -171,21 +166,37 @@ export function ArtifactAssistant({
                       value={prompt}
                       onChange={(e) => setPrompt(e.target.value)}
                       onKeyDown={onKeyDown}
-                      placeholder={placeholder}
+                      placeholder={
+                        disabled
+                          ? "Hover the document to place a marker…"
+                          : placeholder
+                      }
                       rows={3}
                       className="w-full resize-none bg-transparent px-3 pb-1 pt-3 text-xs placeholder:text-muted-foreground focus:outline-none"
                     />
                     <div className="flex items-center justify-between px-2 pb-2">
-                      <span className="text-[10px] text-muted-foreground">
-                        {(isLoading || isSaving) && (
-                          <span className="animate-pulse">
-                            {isSaving ? "Saving…" : loadingLabel}
-                          </span>
-                        )}
-                      </span>
+                      {isLoading || isSaving ? (
+                        <span className="animate-pulse text-[10px] text-muted-foreground">
+                          {isSaving ? "Saving…" : loadingLabel}
+                        </span>
+                      ) : (
+                        <div className="relative flex items-center">
+                          <select
+                            value={copilotMode}
+                            onChange={(e) =>
+                              setCopilotMode(e.target.value as CopilotMode)
+                            }
+                            className="cursor-pointer appearance-none bg-transparent py-0.5 pl-1.5 pr-4 text-[10px] font-medium text-muted-foreground outline-none transition-colors hover:text-foreground"
+                          >
+                            <option value="ask">Ask</option>
+                            <option value="edit">Edit</option>
+                          </select>
+                          <ChevronDownIcon className="pointer-events-none absolute right-0 size-2.5 text-muted-foreground" />
+                        </div>
+                      )}
                       <Button
                         size="icon-sm"
-                        disabled={!prompt.trim() || isLoading}
+                        disabled={disabled || !prompt.trim() || isLoading}
                         onClick={onSubmit}
                       >
                         <ArrowUpIcon />

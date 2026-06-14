@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react"
 
 import { useChat } from "@ai-sdk/react"
 import { DefaultChatTransport, type UIMessage, isTextUIPart } from "ai"
-import { BotIcon, SparklesIcon } from "lucide-react"
+import { BotIcon, ChevronDownIcon, SparklesIcon } from "lucide-react"
 
 import { $convertToMarkdownString } from "@lexical/markdown"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button"
 import { UNDOCX_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
 import { cn } from "@/lib/utils"
 
-const MARKER_RE = /<!-- @(?:selection|removed):(?:start|end) -->/g
+const REMOVED_MARKER_RE = /<!-- @removed:(?:start|end) -->/g
 
 function getMessageText(message: UIMessage): string {
   return message.parts
@@ -25,9 +25,13 @@ function getMessageText(message: UIMessage): string {
 export function AssistantAsk({
   workspaceId,
   contextIds,
+  copilotMode,
+  onModeChange,
 }: {
   workspaceId: string
   contextIds: Set<string>
+  copilotMode: "ask" | "edit"
+  onModeChange: (mode: "ask" | "edit") => void
 }) {
   const [editor] = useLexicalComposerContext()
   const [input, setInput] = useState("")
@@ -48,7 +52,7 @@ export function AssistantAsk({
     editor.getEditorState().read(() => {
       md = $convertToMarkdownString(UNDOCX_TRANSFORMERS)
     })
-    return md.replace(MARKER_RE, "").trim()
+    return md.replace(REMOVED_MARKER_RE, "").trim()
   }
 
   const onSubmit = () => {
@@ -151,13 +155,25 @@ export function AssistantAsk({
             className="w-full resize-none bg-transparent px-3 pb-1 pt-3 text-xs placeholder:text-muted-foreground focus:outline-none"
           />
           <div className="flex items-center justify-between px-2 pb-2">
-            <span className="text-[10px] text-muted-foreground">
-              {isLoading && (
-                <span className="flex items-center gap-1 animate-pulse">
-                  <BotIcon className="size-3" /> Thinking…
-                </span>
-              )}
-            </span>
+            {isLoading ? (
+              <span className="flex animate-pulse items-center gap-1 text-[10px] text-muted-foreground">
+                <BotIcon className="size-3" /> Thinking…
+              </span>
+            ) : (
+              <div className="relative flex items-center">
+                <select
+                  value={copilotMode}
+                  onChange={(e) =>
+                    onModeChange(e.target.value as "ask" | "edit")
+                  }
+                  className="cursor-pointer appearance-none bg-transparent py-0.5 pl-1.5 pr-4 text-[10px] font-medium text-muted-foreground outline-none transition-colors hover:text-foreground"
+                >
+                  <option value="ask">Ask</option>
+                  <option value="edit">Edit</option>
+                </select>
+                <ChevronDownIcon className="pointer-events-none absolute right-0 size-2.5 text-muted-foreground" />
+              </div>
+            )}
             <Button
               size="icon-sm"
               disabled={!input.trim() || isLoading}
