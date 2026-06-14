@@ -6,6 +6,7 @@ import { useChat } from "@ai-sdk/react"
 import { DefaultChatTransport, type UIMessage, isTextUIPart } from "ai"
 import { BotIcon, SendIcon, UserIcon } from "lucide-react"
 
+import { CitedMessage } from "@/components/workspace/cited-message"
 import { Button } from "@/components/ui/button"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Textarea } from "@/components/ui/textarea"
@@ -95,9 +96,18 @@ export function ChatView({ workspaceId }: { workspaceId: string }) {
                       : "bg-muted"
                   )}
                 >
-                  <p className="whitespace-pre-wrap">
-                    {getMessageText(message)}
-                  </p>
+                  {message.role === "assistant" ? (
+                    <CitedMessage
+                      message={message}
+                      hrefFor={(artifactId) =>
+                        `/workspace/${workspaceId}/${artifactId}`
+                      }
+                    />
+                  ) : (
+                    <p className="whitespace-pre-wrap">
+                      {getMessageText(message)}
+                    </p>
+                  )}
                 </div>
               </div>
             ))}

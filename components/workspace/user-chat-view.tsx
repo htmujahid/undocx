@@ -7,6 +7,7 @@ import { DefaultChatTransport, type UIMessage, isTextUIPart } from "ai"
 import { BotIcon, HomeIcon, SendIcon, UserIcon } from "lucide-react"
 import Link from "next/link"
 
+import { CitedMessage } from "@/components/workspace/cited-message"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -132,9 +133,16 @@ export function UserChatView({
                       : "bg-muted"
                   )}
                 >
-                  <p className="whitespace-pre-wrap">
-                    {getMessageText(message)}
-                  </p>
+                  {message.role === "assistant" ? (
+                    <CitedMessage
+                      message={message}
+                      hrefFor={(artifactId) => `/share/${artifactId}`}
+                    />
+                  ) : (
+                    <p className="whitespace-pre-wrap">
+                      {getMessageText(message)}
+                    </p>
+                  )}
                 </div>
               </div>
             ))}

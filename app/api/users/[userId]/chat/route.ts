@@ -1,12 +1,18 @@
 import { openai } from "@ai-sdk/openai"
-import { convertToModelMessages, embed, streamText } from "ai"
+import {
+  convertToModelMessages,
+  createUIMessageStream,
+  createUIMessageStreamResponse,
+  embed,
+  streamText,
+} from "ai"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
 import { searchPublicUserChunks } from "@/lib/db/queries/artifact-chunk"
 import { getUserById } from "@/lib/db/queries/user"
 
-const SYSTEM_PROMPT = `You are a helpful assistant for a personal knowledge base. Answer questions using only the provided context from the user's public documents. If the context does not contain enough information to answer confidently, say so clearly rather than guessing. Be concise and accurate.`
+const SYSTEM_PROMPT = `You are a helpful assistant for a personal knowledge base. Answer questions using only the provided context from the user's public documents. Each context block is labelled with a numbered source like [1]. When a statement is supported by the context, cite the source inline using its bracketed number, e.g. "Revenue grew last quarter [2]." Cite every claim you draw from the context, and place the citation immediately after the relevant sentence. If the context does not contain enough information to answer confidently, say so clearly rather than guessing. Be concise and accurate.`
 
 export async function POST(
   req: Request,
@@ -43,10 +49,17 @@ export async function POST(
 
   const chunks = await searchPublicUserChunks(userId, queryEmbedding)
 
+  const sources = chunks.map((c, i) => ({
+    id: i + 1,
+    artifactId: c.artifactId,
+    title: c.artifactTitle,
+    heading: c.heading,
+  }))
+
   const context = chunks
     .map(
-      (c) =>
-        `### ${c.artifactTitle}${c.heading ? ` — ${c.heading}` : ""}\n\n${c.content}`
+      (c, i) =>
+        `[${i + 1}] ${c.artifactTitle}${c.heading ? ` — ${c.heading}` : ""}\n\n${c.content}`
     )
     .join("\n\n---\n\n")
 
@@ -54,11 +67,25 @@ export async function POST(
     ? `${SYSTEM_PROMPT}\n\nRelevant context from the knowledge base:\n\n${context}`
     : `${SYSTEM_PROMPT}\n\nNo relevant context was found. Let the user know the knowledge base may not have content on this topic.`
 
-  const result = streamText({
-    model: openai("gpt-4o-mini"),
-    system,
-    messages: await convertToModelMessages(messages),
+  const modelMessages = await convertToModelMessages(messages)
+
+  const stream = createUIMessageStream({
+    execute: ({ writer }) => {
+      // Emit the cited sources up front so the client can render citation
+      // links as the answer streams in.
+      if (sources.length > 0) {
+        writer.write({ type: "data-sources", data: sources })
+      }
+
+      const result = streamText({
+        model: openai("gpt-4o-mini"),
+        system,
+        messages: modelMessages,
+      })
+
+      writer.merge(result.toUIMessageStream())
+    },
   })
 
-  return result.toUIMessageStreamResponse()
+  return createUIMessageStreamResponse({ stream })
 }

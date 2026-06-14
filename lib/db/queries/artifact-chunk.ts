@@ -16,6 +16,7 @@ export function searchWorkspaceChunks(
   const vectorString = vectorLiteral(embedding)
   return db
     .select({
+      artifactId: artifact.id,
       content: artifactChunk.content,
       heading: artifactChunk.heading,
       artifactTitle: artifact.title,
@@ -40,6 +41,7 @@ export function searchChunksInArtifacts(
   const vectorString = vectorLiteral(embedding)
   return db
     .select({
+      artifactId: artifact.id,
       content: artifactChunk.content,
       heading: artifactChunk.heading,
       artifactTitle: artifact.title,
@@ -60,6 +62,7 @@ export function searchPublicUserChunks(
   const vectorString = vectorLiteral(embedding)
   return db
     .select({
+      artifactId: artifact.id,
       content: artifactChunk.content,
       heading: artifactChunk.heading,
       artifactTitle: artifact.title,
