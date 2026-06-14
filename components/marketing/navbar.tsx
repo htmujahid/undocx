@@ -24,7 +24,7 @@ export function Navbar() {
 
   const handleSignOut = async () => {
     await signOut()
-    router.push("/")
+    window.location.href = "/"
   }
 
   const initials = user?.name

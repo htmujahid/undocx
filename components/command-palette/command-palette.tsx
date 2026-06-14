@@ -239,7 +239,7 @@ export function CommandPalette({
               onSelect={() =>
                 runCommand(async () => {
                   await signOut()
-                  router.push("/")
+                  window.location.href = "/"
                 })
               }
             >
