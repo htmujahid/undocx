@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 
-import { ContentEditable } from "@lexical/react/LexicalContentEditable"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
+import { ContentEditable } from "@lexical/react/LexicalContentEditable"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
