@@ -31,7 +31,7 @@ export function AssistantAsk({
   workspaceId: string
   contextIds: Set<string>
   copilotMode: "ask" | "edit"
-  onModeChange: (mode: "ask" | "edit") => void
+  onModeChange?: (mode: "ask" | "edit") => void
 }) {
   const [editor] = useLexicalComposerContext()
   const [input, setInput] = useState("")
@@ -159,7 +159,7 @@ export function AssistantAsk({
               <span className="flex animate-pulse items-center gap-1 text-[10px] text-muted-foreground">
                 <BotIcon className="size-3" /> Thinking…
               </span>
-            ) : (
+            ) : onModeChange ? (
               <div className="relative flex items-center">
                 <select
                   value={copilotMode}
@@ -173,6 +173,10 @@ export function AssistantAsk({
                 </select>
                 <ChevronDownIcon className="pointer-events-none absolute right-0 size-2.5 text-muted-foreground" />
               </div>
+            ) : (
+              <span className="py-0.5 pl-1.5 text-[10px] font-medium text-muted-foreground">
+                Ask
+              </span>
             )}
             <Button
               size="icon-sm"

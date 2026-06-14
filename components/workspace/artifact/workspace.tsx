@@ -162,16 +162,15 @@ export function Workspace({
                   isPublic={art?.isPublic ?? false}
                 />
               )}
-              {canEdit && <AssistantToggle />}
+              <AssistantToggle />
             </header>
             <ContentPreview title={title} />
           </div>
-          {canEdit && (
-            <ArtifactAssistant
-              workspaceId={workspaceId}
-              artifactId={artifactId}
-            />
-          )}
+          <ArtifactAssistant
+            workspaceId={workspaceId}
+            artifactId={artifactId}
+            canEdit={canEdit}
+          />
         </SidebarProvider>
       </div>
     </LexicalExtensionComposer>

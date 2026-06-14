@@ -28,9 +28,11 @@ type CopilotMode = "ask" | "edit"
 export function ArtifactAssistant({
   workspaceId,
   artifactId,
+  canEdit = true,
 }: {
   workspaceId: string
   artifactId: string
+  canEdit?: boolean
 }) {
   const [tab, setTab] = useState<MainTab>("copilot")
   const [copilotMode, setCopilotMode] = useState<CopilotMode>("ask")
@@ -99,12 +101,12 @@ export function ArtifactAssistant({
 
       {tab === "outline" ? (
         <DocumentOutline />
-      ) : copilotMode === "ask" ? (
+      ) : !canEdit || copilotMode === "ask" ? (
         <AssistantAsk
           workspaceId={workspaceId}
           contextIds={contextIds}
-          copilotMode={copilotMode}
-          onModeChange={setCopilotMode}
+          copilotMode={canEdit ? copilotMode : "ask"}
+          onModeChange={canEdit ? setCopilotMode : undefined}
         />
       ) : (
         <>

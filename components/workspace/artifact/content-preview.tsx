@@ -1,11 +1,13 @@
 "use client"
 
-import { useRef } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 import { ContentEditable } from "@lexical/react/LexicalContentEditable"
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   EditableTitle,
   FootnoteList,
@@ -13,8 +15,29 @@ import {
 } from "@/components/workspace/artifact/content-preview-parts"
 import { SelectionMarkerPlugin } from "@/components/workspace/editor/selection-marker-plugin"
 
+function EditorReadyPlugin({ onReady }: { onReady: () => void }) {
+  const [editor] = useLexicalComposerContext()
+
+  useEffect(() => {
+    const unregister = editor.registerUpdateListener(() => {
+      onReady()
+      unregister()
+    })
+    // Fallback for empty editors where no update fires
+    const t = setTimeout(onReady, 500)
+    return () => {
+      unregister()
+      clearTimeout(t)
+    }
+  }, [editor, onReady])
+
+  return null
+}
+
 export function ContentPreview({ title }: { title: string }) {
   const contentRef = useRef<HTMLDivElement>(null!)
+  const [isReady, setIsReady] = useState(false)
+  const onReady = useCallback(() => setIsReady(true), [])
 
   return (
     <div className="min-h-0 min-w-0 flex-1 overflow-hidden">
@@ -37,10 +60,30 @@ export function ContentPreview({ title }: { title: string }) {
 
           <Separator className="mb-6" />
 
-          <ContentEditable className="space-y-3 outline-none" />
+          <div className="relative">
+            <ContentEditable className="space-y-3 outline-none" />
+            {!isReady && (
+              <div className="absolute inset-0 space-y-3">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-4 w-4/5" />
+                <div className="pt-4 space-y-3">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-2/3" />
+                </div>
+                <div className="pt-4 space-y-3">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-5/6" />
+                  <Skeleton className="h-4 w-3/5" />
+                </div>
+              </div>
+            )}
+          </div>
 
+          <EditorReadyPlugin onReady={onReady} />
           <SelectionMarkerPlugin containerRef={contentRef} />
-
           <FootnoteList />
         </div>
       </ScrollArea>
