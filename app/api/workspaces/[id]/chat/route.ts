@@ -1,12 +1,10 @@
 import { openai } from "@ai-sdk/openai"
 import { convertToModelMessages, embed, streamText } from "ai"
-import { and, eq, sql } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { getWorkspaceRole } from "@/lib/db/access"
-import { artifact, artifactChunk } from "@/lib/db/schema"
+import { getWorkspaceRole } from "@/lib/db/queries/access"
+import { searchWorkspaceChunks } from "@/lib/db/queries/artifact-chunk"
 
 const SYSTEM_PROMPT = `You are a helpful assistant for a personal knowledge base. Answer questions using only the provided context from the user's documents. If the context does not contain enough information to answer confidently, say so clearly rather than guessing. Be concise and accurate.`
 
@@ -20,8 +18,7 @@ export async function POST(
 
   const { id: workspaceId } = await params
   const role = await getWorkspaceRole(workspaceId, session.user.id)
-  if (!role)
-    return NextResponse.json({ error: "Not found" }, { status: 404 })
+  if (!role) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   const { messages } = await req.json()
 
@@ -43,24 +40,7 @@ export async function POST(
     value: userText,
   })
 
-  const vectorString = `[${queryEmbedding.join(",")}]`
-
-  const chunks = await db
-    .select({
-      content: artifactChunk.content,
-      heading: artifactChunk.heading,
-      artifactTitle: artifact.title,
-    })
-    .from(artifactChunk)
-    .innerJoin(artifact, eq(artifactChunk.artifactId, artifact.id))
-    .where(
-      and(
-        eq(artifact.workspaceId, workspaceId),
-        eq(artifact.isArchived, false)
-      )
-    )
-    .orderBy(sql`${artifactChunk.embedding} <=> ${vectorString}::vector`)
-    .limit(6)
+  const chunks = await searchWorkspaceChunks(workspaceId, queryEmbedding)
 
   const context = chunks
     .map(

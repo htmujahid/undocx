@@ -1,6 +1,5 @@
 import { cache } from "react"
 
-import { and, eq } from "drizzle-orm"
 import { notFound, redirect } from "next/navigation"
 
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
@@ -9,17 +8,12 @@ import { Workspace } from "@/components/workspace/workspace"
 import { getSession } from "@/lib/auth"
 import { artifactQueryOptions } from "@/lib/data/artifacts"
 import { getQueryClient } from "@/lib/data/get-query-client"
-import { db } from "@/lib/db"
-import { getArtifactRole } from "@/lib/db/access"
-import { artifact } from "@/lib/db/schema"
+import { getArtifactRole } from "@/lib/db/queries/access"
+import { getArtifact } from "@/lib/db/queries/artifact"
 
-const getArtifact = cache(async (id: string, artifactId: string) => {
-  const [art] = await db
-    .select()
-    .from(artifact)
-    .where(and(eq(artifact.id, artifactId), eq(artifact.workspaceId, id)))
-  return art ?? null
-})
+const loadArtifact = cache((id: string, artifactId: string) =>
+  getArtifact(id, artifactId)
+)
 
 export async function generateMetadata({
   params,
@@ -27,7 +21,7 @@ export async function generateMetadata({
   params: Promise<{ id: string; artifactId: string }>
 }) {
   const { id, artifactId } = await params
-  const art = await getArtifact(id, artifactId)
+  const art = await loadArtifact(id, artifactId)
   return { title: art?.title || "Untitled" }
 }
 
@@ -44,7 +38,7 @@ export default async function ArtifactPage({
   const role = await getArtifactRole(id, artifactId, session.user.id)
   if (!role) redirect("/workspace")
 
-  const art = await getArtifact(id, artifactId)
+  const art = await loadArtifact(id, artifactId)
 
   if (!art) notFound()
 

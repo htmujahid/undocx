@@ -1,27 +1,20 @@
-import { and, eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { getWorkspaceRole } from "@/lib/db/access"
+import { getWorkspaceRole } from "@/lib/db/queries/access"
+import { getArtifactTitle } from "@/lib/db/queries/artifact"
 import {
-  MEMBER_ROLES,
-  type MemberRole,
-  artifact,
-  artifactMember,
-  invitation,
-  user,
-  workspaceMember,
-} from "@/lib/db/schema"
-import { sendInvitationEmail, upsertInvitation } from "@/lib/invitations"
-
-async function findArtifact(workspaceId: string, artifactId: string) {
-  const [art] = await db
-    .select({ id: artifact.id, title: artifact.title })
-    .from(artifact)
-    .where(and(eq(artifact.id, artifactId), eq(artifact.workspaceId, workspaceId)))
-  return art ?? null
-}
+  getArtifactMember,
+  listArtifactMembers,
+} from "@/lib/db/queries/artifact-member"
+import {
+  listArtifactInvitations,
+  upsertInvitation,
+} from "@/lib/db/queries/invitation"
+import { getUserByEmail } from "@/lib/db/queries/user"
+import { getWorkspaceMember } from "@/lib/db/queries/workspace-member"
+import { MEMBER_ROLES, type MemberRole } from "@/lib/db/schema"
+import { sendInvitationEmail } from "@/lib/invitations"
 
 export async function GET(
   _req: Request,
@@ -36,33 +29,12 @@ export async function GET(
   if (role !== "owner")
     return NextResponse.json({ error: "Not found" }, { status: 404 })
 
-  const art = await findArtifact(id, artifactId)
+  const art = await getArtifactTitle(id, artifactId)
   if (!art) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   const [members, invitations] = await Promise.all([
-    db
-      .select({
-        userId: user.id,
-        name: user.name,
-        email: user.email,
-        image: user.image,
-        role: artifactMember.role,
-      })
-      .from(artifactMember)
-      .innerJoin(user, eq(user.id, artifactMember.userId))
-      .where(eq(artifactMember.artifactId, artifactId))
-      .orderBy(artifactMember.createdAt),
-    db
-      .select({
-        id: invitation.id,
-        email: invitation.email,
-        role: invitation.role,
-        createdAt: invitation.createdAt,
-        expiresAt: invitation.expiresAt,
-      })
-      .from(invitation)
-      .where(eq(invitation.artifactId, artifactId))
-      .orderBy(invitation.createdAt),
+    listArtifactMembers(artifactId),
+    listArtifactInvitations(artifactId),
   ])
 
   return NextResponse.json({ members, invitations })
@@ -82,7 +54,7 @@ export async function POST(
   if (role !== "owner")
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
-  const art = await findArtifact(id, artifactId)
+  const art = await getArtifactTitle(id, artifactId)
   if (!art) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   const body = await req.json()
@@ -92,9 +64,12 @@ export async function POST(
   const memberRole = body.role as MemberRole
 
   if (!email.includes("@"))
-    return NextResponse.json({ error: "Valid email is required" }, {
-      status: 400,
-    })
+    return NextResponse.json(
+      { error: "Valid email is required" },
+      {
+        status: 400,
+      }
+    )
   if (!MEMBER_ROLES.includes(memberRole))
     return NextResponse.json({ error: "Invalid role" }, { status: 400 })
   if (email === session.user.email.toLowerCase())
@@ -103,31 +78,12 @@ export async function POST(
       { status: 400 }
     )
 
-  const [existingUser] = await db
-    .select({ id: user.id })
-    .from(user)
-    .where(eq(user.email, email))
+  const existingUser = await getUserByEmail(email)
 
   if (existingUser) {
-    const [[wsMember], [artMember]] = await Promise.all([
-      db
-        .select({ userId: workspaceMember.userId })
-        .from(workspaceMember)
-        .where(
-          and(
-            eq(workspaceMember.workspaceId, id),
-            eq(workspaceMember.userId, existingUser.id)
-          )
-        ),
-      db
-        .select({ userId: artifactMember.userId })
-        .from(artifactMember)
-        .where(
-          and(
-            eq(artifactMember.artifactId, artifactId),
-            eq(artifactMember.userId, existingUser.id)
-          )
-        ),
+    const [wsMember, artMember] = await Promise.all([
+      getWorkspaceMember(id, existingUser.id),
+      getArtifactMember(artifactId, existingUser.id),
     ])
     if (wsMember)
       return NextResponse.json(

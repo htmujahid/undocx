@@ -1,10 +1,8 @@
-import { and, eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { canEdit, getWorkspaceRole } from "@/lib/db/access"
-import { collection } from "@/lib/db/schema"
+import { canEdit, getWorkspaceRole } from "@/lib/db/queries/access"
+import { deleteCollection, updateCollection } from "@/lib/db/queries/collection"
 
 export async function PATCH(
   req: Request,
@@ -24,11 +22,10 @@ export async function PATCH(
   if (!name?.trim())
     return NextResponse.json({ error: "Name is required" }, { status: 400 })
 
-  const [updated] = await db
-    .update(collection)
-    .set({ name: name.trim(), ...(color && { color }) })
-    .where(and(eq(collection.id, collectionId), eq(collection.workspaceId, id)))
-    .returning()
+  const updated = await updateCollection(collectionId, id, {
+    name: name.trim(),
+    color,
+  })
 
   if (!updated)
     return NextResponse.json({ error: "Not found" }, { status: 404 })
@@ -49,10 +46,7 @@ export async function DELETE(
   if (!canEdit(role))
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
-  const [deleted] = await db
-    .delete(collection)
-    .where(and(eq(collection.id, collectionId), eq(collection.workspaceId, id)))
-    .returning()
+  const deleted = await deleteCollection(collectionId, id)
 
   if (!deleted)
     return NextResponse.json({ error: "Not found" }, { status: 404 })

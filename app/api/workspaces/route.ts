@@ -1,9 +1,11 @@
-import { eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { workspace, workspaceMember } from "@/lib/db/schema"
+import {
+  createWorkspace,
+  listOwnedWorkspaces,
+  listWorkspaceMemberships,
+} from "@/lib/db/queries/workspace"
 
 export async function GET() {
   const session = await getSession()
@@ -11,15 +13,8 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
   const [owned, memberships] = await Promise.all([
-    db
-      .select()
-      .from(workspace)
-      .where(eq(workspace.ownerId, session.user.id)),
-    db
-      .select({ workspace: workspace, role: workspaceMember.role })
-      .from(workspaceMember)
-      .innerJoin(workspace, eq(workspace.id, workspaceMember.workspaceId))
-      .where(eq(workspaceMember.userId, session.user.id)),
+    listOwnedWorkspaces(session.user.id),
+    listWorkspaceMemberships(session.user.id),
   ])
 
   const workspaces = [
@@ -40,10 +35,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Name is required" }, { status: 400 })
   }
 
-  const [created] = await db
-    .insert(workspace)
-    .values({ name: name.trim(), ownerId: session.user.id })
-    .returning()
+  const created = await createWorkspace(name.trim(), session.user.id)
 
   return NextResponse.json({ ...created, role: "owner" }, { status: 201 })
 }

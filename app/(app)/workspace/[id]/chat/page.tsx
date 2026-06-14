@@ -2,7 +2,7 @@ import { redirect } from "next/navigation"
 
 import { ChatView } from "@/components/workspace/chat-view"
 import { getSession } from "@/lib/auth"
-import { getWorkspaceAccess } from "@/lib/db/access"
+import { getWorkspaceAccess } from "@/lib/db/queries/access"
 
 export const metadata = { title: "Chat" }
 

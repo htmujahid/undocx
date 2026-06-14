@@ -1,12 +1,10 @@
-import { eq } from "drizzle-orm"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
 import { InvitationActions } from "@/components/invite/invitation-actions"
 import { buttonVariants } from "@/components/ui/button"
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { artifact, invitation, user, workspace } from "@/lib/db/schema"
+import { getInvitationDetailsByToken } from "@/lib/db/queries/invitation"
 import { isInvitationExpired } from "@/lib/invitations"
 
 // Invitations can be revoked at any moment — always resolve at request time.
@@ -40,23 +38,7 @@ export default async function InvitePage({
 }) {
   const { token } = await params
 
-  const [inv] = await db
-    .select({
-      id: invitation.id,
-      email: invitation.email,
-      role: invitation.role,
-      workspaceId: invitation.workspaceId,
-      artifactId: invitation.artifactId,
-      expiresAt: invitation.expiresAt,
-      inviterName: user.name,
-      workspaceName: workspace.name,
-      artifactTitle: artifact.title,
-    })
-    .from(invitation)
-    .innerJoin(user, eq(user.id, invitation.invitedBy))
-    .leftJoin(workspace, eq(workspace.id, invitation.workspaceId))
-    .leftJoin(artifact, eq(artifact.id, invitation.artifactId))
-    .where(eq(invitation.token, token))
+  const inv = await getInvitationDetailsByToken(token)
 
   if (!inv || isInvitationExpired(inv)) {
     return (
@@ -85,9 +67,7 @@ export default async function InvitePage({
   if (inv.email !== session.user.email.toLowerCase()) {
     return (
       <InviteShell>
-        <h1 className="text-xl font-semibold tracking-tight">
-          Wrong account
-        </h1>
+        <h1 className="text-xl font-semibold tracking-tight">Wrong account</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           This invitation was sent to <strong>{inv.email}</strong>, but
           you&apos;re signed in as <strong>{session.user.email}</strong>. Sign

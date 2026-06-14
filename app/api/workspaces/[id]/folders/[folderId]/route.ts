@@ -1,10 +1,9 @@
-import { and, eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { canEdit, getWorkspaceRole } from "@/lib/db/access"
-import { folder } from "@/lib/db/schema"
+import { canEdit, getWorkspaceRole } from "@/lib/db/queries/access"
+import { deleteFolder, updateFolder } from "@/lib/db/queries/folder"
+import { type folder } from "@/lib/db/schema"
 
 export async function PATCH(
   req: Request,
@@ -21,7 +20,7 @@ export async function PATCH(
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
   const body = await req.json()
-  const patch: Record<string, unknown> = {}
+  const patch: Partial<typeof folder.$inferInsert> = {}
   if (body.name !== undefined) {
     if (!body.name?.trim())
       return NextResponse.json({ error: "Name is required" }, { status: 400 })
@@ -32,11 +31,7 @@ export async function PATCH(
   if (Object.keys(patch).length === 0)
     return NextResponse.json({ error: "Nothing to update" }, { status: 400 })
 
-  const [updated] = await db
-    .update(folder)
-    .set(patch)
-    .where(and(eq(folder.id, folderId), eq(folder.workspaceId, id)))
-    .returning()
+  const updated = await updateFolder(folderId, id, patch)
 
   if (!updated)
     return NextResponse.json({ error: "Not found" }, { status: 404 })
@@ -57,10 +52,7 @@ export async function DELETE(
   if (!canEdit(role))
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
-  const [deleted] = await db
-    .delete(folder)
-    .where(and(eq(folder.id, folderId), eq(folder.workspaceId, id)))
-    .returning()
+  const deleted = await deleteFolder(folderId, id)
 
   if (!deleted)
     return NextResponse.json({ error: "Not found" }, { status: 404 })

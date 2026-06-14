@@ -1,27 +1,19 @@
-import { and, eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { getWorkspaceRole } from "@/lib/db/access"
+import { getWorkspaceRole } from "@/lib/db/queries/access"
+import { artifactInWorkspace } from "@/lib/db/queries/artifact"
 import {
-  MEMBER_ROLES,
-  type MemberRole,
-  artifact,
-  artifactMember,
-} from "@/lib/db/schema"
-
-async function artifactInWorkspace(workspaceId: string, artifactId: string) {
-  const [art] = await db
-    .select({ id: artifact.id })
-    .from(artifact)
-    .where(and(eq(artifact.id, artifactId), eq(artifact.workspaceId, workspaceId)))
-  return !!art
-}
+  removeArtifactMember,
+  updateArtifactMemberRole,
+} from "@/lib/db/queries/artifact-member"
+import { MEMBER_ROLES, type MemberRole } from "@/lib/db/schema"
 
 export async function PATCH(
   req: Request,
-  { params }: { params: Promise<{ id: string; artifactId: string; userId: string }> }
+  {
+    params,
+  }: { params: Promise<{ id: string; artifactId: string; userId: string }> }
 ) {
   const session = await getSession()
   if (!session)
@@ -39,16 +31,7 @@ export async function PATCH(
   if (!MEMBER_ROLES.includes(newRole as MemberRole))
     return NextResponse.json({ error: "Invalid role" }, { status: 400 })
 
-  const [updated] = await db
-    .update(artifactMember)
-    .set({ role: newRole })
-    .where(
-      and(
-        eq(artifactMember.artifactId, artifactId),
-        eq(artifactMember.userId, userId)
-      )
-    )
-    .returning()
+  const updated = await updateArtifactMemberRole(artifactId, userId, newRole)
 
   if (!updated)
     return NextResponse.json({ error: "Not found" }, { status: 404 })
@@ -57,7 +40,9 @@ export async function PATCH(
 
 export async function DELETE(
   _req: Request,
-  { params }: { params: Promise<{ id: string; artifactId: string; userId: string }> }
+  {
+    params,
+  }: { params: Promise<{ id: string; artifactId: string; userId: string }> }
 ) {
   const session = await getSession()
   if (!session)
@@ -75,15 +60,7 @@ export async function DELETE(
   if (!(await artifactInWorkspace(id, artifactId)))
     return NextResponse.json({ error: "Not found" }, { status: 404 })
 
-  const [deleted] = await db
-    .delete(artifactMember)
-    .where(
-      and(
-        eq(artifactMember.artifactId, artifactId),
-        eq(artifactMember.userId, userId)
-      )
-    )
-    .returning()
+  const deleted = await removeArtifactMember(artifactId, userId)
 
   if (!deleted)
     return NextResponse.json({ error: "Not found" }, { status: 404 })

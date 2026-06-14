@@ -1,10 +1,12 @@
-import { eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { canEdit, getWorkspaceAccess, getWorkspaceRole } from "@/lib/db/access"
-import { folder } from "@/lib/db/schema"
+import {
+  canEdit,
+  getWorkspaceAccess,
+  getWorkspaceRole,
+} from "@/lib/db/queries/access"
+import { createFolder, listWorkspaceFolders } from "@/lib/db/queries/folder"
 
 export async function GET(
   _req: Request,
@@ -20,11 +22,7 @@ export async function GET(
   // Artifact-only members don't get the workspace's folder tree.
   if (!access.role) return NextResponse.json([])
 
-  const folders = await db
-    .select()
-    .from(folder)
-    .where(eq(folder.workspaceId, id))
-    .orderBy(folder.createdAt)
+  const folders = await listWorkspaceFolders(id)
 
   return NextResponse.json(folders)
 }
@@ -47,10 +45,7 @@ export async function POST(
   if (!name?.trim())
     return NextResponse.json({ error: "Name is required" }, { status: 400 })
 
-  const [created] = await db
-    .insert(folder)
-    .values({ name: name.trim(), workspaceId: id, parentId: parentId ?? null })
-    .returning()
+  const created = await createFolder(id, name.trim(), parentId ?? null)
 
   return NextResponse.json(created, { status: 201 })
 }

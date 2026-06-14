@@ -1,14 +1,12 @@
-import { and, eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { getWorkspaceRole } from "@/lib/db/access"
+import { getWorkspaceRole } from "@/lib/db/queries/access"
 import {
-  MEMBER_ROLES,
-  type MemberRole,
-  workspaceMember,
-} from "@/lib/db/schema"
+  removeWorkspaceMember,
+  updateWorkspaceMemberRole,
+} from "@/lib/db/queries/workspace-member"
+import { MEMBER_ROLES, type MemberRole } from "@/lib/db/schema"
 
 export async function PATCH(
   req: Request,
@@ -28,16 +26,7 @@ export async function PATCH(
   if (!MEMBER_ROLES.includes(newRole as MemberRole))
     return NextResponse.json({ error: "Invalid role" }, { status: 400 })
 
-  const [updated] = await db
-    .update(workspaceMember)
-    .set({ role: newRole })
-    .where(
-      and(
-        eq(workspaceMember.workspaceId, id),
-        eq(workspaceMember.userId, userId)
-      )
-    )
-    .returning()
+  const updated = await updateWorkspaceMemberRole(id, userId, newRole)
 
   if (!updated)
     return NextResponse.json({ error: "Not found" }, { status: 404 })
@@ -60,15 +49,7 @@ export async function DELETE(
   if (role !== "owner" && userId !== session.user.id)
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
-  const [deleted] = await db
-    .delete(workspaceMember)
-    .where(
-      and(
-        eq(workspaceMember.workspaceId, id),
-        eq(workspaceMember.userId, userId)
-      )
-    )
-    .returning()
+  const deleted = await removeWorkspaceMember(id, userId)
 
   if (!deleted)
     return NextResponse.json({ error: "Not found" }, { status: 404 })

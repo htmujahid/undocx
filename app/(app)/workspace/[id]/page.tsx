@@ -6,7 +6,7 @@ import { WorkspaceHome } from "@/components/workspace/workspace-home"
 import { getSession } from "@/lib/auth"
 import { favoritesQueryOptions } from "@/lib/data/favorites"
 import { getQueryClient } from "@/lib/data/get-query-client"
-import { getWorkspaceAccess } from "@/lib/db/access"
+import { getWorkspaceAccess } from "@/lib/db/queries/access"
 
 export default async function WorkspacePage({
   params,

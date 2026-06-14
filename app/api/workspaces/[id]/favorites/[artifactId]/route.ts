@@ -1,10 +1,13 @@
-import { and, eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { getArtifactRole } from "@/lib/db/access"
-import { artifact, artifactFavorite } from "@/lib/db/schema"
+import { getArtifactRole } from "@/lib/db/queries/access"
+import { artifactInWorkspace } from "@/lib/db/queries/artifact"
+import {
+  addFavorite,
+  getFavorite,
+  removeFavorite,
+} from "@/lib/db/queries/favorite"
 
 export async function POST(
   _req: Request,
@@ -19,36 +22,16 @@ export async function POST(
   const role = await getArtifactRole(id, artifactId, session.user.id)
   if (!role) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
-  const [art] = await db
-    .select({ id: artifact.id })
-    .from(artifact)
-    .where(and(eq(artifact.id, artifactId), eq(artifact.workspaceId, id)))
-  if (!art) return NextResponse.json({ error: "Not found" }, { status: 404 })
+  if (!(await artifactInWorkspace(id, artifactId)))
+    return NextResponse.json({ error: "Not found" }, { status: 404 })
 
-  const [existing] = await db
-    .select()
-    .from(artifactFavorite)
-    .where(
-      and(
-        eq(artifactFavorite.userId, session.user.id),
-        eq(artifactFavorite.artifactId, artifactId)
-      )
-    )
+  const existing = await getFavorite(session.user.id, artifactId)
 
   if (existing) {
-    await db
-      .delete(artifactFavorite)
-      .where(
-        and(
-          eq(artifactFavorite.userId, session.user.id),
-          eq(artifactFavorite.artifactId, artifactId)
-        )
-      )
+    await removeFavorite(session.user.id, artifactId)
     return NextResponse.json({ isFavorited: false })
   }
 
-  await db
-    .insert(artifactFavorite)
-    .values({ userId: session.user.id, artifactId })
+  await addFavorite(session.user.id, artifactId)
   return NextResponse.json({ isFavorited: true })
 }

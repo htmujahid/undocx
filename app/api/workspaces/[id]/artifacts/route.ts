@@ -1,18 +1,20 @@
-import { and, asc, desc, eq, inArray } from "drizzle-orm"
 import { after } from "next/server"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { canEdit, getWorkspaceAccess, getWorkspaceRole } from "@/lib/db/access"
-import { syncArtifactChunks } from "@/lib/embeddings"
 import {
-  artifact,
-  artifactCollection,
-  artifactFolder,
-  collection,
-  folder,
-} from "@/lib/db/schema"
+  canEdit,
+  getWorkspaceAccess,
+  getWorkspaceRole,
+} from "@/lib/db/queries/access"
+import {
+  createArtifactWithLinks,
+  getArtifactLinksForIds,
+  listActiveArtifacts,
+} from "@/lib/db/queries/artifact"
+import { filterWorkspaceCollectionIds } from "@/lib/db/queries/collection"
+import { filterWorkspaceFolderIds } from "@/lib/db/queries/folder"
+import { syncArtifactChunks } from "@/lib/embeddings"
 
 export async function GET(
   req: Request,
@@ -27,54 +29,19 @@ export async function GET(
   if (!access) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   const sort = new URL(req.url).searchParams.get("sort")
-  const orderBy =
-    sort === "name"
-      ? asc(artifact.title)
-      : sort === "created"
-        ? desc(artifact.createdAt)
-        : desc(artifact.updatedAt)
 
-  const artifacts = await db
-    .select({
-      id: artifact.id,
-      title: artifact.title,
-      workspaceId: artifact.workspaceId,
-      isArchived: artifact.isArchived,
-      isPublic: artifact.isPublic,
-      createdAt: artifact.createdAt,
-      updatedAt: artifact.updatedAt,
-    })
-    .from(artifact)
-    .where(
-      and(
-        eq(artifact.workspaceId, id),
-        eq(artifact.isArchived, false),
-        // Artifact-level members only see what was shared with them.
-        ...(access.sharedArtifacts
-          ? [
-              inArray(
-                artifact.id,
-                access.sharedArtifacts.map((s) => s.artifactId)
-              ),
-            ]
-          : [])
-      )
-    )
-    .orderBy(orderBy)
+  const artifacts = await listActiveArtifacts({
+    workspaceId: id,
+    sort,
+    // Artifact-level members only see what was shared with them.
+    restrictIds: access.sharedArtifacts
+      ? access.sharedArtifacts.map((s) => s.artifactId)
+      : null,
+  })
 
   const artifactIds = artifacts.map((a) => a.id)
-  const [folderLinks, collectionLinks] = artifactIds.length
-    ? await Promise.all([
-        db
-          .select()
-          .from(artifactFolder)
-          .where(inArray(artifactFolder.artifactId, artifactIds)),
-        db
-          .select()
-          .from(artifactCollection)
-          .where(inArray(artifactCollection.artifactId, artifactIds)),
-      ])
-    : [[], []]
+  const { folderLinks, collectionLinks } =
+    await getArtifactLinksForIds(artifactIds)
 
   const result = artifacts.map((a) => ({
     ...a,
@@ -117,33 +84,13 @@ export async function POST(
     collectionIds
   )
 
-  const created = await db.transaction(async (tx) => {
-    const [row] = await tx
-      .insert(artifact)
-      .values({
-        title: title.trim(),
-        content: content ?? null,
-        workspaceId: id,
-        ownerId: session.user.id,
-      })
-      .returning()
-
-    if (validFolderIds.length) {
-      await tx
-        .insert(artifactFolder)
-        .values(
-          validFolderIds.map((folderId) => ({ artifactId: row.id, folderId }))
-        )
-    }
-    if (validCollectionIds.length) {
-      await tx.insert(artifactCollection).values(
-        validCollectionIds.map((collectionId) => ({
-          artifactId: row.id,
-          collectionId,
-        }))
-      )
-    }
-    return row
+  const created = await createArtifactWithLinks({
+    workspaceId: id,
+    ownerId: session.user.id,
+    title: title.trim(),
+    content: content ?? null,
+    folderIds: validFolderIds,
+    collectionIds: validCollectionIds,
   })
 
   after(() =>
@@ -160,24 +107,4 @@ export async function POST(
     },
     { status: 201 }
   )
-}
-
-async function filterWorkspaceFolderIds(workspaceId: string, ids: unknown) {
-  if (!Array.isArray(ids) || ids.length === 0) return []
-  const rows = await db
-    .select({ id: folder.id })
-    .from(folder)
-    .where(and(eq(folder.workspaceId, workspaceId), inArray(folder.id, ids)))
-  return rows.map((r) => r.id)
-}
-
-async function filterWorkspaceCollectionIds(workspaceId: string, ids: unknown) {
-  if (!Array.isArray(ids) || ids.length === 0) return []
-  const rows = await db
-    .select({ id: collection.id })
-    .from(collection)
-    .where(
-      and(eq(collection.workspaceId, workspaceId), inArray(collection.id, ids))
-    )
-  return rows.map((r) => r.id)
 }

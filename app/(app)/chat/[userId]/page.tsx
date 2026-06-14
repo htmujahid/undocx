@@ -1,11 +1,9 @@
-import { and, eq } from "drizzle-orm"
-
 import { notFound, redirect } from "next/navigation"
 
 import { UserChatView } from "@/components/workspace/user-chat-view"
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { artifact, user } from "@/lib/db/schema"
+import { userHasActiveArtifact } from "@/lib/db/queries/artifact"
+import { getUserById } from "@/lib/db/queries/user"
 
 export const metadata = { title: "Chat" }
 
@@ -19,25 +17,10 @@ export default async function UserChatPage({
 
   const { userId } = await params
 
-  const [targetUser] = await db
-    .select({ id: user.id, name: user.name, image: user.image })
-    .from(user)
-    .where(eq(user.id, userId))
-
+  const targetUser = await getUserById(userId)
   if (!targetUser) notFound()
 
-  const [anyArtifact] = await db
-    .select({ id: artifact.id })
-    .from(artifact)
-    .where(
-      and(
-        eq(artifact.ownerId, userId),
-        eq(artifact.isArchived, false)
-      )
-    )
-    .limit(1)
-
-  if (!anyArtifact) notFound()
+  if (!(await userHasActiveArtifact(userId))) notFound()
 
   return (
     <UserChatView

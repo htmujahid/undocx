@@ -1,20 +1,13 @@
-import { eq } from "drizzle-orm"
 import { redirect } from "next/navigation"
 
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { workspace } from "@/lib/db/schema"
+import { getFirstOwnedWorkspace } from "@/lib/db/queries/workspace"
 
 export default async function WorkspacePage() {
   const session = await getSession()
   if (!session) redirect("/auth/sign-in")
 
-  const [first] = await db
-    .select({ id: workspace.id })
-    .from(workspace)
-    .where(eq(workspace.ownerId, session.user.id))
-    .orderBy(workspace.createdAt)
-    .limit(1)
+  const first = await getFirstOwnedWorkspace(session.user.id)
 
   if (first) redirect(`/workspace/${first.id}`)
 

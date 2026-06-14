@@ -1,18 +1,20 @@
-import { and, eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { getWorkspaceRole } from "@/lib/db/access"
+import { getWorkspaceRole } from "@/lib/db/queries/access"
 import {
-  MEMBER_ROLES,
-  type MemberRole,
-  invitation,
-  user,
-  workspace,
-  workspaceMember,
-} from "@/lib/db/schema"
-import { sendInvitationEmail, upsertInvitation } from "@/lib/invitations"
+  listWorkspaceInvitations,
+  upsertInvitation,
+} from "@/lib/db/queries/invitation"
+import { getUserByEmail } from "@/lib/db/queries/user"
+import { getWorkspaceName } from "@/lib/db/queries/workspace"
+import {
+  getWorkspaceMember,
+  getWorkspaceOwnerProfile,
+  listWorkspaceMembers,
+} from "@/lib/db/queries/workspace-member"
+import { MEMBER_ROLES, type MemberRole } from "@/lib/db/schema"
+import { sendInvitationEmail } from "@/lib/invitations"
 
 export async function GET(
   _req: Request,
@@ -26,43 +28,11 @@ export async function GET(
   const role = await getWorkspaceRole(id, session.user.id)
   if (!role) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
-  const [[owner], members, invitations] = await Promise.all([
-    db
-      .select({
-        userId: user.id,
-        name: user.name,
-        email: user.email,
-        image: user.image,
-      })
-      .from(workspace)
-      .innerJoin(user, eq(user.id, workspace.ownerId))
-      .where(eq(workspace.id, id)),
-    db
-      .select({
-        userId: user.id,
-        name: user.name,
-        email: user.email,
-        image: user.image,
-        role: workspaceMember.role,
-      })
-      .from(workspaceMember)
-      .innerJoin(user, eq(user.id, workspaceMember.userId))
-      .where(eq(workspaceMember.workspaceId, id))
-      .orderBy(workspaceMember.createdAt),
+  const [owner, members, invitations] = await Promise.all([
+    getWorkspaceOwnerProfile(id),
+    listWorkspaceMembers(id),
     // Pending invitations are a management concern — owner's eyes only.
-    role === "owner"
-      ? db
-          .select({
-            id: invitation.id,
-            email: invitation.email,
-            role: invitation.role,
-            createdAt: invitation.createdAt,
-            expiresAt: invitation.expiresAt,
-          })
-          .from(invitation)
-          .where(eq(invitation.workspaceId, id))
-          .orderBy(invitation.createdAt)
-      : Promise.resolve([]),
+    role === "owner" ? listWorkspaceInvitations(id) : Promise.resolve([]),
   ])
 
   return NextResponse.json({
@@ -92,9 +62,12 @@ export async function POST(
   const memberRole = body.role as MemberRole
 
   if (!email.includes("@"))
-    return NextResponse.json({ error: "Valid email is required" }, {
-      status: 400,
-    })
+    return NextResponse.json(
+      { error: "Valid email is required" },
+      {
+        status: 400,
+      }
+    )
   if (!MEMBER_ROLES.includes(memberRole))
     return NextResponse.json({ error: "Invalid role" }, { status: 400 })
   if (email === session.user.email.toLowerCase())
@@ -103,21 +76,10 @@ export async function POST(
       { status: 400 }
     )
 
-  const [existingUser] = await db
-    .select({ id: user.id })
-    .from(user)
-    .where(eq(user.email, email))
+  const existingUser = await getUserByEmail(email)
 
   if (existingUser) {
-    const [existingMember] = await db
-      .select({ userId: workspaceMember.userId })
-      .from(workspaceMember)
-      .where(
-        and(
-          eq(workspaceMember.workspaceId, id),
-          eq(workspaceMember.userId, existingUser.id)
-        )
-      )
+    const existingMember = await getWorkspaceMember(id, existingUser.id)
     if (existingMember)
       return NextResponse.json(
         { error: "Already a member of this workspace" },
@@ -125,10 +87,7 @@ export async function POST(
       )
   }
 
-  const [ws] = await db
-    .select({ name: workspace.name })
-    .from(workspace)
-    .where(eq(workspace.id, id))
+  const ws = await getWorkspaceName(id)
 
   const created = await upsertInvitation({
     email,
@@ -140,7 +99,7 @@ export async function POST(
   sendInvitationEmail({
     to: email,
     inviterName: session.user.name,
-    resourceName: ws.name,
+    resourceName: ws!.name,
     resourceKind: "workspace",
     role: memberRole,
     token: created.token,

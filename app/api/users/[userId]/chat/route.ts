@@ -1,11 +1,10 @@
 import { openai } from "@ai-sdk/openai"
 import { convertToModelMessages, embed, streamText } from "ai"
-import { and, eq, sql } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { artifact, artifactChunk, user } from "@/lib/db/schema"
+import { searchPublicUserChunks } from "@/lib/db/queries/artifact-chunk"
+import { getUserById } from "@/lib/db/queries/user"
 
 const SYSTEM_PROMPT = `You are a helpful assistant for a personal knowledge base. Answer questions using only the provided context from the user's public documents. If the context does not contain enough information to answer confidently, say so clearly rather than guessing. Be concise and accurate.`
 
@@ -19,11 +18,7 @@ export async function POST(
 
   const { userId } = await params
 
-  const [targetUser] = await db
-    .select({ id: user.id })
-    .from(user)
-    .where(eq(user.id, userId))
-
+  const targetUser = await getUserById(userId)
   if (!targetUser)
     return NextResponse.json({ error: "Not found" }, { status: 404 })
 
@@ -46,25 +41,7 @@ export async function POST(
     value: userText,
   })
 
-  const vectorString = `[${queryEmbedding.join(",")}]`
-
-  const chunks = await db
-    .select({
-      content: artifactChunk.content,
-      heading: artifactChunk.heading,
-      artifactTitle: artifact.title,
-    })
-    .from(artifactChunk)
-    .innerJoin(artifact, eq(artifactChunk.artifactId, artifact.id))
-    .where(
-      and(
-        eq(artifact.ownerId, userId),
-        eq(artifact.isPublic, true),
-        eq(artifact.isArchived, false)
-      )
-    )
-    .orderBy(sql`${artifactChunk.embedding} <=> ${vectorString}::vector`)
-    .limit(6)
+  const chunks = await searchPublicUserChunks(userId, queryEmbedding)
 
   const context = chunks
     .map(

@@ -1,35 +1,21 @@
-import { and, eq, inArray } from "drizzle-orm"
 import { after } from "next/server"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { canEdit, getArtifactRole, getWorkspaceRole } from "@/lib/db/access"
-import { syncArtifactChunks } from "@/lib/embeddings"
 import {
-  artifact,
-  artifactCollection,
-  artifactFolder,
-  collection,
-  folder,
-} from "@/lib/db/schema"
-
-async function getArtifactLinks(artifactId: string) {
-  const [folderLinks, collectionLinks] = await Promise.all([
-    db
-      .select({ folderId: artifactFolder.folderId })
-      .from(artifactFolder)
-      .where(eq(artifactFolder.artifactId, artifactId)),
-    db
-      .select({ collectionId: artifactCollection.collectionId })
-      .from(artifactCollection)
-      .where(eq(artifactCollection.artifactId, artifactId)),
-  ])
-  return {
-    folderIds: folderLinks.map((l) => l.folderId),
-    collectionIds: collectionLinks.map((l) => l.collectionId),
-  }
-}
+  canEdit,
+  getArtifactRole,
+  getWorkspaceRole,
+} from "@/lib/db/queries/access"
+import {
+  deleteArtifact,
+  getArtifact,
+  getArtifactLinks,
+  updateArtifactWithLinks,
+} from "@/lib/db/queries/artifact"
+import { filterWorkspaceCollectionIds } from "@/lib/db/queries/collection"
+import { filterWorkspaceFolderIds } from "@/lib/db/queries/folder"
+import { syncArtifactChunks } from "@/lib/embeddings"
 
 export async function GET(
   _req: Request,
@@ -43,11 +29,7 @@ export async function GET(
   const role = await getArtifactRole(id, artifactId, session.user.id)
   if (!role) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
-  const [found] = await db
-    .select()
-    .from(artifact)
-    .where(and(eq(artifact.id, artifactId), eq(artifact.workspaceId, id)))
-
+  const found = await getArtifact(id, artifactId)
   if (!found) return NextResponse.json({ error: "Not found" }, { status: 404 })
 
   const links = await getArtifactLinks(artifactId)
@@ -95,54 +77,13 @@ export async function PATCH(
     ...(isArchived !== undefined && { isArchived: !!isArchived }),
     ...(isPublic !== undefined && { isPublic: !!isPublic }),
   }
-  const hasScalarPatch = Object.keys(scalarPatch).length > 0
 
-  const updated = await db.transaction(async (tx) => {
-    let row: typeof artifact.$inferSelect | undefined
-
-    if (hasScalarPatch) {
-      const [r] = await tx
-        .update(artifact)
-        .set(scalarPatch)
-        .where(and(eq(artifact.id, artifactId), eq(artifact.workspaceId, id)))
-        .returning()
-      if (!r) return null
-      row = r
-    } else {
-      const [r] = await tx
-        .select()
-        .from(artifact)
-        .where(and(eq(artifact.id, artifactId), eq(artifact.workspaceId, id)))
-      if (!r) return null
-      row = r
-    }
-
-    if (validFolderIds) {
-      await tx
-        .delete(artifactFolder)
-        .where(eq(artifactFolder.artifactId, row.id))
-      if (validFolderIds.length) {
-        await tx
-          .insert(artifactFolder)
-          .values(
-            validFolderIds.map((folderId) => ({ artifactId: row.id, folderId }))
-          )
-      }
-    }
-    if (validCollectionIds) {
-      await tx
-        .delete(artifactCollection)
-        .where(eq(artifactCollection.artifactId, row.id))
-      if (validCollectionIds.length) {
-        await tx.insert(artifactCollection).values(
-          validCollectionIds.map((collectionId) => ({
-            artifactId: row.id,
-            collectionId,
-          }))
-        )
-      }
-    }
-    return row
+  const updated = await updateArtifactWithLinks({
+    workspaceId: id,
+    artifactId,
+    scalarPatch,
+    folderIds: validFolderIds,
+    collectionIds: validCollectionIds,
   })
 
   if (!updated)
@@ -151,7 +92,8 @@ export async function PATCH(
   if (content !== undefined) {
     after(() =>
       syncArtifactChunks(updated.id, updated.title, updated.content).catch(
-        (err) => console.error("chunk sync failed for artifact", updated.id, err)
+        (err) =>
+          console.error("chunk sync failed for artifact", updated.id, err)
       )
     )
   }
@@ -175,32 +117,9 @@ export async function DELETE(
   if (!canEdit(role))
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
 
-  const [deleted] = await db
-    .delete(artifact)
-    .where(and(eq(artifact.id, artifactId), eq(artifact.workspaceId, id)))
-    .returning()
+  const deleted = await deleteArtifact(id, artifactId)
 
   if (!deleted)
     return NextResponse.json({ error: "Not found" }, { status: 404 })
   return new NextResponse(null, { status: 204 })
-}
-
-async function filterWorkspaceFolderIds(workspaceId: string, ids: unknown) {
-  if (!Array.isArray(ids) || ids.length === 0) return []
-  const rows = await db
-    .select({ id: folder.id })
-    .from(folder)
-    .where(and(eq(folder.workspaceId, workspaceId), inArray(folder.id, ids)))
-  return rows.map((r) => r.id)
-}
-
-async function filterWorkspaceCollectionIds(workspaceId: string, ids: unknown) {
-  if (!Array.isArray(ids) || ids.length === 0) return []
-  const rows = await db
-    .select({ id: collection.id })
-    .from(collection)
-    .where(
-      and(eq(collection.workspaceId, workspaceId), inArray(collection.id, ids))
-    )
-  return rows.map((r) => r.id)
 }

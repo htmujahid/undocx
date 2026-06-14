@@ -1,10 +1,8 @@
-import { and, eq } from "drizzle-orm"
 import { redirect } from "next/navigation"
 
 import { ArchiveView } from "@/components/workspace/archive-view"
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { workspace } from "@/lib/db/schema"
+import { getOwnedWorkspace } from "@/lib/db/queries/workspace"
 
 export default async function ArchivePage({
   params,
@@ -16,11 +14,7 @@ export default async function ArchivePage({
 
   const { id } = await params
 
-  const [ws] = await db
-    .select()
-    .from(workspace)
-    .where(and(eq(workspace.id, id), eq(workspace.ownerId, session.user.id)))
-
+  const ws = await getOwnedWorkspace(id, session.user.id)
   if (!ws) redirect("/workspace")
 
   return <ArchiveView workspaceId={ws.id} />

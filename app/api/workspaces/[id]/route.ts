@@ -1,9 +1,11 @@
-import { and, count, eq } from "drizzle-orm"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
-import { db } from "@/lib/db"
-import { workspace } from "@/lib/db/schema"
+import {
+  countOwnedWorkspaces,
+  deleteOwnedWorkspace,
+  updateWorkspaceName,
+} from "@/lib/db/queries/workspace"
 
 export async function PATCH(
   request: Request,
@@ -19,11 +21,7 @@ export async function PATCH(
     return NextResponse.json({ error: "Name is required" }, { status: 400 })
   }
 
-  const [updated] = await db
-    .update(workspace)
-    .set({ name: name.trim() })
-    .where(and(eq(workspace.id, id), eq(workspace.ownerId, session.user.id)))
-    .returning()
+  const updated = await updateWorkspaceName(id, session.user.id, name.trim())
 
   if (!updated)
     return NextResponse.json({ error: "Not found" }, { status: 404 })
@@ -41,11 +39,7 @@ export async function DELETE(
 
   const { id } = await params
 
-  const [{ total }] = await db
-    .select({ total: count() })
-    .from(workspace)
-    .where(eq(workspace.ownerId, session.user.id))
-
+  const total = await countOwnedWorkspaces(session.user.id)
   if (total <= 1) {
     return NextResponse.json(
       { error: "Cannot delete the last workspace" },
@@ -53,10 +47,7 @@ export async function DELETE(
     )
   }
 
-  const [deleted] = await db
-    .delete(workspace)
-    .where(and(eq(workspace.id, id), eq(workspace.ownerId, session.user.id)))
-    .returning()
+  const deleted = await deleteOwnedWorkspace(id, session.user.id)
 
   if (!deleted)
     return NextResponse.json({ error: "Not found" }, { status: 404 })

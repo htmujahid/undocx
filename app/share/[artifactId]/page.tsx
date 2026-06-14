@@ -1,12 +1,10 @@
 import { cache } from "react"
 
-import { and, eq } from "drizzle-orm"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
 import { PublicArtifactView } from "@/components/workspace/public-artifact-view"
-import { db } from "@/lib/db"
-import { artifact } from "@/lib/db/schema"
+import { getPublicArtifact } from "@/lib/db/queries/artifact"
 
 // Content can be unshared at any moment — always check the flag at request time.
 export const dynamic = "force-dynamic"
@@ -14,24 +12,9 @@ export const dynamic = "force-dynamic"
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
-const getPublicArtifact = cache(async (artifactId: string) => {
+const loadPublicArtifact = cache(async (artifactId: string) => {
   if (!UUID_RE.test(artifactId)) return null
-  const [art] = await db
-    .select({
-      id: artifact.id,
-      title: artifact.title,
-      content: artifact.content,
-      updatedAt: artifact.updatedAt,
-    })
-    .from(artifact)
-    .where(
-      and(
-        eq(artifact.id, artifactId),
-        eq(artifact.isPublic, true),
-        eq(artifact.isArchived, false)
-      )
-    )
-  return art ?? null
+  return getPublicArtifact(artifactId)
 })
 
 export async function generateMetadata({
@@ -40,7 +23,7 @@ export async function generateMetadata({
   params: Promise<{ artifactId: string }>
 }) {
   const { artifactId } = await params
-  const art = await getPublicArtifact(artifactId)
+  const art = await loadPublicArtifact(artifactId)
   return { title: art?.title ?? "Not found" }
 }
 
@@ -50,7 +33,7 @@ export default async function PublicArtifactPage({
   params: Promise<{ artifactId: string }>
 }) {
   const { artifactId } = await params
-  const art = await getPublicArtifact(artifactId)
+  const art = await loadPublicArtifact(artifactId)
   if (!art) notFound()
 
   return (
