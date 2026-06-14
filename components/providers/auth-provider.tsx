@@ -20,11 +20,14 @@ const AuthContext = createContext<AuthContextValue>({
 
 export function AuthProvider({
   children,
-  session = null,
+  session: initialSession = null,
 }: {
   children: React.ReactNode
   session?: Session | null
 }) {
+  const { data: clientSession } = authClient.useSession()
+  const session = clientSession === undefined ? initialSession : clientSession
+
   return (
     <AuthContext.Provider
       value={{
