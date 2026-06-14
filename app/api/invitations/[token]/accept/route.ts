@@ -1,13 +1,16 @@
+import { after } from "next/server"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
 import { getWorkspaceRole } from "@/lib/db/queries/access"
-import { getArtifactRef } from "@/lib/db/queries/artifact"
+import { getArtifactRef, getArtifactTitle } from "@/lib/db/queries/artifact"
 import { upsertArtifactMember } from "@/lib/db/queries/artifact-member"
 import {
   deleteInvitation,
   getInvitationByToken,
 } from "@/lib/db/queries/invitation"
+import { createNotification } from "@/lib/db/queries/notification"
+import { getWorkspaceName } from "@/lib/db/queries/workspace"
 import { upsertWorkspaceMember } from "@/lib/db/queries/workspace-member"
 import { isInvitationExpired } from "@/lib/mail/invitations"
 
@@ -36,6 +39,27 @@ export async function POST(
       { status: 403 }
     )
 
+  // Tell the inviter their invitation was taken up. Best-effort, off the
+  // response path — a notification failure must never fail the accept.
+  const notifyInviter = (
+    type: "invitation_accepted",
+    resourceName: string,
+    workspaceId: string | null,
+    artifactId: string | null
+  ) =>
+    after(() =>
+      createNotification({
+        userId: inv.invitedBy,
+        type,
+        actorId: session.user.id,
+        workspaceId,
+        artifactId,
+        data: { actorName: session.user.name, resourceName, role: inv.role },
+      }).catch((err) =>
+        console.error("notify inviter failed for invitation", inv.id, err)
+      )
+    )
+
   if (inv.workspaceId) {
     const existingRole = await getWorkspaceRole(
       inv.workspaceId,
@@ -44,7 +68,14 @@ export async function POST(
     if (existingRole !== "owner") {
       await upsertWorkspaceMember(inv.workspaceId, session.user.id, inv.role)
     }
+    const ws = await getWorkspaceName(inv.workspaceId)
     await deleteInvitation(inv.id)
+    notifyInviter(
+      "invitation_accepted",
+      ws?.name ?? "a workspace",
+      inv.workspaceId,
+      null
+    )
     return NextResponse.json({ workspaceId: inv.workspaceId, artifactId: null })
   }
 
@@ -60,6 +91,13 @@ export async function POST(
   if (!workspaceRole) {
     await upsertArtifactMember(art.id, session.user.id, inv.role)
   }
+  const artTitle = await getArtifactTitle(art.workspaceId, art.id)
   await deleteInvitation(inv.id)
+  notifyInviter(
+    "invitation_accepted",
+    artTitle?.title ?? "a document",
+    art.workspaceId,
+    art.id
+  )
   return NextResponse.json({ workspaceId: art.workspaceId, artifactId: art.id })
 }

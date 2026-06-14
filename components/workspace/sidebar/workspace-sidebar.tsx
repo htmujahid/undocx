@@ -13,6 +13,7 @@ import {
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
+import { NotificationBell } from "@/components/notifications/notification-bell"
 import { Button } from "@/components/ui/button"
 import {
   Sidebar,
@@ -57,7 +58,12 @@ export function WorkspaceSidebar({
   return (
     <Sidebar collapsible="offcanvas">
       <SidebarHeader>
-        <WorkspaceSwitcher currentWorkspaceId={workspaceId} />
+        <div className="flex items-center gap-1">
+          <div className="min-w-0 flex-1">
+            <WorkspaceSwitcher currentWorkspaceId={workspaceId} />
+          </div>
+          <NotificationBell />
+        </div>
       </SidebarHeader>
 
       <SidebarContent>

@@ -15,6 +15,10 @@ import {
 } from "@/lib/db/queries/artifact"
 import { filterWorkspaceCollectionIds } from "@/lib/db/queries/collection"
 import { filterWorkspaceFolderIds } from "@/lib/db/queries/folder"
+import {
+  createNotifications,
+  listWorkspaceNotifyRecipients,
+} from "@/lib/db/queries/notification"
 
 export async function GET(
   req: Request,
@@ -98,6 +102,22 @@ export async function POST(
       (err) => console.error("chunk sync failed for artifact", created.id, err)
     )
   )
+
+  // Tell the rest of the workspace a new document landed. Best-effort, off the
+  // response path — a notification failure must never fail the create.
+  after(async () => {
+    const recipients = await listWorkspaceNotifyRecipients(id, session.user.id)
+    await createNotifications(
+      recipients.map((userId) => ({
+        userId,
+        type: "artifact_created" as const,
+        actorId: session.user.id,
+        workspaceId: id,
+        artifactId: created.id,
+        data: { actorName: session.user.name, resourceName: created.title },
+      }))
+    )
+  })
 
   return NextResponse.json(
     {

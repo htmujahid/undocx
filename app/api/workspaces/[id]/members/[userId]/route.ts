@@ -1,12 +1,19 @@
+import { after } from "next/server"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
 import { getWorkspaceRole } from "@/lib/db/queries/access"
+import { createNotification } from "@/lib/db/queries/notification"
+import { getWorkspaceName } from "@/lib/db/queries/workspace"
 import {
   removeWorkspaceMember,
   updateWorkspaceMemberRole,
 } from "@/lib/db/queries/workspace-member"
-import { MEMBER_ROLES, type MemberRole } from "@/lib/db/schema"
+import {
+  MEMBER_ROLES,
+  type MemberRole,
+  type NotificationType,
+} from "@/lib/db/schema"
 
 export async function PATCH(
   req: Request,
@@ -30,7 +37,38 @@ export async function PATCH(
 
   if (!updated)
     return NextResponse.json({ error: "Not found" }, { status: 404 })
+
+  notifyMember(
+    "workspace_role_changed",
+    userId,
+    id,
+    session.user.id,
+    session.user.name,
+    newRole as MemberRole
+  )
   return NextResponse.json(updated)
+}
+
+// Let an affected member know about a workspace membership change. Best-effort,
+// off the response path.
+function notifyMember(
+  type: NotificationType,
+  userId: string,
+  workspaceId: string,
+  actorId: string,
+  actorName: string,
+  role?: MemberRole
+) {
+  after(async () => {
+    const ws = await getWorkspaceName(workspaceId)
+    await createNotification({
+      userId,
+      type,
+      actorId,
+      workspaceId,
+      data: { actorName, resourceName: ws?.name ?? "a workspace", role },
+    })
+  })
 }
 
 export async function DELETE(
@@ -53,5 +91,15 @@ export async function DELETE(
 
   if (!deleted)
     return NextResponse.json({ error: "Not found" }, { status: 404 })
+
+  // Only notify when an owner removed someone — not when a member leaves.
+  if (userId !== session.user.id)
+    notifyMember(
+      "workspace_removed",
+      userId,
+      id,
+      session.user.id,
+      session.user.name
+    )
   return new NextResponse(null, { status: 204 })
 }

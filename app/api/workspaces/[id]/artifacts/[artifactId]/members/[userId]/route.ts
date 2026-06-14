@@ -1,13 +1,43 @@
+import { after } from "next/server"
 import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
 import { getWorkspaceRole } from "@/lib/db/queries/access"
-import { artifactInWorkspace } from "@/lib/db/queries/artifact"
+import { artifactInWorkspace, getArtifactTitle } from "@/lib/db/queries/artifact"
 import {
   removeArtifactMember,
   updateArtifactMemberRole,
 } from "@/lib/db/queries/artifact-member"
-import { MEMBER_ROLES, type MemberRole } from "@/lib/db/schema"
+import { createNotification } from "@/lib/db/queries/notification"
+import {
+  MEMBER_ROLES,
+  type MemberRole,
+  type NotificationType,
+} from "@/lib/db/schema"
+
+// Let an affected member know about a document share change. Best-effort, off
+// the response path — a notification failure must never fail the mutation.
+function notifyMember(
+  type: NotificationType,
+  userId: string,
+  workspaceId: string,
+  artifactId: string,
+  actorId: string,
+  actorName: string,
+  role?: MemberRole
+) {
+  after(async () => {
+    const art = await getArtifactTitle(workspaceId, artifactId)
+    await createNotification({
+      userId,
+      type,
+      actorId,
+      workspaceId,
+      artifactId,
+      data: { actorName, resourceName: art?.title ?? "a document", role },
+    })
+  })
+}
 
 export async function PATCH(
   req: Request,
@@ -35,6 +65,16 @@ export async function PATCH(
 
   if (!updated)
     return NextResponse.json({ error: "Not found" }, { status: 404 })
+
+  notifyMember(
+    "artifact_role_changed",
+    userId,
+    id,
+    artifactId,
+    session.user.id,
+    session.user.name,
+    newRole as MemberRole
+  )
   return NextResponse.json(updated)
 }
 
@@ -64,5 +104,16 @@ export async function DELETE(
 
   if (!deleted)
     return NextResponse.json({ error: "Not found" }, { status: 404 })
+
+  // Only notify when an owner removed someone — not when a member leaves.
+  if (userId !== session.user.id)
+    notifyMember(
+      "artifact_removed",
+      userId,
+      id,
+      artifactId,
+      session.user.id,
+      session.user.name
+    )
   return new NextResponse(null, { status: 204 })
 }
