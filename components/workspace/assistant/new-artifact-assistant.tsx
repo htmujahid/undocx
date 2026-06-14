@@ -14,7 +14,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Sidebar, SidebarFooter, SidebarHeader } from "@/components/ui/sidebar"
-import { AssistantPanels } from "@/components/workspace/assistant/assistant-panels"
+import { ContextArtifactList } from "@/components/workspace/assistant/context-artifact-list"
 import { UNDOCX_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
 import { outputSchema } from "@/lib/ai/ai-schema"
 import {
@@ -144,12 +144,22 @@ export function NewArtifactAssistant({
         </div>
       </SidebarHeader>
 
-      <AssistantPanels
-        workspaceId={workspaceId}
-        excludeId={artifactId}
-        contextIds={contextIds}
-        onToggleContext={toggleContext}
-      />
+      <div className="flex min-h-0 flex-1 flex-col">
+        <div className="flex items-center gap-2 border-b px-4 py-2.5">
+          <span className="text-xs font-medium">Context</span>
+          {contextIds.size > 0 && (
+            <span className="ml-auto rounded-full bg-secondary px-1.5 text-[10px] tabular-nums text-muted-foreground">
+              {contextIds.size}
+            </span>
+          )}
+        </div>
+        <ContextArtifactList
+          workspaceId={workspaceId}
+          excludeId={artifactId}
+          selectedIds={contextIds}
+          onToggle={toggleContext}
+        />
+      </div>
 
       <SidebarFooter className="p-0">
         <Separator />
