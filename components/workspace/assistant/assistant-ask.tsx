@@ -139,7 +139,7 @@ export function AssistantAsk({
         )}
       </div>
 
-      <div className="border-t p-3">
+      <div className="border-t p-3 pt-5">
         <div
           className={cn(
             "rounded-xl border bg-muted/20 transition-all focus-within:border-ring/60 focus-within:ring-2 focus-within:ring-ring/20",
