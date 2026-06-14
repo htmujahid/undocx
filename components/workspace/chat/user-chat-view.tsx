@@ -7,10 +7,10 @@ import { DefaultChatTransport, type UIMessage, isTextUIPart } from "ai"
 import { BotIcon, HomeIcon, SendIcon, UserIcon } from "lucide-react"
 import Link from "next/link"
 
-import { CitedMessage } from "@/components/workspace/chat/cited-message"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import { CitedMessage } from "@/components/workspace/chat/cited-message"
 import { cn } from "@/lib/utils"
 
 function getMessageText(message: UIMessage): string {

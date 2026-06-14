@@ -135,9 +135,8 @@ export function BlockShowcase() {
             One document, every kind of block
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-            Undocx doesn&apos;t just write paragraphs. It reaches for the
-            right block for each idea and mixes them into a single, coherent
-            document.
+            Undocx doesn&apos;t just write paragraphs. It reaches for the right
+            block for each idea and mixes them into a single, coherent document.
           </p>
         </div>
 

@@ -3,7 +3,10 @@ import { NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
 import { getWorkspaceRole } from "@/lib/db/queries/access"
-import { artifactInWorkspace, getArtifactTitle } from "@/lib/db/queries/artifact"
+import {
+  artifactInWorkspace,
+  getArtifactTitle,
+} from "@/lib/db/queries/artifact"
 import {
   removeArtifactMember,
   updateArtifactMemberRole,

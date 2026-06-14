@@ -15,7 +15,7 @@ import { getUserById } from "@/lib/db/queries/user"
 
 const MAX_PROMPT_LENGTH = 8000
 
-const SYSTEM_PROMPT =`You are a helpful assistant for a personal knowledge base. Answer questions using only the provided context from the user's public documents. Each context block is labelled with a numbered source like [1]. When a statement is supported by the context, cite the source inline using its bracketed number, e.g. "Revenue grew last quarter [2]." Cite every claim you draw from the context, and place the citation immediately after the relevant sentence. If the context does not contain enough information to answer confidently, say so clearly rather than guessing. Be concise and accurate.`
+const SYSTEM_PROMPT = `You are a helpful assistant for a personal knowledge base. Answer questions using only the provided context from the user's public documents. Each context block is labelled with a numbered source like [1]. When a statement is supported by the context, cite the source inline using its bracketed number, e.g. "Revenue grew last quarter [2]." Cite every claim you draw from the context, and place the citation immediately after the relevant sentence. If the context does not contain enough information to answer confidently, say so clearly rather than guessing. Be concise and accurate.`
 
 export async function POST(
   req: Request,

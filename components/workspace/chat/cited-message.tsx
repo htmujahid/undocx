@@ -75,9 +75,7 @@ export function CitedMessage({
   return (
     <>
       <p className="whitespace-pre-wrap">
-        {sources.length > 0
-          ? renderWithCitations(text, byId, hrefFor)
-          : text}
+        {sources.length > 0 ? renderWithCitations(text, byId, hrefFor) : text}
       </p>
 
       {sources.length > 0 && (

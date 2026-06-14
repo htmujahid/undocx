@@ -4,6 +4,11 @@ import { useSearchParams } from "next/navigation"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
+import { ArtifactListNavbar } from "@/components/workspace/views/artifact-list-navbar"
+import {
+  type ArtifactAction,
+  ArtifactListView,
+} from "@/components/workspace/views/artifact-list-view"
 import {
   type ArtifactSummary,
   type SortBy,
@@ -17,9 +22,6 @@ import {
   toggleFavoriteMutationOptions,
 } from "@/lib/data/favorites"
 import { foldersQueryOptions } from "@/lib/data/folders"
-
-import { ArtifactListNavbar } from "@/components/workspace/views/artifact-list-navbar"
-import { type ArtifactAction, ArtifactListView } from "@/components/workspace/views/artifact-list-view"
 
 export function CollectionView({
   workspaceId,

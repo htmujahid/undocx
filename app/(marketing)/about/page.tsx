@@ -88,8 +88,8 @@ export default function AboutPage() {
             Information should arrive in the shape it needs to be
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-            We built Undocx because the way AI responds matters as much as
-            what it says. A step-by-step process deserves a numbered list, not a
+            We built Undocx because the way AI responds matters as much as what
+            it says. A step-by-step process deserves a numbered list, not a
             paragraph. A comparison deserves a table, not a sentence.
           </p>
         </div>
@@ -105,9 +105,9 @@ export default function AboutPage() {
               <p className="mt-4 leading-relaxed text-muted-foreground">
                 Undocx is an intelligent content generation and knowledge
                 management platform. When you give it a prompt, the AI writes a
-                structured document, composing tables, code, diagrams,
-                callouts, math, and footnoted citations into whatever mix the
-                topic actually needs.
+                structured document, composing tables, code, diagrams, callouts,
+                math, and footnoted citations into whatever mix the topic
+                actually needs.
               </p>
               <p className="mt-4 leading-relaxed text-muted-foreground">
                 Every response is saved to a knowledge base you can organize,

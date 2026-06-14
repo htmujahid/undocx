@@ -16,13 +16,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Switch } from "@/components/ui/switch"
+import { ShareMembers } from "@/components/workspace/sharing/share-members"
 import {
   type Artifact,
   artifactQueryOptions,
   updateArtifactMutationOptions,
 } from "@/lib/data/artifacts"
-
-import { ShareMembers } from "@/components/workspace/sharing/share-members"
 
 export function SharePopover({
   workspaceId,
@@ -75,8 +74,8 @@ export function SharePopover({
         <div className="space-y-0.5">
           <Label className="text-sm">Share with people</Label>
           <p className="text-xs text-muted-foreground">
-            Invite people to this document only, they won&apos;t see the rest
-            of the workspace.
+            Invite people to this document only, they won&apos;t see the rest of
+            the workspace.
           </p>
         </div>
         <div className="mt-3">

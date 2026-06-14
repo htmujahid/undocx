@@ -5,6 +5,11 @@ import { useSearchParams } from "next/navigation"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
+import { ArtifactListNavbar } from "@/components/workspace/views/artifact-list-navbar"
+import {
+  type ArtifactAction,
+  ArtifactListView,
+} from "@/components/workspace/views/artifact-list-view"
 import {
   type ArtifactSummary,
   type SortBy,
@@ -12,9 +17,6 @@ import {
   deleteArtifactMutationOptions,
   updateArtifactMutationOptions,
 } from "@/lib/data/artifacts"
-
-import { ArtifactListNavbar } from "@/components/workspace/views/artifact-list-navbar"
-import { type ArtifactAction, ArtifactListView } from "@/components/workspace/views/artifact-list-view"
 
 export function ArchiveView({ workspaceId }: { workspaceId: string }) {
   const searchParams = useSearchParams()

@@ -66,8 +66,8 @@ export default function PrivacyPage() {
 
         <div className="max-w-none space-y-10">
           <p className="leading-relaxed text-muted-foreground">
-            This Privacy Policy explains how Undocx collects, uses, and
-            protects your information when you use our platform. We take privacy
+            This Privacy Policy explains how Undocx collects, uses, and protects
+            your information when you use our platform. We take privacy
             seriously and are committed to being transparent about our
             practices.
           </p>

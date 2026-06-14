@@ -75,9 +75,7 @@ export function PasswordForm({ hasCredential }: { hasCredential: boolean }) {
   async function onSetSubmit(value: SetPasswordValues) {
     try {
       await setPassword(value.newPassword)
-      toast.success(
-        "Password set, you can now sign in with email and password"
-      )
+      toast.success("Password set, you can now sign in with email and password")
       setForm.reset()
       router.refresh()
     } catch (e: unknown) {

@@ -107,9 +107,7 @@ export async function countUnreadNotifications(userId: string) {
   const [row] = await db
     .select({ value: count() })
     .from(notification)
-    .where(
-      and(eq(notification.userId, userId), isNull(notification.readAt))
-    )
+    .where(and(eq(notification.userId, userId), isNull(notification.readAt)))
   return row?.value ?? 0
 }
 
@@ -117,7 +115,5 @@ export async function markNotificationsRead(userId: string) {
   await db
     .update(notification)
     .set({ readAt: new Date() })
-    .where(
-      and(eq(notification.userId, userId), isNull(notification.readAt))
-    )
+    .where(and(eq(notification.userId, userId), isNull(notification.readAt)))
 }

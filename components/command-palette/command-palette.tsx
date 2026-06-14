@@ -17,8 +17,8 @@ import {
   StarIcon,
   SunIcon,
 } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { useTheme } from "next-themes"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 import { useQuery } from "@tanstack/react-query"

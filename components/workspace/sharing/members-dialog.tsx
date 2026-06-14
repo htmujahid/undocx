@@ -7,7 +7,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-
 import { ShareMembers } from "@/components/workspace/sharing/share-members"
 
 export function MembersDialog({

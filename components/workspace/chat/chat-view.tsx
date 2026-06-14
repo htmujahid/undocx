@@ -6,10 +6,10 @@ import { useChat } from "@ai-sdk/react"
 import { DefaultChatTransport, type UIMessage, isTextUIPart } from "ai"
 import { BotIcon, SendIcon, UserIcon } from "lucide-react"
 
-import { CitedMessage } from "@/components/workspace/chat/cited-message"
 import { Button } from "@/components/ui/button"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { Textarea } from "@/components/ui/textarea"
+import { CitedMessage } from "@/components/workspace/chat/cited-message"
 import { cn } from "@/lib/utils"
 
 function getMessageText(message: UIMessage): string {

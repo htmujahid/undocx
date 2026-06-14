@@ -329,20 +329,19 @@ function ChatVisual() {
               <p className="text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
                 Sources
               </p>
-              {[
-                "Quarterly revenue review",
-                "Enterprise renewals memo",
-              ].map((s, i) => (
-                <div
-                  key={s}
-                  className="flex items-center gap-1.5 rounded-md border border-border bg-background px-2 py-1 text-[10px] text-foreground/70"
-                >
-                  <span className="flex size-3.5 shrink-0 items-center justify-center rounded bg-primary/15 text-[8px] font-semibold text-primary">
-                    {i + 1}
-                  </span>
-                  {s}
-                </div>
-              ))}
+              {["Quarterly revenue review", "Enterprise renewals memo"].map(
+                (s, i) => (
+                  <div
+                    key={s}
+                    className="flex items-center gap-1.5 rounded-md border border-border bg-background px-2 py-1 text-[10px] text-foreground/70"
+                  >
+                    <span className="flex size-3.5 shrink-0 items-center justify-center rounded bg-primary/15 text-[8px] font-semibold text-primary">
+                      {i + 1}
+                    </span>
+                    {s}
+                  </div>
+                )
+              )}
             </div>
           </div>
         </div>

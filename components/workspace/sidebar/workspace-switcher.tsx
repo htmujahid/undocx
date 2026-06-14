@@ -45,15 +45,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import { CreateWorkspaceDialog } from "@/components/workspace/dialogs/create-workspace-dialog"
+import { MembersDialog } from "@/components/workspace/sharing/members-dialog"
 import {
   type Workspace,
   deleteWorkspaceMutationOptions,
   updateWorkspaceMutationOptions,
   workspacesQueryOptions,
 } from "@/lib/data/workspaces"
-
-import { CreateWorkspaceDialog } from "@/components/workspace/dialogs/create-workspace-dialog"
-import { MembersDialog } from "@/components/workspace/sharing/members-dialog"
 
 function initials(name: string) {
   return name

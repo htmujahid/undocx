@@ -21,6 +21,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { Button } from "@/components/ui/button"
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar"
+import { ContentPreview } from "@/components/workspace/artifact/content-preview"
+import { AssistantToggle } from "@/components/workspace/assistant/assistant-toggle"
+import { NewArtifactAssistant } from "@/components/workspace/assistant/new-artifact-assistant"
+import { useAssistantAutoCollapse } from "@/components/workspace/assistant/use-assistant-auto-collapse"
 import { CalloutExtension } from "@/components/workspace/editor/callout-extension"
 import { CodeHighlightExtension } from "@/components/workspace/editor/code-highlight-extension"
 import { FootnoteExtension } from "@/components/workspace/editor/footnote-extension"
@@ -31,11 +35,6 @@ import {
   artifactsQueryOptions,
   createArtifactMutationOptions,
 } from "@/lib/data/artifacts"
-
-import { AssistantToggle } from "@/components/workspace/assistant/assistant-toggle"
-import { ContentPreview } from "@/components/workspace/artifact/content-preview"
-import { NewArtifactAssistant } from "@/components/workspace/assistant/new-artifact-assistant"
-import { useAssistantAutoCollapse } from "@/components/workspace/assistant/use-assistant-auto-collapse"
 
 export function WorkspaceNew({ workspaceId }: { workspaceId: string }) {
   const router = useRouter()

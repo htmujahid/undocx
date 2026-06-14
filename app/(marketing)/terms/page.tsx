@@ -72,9 +72,9 @@ export default function TermsPage() {
 
         <div className="prose prose-sm prose-neutral dark:prose-invert max-w-none space-y-10">
           <p className="text-muted-foreground leading-relaxed">
-            Please read these Terms of Service carefully before using
-            Undocx. These Terms form a legally binding agreement between you
-            and Undocx regarding your use of the platform and its services.
+            Please read these Terms of Service carefully before using Undocx.
+            These Terms form a legally binding agreement between you and Undocx
+            regarding your use of the platform and its services.
           </p>
 
           {SECTIONS.map((section) => (

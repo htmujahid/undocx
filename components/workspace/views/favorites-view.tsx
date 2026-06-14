@@ -4,14 +4,16 @@ import { StarIcon } from "lucide-react"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
+import { ArtifactListNavbar } from "@/components/workspace/views/artifact-list-navbar"
+import {
+  type ArtifactAction,
+  ArtifactListView,
+} from "@/components/workspace/views/artifact-list-view"
 import { deleteArtifactMutationOptions } from "@/lib/data/artifacts"
 import {
   favoritesQueryOptions,
   toggleFavoriteMutationOptions,
 } from "@/lib/data/favorites"
-
-import { ArtifactListNavbar } from "@/components/workspace/views/artifact-list-navbar"
-import { type ArtifactAction, ArtifactListView } from "@/components/workspace/views/artifact-list-view"
 
 export function FavoritesView({ workspaceId }: { workspaceId: string }) {
   const qc = useQueryClient()

@@ -79,8 +79,18 @@ function CitationsVisual() {
 
 function CodeVisual() {
   const lines = [
-    [{ t: "function", c: "text-primary" }, { t: " sync(", c: "" }, { t: "data", c: "text-amber-600" }, { t: ") {", c: "" }],
-    [{ t: "  return", c: "text-primary" }, { t: " data.", c: "" }, { t: "map", c: "text-emerald-600" }, { t: "(embed)", c: "" }],
+    [
+      { t: "function", c: "text-primary" },
+      { t: " sync(", c: "" },
+      { t: "data", c: "text-amber-600" },
+      { t: ") {", c: "" },
+    ],
+    [
+      { t: "  return", c: "text-primary" },
+      { t: " data.", c: "" },
+      { t: "map", c: "text-emerald-600" },
+      { t: "(embed)", c: "" },
+    ],
     [{ t: "}", c: "" }],
   ]
 
@@ -97,7 +107,9 @@ function CodeVisual() {
       <div className="space-y-1 px-3 py-3 font-mono text-[10px]">
         {lines.map((line, i) => (
           <div key={i} className="flex gap-3">
-            <span className="select-none text-muted-foreground/40">{i + 1}</span>
+            <span className="select-none text-muted-foreground/40">
+              {i + 1}
+            </span>
             <span className="text-foreground/80">
               {line.map((tok, j) => (
                 <span key={j} className={tok.c}>
@@ -221,8 +233,7 @@ export function UseCases() {
             Built for how you actually work
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Same platform, different workflows. Undocx adapts to what you
-            need.
+            Same platform, different workflows. Undocx adapts to what you need.
           </p>
         </div>
 

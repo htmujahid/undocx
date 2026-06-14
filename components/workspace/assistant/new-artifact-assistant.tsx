@@ -14,6 +14,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Sidebar, SidebarFooter, SidebarHeader } from "@/components/ui/sidebar"
+import { AssistantPanels } from "@/components/workspace/assistant/assistant-panels"
+import { UNDOCX_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
 import { outputSchema } from "@/lib/ai/ai-schema"
 import {
   artifactQueryOptions,
@@ -21,9 +23,6 @@ import {
   updateArtifactMutationOptions,
 } from "@/lib/data/artifacts"
 import { cn } from "@/lib/utils"
-
-import { AssistantPanels } from "@/components/workspace/assistant/assistant-panels"
-import { UNDOCX_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
 
 export function NewArtifactAssistant({
   workspaceId,

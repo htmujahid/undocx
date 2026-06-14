@@ -21,6 +21,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { Button } from "@/components/ui/button"
 import { SidebarProvider, useSidebar } from "@/components/ui/sidebar"
+import { ContentPreview } from "@/components/workspace/artifact/content-preview"
+import { ArtifactAssistant } from "@/components/workspace/assistant/artifact-assistant"
+import { AssistantToggle } from "@/components/workspace/assistant/assistant-toggle"
+import { useAssistantAutoCollapse } from "@/components/workspace/assistant/use-assistant-auto-collapse"
 import { CalloutExtension } from "@/components/workspace/editor/callout-extension"
 import { CodeHighlightExtension } from "@/components/workspace/editor/code-highlight-extension"
 import { FootnoteExtension } from "@/components/workspace/editor/footnote-extension"
@@ -29,17 +33,12 @@ import { MathExtension } from "@/components/workspace/editor/math-extension"
 import { SelectionMarkerExtension } from "@/components/workspace/editor/selection-marker-extension"
 import { SvgExtension } from "@/components/workspace/editor/svg-extension"
 import { editorTheme } from "@/components/workspace/editor/theme"
+import { SharePopover } from "@/components/workspace/sharing/share-popover"
 import { artifactQueryOptions } from "@/lib/data/artifacts"
 import {
   addRecentArtifactMutationOptions,
   recentArtifactIdsQueryOptions,
 } from "@/lib/data/recent-artifacts"
-
-import { ArtifactAssistant } from "@/components/workspace/assistant/artifact-assistant"
-import { AssistantToggle } from "@/components/workspace/assistant/assistant-toggle"
-import { ContentPreview } from "@/components/workspace/artifact/content-preview"
-import { SharePopover } from "@/components/workspace/sharing/share-popover"
-import { useAssistantAutoCollapse } from "@/components/workspace/assistant/use-assistant-auto-collapse"
 
 export function Workspace({
   workspaceId,
@@ -102,10 +101,7 @@ export function Workspace({
         ...(art?.content
           ? {
               $initialEditorState: () =>
-                $convertFromMarkdownString(
-                  art.content!,
-                  UNDOCX_TRANSFORMERS
-                ),
+                $convertFromMarkdownString(art.content!, UNDOCX_TRANSFORMERS),
             }
           : {}),
         onError: (error: Error) => console.error("[Lexical]", error),

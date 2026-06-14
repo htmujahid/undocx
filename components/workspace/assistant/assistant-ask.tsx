@@ -10,9 +10,8 @@ import { $convertToMarkdownString } from "@lexical/markdown"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-
 import { UNDOCX_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
+import { cn } from "@/lib/utils"
 
 const MARKER_RE = /<!-- @(?:selection|removed):(?:start|end) -->/g
 

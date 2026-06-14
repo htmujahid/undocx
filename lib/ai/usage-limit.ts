@@ -5,7 +5,10 @@ import { consumeAiGeneration } from "@/lib/db/queries/ai-usage"
 export const DAILY_AI_LIMIT = 10
 
 export async function enforceDailyAiLimit(userId: string) {
-  const { allowed, remaining } = await consumeAiGeneration(userId, DAILY_AI_LIMIT)
+  const { allowed, remaining } = await consumeAiGeneration(
+    userId,
+    DAILY_AI_LIMIT
+  )
 
   const headers = {
     "X-AI-Daily-Limit": String(DAILY_AI_LIMIT),

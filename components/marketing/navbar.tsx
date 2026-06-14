@@ -56,9 +56,7 @@ export function Navbar() {
               <path d="m22 14-3 3 3 3" />
             </svg>
           </div>
-          <span className="text-sm font-semibold tracking-tight">
-            Undocx
-          </span>
+          <span className="text-sm font-semibold tracking-tight">Undocx</span>
         </Link>
 
         <nav className="flex items-center gap-1">

@@ -16,12 +16,11 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Sidebar, SidebarFooter, SidebarHeader } from "@/components/ui/sidebar"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { cn } from "@/lib/utils"
-
 import { AssistantAsk } from "@/components/workspace/assistant/assistant-ask"
 import { ModeBadge } from "@/components/workspace/assistant/assistant-mode-badge"
 import { AssistantPanels } from "@/components/workspace/assistant/assistant-panels"
 import { useAssistantSubmit } from "@/components/workspace/assistant/use-assistant-submit"
+import { cn } from "@/lib/utils"
 
 type AssistantMode = "ask" | "edit"
 

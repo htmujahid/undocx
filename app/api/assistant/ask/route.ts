@@ -23,7 +23,9 @@ export async function POST(request: Request) {
   const lastUser = [...(messages ?? [])]
     .reverse()
     .find((m: { role: string }) => m.role === "user")
-  const userText = ((lastUser?.parts ?? []) as { type: string; text?: string }[])
+  const userText = (
+    (lastUser?.parts ?? []) as { type: string; text?: string }[]
+  )
     .filter((p) => p.type === "text")
     .map((p) => p.text ?? "")
     .join("")

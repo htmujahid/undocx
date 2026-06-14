@@ -1,5 +1,12 @@
 import { relations } from "drizzle-orm"
-import { index, jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core"
+import {
+  index,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core"
 
 import { artifact } from "./artifact-schema"
 import { user } from "./auth-schema"

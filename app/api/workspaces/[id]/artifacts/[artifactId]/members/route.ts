@@ -1,4 +1,4 @@
-import { after, NextResponse } from "next/server"
+import { NextResponse, after } from "next/server"
 
 import { getSession } from "@/lib/auth"
 import { getWorkspaceRole } from "@/lib/db/queries/access"

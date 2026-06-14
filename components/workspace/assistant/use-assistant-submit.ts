@@ -14,19 +14,18 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { insertOutputSchema, replaceOutputSchema } from "@/lib/ai/ai-schema"
-import {
-  artifactQueryOptions,
-  artifactsQueryOptions,
-  updateArtifactMutationOptions,
-} from "@/lib/data/artifacts"
-
 import { UNDOCX_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
 import { $isSelectionMarkerNode } from "@/components/workspace/editor/selection-marker-node"
 import {
   snapshotSelectionMarkers,
   subscribeSelectionMarkers,
 } from "@/components/workspace/editor/selection-marker-store"
+import { insertOutputSchema, replaceOutputSchema } from "@/lib/ai/ai-schema"
+import {
+  artifactQueryOptions,
+  artifactsQueryOptions,
+  updateArtifactMutationOptions,
+} from "@/lib/data/artifacts"
 
 const START_PLACEHOLDER = "<!-- @selection:start -->"
 const END_PLACEHOLDER = "<!-- @selection:end -->"
