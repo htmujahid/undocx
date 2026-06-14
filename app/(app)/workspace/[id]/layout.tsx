@@ -2,6 +2,7 @@ import { redirect } from "next/navigation"
 
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
 
+import { CommandPalette } from "@/components/command-palette/command-palette"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { WorkspaceSidebar } from "@/components/workspace/sidebar/workspace-sidebar"
 import { getSession } from "@/lib/auth"
@@ -59,7 +60,9 @@ export default async function WorkspaceLayout({
           }}
           workspaceId={ws.id}
         />
-        <SidebarInset>{children}</SidebarInset>
+        <CommandPalette workspaceId={ws.id} userId={session.user.id}>
+          <SidebarInset>{children}</SidebarInset>
+        </CommandPalette>
       </HydrationBoundary>
     </SidebarProvider>
   )
