@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1781260203743,
-      "tag": "0000_sour_mac_gargan",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1781273387685,
-      "tag": "0001_aspiring_firebird",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1781310673362,
-      "tag": "0002_tired_wind_dancer",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1781405941764,
-      "tag": "0003_legal_bishop",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1781411961380,
-      "tag": "0004_fearless_justin_hammer",
+      "when": 1781420818226,
+      "tag": "0000_high_imperial_guard",
       "breakpoints": true
     }
   ]
