@@ -48,16 +48,16 @@ function SelectionMarkerComponent({
     >
       {role === "start" ? (
         <>
-          <div className="flex shrink-0 items-center gap-1.5 rounded-sm border border-primary/20 bg-primary/5 px-2 py-0.5">
+          <div className="flex shrink-0 items-center gap-1.5 rounded-sm border border-secondary-foreground/35 bg-secondary px-2 py-0.5">
             <svg
               viewBox="0 0 8 8"
-              className="size-2 fill-primary/70"
+              className="size-2 fill-secondary-foreground/75"
               aria-hidden="true"
             >
               <rect x="0" y="4.5" width="8" height="1.2" />
               <polygon points="4,0.5 7,4.5 1,4.5" />
             </svg>
-            <span className="text-[9px] font-bold uppercase tracking-widest text-primary/65">
+            <span className="text-[9px] font-bold uppercase tracking-widest text-secondary-foreground/70">
               Start
             </span>
           </div>
@@ -65,7 +65,7 @@ function SelectionMarkerComponent({
             className="h-px flex-1"
             style={{
               background:
-                "repeating-linear-gradient(90deg, hsl(var(--primary)/0.25) 0, hsl(var(--primary)/0.25) 4px, transparent 4px, transparent 8px)",
+                "repeating-linear-gradient(90deg, color-mix(in oklch, var(--secondary-foreground) 40%, transparent) 0, color-mix(in oklch, var(--secondary-foreground) 40%, transparent) 4px, transparent 4px, transparent 8px)",
             }}
           />
           <button
@@ -91,16 +91,16 @@ function SelectionMarkerComponent({
             className="h-px flex-1"
             style={{
               background:
-                "repeating-linear-gradient(90deg, hsl(var(--primary)/0.25) 0, hsl(var(--primary)/0.25) 4px, transparent 4px, transparent 8px)",
+                "repeating-linear-gradient(90deg, color-mix(in oklch, var(--secondary-foreground) 40%, transparent) 0, color-mix(in oklch, var(--secondary-foreground) 40%, transparent) 4px, transparent 4px, transparent 8px)",
             }}
           />
-          <div className="flex shrink-0 items-center gap-1.5 rounded-sm border border-primary/20 bg-primary/5 px-2 py-0.5">
-            <span className="text-[9px] font-bold uppercase tracking-widest text-primary/65">
+          <div className="flex shrink-0 items-center gap-1.5 rounded-sm border border-secondary-foreground/35 bg-secondary px-2 py-0.5">
+            <span className="text-[9px] font-bold uppercase tracking-widest text-secondary-foreground/70">
               End
             </span>
             <svg
               viewBox="0 0 8 8"
-              className="size-2 fill-primary/70"
+              className="size-2 fill-secondary-foreground/75"
               aria-hidden="true"
             >
               <rect x="0" y="2.3" width="8" height="1.2" />

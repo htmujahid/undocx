@@ -249,17 +249,12 @@ export function SelectionMarkerPlugin({
       {highlight &&
         createPortal(
           <div
+            className="selection-marker-overlay"
             style={{
-              position: "fixed",
               top: highlight.top,
               left: highlight.left,
               width: highlight.width,
               height: highlight.height,
-              pointerEvents: "none",
-              zIndex: 10,
-              background: "hsl(var(--primary)/0.04)",
-              borderLeft: "2px solid hsl(var(--primary)/0.15)",
-              borderRight: "2px solid hsl(var(--primary)/0.15)",
             }}
           />,
           document.body
@@ -288,10 +283,10 @@ export function SelectionMarkerPlugin({
                   : "Mark end of selection"
               }
               style={{ pointerEvents: "all" }}
-              className="group flex w-full cursor-pointer items-center px-8"
+              className="selection-marker-btn flex w-full cursor-pointer items-center px-8"
             >
-              <div className="h-px flex-1 bg-primary/15 transition-colors group-hover:bg-primary/40" />
-              <div className="mx-2 flex shrink-0 items-center gap-1.5 rounded-full border border-primary/20 bg-background px-2.5 py-0.5 text-[10px] font-medium text-primary/45 shadow-sm transition-all group-hover:border-primary/50 group-hover:text-primary/85">
+              <div className="selection-marker-line" />
+              <div className="selection-marker-badge">
                 {indicator.mode === "start" ? (
                   <>
                     <svg
@@ -318,7 +313,7 @@ export function SelectionMarkerPlugin({
                   </>
                 )}
               </div>
-              <div className="h-px flex-1 bg-primary/15 transition-colors group-hover:bg-primary/40" />
+              <div className="selection-marker-line" />
             </button>
           </div>,
           document.body
