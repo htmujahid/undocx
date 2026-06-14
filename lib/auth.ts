@@ -16,8 +16,16 @@ import {
   sendVerificationEmail,
 } from "@/lib/mail/auth-emails"
 
+const trustedOrigins = [
+  process.env.BETTER_AUTH_URL ?? "http://localhost:3000",
+  ...(process.env.TRUSTED_ORIGINS?.split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean) ?? []),
+]
+
 export const auth = betterAuth({
   appName: "Renderical",
+  trustedOrigins,
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
