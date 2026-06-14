@@ -60,13 +60,13 @@ function notifyMember(
   role?: MemberRole
 ) {
   after(async () => {
-    const ws = await getWorkspaceName(workspaceId)
+    const workspace = await getWorkspaceName(workspaceId)
     await createNotification({
       userId,
       type,
       actorId,
       workspaceId,
-      data: { actorName, resourceName: ws?.name ?? "a workspace", role },
+      data: { actorName, resourceName: workspace?.name ?? "a workspace", role },
     })
   })
 }

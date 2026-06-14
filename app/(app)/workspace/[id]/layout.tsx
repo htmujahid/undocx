@@ -32,20 +32,20 @@ export default async function WorkspaceLayout({
 
   // Members and artifact-level shares get in too — the APIs scope what
   // each role can actually see and do.
-  const [ws, access] = await Promise.all([
+  const [workspace, access] = await Promise.all([
     getWorkspaceById(id),
     getWorkspaceAccess(id, session.user.id),
   ])
 
-  if (!ws || !access) redirect("/workspace")
+  if (!workspace || !access) redirect("/workspace")
 
   const queryClient = getQueryClient()
 
   await Promise.all([
     queryClient.prefetchQuery(workspacesQueryOptions),
-    queryClient.prefetchQuery(foldersQueryOptions(ws.id)),
-    queryClient.prefetchQuery(collectionsQueryOptions(ws.id)),
-    queryClient.prefetchQuery(artifactsQueryOptions(ws.id)),
+    queryClient.prefetchQuery(foldersQueryOptions(workspace.id)),
+    queryClient.prefetchQuery(collectionsQueryOptions(workspace.id)),
+    queryClient.prefetchQuery(artifactsQueryOptions(workspace.id)),
   ])
 
   return (
@@ -58,9 +58,9 @@ export default async function WorkspaceLayout({
             email: session.user.email,
             image: session.user.image ?? null,
           }}
-          workspaceId={ws.id}
+          workspaceId={workspace.id}
         />
-        <CommandPalette workspaceId={ws.id} userId={session.user.id}>
+        <CommandPalette workspaceId={workspace.id} userId={session.user.id}>
           <SidebarInset>{children}</SidebarInset>
         </CommandPalette>
       </HydrationBoundary>

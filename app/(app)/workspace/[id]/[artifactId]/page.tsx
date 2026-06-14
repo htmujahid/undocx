@@ -4,7 +4,7 @@ import { notFound, redirect } from "next/navigation"
 
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
 
-import { Workspace } from "@/components/workspace/workspace"
+import { Workspace } from "@/components/workspace/artifact/workspace"
 import { getSession } from "@/lib/auth"
 import { artifactQueryOptions } from "@/lib/data/artifacts"
 import { getQueryClient } from "@/lib/data/get-query-client"

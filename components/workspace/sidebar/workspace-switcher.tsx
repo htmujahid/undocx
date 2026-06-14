@@ -52,8 +52,8 @@ import {
   workspacesQueryOptions,
 } from "@/lib/data/workspaces"
 
-import { CreateWorkspaceDialog } from "../create-workspace-dialog"
-import { MembersDialog } from "../members-dialog"
+import { CreateWorkspaceDialog } from "@/components/workspace/dialogs/create-workspace-dialog"
+import { MembersDialog } from "@/components/workspace/sharing/members-dialog"
 
 function initials(name: string) {
   return name
@@ -135,39 +135,39 @@ export function WorkspaceSwitcher({
               {workspaces.length === 0 && (
                 <DropdownMenuItem disabled>No workspaces yet</DropdownMenuItem>
               )}
-              {workspaces.map((ws) => (
+              {workspaces.map((workspace) => (
                 <DropdownMenuItem
-                  key={ws.id}
+                  key={workspace.id}
                   className="group"
-                  onClick={() => router.push(`/workspace/${ws.id}`)}
+                  onClick={() => router.push(`/workspace/${workspace.id}`)}
                 >
-                  <span className="flex-1 truncate">{ws.name}</span>
-                  {ws.role !== "owner" && (
+                  <span className="flex-1 truncate">{workspace.name}</span>
+                  {workspace.role !== "owner" && (
                     <span className="shrink-0 text-[10px] text-muted-foreground">
                       shared
                     </span>
                   )}
-                  {ws.id === active?.id && (
+                  {workspace.id === active?.id && (
                     <CheckIcon className="size-3.5 shrink-0" />
                   )}
-                  {ws.role === "owner" && (
+                  {workspace.role === "owner" && (
                     <button
                       className="hidden size-5 items-center justify-center rounded-sm text-muted-foreground hover:text-foreground group-hover:flex"
                       onClick={(e) => {
                         e.stopPropagation()
-                        setEditWorkspace(ws)
-                        setEditName(ws.name)
+                        setEditWorkspace(workspace)
+                        setEditName(workspace.name)
                       }}
                     >
                       <EditIcon className="size-3.5" />
                     </button>
                   )}
-                  {ws.role === "owner" && workspaces.length > 1 && (
+                  {workspace.role === "owner" && workspaces.length > 1 && (
                     <button
                       className="hidden size-5 items-center justify-center rounded-sm text-destructive group-hover:flex"
                       onClick={(e) => {
                         e.stopPropagation()
-                        setDeleteTarget(ws)
+                        setDeleteTarget(workspace)
                       }}
                     >
                       <Trash2Icon className="size-3.5" />

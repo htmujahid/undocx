@@ -21,12 +21,12 @@ import {
   updateArtifactMutationOptions,
 } from "@/lib/data/artifacts"
 
-import { RENDERICAL_TRANSFORMERS } from "./editor/markdown-transformers"
-import { $isSelectionMarkerNode } from "./editor/selection-marker-node"
+import { RENDERICAL_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
+import { $isSelectionMarkerNode } from "@/components/workspace/editor/selection-marker-node"
 import {
   snapshotSelectionMarkers,
   subscribeSelectionMarkers,
-} from "./editor/selection-marker-store"
+} from "@/components/workspace/editor/selection-marker-store"
 
 const START_PLACEHOLDER = "<!-- @selection:start -->"
 const END_PLACEHOLDER = "<!-- @selection:end -->"

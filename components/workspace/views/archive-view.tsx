@@ -13,8 +13,8 @@ import {
   updateArtifactMutationOptions,
 } from "@/lib/data/artifacts"
 
-import { ArtifactListNavbar } from "./artifact-list-navbar"
-import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
+import { ArtifactListNavbar } from "@/components/workspace/views/artifact-list-navbar"
+import { type ArtifactAction, ArtifactListView } from "@/components/workspace/views/artifact-list-view"
 
 export function ArchiveView({ workspaceId }: { workspaceId: string }) {
   const searchParams = useSearchParams()

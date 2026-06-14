@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 
-import { ShareMembers } from "./share-members"
+import { ShareMembers } from "@/components/workspace/sharing/share-members"
 
 export function MembersDialog({
   workspaceId,

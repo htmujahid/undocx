@@ -2,7 +2,7 @@ import { redirect } from "next/navigation"
 
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
 
-import { FolderView } from "@/components/workspace/folder-view"
+import { FolderView } from "@/components/workspace/views/folder-view"
 import { getSession } from "@/lib/auth"
 import { favoritesQueryOptions } from "@/lib/data/favorites"
 import { getQueryClient } from "@/lib/data/get-query-client"
@@ -22,16 +22,16 @@ export default async function FoldersPage({
 
   if (!folderId) redirect(`/workspace/${id}`)
 
-  const ws = await getOwnedWorkspace(id, session.user.id)
-  if (!ws) redirect("/workspace")
+  const workspace = await getOwnedWorkspace(id, session.user.id)
+  if (!workspace) redirect("/workspace")
 
   const queryClient = getQueryClient()
 
-  await queryClient.prefetchQuery(favoritesQueryOptions(ws.id))
+  await queryClient.prefetchQuery(favoritesQueryOptions(workspace.id))
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <FolderView workspaceId={ws.id} folderId={folderId} />
+      <FolderView workspaceId={workspace.id} folderId={folderId} />
     </HydrationBoundary>
   )
 }

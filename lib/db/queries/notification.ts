@@ -53,7 +53,7 @@ export async function listWorkspaceNotifyRecipients(
   workspaceId: string,
   exceptUserId: string
 ): Promise<string[]> {
-  const [members, [ws]] = await Promise.all([
+  const [members, [workspaceRow]] = await Promise.all([
     db
       .select({ userId: workspaceMember.userId })
       .from(workspaceMember)
@@ -70,7 +70,8 @@ export async function listWorkspaceNotifyRecipients(
   ])
 
   const ids = new Set(members.map((m) => m.userId))
-  if (ws && ws.ownerId !== exceptUserId) ids.add(ws.ownerId)
+  if (workspaceRow && workspaceRow.ownerId !== exceptUserId)
+    ids.add(workspaceRow.ownerId)
   return [...ids]
 }
 

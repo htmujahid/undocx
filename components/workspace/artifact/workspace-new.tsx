@@ -32,10 +32,10 @@ import {
   createArtifactMutationOptions,
 } from "@/lib/data/artifacts"
 
-import { AssistantToggle } from "./assistant-toggle"
-import { ContentPreview } from "./content-preview"
-import { NewArtifactAssistant } from "./new-artifact-assistant"
-import { useAssistantAutoCollapse } from "./use-assistant-auto-collapse"
+import { AssistantToggle } from "@/components/workspace/assistant/assistant-toggle"
+import { ContentPreview } from "@/components/workspace/artifact/content-preview"
+import { NewArtifactAssistant } from "@/components/workspace/assistant/new-artifact-assistant"
+import { useAssistantAutoCollapse } from "@/components/workspace/assistant/use-assistant-auto-collapse"
 
 export function WorkspaceNew({ workspaceId }: { workspaceId: string }) {
   const router = useRouter()

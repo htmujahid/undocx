@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { after, NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
 import { getWorkspaceRole } from "@/lib/db/queries/access"
@@ -104,14 +104,16 @@ export async function POST(
     artifactId,
   })
 
-  sendInvitationEmail({
-    to: email,
-    inviterName: session.user.name,
-    resourceName: art.title,
-    resourceKind: "document",
-    role: memberRole,
-    token: created.token,
-  })
+  after(() =>
+    sendInvitationEmail({
+      to: email,
+      inviterName: session.user.name,
+      resourceName: art.title,
+      resourceKind: "document",
+      role: memberRole,
+      token: created.token,
+    })
+  )
 
   // The token only travels via email — never back to the inviter's browser.
   return NextResponse.json(

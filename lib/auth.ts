@@ -25,7 +25,7 @@ export const auth = betterAuth({
     enabled: true,
     requireEmailVerification: true,
     sendResetPassword: async ({ user, url }) => {
-      sendResetPasswordEmail({ user, url })
+      await sendResetPasswordEmail({ user, url })
     },
   },
   user: {
@@ -41,14 +41,14 @@ export const auth = betterAuth({
         newEmail: string
         url: string
       }) => {
-        sendChangeEmailVerification({ user, newEmail, url })
+        await sendChangeEmailVerification({ user, newEmail, url })
       },
     },
     deleteUser: {
       enabled: true,
       deleteSessions: true,
       sendDeleteAccountVerification: async ({ user, url }) => {
-        sendDeleteAccountVerification({ user, url })
+        await sendDeleteAccountVerification({ user, url })
       },
     },
   },
@@ -56,7 +56,7 @@ export const auth = betterAuth({
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
-      sendVerificationEmail({ user, url })
+      await sendVerificationEmail({ user, url })
     },
   },
   databaseHooks: {
@@ -85,7 +85,7 @@ export const auth = betterAuth({
     twoFactor({
       otpOptions: {
         async sendOTP({ user, otp }) {
-          sendOtpEmail({ user, otp })
+          await sendOtpEmail({ user, otp })
         },
       },
     }),

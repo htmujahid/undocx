@@ -21,7 +21,7 @@ import { Separator } from "@/components/ui/separator"
 import {
   FootnoteList,
   WordCount,
-} from "@/components/workspace/content-preview-parts"
+} from "@/components/workspace/artifact/content-preview-parts"
 import { CalloutExtension } from "@/components/workspace/editor/callout-extension"
 import { CodeHighlightExtension } from "@/components/workspace/editor/code-highlight-extension"
 import { FootnoteExtension } from "@/components/workspace/editor/footnote-extension"

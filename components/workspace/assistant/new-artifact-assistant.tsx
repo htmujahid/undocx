@@ -22,8 +22,8 @@ import {
 } from "@/lib/data/artifacts"
 import { cn } from "@/lib/utils"
 
-import { AssistantPanels } from "./assistant-panels"
-import { RENDERICAL_TRANSFORMERS } from "./editor/markdown-transformers"
+import { AssistantPanels } from "@/components/workspace/assistant/assistant-panels"
+import { RENDERICAL_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
 
 export function NewArtifactAssistant({
   workspaceId,

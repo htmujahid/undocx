@@ -28,7 +28,7 @@ export function sendInvitationEmail({
 }) {
   const url = invitationUrl(token)
   const roleLabel = role === "editor" ? "edit" : "view"
-  void mailer.sendMail({
+  return mailer.sendMail({
     from: "noreply@renderical.com",
     to,
     subject: `${inviterName} invited you to a ${resourceKind} on Renderical`,

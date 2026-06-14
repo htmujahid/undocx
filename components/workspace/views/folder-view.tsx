@@ -1,5 +1,6 @@
 "use client"
 
+import { FolderIcon } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
@@ -18,15 +19,15 @@ import {
 } from "@/lib/data/favorites"
 import { foldersQueryOptions } from "@/lib/data/folders"
 
-import { ArtifactListNavbar } from "./artifact-list-navbar"
-import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
+import { ArtifactListNavbar } from "@/components/workspace/views/artifact-list-navbar"
+import { type ArtifactAction, ArtifactListView } from "@/components/workspace/views/artifact-list-view"
 
-export function CollectionView({
+export function FolderView({
   workspaceId,
-  collectionId,
+  folderId,
 }: {
   workspaceId: string
-  collectionId: string
+  folderId: string
 }) {
   const searchParams = useSearchParams()
   const sort = (searchParams.get("sort") as SortBy | null) ?? "updated"
@@ -34,15 +35,13 @@ export function CollectionView({
   const { data: artifacts = [], isLoading } = useQuery(
     artifactsQueryOptions(workspaceId, sort)
   )
-  // Warms the folders cache for descendant dialogs (move-to-folder, etc.)
-  useQuery(foldersQueryOptions(workspaceId))
-  const { data: collections = [] } = useQuery(
-    collectionsQueryOptions(workspaceId)
-  )
+  const { data: folders = [] } = useQuery(foldersQueryOptions(workspaceId))
+  // Warms the collections cache for descendant dialogs (move-to-collection, etc.)
+  useQuery(collectionsQueryOptions(workspaceId))
   const { data: favorites = [] } = useQuery(favoritesQueryOptions(workspaceId))
 
   const favoriteIds = new Set(favorites.map((f) => f.id))
-  const collection = collections.find((c) => c.id === collectionId)
+  const folder = folders.find((f) => f.id === folderId)
 
   const invalidateArtifacts = () =>
     qc.invalidateQueries({
@@ -66,7 +65,7 @@ export function CollectionView({
   })
 
   const displayedArtifacts = artifacts.filter(
-    (a) => !a.isArchived && a.collectionIds.includes(collectionId)
+    (a) => !a.isArchived && a.folderIds.includes(folderId)
   )
 
   const getActions = (art: ArtifactSummary): ArtifactAction[] => [
@@ -84,12 +83,12 @@ export function CollectionView({
     },
     {
       type: "action",
-      label: "Remove from collection",
+      label: "Remove from folder",
       onClick: () =>
         updateMutation.mutate({
           workspaceId,
           id: art.id,
-          collectionIds: art.collectionIds.filter((id) => id !== collectionId),
+          folderIds: art.folderIds.filter((id) => id !== folderId),
         }),
     },
     { type: "separator" },
@@ -105,22 +104,15 @@ export function CollectionView({
     <div className="flex h-svh flex-col overflow-hidden">
       <ArtifactListNavbar
         workspaceId={workspaceId}
-        label={collection?.name ?? "Collection"}
-        icon={
-          collection ? (
-            <span
-              className="size-2 shrink-0 rounded-full"
-              style={{ backgroundColor: collection.color }}
-            />
-          ) : undefined
-        }
+        label={folder?.name ?? "Folder"}
+        icon={<FolderIcon className="size-3.5 text-muted-foreground" />}
       />
       <ArtifactListView
         workspaceId={workspaceId}
         artifacts={displayedArtifacts}
         isLoading={isLoading}
-        emptyTitle="No artifacts in this collection"
-        emptyDescription="Add artifacts to this collection from the All Items view."
+        emptyTitle="No artifacts in this folder"
+        emptyDescription="Move artifacts here from the All Items view."
         getActions={getActions}
       />
     </div>

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation"
 
-import { ChatView } from "@/components/workspace/chat-view"
+import { ChatView } from "@/components/workspace/chat/chat-view"
 import { getSession } from "@/lib/auth"
 import { getWorkspaceAccess } from "@/lib/db/queries/access"
 

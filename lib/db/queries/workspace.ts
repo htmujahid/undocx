@@ -55,16 +55,19 @@ export async function deleteOwnedWorkspace(id: string, ownerId: string) {
 }
 
 export async function getWorkspaceById(id: string) {
-  const [ws] = await db.select().from(workspace).where(eq(workspace.id, id))
-  return ws ?? null
+  const [workspaceRow] = await db
+    .select()
+    .from(workspace)
+    .where(eq(workspace.id, id))
+  return workspaceRow ?? null
 }
 
 export async function getOwnedWorkspace(id: string, ownerId: string) {
-  const [ws] = await db
+  const [workspaceRow] = await db
     .select()
     .from(workspace)
     .where(and(eq(workspace.id, id), eq(workspace.ownerId, ownerId)))
-  return ws ?? null
+  return workspaceRow ?? null
 }
 
 export async function getFirstOwnedWorkspace(ownerId: string) {
@@ -78,9 +81,9 @@ export async function getFirstOwnedWorkspace(ownerId: string) {
 }
 
 export async function getWorkspaceName(id: string) {
-  const [ws] = await db
+  const [workspaceRow] = await db
     .select({ name: workspace.name })
     .from(workspace)
     .where(eq(workspace.id, id))
-  return ws ?? null
+  return workspaceRow ?? null
 }

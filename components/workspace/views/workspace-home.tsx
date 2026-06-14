@@ -20,11 +20,11 @@ import {
   toggleFavoriteMutationOptions,
 } from "@/lib/data/favorites"
 
-import { AddToCollectionDialog } from "./add-to-collection-dialog"
-import { ArtifactListNavbar } from "./artifact-list-navbar"
-import { type ArtifactAction, ArtifactListView } from "./artifact-list-view"
-import { MoveToFolderDialog } from "./move-to-folder-dialog"
-import { PendingInvitations } from "./pending-invitations"
+import { AddToCollectionDialog } from "@/components/workspace/dialogs/add-to-collection-dialog"
+import { ArtifactListNavbar } from "@/components/workspace/views/artifact-list-navbar"
+import { type ArtifactAction, ArtifactListView } from "@/components/workspace/views/artifact-list-view"
+import { MoveToFolderDialog } from "@/components/workspace/dialogs/move-to-folder-dialog"
+import { PendingInvitations } from "@/components/workspace/sharing/pending-invitations"
 
 export function WorkspaceHome({ workspaceId }: { workspaceId: string }) {
   const router = useRouter()

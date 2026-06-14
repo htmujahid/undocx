@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation"
 
-import { UserChatView } from "@/components/workspace/user-chat-view"
+import { UserChatView } from "@/components/workspace/chat/user-chat-view"
 import { getSession } from "@/lib/auth"
 import { userHasActiveArtifact } from "@/lib/db/queries/artifact"
 import { getUserById } from "@/lib/db/queries/user"

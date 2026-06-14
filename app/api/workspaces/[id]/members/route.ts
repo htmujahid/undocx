@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import { after, NextResponse } from "next/server"
 
 import { getSession } from "@/lib/auth"
 import { getWorkspaceRole } from "@/lib/db/queries/access"
@@ -87,7 +87,7 @@ export async function POST(
       )
   }
 
-  const ws = await getWorkspaceName(id)
+  const workspace = await getWorkspaceName(id)
 
   const created = await upsertInvitation({
     email,
@@ -96,14 +96,16 @@ export async function POST(
     workspaceId: id,
   })
 
-  sendInvitationEmail({
-    to: email,
-    inviterName: session.user.name,
-    resourceName: ws!.name,
-    resourceKind: "workspace",
-    role: memberRole,
-    token: created.token,
-  })
+  after(() =>
+    sendInvitationEmail({
+      to: email,
+      inviterName: session.user.name,
+      resourceName: workspace!.name,
+      resourceKind: "workspace",
+      role: memberRole,
+      token: created.token,
+    })
+  )
 
   // The token only travels via email — never back to the inviter's browser.
   return NextResponse.json(

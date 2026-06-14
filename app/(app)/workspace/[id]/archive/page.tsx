@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation"
 
-import { ArchiveView } from "@/components/workspace/archive-view"
+import { ArchiveView } from "@/components/workspace/views/archive-view"
 import { getSession } from "@/lib/auth"
 import { getOwnedWorkspace } from "@/lib/db/queries/workspace"
 
@@ -14,8 +14,8 @@ export default async function ArchivePage({
 
   const { id } = await params
 
-  const ws = await getOwnedWorkspace(id, session.user.id)
-  if (!ws) redirect("/workspace")
+  const workspace = await getOwnedWorkspace(id, session.user.id)
+  if (!workspace) redirect("/workspace")
 
-  return <ArchiveView workspaceId={ws.id} />
+  return <ArchiveView workspaceId={workspace.id} />
 }

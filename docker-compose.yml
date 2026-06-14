@@ -11,6 +11,9 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    configs:
+      - source: init_extensions
+        target: /docker-entrypoint-initdb.d/01-extensions.sql
 
   mailpit:
     image: axllent/mailpit
@@ -22,3 +25,7 @@ services:
 
 volumes:
   postgres_data:
+
+configs:
+  init_extensions:
+    content: "CREATE EXTENSION IF NOT EXISTS vector;\n"

@@ -3,7 +3,7 @@ import { cache } from "react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import { PublicArtifactView } from "@/components/workspace/public-artifact-view"
+import { PublicArtifactView } from "@/components/workspace/artifact/public-artifact-view"
 import { getPublicArtifact } from "@/lib/db/queries/artifact"
 
 // Content can be unshared at any moment — always check the flag at request time.

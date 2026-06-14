@@ -68,11 +68,11 @@ export async function POST(
     if (existingRole !== "owner") {
       await upsertWorkspaceMember(inv.workspaceId, session.user.id, inv.role)
     }
-    const ws = await getWorkspaceName(inv.workspaceId)
+    const workspace = await getWorkspaceName(inv.workspaceId)
     await deleteInvitation(inv.id)
     notifyInviter(
       "invitation_accepted",
-      ws?.name ?? "a workspace",
+      workspace?.name ?? "a workspace",
       inv.workspaceId,
       null
     )

@@ -9,7 +9,7 @@ export function sendResetPasswordEmail({
   user: { name: string; email: string }
   url: string
 }) {
-  void mailer.sendMail({
+  return mailer.sendMail({
     from: FROM,
     to: user.email,
     subject: "Reset your password",
@@ -26,7 +26,7 @@ export function sendChangeEmailVerification({
   newEmail: string
   url: string
 }) {
-  void mailer.sendMail({
+  return mailer.sendMail({
     from: FROM,
     to: user.email,
     subject: "Change your email address",
@@ -41,7 +41,7 @@ export function sendDeleteAccountVerification({
   user: { name: string; email: string }
   url: string
 }) {
-  void mailer.sendMail({
+  return mailer.sendMail({
     from: FROM,
     to: user.email,
     subject: "Delete your account",
@@ -56,7 +56,7 @@ export function sendVerificationEmail({
   user: { name: string; email: string }
   url: string
 }) {
-  void mailer.sendMail({
+  return mailer.sendMail({
     from: FROM,
     to: user.email,
     subject: "Verify your email address",
@@ -71,7 +71,7 @@ export function sendOtpEmail({
   user: { name: string; email: string }
   otp: string
 }) {
-  void mailer.sendMail({
+  return mailer.sendMail({
     from: FROM,
     to: user.email,
     subject: "Your verification code",

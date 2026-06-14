@@ -35,11 +35,11 @@ import {
   recentArtifactIdsQueryOptions,
 } from "@/lib/data/recent-artifacts"
 
-import { ArtifactAssistant } from "./artifact-assistant"
-import { AssistantToggle } from "./assistant-toggle"
-import { ContentPreview } from "./content-preview"
-import { SharePopover } from "./share-popover"
-import { useAssistantAutoCollapse } from "./use-assistant-auto-collapse"
+import { ArtifactAssistant } from "@/components/workspace/assistant/artifact-assistant"
+import { AssistantToggle } from "@/components/workspace/assistant/assistant-toggle"
+import { ContentPreview } from "@/components/workspace/artifact/content-preview"
+import { SharePopover } from "@/components/workspace/sharing/share-popover"
+import { useAssistantAutoCollapse } from "@/components/workspace/assistant/use-assistant-auto-collapse"
 
 export function Workspace({
   workspaceId,

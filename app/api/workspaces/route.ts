@@ -18,8 +18,8 @@ export async function GET() {
   ])
 
   const workspaces = [
-    ...owned.map((ws) => ({ ...ws, role: "owner" as const })),
-    ...memberships.map(({ workspace: ws, role }) => ({ ...ws, role })),
+    ...owned.map((workspace) => ({ ...workspace, role: "owner" as const })),
+    ...memberships.map(({ workspace, role }) => ({ ...workspace, role })),
   ].sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
 
   return NextResponse.json(workspaces)

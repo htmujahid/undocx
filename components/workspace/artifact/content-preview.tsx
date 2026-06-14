@@ -10,7 +10,7 @@ import {
   EditableTitle,
   FootnoteList,
   WordCount,
-} from "@/components/workspace/content-preview-parts"
+} from "@/components/workspace/artifact/content-preview-parts"
 import { SelectionMarkerPlugin } from "@/components/workspace/editor/selection-marker-plugin"
 
 export function ContentPreview({ title }: { title: string }) {

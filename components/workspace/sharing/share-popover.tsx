@@ -22,7 +22,7 @@ import {
   updateArtifactMutationOptions,
 } from "@/lib/data/artifacts"
 
-import { ShareMembers } from "./share-members"
+import { ShareMembers } from "@/components/workspace/sharing/share-members"
 
 export function SharePopover({
   workspaceId,

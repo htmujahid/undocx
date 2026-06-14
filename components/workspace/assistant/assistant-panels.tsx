@@ -3,8 +3,8 @@
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-import { ContextArtifactList } from "./context-artifact-list"
-import { DocumentOutline } from "./document-outline"
+import { ContextArtifactList } from "@/components/workspace/assistant/context-artifact-list"
+import { DocumentOutline } from "@/components/workspace/assistant/document-outline"
 
 export function AssistantPanels({
   workspaceId,

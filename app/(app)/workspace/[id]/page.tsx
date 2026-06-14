@@ -2,7 +2,7 @@ import { redirect } from "next/navigation"
 
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
 
-import { WorkspaceHome } from "@/components/workspace/workspace-home"
+import { WorkspaceHome } from "@/components/workspace/views/workspace-home"
 import { getSession } from "@/lib/auth"
 import { favoritesQueryOptions } from "@/lib/data/favorites"
 import { getQueryClient } from "@/lib/data/get-query-client"

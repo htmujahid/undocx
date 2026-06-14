@@ -2,7 +2,7 @@ import { redirect } from "next/navigation"
 
 import { HydrationBoundary, dehydrate } from "@tanstack/react-query"
 
-import { FavoritesView } from "@/components/workspace/favorites-view"
+import { FavoritesView } from "@/components/workspace/views/favorites-view"
 import { getSession } from "@/lib/auth"
 import { favoritesQueryOptions } from "@/lib/data/favorites"
 import { getQueryClient } from "@/lib/data/get-query-client"
@@ -18,16 +18,16 @@ export default async function FavoritesPage({
 
   const { id } = await params
 
-  const ws = await getOwnedWorkspace(id, session.user.id)
-  if (!ws) redirect("/workspace")
+  const workspace = await getOwnedWorkspace(id, session.user.id)
+  if (!workspace) redirect("/workspace")
 
   const queryClient = getQueryClient()
 
-  await queryClient.prefetchQuery(favoritesQueryOptions(ws.id))
+  await queryClient.prefetchQuery(favoritesQueryOptions(workspace.id))
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <FavoritesView workspaceId={ws.id} />
+      <FavoritesView workspaceId={workspace.id} />
     </HydrationBoundary>
   )
 }

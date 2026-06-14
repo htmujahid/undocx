@@ -21,12 +21,12 @@ export async function getWorkspaceRole(
   workspaceId: string,
   userId: string
 ): Promise<WorkspaceRole | null> {
-  const [ws] = await db
+  const [workspaceRow] = await db
     .select({ ownerId: workspace.ownerId })
     .from(workspace)
     .where(eq(workspace.id, workspaceId))
-  if (!ws) return null
-  if (ws.ownerId === userId) return "owner"
+  if (!workspaceRow) return null
+  if (workspaceRow.ownerId === userId) return "owner"
 
   const [member] = await db
     .select({ role: workspaceMember.role })
