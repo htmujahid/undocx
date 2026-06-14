@@ -16,8 +16,7 @@ export function InvitationActions({ token }: { token: string }) {
         method: "POST",
       })
       const body = await res.json().catch(() => null)
-      if (!res.ok)
-        throw new Error(body?.error ?? "Failed to accept invitation")
+      if (!res.ok) throw new Error(body?.error ?? "Failed to accept invitation")
       return body as { workspaceId: string; artifactId: string | null }
     },
     onSuccess: ({ workspaceId, artifactId }) => {

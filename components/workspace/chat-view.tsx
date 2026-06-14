@@ -3,8 +3,8 @@
 import { useState } from "react"
 
 import { useChat } from "@ai-sdk/react"
+import { DefaultChatTransport, type UIMessage, isTextUIPart } from "ai"
 import { BotIcon, SendIcon, UserIcon } from "lucide-react"
-import { DefaultChatTransport, isTextUIPart, type UIMessage } from "ai"
 
 import { Button } from "@/components/ui/button"
 import { SidebarTrigger } from "@/components/ui/sidebar"
@@ -12,7 +12,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
 
 function getMessageText(message: UIMessage): string {
-  return message.parts.filter(isTextUIPart).map((p) => p.text).join("")
+  return message.parts
+    .filter(isTextUIPart)
+    .map((p) => p.text)
+    .join("")
 }
 
 export function ChatView({ workspaceId }: { workspaceId: string }) {
@@ -92,7 +95,9 @@ export function ChatView({ workspaceId }: { workspaceId: string }) {
                       : "bg-muted"
                   )}
                 >
-                  <p className="whitespace-pre-wrap">{getMessageText(message)}</p>
+                  <p className="whitespace-pre-wrap">
+                    {getMessageText(message)}
+                  </p>
                 </div>
               </div>
             ))}

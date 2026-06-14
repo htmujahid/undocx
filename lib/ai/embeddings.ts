@@ -45,7 +45,9 @@ export async function syncArtifactChunks(
       model: openai.embedding("text-embedding-3-small"),
       values: toEmbed.map((c) => c.content),
     })
-    toEmbed.forEach((chunk, i) => freshEmbeddings.set(chunk.heading, embeddings[i]))
+    toEmbed.forEach((chunk, i) =>
+      freshEmbeddings.set(chunk.heading, embeddings[i])
+    )
   }
 
   await db.transaction(async (tx) => {
@@ -53,7 +55,9 @@ export async function syncArtifactChunks(
       .filter((c) => !newHeadings.has(c.heading))
       .map((c) => c.id)
     if (removedIds.length > 0) {
-      await tx.delete(artifactChunk).where(inArray(artifactChunk.id, removedIds))
+      await tx
+        .delete(artifactChunk)
+        .where(inArray(artifactChunk.id, removedIds))
     }
 
     const rows = newChunks.map((chunk) => ({

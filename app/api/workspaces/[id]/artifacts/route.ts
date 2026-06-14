@@ -1,6 +1,7 @@
 import { after } from "next/server"
 import { NextResponse } from "next/server"
 
+import { syncArtifactChunks } from "@/lib/ai/embeddings"
 import { getSession } from "@/lib/auth"
 import {
   canEdit,
@@ -14,7 +15,6 @@ import {
 } from "@/lib/db/queries/artifact"
 import { filterWorkspaceCollectionIds } from "@/lib/db/queries/collection"
 import { filterWorkspaceFolderIds } from "@/lib/db/queries/folder"
-import { syncArtifactChunks } from "@/lib/ai/embeddings"
 
 export async function GET(
   req: Request,

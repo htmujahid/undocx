@@ -2,7 +2,14 @@
 
 import { Suspense } from "react"
 
-import { ArchiveIcon, ClockIcon, LayoutGridIcon, MessageSquareIcon, PlusIcon, StarIcon } from "lucide-react"
+import {
+  ArchiveIcon,
+  ClockIcon,
+  LayoutGridIcon,
+  MessageSquareIcon,
+  PlusIcon,
+  StarIcon,
+} from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -11,9 +18,9 @@ import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
+  SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
-  SidebarGroupContent,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"

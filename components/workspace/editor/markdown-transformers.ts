@@ -87,7 +87,8 @@ export const REMOVED_MARKER_START: ElementTransformer = {
       : null,
   regExp: /^<!--\s*@removed:start\s*-->$/,
   replace: (parentNode, _children, _match, isImport) => {
-    if (isImport) parentNode.replace($createSelectionMarkerNode("removed-start"))
+    if (isImport)
+      parentNode.replace($createSelectionMarkerNode("removed-start"))
   },
   type: "element",
 }

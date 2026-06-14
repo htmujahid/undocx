@@ -97,10 +97,7 @@ export function listSharedWithUser(userId: string) {
     .innerJoin(artifact, eq(artifact.id, artifactMember.artifactId))
     .innerJoin(workspace, eq(workspace.id, artifact.workspaceId))
     .where(
-      and(
-        eq(artifactMember.userId, userId),
-        eq(artifact.isArchived, false)
-      )
+      and(eq(artifactMember.userId, userId), eq(artifact.isArchived, false))
     )
     .orderBy(artifact.updatedAt)
 }

@@ -66,7 +66,10 @@ export async function getArtifactRole(
 // Artifacts in the workspace shared directly with the user (with their role).
 export async function getSharedArtifacts(workspaceId: string, userId: string) {
   return db
-    .select({ artifactId: artifactMember.artifactId, role: artifactMember.role })
+    .select({
+      artifactId: artifactMember.artifactId,
+      role: artifactMember.role,
+    })
     .from(artifactMember)
     .innerJoin(artifact, eq(artifact.id, artifactMember.artifactId))
     .where(

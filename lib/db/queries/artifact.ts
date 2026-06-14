@@ -1,11 +1,7 @@
 import { and, asc, desc, eq, inArray } from "drizzle-orm"
 
 import { db } from "@/lib/db"
-import {
-  artifact,
-  artifactCollection,
-  artifactFolder,
-} from "@/lib/db/schema"
+import { artifact, artifactCollection, artifactFolder } from "@/lib/db/schema"
 
 function artifactOrderBy(sort: string | null) {
   return sort === "name"
@@ -60,7 +56,9 @@ export function listArtifactsByIds(workspaceId: string, ids: string[]) {
       updatedAt: artifact.updatedAt,
     })
     .from(artifact)
-    .where(and(eq(artifact.workspaceId, workspaceId), inArray(artifact.id, ids)))
+    .where(
+      and(eq(artifact.workspaceId, workspaceId), inArray(artifact.id, ids))
+    )
     .orderBy(artifact.updatedAt)
 }
 
@@ -108,7 +106,9 @@ export async function getArtifact(workspaceId: string, artifactId: string) {
   const [art] = await db
     .select()
     .from(artifact)
-    .where(and(eq(artifact.id, artifactId), eq(artifact.workspaceId, workspaceId)))
+    .where(
+      and(eq(artifact.id, artifactId), eq(artifact.workspaceId, workspaceId))
+    )
   return art ?? null
 }
 
@@ -119,7 +119,9 @@ export async function artifactInWorkspace(
   const [art] = await db
     .select({ id: artifact.id })
     .from(artifact)
-    .where(and(eq(artifact.id, artifactId), eq(artifact.workspaceId, workspaceId)))
+    .where(
+      and(eq(artifact.id, artifactId), eq(artifact.workspaceId, workspaceId))
+    )
   return !!art
 }
 
@@ -130,7 +132,9 @@ export async function getArtifactTitle(
   const [art] = await db
     .select({ id: artifact.id, title: artifact.title })
     .from(artifact)
-    .where(and(eq(artifact.id, artifactId), eq(artifact.workspaceId, workspaceId)))
+    .where(
+      and(eq(artifact.id, artifactId), eq(artifact.workspaceId, workspaceId))
+    )
   return art ?? null
 }
 
@@ -183,7 +187,9 @@ export async function userHasActiveArtifact(userId: string) {
 export async function deleteArtifact(workspaceId: string, artifactId: string) {
   const [deleted] = await db
     .delete(artifact)
-    .where(and(eq(artifact.id, artifactId), eq(artifact.workspaceId, workspaceId)))
+    .where(
+      and(eq(artifact.id, artifactId), eq(artifact.workspaceId, workspaceId))
+    )
     .returning()
   return deleted ?? null
 }
@@ -252,7 +258,10 @@ export async function updateArtifactWithLinks({
         .update(artifact)
         .set(scalarPatch)
         .where(
-          and(eq(artifact.id, artifactId), eq(artifact.workspaceId, workspaceId))
+          and(
+            eq(artifact.id, artifactId),
+            eq(artifact.workspaceId, workspaceId)
+          )
         )
         .returning()
       if (!r) return null
@@ -262,7 +271,10 @@ export async function updateArtifactWithLinks({
         .select()
         .from(artifact)
         .where(
-          and(eq(artifact.id, artifactId), eq(artifact.workspaceId, workspaceId))
+          and(
+            eq(artifact.id, artifactId),
+            eq(artifact.workspaceId, workspaceId)
+          )
         )
       if (!r) return null
       row = r
@@ -275,7 +287,9 @@ export async function updateArtifactWithLinks({
       if (folderIds.length) {
         await tx
           .insert(artifactFolder)
-          .values(folderIds.map((folderId) => ({ artifactId: row.id, folderId })))
+          .values(
+            folderIds.map((folderId) => ({ artifactId: row.id, folderId }))
+          )
       }
     }
     if (collectionIds) {

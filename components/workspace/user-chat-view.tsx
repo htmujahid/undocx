@@ -3,8 +3,8 @@
 import { useState } from "react"
 
 import { useChat } from "@ai-sdk/react"
+import { DefaultChatTransport, type UIMessage, isTextUIPart } from "ai"
 import { BotIcon, HomeIcon, SendIcon, UserIcon } from "lucide-react"
-import { DefaultChatTransport, isTextUIPart, type UIMessage } from "ai"
 import Link from "next/link"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -13,7 +13,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
 
 function getMessageText(message: UIMessage): string {
-  return message.parts.filter(isTextUIPart).map((p) => p.text).join("")
+  return message.parts
+    .filter(isTextUIPart)
+    .map((p) => p.text)
+    .join("")
 }
 
 function initials(name: string) {
@@ -66,7 +69,9 @@ export function UserChatView({
         <div className="flex items-center gap-2.5">
           <Avatar className="size-7">
             <AvatarImage src={userImage ?? undefined} alt={userName} />
-            <AvatarFallback className="text-xs">{initials(userName)}</AvatarFallback>
+            <AvatarFallback className="text-xs">
+              {initials(userName)}
+            </AvatarFallback>
           </Avatar>
           <div className="leading-tight">
             <p className="text-xs font-medium">{userName}</p>
@@ -127,7 +132,9 @@ export function UserChatView({
                       : "bg-muted"
                   )}
                 >
-                  <p className="whitespace-pre-wrap">{getMessageText(message)}</p>
+                  <p className="whitespace-pre-wrap">
+                    {getMessageText(message)}
+                  </p>
                 </div>
               </div>
             ))}

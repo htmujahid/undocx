@@ -152,8 +152,7 @@ export function SelectionMarkerPlugin({
       if (
         !target ||
         !(
-          container.contains(target) ||
-          indicatorElRef.current?.contains(target)
+          container.contains(target) || indicatorElRef.current?.contains(target)
         )
       ) {
         setIndicator(null)

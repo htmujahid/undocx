@@ -123,18 +123,26 @@ export function useAssistantSubmit({
     if (!pending) return
     const apply = () => {
       for (const key of pending.addedKeys)
-        editor.getElementByKey(key)?.classList.add("assistant-pending-highlight")
+        editor
+          .getElementByKey(key)
+          ?.classList.add("assistant-pending-highlight")
       for (const key of pending.removedKeys)
-        editor.getElementByKey(key)?.classList.add("assistant-removed-highlight")
+        editor
+          .getElementByKey(key)
+          ?.classList.add("assistant-removed-highlight")
     }
     apply()
     const unregister = editor.registerUpdateListener(apply)
     return () => {
       unregister()
       for (const key of pending.addedKeys)
-        editor.getElementByKey(key)?.classList.remove("assistant-pending-highlight")
+        editor
+          .getElementByKey(key)
+          ?.classList.remove("assistant-pending-highlight")
       for (const key of pending.removedKeys)
-        editor.getElementByKey(key)?.classList.remove("assistant-removed-highlight")
+        editor
+          .getElementByKey(key)
+          ?.classList.remove("assistant-removed-highlight")
     }
   }, [pending, editor])
 
@@ -180,7 +188,11 @@ export function useAssistantSubmit({
       const parts: string[] = []
       if (before) parts.push(before)
       if (removedContent) {
-        parts.push(REMOVED_START_PLACEHOLDER, removedContent, REMOVED_END_PLACEHOLDER)
+        parts.push(
+          REMOVED_START_PLACEHOLDER,
+          removedContent,
+          REMOVED_END_PLACEHOLDER
+        )
       }
       parts.push(START_PLACEHOLDER, content, END_PLACEHOLDER)
       if (after) parts.push(after)
@@ -238,7 +250,11 @@ export function useAssistantSubmit({
         const final = [before, result.content, after]
           .filter(Boolean)
           .join("\n\n")
-        const { addedKeys, removedKeys } = applyPendingMarkdown(before, result.content, after)
+        const { addedKeys, removedKeys } = applyPendingMarkdown(
+          before,
+          result.content,
+          after
+        )
         setPending({ mode: "insert", final, addedKeys, removedKeys })
       } catch (err) {
         toast.error("Failed to apply content.")
@@ -277,7 +293,12 @@ export function useAssistantSubmit({
         const final = [before, result.content, after]
           .filter(Boolean)
           .join("\n\n")
-        const { addedKeys, removedKeys } = applyPendingMarkdown(before, result.content, after, selected)
+        const { addedKeys, removedKeys } = applyPendingMarkdown(
+          before,
+          result.content,
+          after,
+          selected
+        )
         setPending({ mode: "replace", final, addedKeys, removedKeys })
       } catch (err) {
         toast.error("Failed to apply content.")

@@ -1,5 +1,4 @@
 import { randomBytes } from "crypto"
-
 import { and, eq, gt } from "drizzle-orm"
 
 import { db } from "@/lib/db"
@@ -138,7 +137,9 @@ export function listUserPendingInvitations(email: string) {
     .innerJoin(user, eq(user.id, invitation.invitedBy))
     .leftJoin(workspace, eq(workspace.id, invitation.workspaceId))
     .leftJoin(artifact, eq(artifact.id, invitation.artifactId))
-    .where(and(eq(invitation.email, email), gt(invitation.expiresAt, new Date())))
+    .where(
+      and(eq(invitation.email, email), gt(invitation.expiresAt, new Date()))
+    )
     .orderBy(invitation.createdAt)
 }
 
