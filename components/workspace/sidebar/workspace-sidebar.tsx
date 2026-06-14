@@ -62,7 +62,6 @@ export function WorkspaceSidebar({
           <div className="min-w-0 flex-1">
             <WorkspaceSwitcher currentWorkspaceId={workspaceId} />
           </div>
-          <NotificationBell />
         </div>
       </SidebarHeader>
 
@@ -72,28 +71,19 @@ export function WorkspaceSidebar({
             <SidebarMenu>
               <SidebarMenuItem className="flex items-center gap-2">
                 <SidebarMenuButton
-                  tooltip="All Items"
+                  tooltip="New Artifact"
                   className="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
-                  render={<Link href={basePath} />}
+                  render={<Link href={`${basePath}/new`} />}
                 >
-                  <LayoutGridIcon />
-                  <span>All Items</span>
+                  <PlusIcon />
+                  <span>New Artifact</span>
                 </SidebarMenuButton>
-                <Button
-                  size="icon"
-                  className="size-8 group-data-[collapsible=icon]:opacity-0"
-                  variant="outline"
-                >
-                  <Link href={`${basePath}/new`}>
-                    <PlusIcon />
-                    <span className="sr-only">New Artifact</span>
-                  </Link>
-                </Button>
+                <NotificationBell />
               </SidebarMenuItem>
             </SidebarMenu>
 
             <SidebarMenu>
-              {NAV_ITEMS.filter((item) => item.path !== "").map((item) => (
+              {NAV_ITEMS.map((item) => (
                 <SidebarMenuItem key={item.label}>
                   <SidebarMenuButton
                     size="sm"
