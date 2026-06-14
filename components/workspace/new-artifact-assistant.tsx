@@ -18,7 +18,6 @@ import { outputSchema } from "@/lib/ai/ai-schema"
 import {
   artifactQueryOptions,
   artifactsQueryOptions,
-  fetchContextDocuments,
   updateArtifactMutationOptions,
 } from "@/lib/data/artifacts"
 import { cn } from "@/lib/utils"
@@ -73,7 +72,7 @@ export function NewArtifactAssistant({
   }
 
   const { object, submit, isLoading } = useObject({
-    api: "/api/chat",
+    api: "/api/assistant",
     schema: outputSchema,
     onFinish: ({ object: result, error }) => {
       if (error || !result) {
@@ -118,17 +117,14 @@ export function NewArtifactAssistant({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [object])
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     const text = prompt.trim()
     if (!text || isLoading) return
-    let context
-    try {
-      context = await fetchContextDocuments(qc, workspaceId, contextIds)
-    } catch {
-      toast.error("Failed to load context artifacts.")
-      return
-    }
-    submit({ prompt: `Topic: ${text}`, context })
+    submit({
+      workspaceId,
+      contextIds: [...contextIds],
+      prompt: `Topic: ${text}`,
+    })
     setPrompt("")
   }
 

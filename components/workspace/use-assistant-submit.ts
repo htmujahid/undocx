@@ -18,7 +18,6 @@ import { insertOutputSchema, replaceOutputSchema } from "@/lib/ai/ai-schema"
 import {
   artifactQueryOptions,
   artifactsQueryOptions,
-  fetchContextDocuments,
   updateArtifactMutationOptions,
 } from "@/lib/data/artifacts"
 
@@ -237,7 +236,7 @@ export function useAssistantSubmit({
   }
 
   const insertObj = useObject({
-    api: "/api/chat/insert",
+    api: "/api/assistant/insert",
     schema: insertOutputSchema,
     onFinish: ({ object: result, error }) => {
       if (error || !result) {
@@ -280,7 +279,7 @@ export function useAssistantSubmit({
   }, [insertObj.object])
 
   const replaceObj = useObject({
-    api: "/api/chat/replace",
+    api: "/api/assistant/replace",
     schema: replaceOutputSchema,
     onFinish: ({ object: result, error }) => {
       if (error || !result) {
@@ -341,21 +340,11 @@ export function useAssistantSubmit({
 
   const isLoading = insertObj.isLoading || replaceObj.isLoading
 
-  const handleSubmit = async (prompt: string) => {
+  const handleSubmit = (prompt: string) => {
     const text = prompt.trim()
     if (!text || isLoading || disabled || pending) return
 
-    let context
-    try {
-      context = await fetchContextDocuments(
-        qc,
-        workspaceId,
-        contextIds ?? new Set()
-      )
-    } catch {
-      toast.error("Failed to load context artifacts.")
-      return
-    }
+    const ids = [...(contextIds ?? [])]
 
     const fullMarkdown = getMarkdown()
     const {
@@ -370,18 +359,20 @@ export function useAssistantSubmit({
 
     if (hs && he) {
       replaceObj.submit({
+        workspaceId,
+        contextIds: ids,
         beforeContent: before,
         selectedContent: selected,
         afterContent: after,
         prompt: text,
-        context,
       })
     } else if (hs) {
       insertObj.submit({
+        workspaceId,
+        contextIds: ids,
         beforeContent: before,
         afterContent: after,
         prompt: text,
-        context,
       })
     }
   }

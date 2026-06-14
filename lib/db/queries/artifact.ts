@@ -62,6 +62,29 @@ export function listArtifactsByIds(workspaceId: string, ids: string[]) {
     .orderBy(artifact.updatedAt)
 }
 
+// Title/content for active artifacts in a workspace, restricted to an id list.
+// Used to assemble reference context for the assistant.
+export async function getArtifactContentsByIds(
+  workspaceId: string,
+  ids: string[]
+) {
+  if (!ids.length) return []
+  return db
+    .select({
+      id: artifact.id,
+      title: artifact.title,
+      content: artifact.content,
+    })
+    .from(artifact)
+    .where(
+      and(
+        eq(artifact.workspaceId, workspaceId),
+        eq(artifact.isArchived, false),
+        inArray(artifact.id, ids)
+      )
+    )
+}
+
 // Folder/collection link rows for a set of artifacts (raw rows, caller groups
 // by artifactId).
 export async function getArtifactLinksForIds(ids: string[]) {

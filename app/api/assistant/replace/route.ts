@@ -1,15 +1,37 @@
 import { openai } from "@ai-sdk/openai"
 import { Output, streamText } from "ai"
+import { NextResponse } from "next/server"
 
 import {
   REPLACE_SYSTEM_PROMPT,
   formatContext,
   replaceOutputSchema,
 } from "@/lib/ai/ai-schema"
+import { resolveContextDocuments } from "@/lib/ai/resolve-context"
+import { getSession } from "@/lib/auth"
 
 export async function POST(request: Request) {
-  const { beforeContent, selectedContent, afterContent, prompt, context } =
-    await request.json()
+  const session = await getSession()
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
+  const {
+    workspaceId,
+    contextIds,
+    beforeContent,
+    selectedContent,
+    afterContent,
+    prompt,
+  } = await request.json()
+
+  const context = await resolveContextDocuments({
+    workspaceId,
+    userId: session.user.id,
+    contextIds: contextIds ?? [],
+    query: [prompt, selectedContent, beforeContent, afterContent]
+      .filter(Boolean)
+      .join("\n\n"),
+  })
 
   const parts = [
     formatContext(context),
