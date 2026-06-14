@@ -76,7 +76,7 @@ export default async function AuthLayout({
 
   return (
     <div className="grid min-h-svh lg:grid-cols-2">
-      <aside className="relative hidden overflow-hidden bg-foreground lg:flex lg:flex-col">
+      <aside className="relative hidden overflow-hidden bg-foreground dark:bg-background lg:flex lg:flex-col">
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.04]"
           style={{
@@ -85,7 +85,7 @@ export default async function AuthLayout({
           }}
         />
 
-        <div className="relative flex h-full flex-col p-10 text-background">
+        <div className="relative flex h-full flex-col p-10 text-background dark:text-foreground">
           <Link href="/" className="flex w-fit items-center gap-2.5">
             <div className="flex size-8 items-center justify-center rounded-lg bg-white/10 ring-1 ring-white/20">
               <svg
