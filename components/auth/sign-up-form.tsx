@@ -1,8 +1,10 @@
 "use client"
 
+import { useState } from "react"
+
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
+import { MailCheckIcon } from "lucide-react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
@@ -26,7 +28,7 @@ const signUpSchema = z.object({
 type SignUpValues = z.infer<typeof signUpSchema>
 
 export function SignUpForm() {
-  const router = useRouter()
+  const [submittedEmail, setSubmittedEmail] = useState<string | null>(null)
 
   const form = useForm<SignUpValues>({
     resolver: standardSchemaResolver(signUpSchema),
@@ -45,8 +47,42 @@ export function SignUpForm() {
       toast.error(error.message)
       return
     }
-    toast.success("Account created successfully!")
-    router.push("/auth/sign-in")
+    setSubmittedEmail(value.email)
+  }
+
+  if (submittedEmail) {
+    return (
+      <div className="flex flex-col items-center gap-6 text-center">
+        <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <MailCheckIcon className="size-6" />
+        </div>
+        <div className="flex flex-col gap-2">
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Check your email
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            We sent a verification link to{" "}
+            <span className="font-medium text-foreground">
+              {submittedEmail}
+            </span>
+            . Click the link in that email to verify your account before signing
+            in.
+          </p>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Didn&apos;t get it? Check your spam folder, or&nbsp;
+          <Link
+            href="/auth/sign-in"
+            className={buttonVariants({
+              variant: "link",
+              className: "h-auto p-0 text-sm font-medium",
+            })}
+          >
+            go to sign in
+          </Link>
+        </p>
+      </div>
+    )
   }
 
   return (

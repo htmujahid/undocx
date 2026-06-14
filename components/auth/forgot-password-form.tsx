@@ -1,6 +1,9 @@
 "use client"
 
+import { useState } from "react"
+
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema"
+import { MailCheckIcon } from "lucide-react"
 import Link from "next/link"
 import { Controller, useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -24,6 +27,8 @@ const forgotPasswordSchema = z.object({
 type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>
 
 export function ForgotPasswordForm() {
+  const [submittedEmail, setSubmittedEmail] = useState<string | null>(null)
+
   const form = useForm<ForgotPasswordValues>({
     resolver: standardSchemaResolver(forgotPasswordSchema),
     defaultValues: { email: "" },
@@ -40,7 +45,41 @@ export function ForgotPasswordForm() {
       toast.error(error.message)
       return
     }
-    toast.success("Reset link sent. Check your inbox.")
+    setSubmittedEmail(value.email)
+  }
+
+  if (submittedEmail) {
+    return (
+      <div className="flex flex-col items-center gap-6 text-center">
+        <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <MailCheckIcon className="size-6" />
+        </div>
+        <div className="flex flex-col gap-2">
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Check your email
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            We sent a password reset link to{" "}
+            <span className="font-medium text-foreground">
+              {submittedEmail}
+            </span>
+            . Click the link in that email to set a new password.
+          </p>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Didn&apos;t get it? Check your spam folder, or&nbsp;
+          <Link
+            href="/auth/sign-in"
+            className={buttonVariants({
+              variant: "link",
+              className: "h-auto p-0 text-sm font-medium",
+            })}
+          >
+            back to sign in
+          </Link>
+        </p>
+      </div>
+    )
   }
 
   return (
