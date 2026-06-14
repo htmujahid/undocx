@@ -24,7 +24,7 @@ const trustedOrigins = [
 ]
 
 export const auth = betterAuth({
-  appName: "Renderical",
+  appName: "Undocx",
   trustedOrigins,
   database: drizzleAdapter(db, {
     provider: "pg",

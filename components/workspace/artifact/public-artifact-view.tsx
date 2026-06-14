@@ -25,7 +25,7 @@ import {
 import { CalloutExtension } from "@/components/workspace/editor/callout-extension"
 import { CodeHighlightExtension } from "@/components/workspace/editor/code-highlight-extension"
 import { FootnoteExtension } from "@/components/workspace/editor/footnote-extension"
-import { RENDERICAL_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
+import { UNDOCX_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
 import { MathExtension } from "@/components/workspace/editor/math-extension"
 import { SvgExtension } from "@/components/workspace/editor/svg-extension"
 import { editorTheme } from "@/components/workspace/editor/theme"
@@ -42,14 +42,14 @@ export function PublicArtifactView({
   const extension = useMemo(
     () =>
       defineExtension({
-        name: "renderical/public-viewer",
+        name: "undocx/public-viewer",
         namespace: "public-viewer",
         theme: editorTheme,
         editable: false,
         ...(content
           ? {
               $initialEditorState: () =>
-                $convertFromMarkdownString(content, RENDERICAL_TRANSFORMERS),
+                $convertFromMarkdownString(content, UNDOCX_TRANSFORMERS),
             }
           : {}),
         onError: (error: Error) => console.error("[Lexical]", error),

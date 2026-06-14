@@ -4,32 +4,32 @@ const ROWS = [
   {
     label: "Output",
     conventional: "Plain walls of text",
-    renderical: "Tables, diagrams, code & math",
+    undocx: "Tables, diagrams, code & math",
   },
   {
     label: "Organization",
     conventional: "No organization",
-    renderical: "Folders, collections, favorites",
+    undocx: "Folders, collections, favorites",
   },
   {
     label: "Editing",
     conventional: "Regenerate the whole reply",
-    renderical: "Select a part, edit just that",
+    undocx: "Select a part, edit just that",
   },
   {
     label: "Q&A",
     conventional: "Forgets past chats",
-    renderical: "Chat across your docs, with citations",
+    undocx: "Chat across your docs, with citations",
   },
   {
     label: "Collaboration",
     conventional: "Copy-paste into other tools",
-    renderical: "Shared workspaces & public links",
+    undocx: "Shared workspaces & public links",
   },
   {
     label: "History",
     conventional: "Ephemeral chat",
-    renderical: "Persistent knowledge base",
+    undocx: "Persistent knowledge base",
   },
 ]
 
@@ -39,7 +39,7 @@ export function Comparison() {
       <div className="mx-auto max-w-6xl px-6">
         <div className="text-center">
           <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            Why Renderical
+            Why Undocx
           </p>
           <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
             Not another chatbot
@@ -56,7 +56,7 @@ export function Comparison() {
               Conventional AI
             </span>
             <span className="text-center text-xs font-semibold text-foreground">
-              Renderical
+              Undocx
             </span>
           </div>
 
@@ -97,7 +97,7 @@ export function Comparison() {
                 >
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
-                {row.renderical}
+                {row.undocx}
               </span>
             </div>
           ))}

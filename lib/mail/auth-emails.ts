@@ -1,6 +1,6 @@
 import { escapeHtml, mailer } from "./mailer"
 
-const FROM = "noreply@renderical.com"
+const FROM = "noreply@undocx.com"
 
 export function sendResetPasswordEmail({
   user,

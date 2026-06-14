@@ -1,6 +1,6 @@
-# Renderical
+# Undocx
 
-Renderical is a collaborative, AI-powered document workspace. Teams create workspaces, write and organize rich Markdown documents ("artifacts"), and use an AI assistant to generate content, ask questions, and edit sections in place. Artifacts can be shared with members, organized into folders and collections, and published as read-only public links.
+Undocx is a collaborative, AI-powered document workspace. Teams create workspaces, write and organize rich Markdown documents ("artifacts"), and use an AI assistant to generate content, ask questions, and edit sections in place. Artifacts can be shared with members, organized into folders and collections, and published as read-only public links.
 
 ## Features
 

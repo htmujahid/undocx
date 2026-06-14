@@ -59,7 +59,7 @@ export function WorkspaceNew({ workspaceId }: { workspaceId: string }) {
   const extension = useMemo(
     () =>
       defineExtension({
-        name: "renderical/content-editor",
+        name: "undocx/content-editor",
         namespace: "content-editor",
         theme: editorTheme,
         editable: false,

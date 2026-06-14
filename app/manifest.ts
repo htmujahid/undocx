@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next"
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Renderical",
-    short_name: "Renderical",
+    name: "Undocx",
+    short_name: "Undocx",
     description:
       "Generate, organize, and edit AI content in adaptive layout formats.",
     start_url: "/",

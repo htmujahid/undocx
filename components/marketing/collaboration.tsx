@@ -103,7 +103,7 @@ export function Collaboration() {
               A knowledge base your whole team can build on
             </h2>
             <p className="mt-4 leading-relaxed text-muted-foreground">
-              Renderical isn&apos;t just for one person. Spin up workspaces,
+              Undocx isn&apos;t just for one person. Spin up workspaces,
               invite collaborators with the right level of access, and keep
               everyone working from the same structured, searchable source of
               truth, with activity notifications so nothing slips by.

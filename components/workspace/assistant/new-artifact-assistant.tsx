@@ -23,7 +23,7 @@ import {
 import { cn } from "@/lib/utils"
 
 import { AssistantPanels } from "@/components/workspace/assistant/assistant-panels"
-import { RENDERICAL_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
+import { UNDOCX_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
 
 export function NewArtifactAssistant({
   workspaceId,
@@ -66,7 +66,7 @@ export function NewArtifactAssistant({
 
   const applyMarkdown = (markdown: string) => {
     editor.update(() => {
-      $convertFromMarkdownString(markdown, RENDERICAL_TRANSFORMERS)
+      $convertFromMarkdownString(markdown, UNDOCX_TRANSFORMERS)
     })
   }
 

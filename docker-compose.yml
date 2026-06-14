@@ -1,12 +1,12 @@
 services:
   postgres:
     image: pgvector/pgvector:pg17
-    container_name: renderical_postgres
+    container_name: undocx_postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: renderical
+      POSTGRES_DB: undocx
     ports:
       - "5432:5432"
     volumes:
@@ -17,7 +17,7 @@ services:
 
   mailpit:
     image: axllent/mailpit
-    container_name: renderical_mailpit
+    container_name: undocx_mailpit
     restart: unless-stopped
     ports:
       - "1025:1025"

@@ -32,9 +32,9 @@ export function sendInvitationEmail({
   const safeResourceName = escapeHtml(resourceName)
   const safeUrl = escapeHtml(url)
   return mailer.sendMail({
-    from: "noreply@renderical.com",
+    from: "noreply@undocx.com",
     to,
-    subject: `${inviterName} invited you to a ${resourceKind} on Renderical`,
-    html: `<p>Hi,</p><p>${safeInviterName} invited you to ${roleLabel} the ${resourceKind} <strong>${safeResourceName}</strong> on Renderical.</p><p>Click <a href="${safeUrl}">here</a> to accept the invitation.</p><p>Or copy and paste the link below into your browser:</p><p>${safeUrl}</p><p>This invitation expires in 7 days.</p>`,
+    subject: `${inviterName} invited you to a ${resourceKind} on Undocx`,
+    html: `<p>Hi,</p><p>${safeInviterName} invited you to ${roleLabel} the ${resourceKind} <strong>${safeResourceName}</strong> on Undocx.</p><p>Click <a href="${safeUrl}">here</a> to accept the invitation.</p><p>Or copy and paste the link below into your browser:</p><p>${safeUrl}</p><p>This invitation expires in 7 days.</p>`,
   })
 }

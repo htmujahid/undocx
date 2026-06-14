@@ -5,6 +5,6 @@ import { defineExtension } from "lexical"
 import { SvgNode } from "./svg-node"
 
 export const SvgExtension = defineExtension({
-  name: "renderical/svg",
+  name: "undocx/svg",
   nodes: [SvgNode],
 })

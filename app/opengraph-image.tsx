@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og"
 
-export const alt = "Renderical: AI content. Every format."
+export const alt = "Undocx: AI content. Every format."
 export const size = {
   width: 1200,
   height: 630,
@@ -45,7 +45,7 @@ export default function Image() {
           <path d="m22 14-3 3 3 3" />
         </svg>
         <div style={{ display: "flex", fontSize: 44, fontWeight: 600 }}>
-          Renderical
+          Undocx
         </div>
       </div>
       <div

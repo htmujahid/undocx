@@ -32,7 +32,7 @@ export function Hero() {
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-          Stop getting walls of text. Renderical writes structured documents
+          Stop getting walls of text. Undocx writes structured documents
           (with tables, diagrams, code, callouts, and citations) then saves
           everything to a knowledge base you can organize, search, share, and
           ask questions across.

@@ -22,7 +22,7 @@ const QUESTIONS = [
   },
   {
     q: "Can I ask questions about my own documents?",
-    a: "Yes. Renderical can chat across your knowledge base, it searches your documents semantically and answers with inline citations, so you can trace every claim back to the source it came from.",
+    a: "Yes. Undocx can chat across your knowledge base, it searches your documents semantically and answers with inline citations, so you can trace every claim back to the source it came from.",
   },
   {
     q: "Can I collaborate with a team?",
@@ -38,11 +38,11 @@ const QUESTIONS = [
   },
   {
     q: "How is this different from ChatGPT or other AI tools?",
-    a: "Most AI tools return text and forget it. Renderical treats every response as a structured document, keeps it in an organized knowledge base you can search and share, lets you edit it with AI, and lets you ask questions back across everything you've saved.",
+    a: "Most AI tools return text and forget it. Undocx treats every response as a structured document, keeps it in an organized knowledge base you can search and share, lets you edit it with AI, and lets you ask questions back across everything you've saved.",
   },
   {
     q: "Is there a free plan?",
-    a: "Renderical is in early access and free to use while we finalize pricing. Sign up now to get in and be the first to know about launch details.",
+    a: "Undocx is in early access and free to use while we finalize pricing. Sign up now to get in and be the first to know about launch details.",
   },
 ]
 

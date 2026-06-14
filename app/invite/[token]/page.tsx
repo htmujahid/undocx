@@ -18,7 +18,7 @@ function InviteShell({ children }: { children: React.ReactNode }) {
     <div className="flex min-h-svh flex-col">
       <header className="flex h-11 shrink-0 items-center border-b px-4">
         <Link href="/" className="text-sm font-semibold tracking-tight">
-          Renderical
+          Undocx
         </Link>
       </header>
       <main className="flex flex-1 items-center justify-center p-6">

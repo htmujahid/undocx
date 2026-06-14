@@ -12,26 +12,26 @@ import { Providers } from "./providers"
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
 const description =
-  "Renderical is an intelligent content generation and knowledge management platform that adapts its response layout to the nature of your content."
+  "Undocx is an intelligent content generation and knowledge management platform that adapts its response layout to the nature of your content."
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Renderical",
-    template: "%s · Renderical",
+    default: "Undocx",
+    template: "%s · Undocx",
   },
   description,
-  applicationName: "Renderical",
+  applicationName: "Undocx",
   openGraph: {
-    title: "Renderical",
+    title: "Undocx",
     description,
     url: siteUrl,
-    siteName: "Renderical",
+    siteName: "Undocx",
     type: "website",
   },
   twitter: {
     card: "summary",
-    title: "Renderical",
+    title: "Undocx",
     description,
   },
 }

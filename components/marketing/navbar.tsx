@@ -57,7 +57,7 @@ export function Navbar() {
             </svg>
           </div>
           <span className="text-sm font-semibold tracking-tight">
-            Renderical
+            Undocx
           </span>
         </Link>
 

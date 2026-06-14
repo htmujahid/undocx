@@ -21,7 +21,7 @@ function currentTheme(): string {
 }
 
 export const CodeHighlightExtension = defineExtension({
-  name: "renderical/code-highlight",
+  name: "undocx/code-highlight",
   dependencies: [configExtension(CodeShikiExtension, { disabled: true })],
   afterRegistration(editor) {
     const { output } = getExtensionDependencyFromEditor(

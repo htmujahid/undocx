@@ -32,7 +32,7 @@ export function Footer() {
                   <path d="m22 14-3 3 3 3" />
                 </svg>
               </div>
-              <span className="text-sm font-semibold">Renderical</span>
+              <span className="text-sm font-semibold">Undocx</span>
             </Link>
             <p className="text-xs leading-relaxed text-muted-foreground">
               AI that writes structured documents (tables, diagrams, code, and
@@ -79,7 +79,7 @@ export function Footer() {
 
         <div className="mt-10 border-t pt-6">
           <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} Renderical. All rights reserved.
+            &copy; {new Date().getFullYear()} Undocx. All rights reserved.
           </p>
         </div>
       </div>

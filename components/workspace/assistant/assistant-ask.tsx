@@ -12,7 +12,7 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-import { RENDERICAL_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
+import { UNDOCX_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
 
 const MARKER_RE = /<!-- @(?:selection|removed):(?:start|end) -->/g
 
@@ -47,7 +47,7 @@ export function AssistantAsk({
   const getMarkdown = (): string => {
     let md = ""
     editor.getEditorState().read(() => {
-      md = $convertToMarkdownString(RENDERICAL_TRANSFORMERS)
+      md = $convertToMarkdownString(UNDOCX_TRANSFORMERS)
     })
     return md.replace(MARKER_RE, "").trim()
   }

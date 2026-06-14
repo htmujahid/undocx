@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-const PROMPT_HEADER = `You are Renderical Assistant, an expert content generation assistant.`
+const PROMPT_HEADER = `You are Undocx Assistant, an expert content generation assistant.`
 
 const SVG_FIGURE_RULES = `SVG figure rules (charts, diagrams, flowcharts, timelines, architectures):
 - Prefer an SVG figure over prose whenever a concept is inherently visual: processes and flows, system architectures, hierarchies, cycles, timelines, comparisons, and data trends
@@ -12,7 +12,7 @@ const SVG_FIGURE_RULES = `SVG figure rules (charts, diagrams, flowcharts, timeli
 - Output the <svg> element as raw markup directly in the document, never wrap it in a fenced code block
 - Every figure must be self-contained and readable on its own; follow it with a one-line italic caption paragraph`
 
-const SUPPORTED_SYNTAX = `Supported syntax (GitHub-flavoured Markdown plus Renderical extensions):
+const SUPPORTED_SYNTAX = `Supported syntax (GitHub-flavoured Markdown plus Undocx extensions):
 - Headings ## through ######, paragraphs, > blockquotes, --- horizontal rules
 - Bold **text**, italic *text*, inline code \`code\`, links [text](url)
 - Bullet lists (- item) and numbered lists (1. item); indent nested items by 4 spaces
@@ -78,7 +78,7 @@ The generated content must:
 - Never include the document title as a heading
 
 Respond with a JSON object of one field:
-- "content": the new content in Renderical Markdown dialect (never wrap in a code fence)
+- "content": the new content in Undocx Markdown dialect (never wrap in a code fence)
 
 ${BASE_PROMPT_RULES}`
 
@@ -93,7 +93,7 @@ The replacement must:
 - Never include the document title as a heading
 
 Respond with a JSON object of one field:
-- "content": the replacement content in Renderical Markdown dialect (never wrap in a code fence)
+- "content": the replacement content in Undocx Markdown dialect (never wrap in a code fence)
 
 ${BASE_PROMPT_RULES}`
 

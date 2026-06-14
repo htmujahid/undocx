@@ -27,7 +27,7 @@ function buildMap(state: EditorState): Map<string, FootnoteInfo> {
 }
 
 export const FootnoteExtension = defineExtension({
-  name: "renderical/footnote",
+  name: "undocx/footnote",
   nodes: [FootnoteNode],
   register(editor) {
     publishFootnotes(editor, buildMap(editor.getEditorState()))

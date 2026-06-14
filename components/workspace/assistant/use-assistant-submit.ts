@@ -21,7 +21,7 @@ import {
   updateArtifactMutationOptions,
 } from "@/lib/data/artifacts"
 
-import { RENDERICAL_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
+import { UNDOCX_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
 import { $isSelectionMarkerNode } from "@/components/workspace/editor/selection-marker-node"
 import {
   snapshotSelectionMarkers,
@@ -159,14 +159,14 @@ export function useAssistantSubmit({
   const getMarkdown = (): string => {
     let md = ""
     editor.getEditorState().read(() => {
-      md = $convertToMarkdownString(RENDERICAL_TRANSFORMERS)
+      md = $convertToMarkdownString(UNDOCX_TRANSFORMERS)
     })
     return md
   }
 
   const applyMarkdown = (md: string) => {
     editor.update(() => {
-      $convertFromMarkdownString(md, RENDERICAL_TRANSFORMERS)
+      $convertFromMarkdownString(md, UNDOCX_TRANSFORMERS)
     })
   }
 
@@ -190,7 +190,7 @@ export function useAssistantSubmit({
       }
       parts.push(START_PLACEHOLDER, content, END_PLACEHOLDER)
       if (after) parts.push(after)
-      $convertFromMarkdownString(parts.join("\n\n"), RENDERICAL_TRANSFORMERS)
+      $convertFromMarkdownString(parts.join("\n\n"), UNDOCX_TRANSFORMERS)
 
       const children = $getRoot().getChildren()
 

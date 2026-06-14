@@ -39,7 +39,7 @@ export default async function PublicArtifactPage({
     <div className="flex h-svh flex-col overflow-hidden">
       <header className="flex h-11 shrink-0 items-center justify-between border-b px-4">
         <Link href="/" className="text-sm font-semibold tracking-tight">
-          Renderical
+          Undocx
         </Link>
         <span className="text-[11px] text-muted-foreground">
           Shared publicly · read-only

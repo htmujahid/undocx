@@ -137,7 +137,7 @@ export const CALLOUT: MultilineElementTransformer = {
     if (linesInBetween) {
       $convertFromMarkdownString(
         linesInBetween.join("\n").trim(),
-        RENDERICAL_TRANSFORMERS,
+        UNDOCX_TRANSFORMERS,
         callout
       )
     } else if (children) {
@@ -219,7 +219,7 @@ function $createTableCell(textContent: string): TableCellNodeType {
   const cell = $createTableCellNode(TableCellHeaderStates.NO_STATUS)
   $convertFromMarkdownString(
     textContent.replace(/\\n/g, "\n").trim(),
-    RENDERICAL_TRANSFORMERS,
+    UNDOCX_TRANSFORMERS,
     cell
   )
   return cell
@@ -245,7 +245,7 @@ export const TABLE: ElementTransformer = {
       for (const cell of row.getChildren()) {
         if ($isTableCellNode(cell)) {
           rowOutput.push(
-            $convertToMarkdownString(RENDERICAL_TRANSFORMERS, cell)
+            $convertToMarkdownString(UNDOCX_TRANSFORMERS, cell)
               .replace(/\n/g, "\\n")
               .trim()
           )
@@ -338,7 +338,7 @@ export const TABLE: ElementTransformer = {
   type: "element",
 }
 
-export const RENDERICAL_TRANSFORMERS: Transformer[] = [
+export const UNDOCX_TRANSFORMERS: Transformer[] = [
   SELECTION_MARKER_START,
   SELECTION_MARKER_END,
   REMOVED_MARKER_START,

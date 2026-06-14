@@ -5,7 +5,7 @@ import { buttonVariants } from "@/components/ui/button"
 const VALUES = [
   {
     title: "Format follows intent",
-    body: "The format of an answer should serve the question, not the other way around. We built Renderical to pick the layout that makes information clearest, not the one that's easiest to generate.",
+    body: "The format of an answer should serve the question, not the other way around. We built Undocx to pick the layout that makes information clearest, not the one that's easiest to generate.",
   },
   {
     title: "Your knowledge base, not ours",
@@ -73,7 +73,7 @@ const MILESTONES = [
 export const metadata = {
   title: "About",
   description:
-    "Learn about Renderical's mission to make AI-generated content adaptive, organized, and editable.",
+    "Learn about Undocx's mission to make AI-generated content adaptive, organized, and editable.",
 }
 
 export default function AboutPage() {
@@ -82,13 +82,13 @@ export default function AboutPage() {
       <section className="border-b border-border/40">
         <div className="mx-auto max-w-3xl px-6 py-24 text-center lg:py-32">
           <p className="mb-4 text-sm font-medium text-muted-foreground">
-            About Renderical
+            About Undocx
           </p>
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
             Information should arrive in the shape it needs to be
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-            We built Renderical because the way AI responds matters as much as
+            We built Undocx because the way AI responds matters as much as
             what it says. A step-by-step process deserves a numbered list, not a
             paragraph. A comparison deserves a table, not a sentence.
           </p>
@@ -103,7 +103,7 @@ export default function AboutPage() {
                 What we&apos;re building
               </h2>
               <p className="mt-4 leading-relaxed text-muted-foreground">
-                Renderical is an intelligent content generation and knowledge
+                Undocx is an intelligent content generation and knowledge
                 management platform. When you give it a prompt, the AI writes a
                 structured document, composing tables, code, diagrams,
                 callouts, math, and footnoted citations into whatever mix the
@@ -142,7 +142,7 @@ export default function AboutPage() {
             What&apos;s inside
           </h2>
           <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground">
-            Renderical is one place to generate, refine, organize, and share
+            Undocx is one place to generate, refine, organize, and share
             structured knowledge. Here&apos;s what you get.
           </p>
           <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">

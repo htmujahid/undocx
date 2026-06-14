@@ -104,7 +104,7 @@ export default async function AuthLayout({
               </svg>
             </div>
             <span className="text-base font-semibold tracking-tight">
-              Renderical
+              Undocx
             </span>
           </Link>
 
@@ -140,7 +140,7 @@ export default async function AuthLayout({
           </div>
 
           <p className="text-[11px] text-white/25">
-            &copy; {new Date().getFullYear()} Renderical. All rights reserved.
+            &copy; {new Date().getFullYear()} Undocx. All rights reserved.
           </p>
         </div>
       </aside>
@@ -164,7 +164,7 @@ export default async function AuthLayout({
                 <path d="m22 14-3 3 3 3" />
               </svg>
             </div>
-            <span className="text-sm font-semibold">Renderical</span>
+            <span className="text-sm font-semibold">Undocx</span>
           </div>
           {children}
         </div>

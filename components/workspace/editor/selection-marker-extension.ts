@@ -31,7 +31,7 @@ function findMarkerKeys(state: EditorState): {
 }
 
 export const SelectionMarkerExtension = defineExtension({
-  name: "renderical/selection-marker",
+  name: "undocx/selection-marker",
   nodes: [SelectionMarkerNode],
   register(editor) {
     publishSelectionMarkers(editor, findMarkerKeys(editor.getEditorState()))

@@ -139,7 +139,7 @@ export function Security() {
             Your account and content, protected
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-            A knowledge base is only useful if you can trust it. Renderical is
+            A knowledge base is only useful if you can trust it. Undocx is
             built so your work stays yours.
           </p>
         </div>

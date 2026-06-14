@@ -370,7 +370,7 @@ const FEATURES = [
     ),
     title: "Structured by default",
     description:
-      "Renderical doesn't return a wall of text. It composes each document from the blocks that fit the topic (tables for comparisons, syntax-highlighted code, SVG diagrams and charts, callouts, math, and footnoted citations) so the answer is usable the moment it lands.",
+      "Undocx doesn't return a wall of text. It composes each document from the blocks that fit the topic (tables for comparisons, syntax-highlighted code, SVG diagrams and charts, callouts, math, and footnoted citations) so the answer is usable the moment it lands.",
     visual: <ContentBlocksVisual />,
   },
   {
@@ -431,7 +431,7 @@ const FEATURES = [
     ),
     title: "Chat with your documents",
     description:
-      "Ask a question and get an answer grounded in your own knowledge base. Renderical searches across your documents semantically and replies with inline citations, so you can always trace a claim back to its source.",
+      "Ask a question and get an answer grounded in your own knowledge base. Undocx searches across your documents semantically and replies with inline citations, so you can always trace a claim back to its source.",
     visual: <ChatVisual />,
   },
 ]

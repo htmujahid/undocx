@@ -24,7 +24,7 @@ import { SidebarProvider, useSidebar } from "@/components/ui/sidebar"
 import { CalloutExtension } from "@/components/workspace/editor/callout-extension"
 import { CodeHighlightExtension } from "@/components/workspace/editor/code-highlight-extension"
 import { FootnoteExtension } from "@/components/workspace/editor/footnote-extension"
-import { RENDERICAL_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
+import { UNDOCX_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
 import { MathExtension } from "@/components/workspace/editor/math-extension"
 import { SelectionMarkerExtension } from "@/components/workspace/editor/selection-marker-extension"
 import { SvgExtension } from "@/components/workspace/editor/svg-extension"
@@ -95,7 +95,7 @@ export function Workspace({
   const extension = useMemo(
     () =>
       defineExtension({
-        name: "renderical/content-editor",
+        name: "undocx/content-editor",
         namespace: "content-editor",
         theme: editorTheme,
         editable: false,
@@ -104,7 +104,7 @@ export function Workspace({
               $initialEditorState: () =>
                 $convertFromMarkdownString(
                   art.content!,
-                  RENDERICAL_TRANSFORMERS
+                  UNDOCX_TRANSFORMERS
                 ),
             }
           : {}),
