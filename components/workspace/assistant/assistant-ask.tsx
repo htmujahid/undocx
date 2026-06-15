@@ -10,6 +10,8 @@ import { $convertToMarkdownString } from "@lexical/markdown"
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext"
 
 import { Button } from "@/components/ui/button"
+import { ModeBadge } from "@/components/workspace/assistant/assistant-mode-badge"
+import { useSelectionMarkers } from "@/components/workspace/editor/use-selection-markers"
 import { UNDOCX_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
 import { cn } from "@/lib/utils"
 
@@ -34,6 +36,7 @@ export function AssistantAsk({
   onModeChange?: (mode: "ask" | "edit") => void
 }) {
   const [editor] = useLexicalComposerContext()
+  const { hasStart, hasBoth } = useSelectionMarkers()
   const [input, setInput] = useState("")
   const bottomRef = useRef<HTMLDivElement>(null)
 
@@ -139,7 +142,10 @@ export function AssistantAsk({
         )}
       </div>
 
-      <div className="border-t p-3 pt-5">
+      <div className="border-t">
+        {hasStart && !hasBoth && <ModeBadge mode="insert" />}
+        {hasBoth && <ModeBadge mode="replace" />}
+        <div className="p-3 pt-5">
         <div
           className={cn(
             "rounded-xl border bg-muted/20 transition-all focus-within:border-ring/60 focus-within:ring-2 focus-within:ring-ring/20",
@@ -191,6 +197,7 @@ export function AssistantAsk({
           <kbd className="font-mono">Enter</kbd> to ask ·{" "}
           <kbd className="font-mono">Shift+Enter</kbd> new line
         </p>
+        </div>
       </div>
     </div>
   )

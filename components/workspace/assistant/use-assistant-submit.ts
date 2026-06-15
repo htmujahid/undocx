@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { experimental_useObject as useObject } from "@ai-sdk/react"
 import { $getRoot } from "lexical"
@@ -16,11 +16,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { UNDOCX_TRANSFORMERS } from "@/components/workspace/editor/markdown-transformers"
 import { $isSelectionMarkerNode } from "@/components/workspace/editor/selection-marker-node"
-import {
-  snapshotSelectionMarkers,
-  subscribeSelectionMarkers,
-} from "@/components/workspace/editor/selection-marker-store"
 import { insertOutputSchema, replaceOutputSchema } from "@/lib/ai/ai-schema"
+import { useSelectionMarkers } from "@/components/workspace/editor/use-selection-markers"
 import {
   artifactQueryOptions,
   artifactsQueryOptions,
@@ -91,14 +88,7 @@ export function useAssistantSubmit({
   const qc = useQueryClient()
   const [editor] = useLexicalComposerContext()
 
-  const { startKey, endKey } = useSyncExternalStore(
-    (cb) => subscribeSelectionMarkers(editor, cb),
-    () => snapshotSelectionMarkers(editor),
-    () => ({ startKey: null, endKey: null })
-  )
-  const hasStart = startKey !== null
-  const hasEnd = endKey !== null
-  const hasBoth = hasStart && hasEnd
+  const { hasStart, hasEnd, hasBoth } = useSelectionMarkers()
   const disabled = !hasStart && !hasEnd
 
   const snapshotRef = useRef<{
