@@ -1,15 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  redirects: async () => {
-    return [
-      {
-        source: "/",
-        destination: "/editor",
-        permanent: false,
-      },
-    ];
+  experimental: {
+    agentFeedback: true,
+  },
+  cacheComponents: true,
+  partialPrefetching: true,
+  async redirects() {
+    return [{ source: "/editor", destination: "/documents", permanent: true }];
   },
 };
 

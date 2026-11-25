@@ -1,46 +1,52 @@
 import type { Metadata } from "next";
-
-import { Geist, Geist_Mono } from "next/font/google";
-
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
-
+import { Geist, Geist_Mono, Newsreader } from "next/font/google";
+import { ThemeProvider } from "~@/components/theme-provider";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const newsreader = Newsreader({
   subsets: ["latin"],
+  axes: ["opsz"],
+  style: ["normal", "italic"],
+  display: "swap",
+  variable: "--font-newsreader",
+});
+
+const geist = Geist({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-geist",
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
+  variable: "--font-geist-mono",
 });
 
 export const metadata: Metadata = {
-  title: "Undocx | A collaborative document editor",
+  metadataBase: new URL("https://undocx.app"),
+  title: {
+    default: "Undocx: AI writes it, you steer it",
+    template: "%s · Undocx",
+  },
   description:
-    "Undocx is a collaborative document editor that allows multiple users to edit and format documents in real-time.",
+    "A minimal document editor where AI drafts from your brief and outline, and you reshape it one paragraph at a time.",
+  openGraph: {
+    type: "website",
+    siteName: "Undocx",
+    locale: "en_GB",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+    <html lang="en" data-scroll-behavior="smooth" className={`${newsreader.variable} ${geist.variable} ${geistMono.variable}`} suppressHydrationWarning>
+      <body>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           {children}
-          <Toaster />
         </ThemeProvider>
       </body>
     </html>
