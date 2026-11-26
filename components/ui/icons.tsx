@@ -17,6 +17,7 @@ import {
   ColumnsIcon as Columns,
   DownloadSimpleIcon as DownloadSimple,
   FileTextIcon as FileText,
+  GoogleLogoIcon as GoogleLogo,
   LinkIcon as LinkSimple,
   ListBulletsIcon as ListBullets,
   ListIcon as List,
@@ -31,6 +32,7 @@ import {
   ParagraphIcon as Paragraph,
   QuotesIcon as Quotes,
   SidebarSimpleIcon as SidebarSimple,
+  SignOutIcon as SignOut,
   SunIcon as Sun,
   TableIcon as Table,
   TextAlignCenterIcon as TextAlignCenter,
@@ -45,6 +47,7 @@ import {
   TextItalicIcon as TextItalic,
   TextStrikethroughIcon as TextStrikethrough,
   UploadSimpleIcon as UploadSimple,
+  UserCircleIcon as UserCircle,
   XIcon as X,
 } from "@phosphor-icons/react/dist/ssr";
 import type { ComponentType } from "react";
@@ -101,3 +104,6 @@ export const SunIcon = withWeight(Sun);
 export const MoonIcon = withWeight(Moon);
 export const MonitorIcon = withWeight(Monitor);
 export const TypeIcon = withWeight(TextAa);
+export const GoogleIcon = withWeight(GoogleLogo);
+export const SignOutIcon = withWeight(SignOut);
+export const UserCircleIcon = withWeight(UserCircle);

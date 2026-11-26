@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { UserMenu } from "~@/components/auth/user-menu";
 import { Button } from "~@/components/ui/button";
 import { FileTextIcon } from "~@/components/ui/icons";
 import { newDocumentHref } from "./documents";
@@ -9,10 +10,13 @@ export function DocumentsHeader() {
       <Link href="/" className="font-serif text-xl leading-none font-medium tracking-tight text-foreground no-underline">
         Undocx<span className="text-primary">.</span>
       </Link>
-      <Button variant="primary" size="sm" render={<Link href={newDocumentHref} />}>
-        <FileTextIcon />
-        New document
-      </Button>
+      <div className="flex items-center gap-2">
+        <Button variant="primary" size="sm" render={<Link href={newDocumentHref} />}>
+          <FileTextIcon />
+          New document
+        </Button>
+        <UserMenu />
+      </div>
     </header>
   );
 }

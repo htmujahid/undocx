@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getCurrentUser } from "~@/lib/auth/session";
 import { DocumentsHeader } from "./_components/documents-header";
 import { DocumentList } from "./_components/document-list";
 
@@ -7,7 +8,8 @@ export const metadata: Metadata = {
   description: "Your documents in Undocx.",
 };
 
-export default function DocumentsPage() {
+export default async function DocumentsPage() {
+  await getCurrentUser();
   return (
     <div className="flex h-full flex-col">
       <DocumentsHeader />

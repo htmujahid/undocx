@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
   },
   cacheComponents: true,
   partialPrefetching: true,
+  images: {
+    remotePatterns: [{ protocol: "https", hostname: "lh3.googleusercontent.com" }],
+  },
   async redirects() {
     return [{ source: "/editor", destination: "/documents", permanent: true }];
   },
