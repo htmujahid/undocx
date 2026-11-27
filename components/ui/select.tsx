@@ -3,6 +3,8 @@
 import {
   Select,
   SelectContent as SelectContentPrimitive,
+  SelectGroup,
+  SelectGroupLabel as SelectGroupLabelPrimitive,
   SelectItem as SelectItemPrimitive,
   SelectItemIcon as SelectItemIconPrimitive,
   SelectItemIndicator,
@@ -43,6 +45,10 @@ function SelectContent({ className, ...props }: Omit<ComponentProps<typeof Selec
   );
 }
 
+function SelectGroupLabel({ className, ...props }: ComponentProps<typeof SelectGroupLabelPrimitive>) {
+  return <SelectGroupLabelPrimitive className={cn("px-2 pt-2 pb-1 font-mono text-[0.65rem] tracking-[0.15em] text-muted-foreground uppercase", className)} {...props} />;
+}
+
 function SelectValueIcon({ className, ...props }: ComponentProps<typeof SelectValueIconPrimitive>) {
   return <SelectValueIconPrimitive className={cn("inline-flex shrink-0 items-center text-muted-foreground [&_svg]:size-4", className)} {...props} />;
 }
@@ -62,4 +68,4 @@ function SelectItem({ className, children, icon, ...props }: Omit<ComponentProps
   );
 }
 
-export { Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue, SelectValueIcon };
+export { Select, SelectContent, SelectGroup, SelectGroupLabel, SelectItem, SelectLabel, SelectTrigger, SelectValue, SelectValueIcon };

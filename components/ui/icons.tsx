@@ -3,21 +3,30 @@ import {
   ArrowClockwiseIcon as ArrowClockwise,
   ArrowCounterClockwiseIcon as ArrowCounterClockwise,
   ArrowDownIcon as ArrowDown,
+  ArrowLeftIcon as ArrowLeft,
+  ArrowLineDownIcon as ArrowLineDown,
   ArrowsInSimpleIcon as ArrowsInSimple,
   ArrowsOutSimpleIcon as ArrowsOutSimple,
   ArrowsClockwiseIcon as ArrowsClockwise,
+  ArrowSquareOutIcon as ArrowSquareOut,
   ArrowUpIcon as ArrowUp,
   ArrowUUpLeftIcon as ArrowUUpLeft,
+  BookOpenTextIcon as BookOpenText,
   CaretDownIcon as CaretDown,
   CheckIcon as Check,
   ChatCircleTextIcon as ChatCircleText,
   CheckSquareIcon as CheckSquare,
   CircleNotchIcon as CircleNotch,
   CodeIcon as Code,
+  ClipboardTextIcon as ClipboardText,
   ColumnsIcon as Columns,
+  CopyIcon as Copy,
+  DotsSixVerticalIcon as DotsSixVertical,
   DownloadSimpleIcon as DownloadSimple,
+  FileDashedIcon as FileDashed,
   FileTextIcon as FileText,
   GoogleLogoIcon as GoogleLogo,
+  LinkBreakIcon as LinkBreak,
   LinkIcon as LinkSimple,
   ListBulletsIcon as ListBullets,
   ListIcon as List,
@@ -30,9 +39,12 @@ import {
   MoonIcon as Moon,
   NoteIcon as Note,
   ParagraphIcon as Paragraph,
+  PlusIcon as Plus,
   QuotesIcon as Quotes,
+  SealCheckIcon as SealCheck,
   SidebarSimpleIcon as SidebarSimple,
   SignOutIcon as SignOut,
+  SparkleIcon as Sparkle,
   SunIcon as Sun,
   TableIcon as Table,
   TextAlignCenterIcon as TextAlignCenter,
@@ -46,6 +58,7 @@ import {
   TextHTwoIcon as TextHTwo,
   TextItalicIcon as TextItalic,
   TextStrikethroughIcon as TextStrikethrough,
+  TrashIcon as Trash,
   UploadSimpleIcon as UploadSimple,
   UserCircleIcon as UserCircle,
   XIcon as X,
@@ -107,3 +120,17 @@ export const TypeIcon = withWeight(TextAa);
 export const GoogleIcon = withWeight(GoogleLogo);
 export const SignOutIcon = withWeight(SignOut);
 export const UserCircleIcon = withWeight(UserCircle);
+export const ExternalLinkIcon = withWeight(ArrowSquareOut);
+export const UnlinkIcon = withWeight(LinkBreak);
+export const PlusIcon = withWeight(Plus);
+export const MinusIcon = withWeight(Minus);
+export const GripIcon = withWeight(DotsSixVertical);
+export const SparkleIcon = withWeight(Sparkle);
+export const ClaimsCheckIcon = withWeight(SealCheck);
+export const CitationIcon = withWeight(BookOpenText);
+export const PageSetupIcon = withWeight(FileDashed);
+export const PageBreakIcon = withWeight(ArrowLineDown);
+export const ArrowLeftIcon = withWeight(ArrowLeft);
+export const DuplicateIcon = withWeight(Copy);
+export const ClipboardIcon = withWeight(ClipboardText);
+export const TrashIcon = withWeight(Trash);

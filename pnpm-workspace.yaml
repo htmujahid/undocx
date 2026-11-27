@@ -3,3 +3,5 @@ allowBuilds:
   sharp: false
   unrs-resolver: false
   esbuild: true
+  "@prisma/client": false
+  better-sqlite3: false

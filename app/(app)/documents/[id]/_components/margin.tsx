@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "~@/components/ui/button";
 import { CheckIcon, LockIcon, LockOpenIcon, NoteIcon } from "~@/components/ui/icons";
-import { usePanel } from "./panel-context";
+import { useNotes } from "~@/editor/extensions/notes";
 import { Toggle } from "~@/components/ui/toggle";
 import { Tooltip, TooltipContent, TooltipTrigger } from "~@/components/ui/tooltip";
 import { cn } from "~@/lib/utils";
@@ -29,9 +29,9 @@ export function LockMark({ isLocked, onLockedChange }: { isLocked: boolean; onLo
 }
 
 export function NoteMark({ id }: { id: string }) {
-  const { notes, activeNoteId, showNote } = usePanel();
+  const { notes, activeId, reveal } = useNotes();
   if (!notes.some((note) => note.id === id)) return null;
-  const isActive = activeNoteId === id;
+  const isActive = activeId === id;
   return (
     <Tooltip>
       <TooltipTrigger
@@ -41,7 +41,7 @@ export function NoteMark({ id }: { id: string }) {
             variant="ghost"
             aria-label="Show note"
             aria-pressed={isActive}
-            onClick={() => showNote(id)}
+            onClick={() => reveal(id)}
             className={cn("size-7 text-primary-deep hover:bg-primary/10", isActive ? "bg-primary/15" : "bg-primary/10")}
           />
         }

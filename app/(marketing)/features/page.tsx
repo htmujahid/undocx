@@ -11,15 +11,18 @@ import { HouseRules } from "./_components/house-rules";
 import { LockedText } from "./_components/locked-text";
 import { Notes } from "./_components/notes";
 import { OnePage } from "./_components/one-page";
+import { PageSetup } from "./_components/page-setup";
+import { RichText } from "./_components/rich-text";
 import { Outline } from "./_components/outline";
 import { ReviewAndShare } from "./_components/review-and-share";
 import { SectionRegenerate } from "./_components/section-regenerate";
+import { SelectionToolbar } from "./_components/selection-toolbar";
 import { Variations } from "./_components/variations";
 import { YourVoice } from "./_components/your-voice";
 
 export const metadata: Metadata = {
   title: "Features",
-  description: "Brief first, outline first, section regenerate, locked text, variations, notes to self, command palette, one page, your voice, grounded writing, export, house rules, review, claims check and document types.",
+  description: "Brief first, outline first, section regenerate, locked text, variations, notes to self, command palette, one page, your voice, grounded writing, export, house rules, review, claims check and document types, rich text, the selection toolbar and page setup.",
 };
 
 const index = [
@@ -38,21 +41,24 @@ const index = [
   ["13", "Review and share", "review-and-share"],
   ["14", "Claims check", "claims-check"],
   ["15", "Document types", "document-types"],
+  ["16", "Rich text", "rich-text"],
+  ["17", "Selection toolbar", "selection-toolbar"],
+  ["18", "Page setup", "page-setup"],
 ] as const;
 
 export default function FeaturesPage() {
   return (
     <>
-      <Intro label="Features" tagline="Fifteen, on every document.">
+      <Intro label="Features" tagline="Eighteen, on every document.">
         <div className="flex flex-col gap-10">
           <div className="flex flex-col gap-6">
             <Title>
-              Fifteen ways to steer a draft <span className="text-primary italic">without rewriting it</span>.
+              Eighteen ways to steer a draft <span className="text-primary italic">without rewriting it</span>.
             </Title>
             <Lede>Every feature here answers the same complaint: AI writers give you text, not control. Each is shown on a real document, a web designer&rsquo;s proposal to a bookshop, and most of them work right here on the page.</Lede>
           </div>
           <nav aria-label="On this page">
-            <ol className="m-0 grid list-none grid-cols-2 gap-2 p-0 text-sm sm:grid-cols-3 lg:grid-cols-5">
+            <ol className="m-0 grid list-none grid-cols-2 gap-2 p-0 text-sm sm:grid-cols-3 lg:grid-cols-6">
               {index.map(([number, name, slug]) => (
                 <li key={slug}>
                   <a href={`#${slug}`} className="group flex h-full flex-col justify-between gap-4 rounded-md border border-border bg-card p-3 no-underline transition-colors hover:border-primary">
@@ -81,8 +87,11 @@ export default function FeaturesPage() {
       <ReviewAndShare number="13" />
       <ClaimsCheck number="14" />
       <DocumentTypes number="15" />
+      <RichText number="16" />
+      <SelectionToolbar number="17" />
+      <PageSetup number="18" />
 
-      <Cta title={<>Fifteen features. One rule: <span className="text-primary italic">you decide</span>.</>} />
+      <Cta title={<>Eighteen features. One rule: <span className="text-primary italic">you decide</span>.</>} />
     </>
   );
 }

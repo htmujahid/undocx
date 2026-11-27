@@ -1,7 +1,11 @@
 import type { ReactNode } from "react";
 import { Button } from "~@/components/ui/button";
-import { ColumnsIcon, Link2Icon, LockIcon, RefreshCwIcon } from "~@/components/ui/icons";
+import { CheckIcon, ColumnsIcon, Link2Icon, LockIcon, RefreshCwIcon } from "~@/components/ui/icons";
+import { EditorContent } from "~@/editor/editor";
+import { PageInfo } from "~@/editor/plugins/page-info";
 import { EditorToolbar } from "./editor-toolbar";
+import { FocusToggle } from "./focus-toggle";
+import { PageSetupDialog } from "./page-setup-dialog";
 
 export { Para } from "./para";
 
@@ -44,25 +48,27 @@ export function SelectionBubble() {
   );
 }
 
-export function DocumentFrame({ status, children }: { status: ReactNode; children: ReactNode }) {
+export function DocumentFrame() {
   return (
-    <div data-scroller className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto bg-muted/50">
+    <div data-scroller className="flex min-h-0 min-w-0 flex-1 flex-col overflow-auto bg-muted/50">
       <EditorToolbar />
-      <div className="px-4 py-8 lg:px-10">
-        <article
-          contentEditable
-          suppressContentEditableWarning
-          spellCheck
-          aria-label="Document"
-          className="mx-auto w-full max-w-[52rem] rounded-sm border border-border bg-card px-8 py-12 shadow-sm outline-none sm:px-14 sm:py-16"
-        >
-          {children}
-        </article>
-      </div>
-      <footer className="sticky bottom-0 mt-auto flex h-9 shrink-0 items-center justify-between gap-4 bg-background px-4 text-xs text-muted-foreground shadow-[inset_0_1px_0_var(--border)]">
-        {status}
-        <span className="hidden font-mono text-faint-foreground sm:inline">Markdown</span>
-        <span className="text-foreground">Autosaved</span>
+      <EditorContent />
+      <footer className="sticky bottom-0 left-0 mt-auto flex h-9 shrink-0 items-center justify-between gap-4 bg-background px-4 text-xs text-muted-foreground shadow-[inset_0_1px_0_var(--border)]">
+        <span className="flex items-center gap-2">
+          <PageSetupDialog>
+            <span className="hidden sm:inline">
+              <PageInfo />
+            </span>
+          </PageSetupDialog>
+        </span>
+        <span className="flex items-center gap-3">
+          <span className="inline-flex items-center gap-1 text-foreground">
+            <CheckIcon className="size-3 text-primary" />
+            Autosaved
+          </span>
+          <span aria-hidden="true" className="h-3.5 w-px bg-border" />
+          <FocusToggle />
+        </span>
       </footer>
     </div>
   );

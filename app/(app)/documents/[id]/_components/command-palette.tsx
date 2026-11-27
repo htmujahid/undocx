@@ -1,6 +1,9 @@
 "use client";
 
+import { useShortcut } from "@ui-sdk/react/shortcuts";
 import { useState } from "react";
+import { useNotes } from "~@/editor/extensions/notes";
+import { useSources } from "~@/editor/extensions/sources";
 import {
   Command,
   CommandEmpty,
@@ -19,7 +22,6 @@ import {
   DialogContent,
   DialogDescription,
   DialogTitle,
-  DialogTrigger,
 } from "~@/components/ui/dialog";
 import {
   ColumnsIcon,
@@ -28,27 +30,17 @@ import {
   FocusIcon,
   LockIcon,
   NoteIcon,
+  PlusIcon,
   RefreshCwIcon,
 } from "~@/components/ui/icons";
-import { Toolbar, ToolbarButton } from "~@/components/ui/toolbar";
 
 export function CommandPalette() {
+  const { show } = useNotes();
+  const { sources, cite, startAdding } = useSources();
   const [isOpen, setIsOpen] = useState(false);
+  useShortcut("mod+k", () => setIsOpen(true), { description: "Command palette" });
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <Toolbar aria-label="Palette" className="shrink-0">
-        <DialogTrigger
-          shortcut="mod+k"
-          render={
-            <ToolbarButton
-              aria-label="Command palette"
-              className="text-muted-foreground"
-            />
-          }
-        >
-          <kbd className="font-sans">⌘K</kbd>
-        </DialogTrigger>
-      </Toolbar>
       <DialogBackdrop />
       <DialogContent
         initialFocus="input"
@@ -58,7 +50,15 @@ export function CommandPalette() {
         <DialogDescription className="sr-only">
           Every action, section and source, by name.
         </DialogDescription>
-        <Command filter="fuzzy" onAction={() => setIsOpen(false)}>
+        <Command
+          filter="fuzzy"
+          onAction={(value) => {
+            setIsOpen(false);
+            if (value === "note") show();
+            else if (value === "add-source") startAdding();
+            else if (value.startsWith("cite:")) cite(value.slice(5));
+          }}
+        >
           <CommandInput
             aria-label="Search actions, sections and sources"
             placeholder="Regenerate shorter, lock this, go to Investment…"
@@ -117,19 +117,21 @@ export function CommandPalette() {
             </CommandGroup>
             <CommandSeparator />
             <CommandGroup>
-              <CommandGroupLabel>Sources</CommandGroupLabel>
-              {[
-                "Sales export 2025.xlsx",
-                "Shopify analytics, Jan to Dec 2025",
-                "Staff interview notes.docx",
-              ].map((source) => (
-                <CommandItem key={source} value={source}>
+              <CommandGroupLabel>Cite a source</CommandGroupLabel>
+              {sources.map((source) => (
+                <CommandItem key={source.id} value={`cite:${source.id}`}>
                   <CommandItemIcon>
                     <FileTextIcon />
                   </CommandItemIcon>
-                  {source}
+                  {source.title}
                 </CommandItem>
               ))}
+              <CommandItem value="add-source">
+                <CommandItemIcon>
+                  <PlusIcon />
+                </CommandItemIcon>
+                Add a source…
+              </CommandItem>
             </CommandGroup>
             <CommandSeparator />
             <CommandGroup>

@@ -21,6 +21,7 @@
     "paths": {
       "~@/*": ["./app/*"],
       "~@/components/*": ["./components/*"],
+      "~@/editor/*": ["./editor/*"],
       "~@/hooks/*": ["./hooks/*"],
       "~@/lib/*": ["./lib/*"]
     }
