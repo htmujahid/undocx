@@ -12,7 +12,7 @@ export function Hero() {
           <Title id="top-title">
             AI drafts it. You decide <span className="text-primary italic">every paragraph</span>.
           </Title>
-          <Lede>Undocx asks what you need, proposes an outline, then writes. Rewrite one paragraph, lock another, and export when it reads like you wrote it.</Lede>
+          <Lede>Tell Undocx what you need. It asks what it is missing, proposes an outline when the document needs one, then writes a first draft. Rewrite one paragraph, lock another, and export when it reads like you wrote it.</Lede>
           <div className="flex flex-wrap items-center gap-4">
             <Button variant="primary" size="lg" render={<Link href={startHref} />}>
               Start writing free

@@ -5,7 +5,7 @@ const types = ["Proposal", "Report", "Article", "Case study", "Newsletter", "You
 
 export function DocumentTypes({ number }: { number: string }) {
   return (
-    <Section id="document-types" number={number} label="Document types" note="Start from a type." title="A proposal is not a report. The brief knows the difference." description="Start from a type and the brief asks what that type needs, with a typical outline to begin from.">
+    <Section id="document-types" number={number} label="Document types" note="Optional." title="A proposal is not a report. The questions know the difference." description="Pick a type if you know it. Skip it and Undocx infers the type from your prompt, then asks what that type needs.">
       <div className="flex flex-col gap-8">
         <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
           {types.map((type, index) => (
@@ -25,7 +25,7 @@ export function DocumentTypes({ number }: { number: string }) {
           </div>
           <div className="border-t border-border pt-3">
             <dt className="m-0 text-sm font-medium text-foreground">Your own</dt>
-            <dd className="m-0 text-sm leading-normal text-muted-foreground">Save a brief and outline as a type and start the next one from it.</dd>
+            <dd className="m-0 text-sm leading-normal text-muted-foreground">Save a brief and outline as a type and start the next one from it. Or leave it blank and let Undocx work out the type.</dd>
           </div>
         </dl>
       </div>

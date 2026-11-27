@@ -25,10 +25,10 @@ export function HowItWorks({ number }: { number: string }) {
       number={number}
       label="How it works"
       note="Brief, outline, draft."
-      title="One document, three stages. You approve each before the next."
+      title="One document, up to three stages. You approve each before the next."
       description={
         <>
-          Nothing is written until the brief is answered and the outline is yours. <MoreLink href="/how-it-works">Each stage in detail</MoreLink>
+          Nothing is written until you have briefed it, and the outline, when there is one, is yours. <MoreLink href="/how-it-works">Each stage in detail</MoreLink>
         </>
       }
     >
@@ -59,7 +59,7 @@ export function HowItWorks({ number }: { number: string }) {
             </Sheet>
           }
         >
-          Four questions: who reads it, what it must achieve, the tone, the length.
+          A short chat. Pick a profile, voice or rules if you have them, say what you need, and answer a few questions made for the document.
         </Stage>
         <Stage
           number="2"
@@ -85,7 +85,7 @@ export function HowItWorks({ number }: { number: string }) {
             </Sheet>
           }
         >
-          A structure you can reorder, rename or cut. Here, Scope moved above What we heard.
+          A structure for documents that need one, which you can reorder, rename or cut. Here, Scope moved above What we heard. A short note skips this stage.
         </Stage>
         <Stage
           number="3"
@@ -106,7 +106,7 @@ export function HowItWorks({ number }: { number: string }) {
             </Sheet>
           }
         >
-          Each section is written in turn, with the outline and the sections before it in view.
+          The editor opens with a first draft ready. Each section was written in turn, with the outline and the sections before it in view.
         </Stage>
       </ol>
     </Section>

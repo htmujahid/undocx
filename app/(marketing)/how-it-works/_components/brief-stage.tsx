@@ -3,15 +3,15 @@ import { Section } from "../../_components/frame";
 import { MoreLink } from "../../_components/more-link";
 
 const questions = [
-  ["Who will read this?", "Ruth Marlow, the owner, and her bookkeeper. Neither is technical.", "Decides how much to explain and which words need no explanation."],
+  ["Who will read this?", "Ruth Marlow, the owner, and her bookkeeper. Neither is technical.", "Asked only if no profile says it. Decides how much to explain."],
   ["What should it achieve?", "Get a yes to a three-month rebuild of the shop's checkout and catalogue.", "Puts the ask first and cuts anything that does not serve it."],
-  ["Tone?", "Direct and warm. Numbers first, no jargon.", "Sets sentence length, formality and how directly numbers are stated."],
+  ["Tone?", "Direct and warm. Numbers first, no jargon.", "Asked only if no voice is picked. Sets sentence length and formality."],
   ["Length?", "Four pages. Ruth reads on paper.", "Fixes the budget: what each section gets, and what is left out."],
 ];
 
 export function BriefStage({ number }: { number: string }) {
   return (
-    <Section id="brief" number={number} label="Brief" note="Two minutes." title="Four questions, answered once, used everywhere." description="The shortest part and the most important. Everything after it is written against these answers.">
+    <Section id="brief" number={number} label="Brief" note="Two minutes." title="A short chat, answered once, used everywhere." description="Pick a profile, voice, rules, a type and sources if you have them, and say what you need. Undocx then asks only what is missing, one question at a time. Skip any, or press Just write it.">
       <div className="flex flex-col gap-6">
         <Sheet>
           <SheetChrome title="Untitled proposal">

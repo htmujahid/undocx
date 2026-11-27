@@ -10,18 +10,18 @@ import { Walkthrough } from "./_components/walkthrough";
 
 export const metadata: Metadata = {
   title: "How it works",
-  description: "Brief, outline, draft. How Undocx takes one document from four questions to a finished proposal, with you approving each stage.",
+  description: "Brief, outline, draft. How Undocx takes one document from a short chat to a first draft, with an outline only when the document needs one, and you approving each stage.",
 };
 
 export default function HowItWorksPage() {
   return (
     <>
-      <Intro label="How it works" tagline="Three stages.">
+      <Intro label="How it works" tagline="Three stages, one optional.">
         <div className="flex flex-col gap-6">
           <Title>
             Brief. Outline. Draft. <span className="text-primary italic">You approve each one.</span>
           </Title>
-          <Lede>Undocx never writes from a blank prompt. It asks what the document is for, proposes a structure, and only then drafts, one section at a time.</Lede>
+          <Lede>Undocx never writes from a bare prompt. You say what you need, it asks only what it is missing, proposes a structure if the document needs one, and then the editor opens with a first draft ready.</Lede>
         </div>
       </Intro>
       <BriefStage number="01" />
@@ -30,7 +30,7 @@ export default function HowItWorksPage() {
       <Walkthrough number="04" />
       <Shortcuts number="05" />
       <After number="06" />
-      <Cta title={<>Start with the brief. <span className="text-primary italic">Finish with your name on it</span>.</>} />
+      <Cta title={<>Start with a short chat. <span className="text-primary italic">Finish with your name on it</span>.</>} />
     </>
   );
 }

@@ -12,7 +12,7 @@ export function TypesSheet() {
   return (
     <Sheet>
       <SheetChrome title="New document">
-        <span>Choose a type</span>
+        <span>Type · optional</span>
       </SheetChrome>
       <SheetPage>
         <ul aria-label="Document types" className="m-0 grid list-none gap-y-0 p-0">

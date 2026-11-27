@@ -13,10 +13,10 @@ const sections = [
 
 export function OutlineStage({ number }: { number: string }) {
   return (
-    <Section id="outline" number={number} label="Outline" note="Reorder, rename, cut." title="A structure you can change while it is still cheap to change." description="Reorder, rename, cut, add. Approve it and the draft begins.">
+    <Section id="outline" number={number} label="Outline" note="Reorder, rename, cut." title="A structure, for the documents that need one." description="A proposal or report gets an outline you can reorder, rename, cut or add to. A short note or letter skips it and goes straight to a draft. Approve it and the draft begins.">
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,18rem)_minmax(0,1fr)]">
         <div className="flex flex-col gap-4">
-          <Body>Undocx proposes the sections, in order, each with a line on what it will cover. For this proposal the writer moved Scope of work up so Ruth sees what she is buying before she reads why.</Body>
+          <Body>Undocx decides from your prompt whether an outline will help, and you can switch it on or off. When it does, it proposes the sections, in order, each with a line on what it will cover. For this proposal the writer moved Scope of work up so Ruth sees what she is buying before she reads why.</Body>
           <Body>Each section is then written with the outline and the sections before it in view, which keeps a long document reading as one piece.</Body>
           <MoreLink href="/features#outline">About the outline</MoreLink>
         </div>

@@ -1,10 +1,10 @@
 import { Section } from "../../_components/frame";
 
 const steps = [
-  ["9:10", "Brief", "Four questions. Ruth and her bookkeeper; a yes to a twelve-week rebuild; direct and warm; four pages. Two minutes."],
+  ["9:10", "Brief", "Pick the studio profile and the plain-and-warm voice, write one line, then answer three questions made for a proposal: a yes to a twelve-week rebuild, four pages, a fixed price. Two minutes."],
   ["9:13", "Sources", "Attach the sales export, the analytics funnel report and the staff interview notes. Undocx reads them before it writes."],
-  ["9:15", "Outline", "Six sections proposed. Scope of work moved up above What we heard. Approve."],
-  ["9:17", "Draft", "Six sections written in order, each with the outline and the earlier sections in view. About three minutes."],
+  ["9:15", "Outline", "Six sections proposed, because a proposal needs a structure. Scope of work moved up above What we heard. Approve."],
+  ["9:17", "Draft", "The editor opens with six sections written in order, each with the outline and the earlier sections in view. About three minutes."],
   ["9:22", "Lock", "The price paragraph and the quote from Priya are locked. They will not move again."],
   ["9:25", "Rewrite", "Paragraph two of What we heard, with the instruction lead with the customer. Diff reviewed, kept."],
   ["9:31", "Variations", "Three openings for the Summary. B's list merged with C's first sentence."],

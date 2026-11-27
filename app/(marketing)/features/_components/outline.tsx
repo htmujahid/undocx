@@ -2,14 +2,14 @@ import { Section } from "../../_components/frame";
 import { OutlinePlayground } from "./outline-playground";
 
 const steps = [
-  ["Reorder", "Arrow keys or drag. The numbers follow."],
-  ["Rebalance", "Words per section, worked out from the brief."],
+  ["Decide", "Undocx proposes whether this document needs one. A short note does not."],
+  ["Reorder", "Arrow keys or drag. The numbers and the budget follow."],
   ["Approve", "Nothing is drafted before you say so."],
 ];
 
 export function Outline({ number }: { number: string }) {
   return (
-    <Section id="outline" number={number} label="Outline first" note="Try it." title="A structure you can change before anything is written." description="Move a section and the length budget rebalances. Add one and the others make room." tone="muted">
+    <Section id="outline" number={number} label="Outline when it helps" note="Try it." title="A structure for the documents that need one." description="A report gets an outline and a thank-you note does not. Undocx proposes either, and you can switch it. Move a section and the length budget rebalances." tone="muted">
       <div className="flex flex-col gap-8">
         <ol className="m-0 grid list-none grid-cols-1 gap-4 p-0 sm:grid-cols-3 sm:gap-0">
           {steps.map(([term, text], index) => (

@@ -232,7 +232,7 @@ export function EditorMock() {
         {stage === "brief" ? (
           <>
             <SectionLabel>Brief</SectionLabel>
-            <DocHeading>Four questions before the first word</DocHeading>
+            <DocHeading>What you asked for, and what it asked back</DocHeading>
             <dl className="m-0 grid max-w-measure grid-cols-1 gap-y-1 sm:grid-cols-[minmax(0,11rem)_minmax(0,1fr)] sm:gap-x-6 sm:gap-y-4">
               {brief.map((row) => (
                 <div key={row.question} className="contents">
@@ -241,7 +241,7 @@ export function EditorMock() {
                 </div>
               ))}
             </dl>
-            <p className="m-0 mt-4 max-w-measure text-sm text-muted-foreground">Your answers shape the outline and every section after it. Change one later and the draft follows.</p>
+            <p className="m-0 mt-4 max-w-measure text-sm text-muted-foreground">The questions were made for this document. Your answers shape the outline and every section after it. Change one later and choose whether to re-run.</p>
           </>
         ) : null}
 
