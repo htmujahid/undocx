@@ -9,6 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^4.0.125",
+    "@ai-sdk/react": "^4.0.188",
+    "@aws-sdk/client-s3": "^3.1178.0",
+    "@aws-sdk/s3-request-presigner": "^3.1178.0",
     "@hookform/resolvers": "^7.0.9",
     "@lexical/clipboard": "0.53.0",
     "@lexical/extension": "0.53.0",
@@ -27,11 +31,13 @@
     "@phosphor-icons/react": "^2.1.10",
     "@ui-sdk/core": "0.1.0-beta.16",
     "@ui-sdk/react": "0.1.0-beta.16",
+    "ai": "^7.0.183",
     "better-auth": "1.7.28",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "drizzle-orm": "0.45.4",
     "lexical": "0.53.0",
+    "mammoth": "^1.13.0",
     "next": "16.4.6",
     "next-themes": "^0.4.6",
     "pg": "8.23.1",
@@ -40,6 +46,7 @@
     "react-hook-form": "^7.92.0",
     "swr": "^2.5.1",
     "tailwind-merge": "^3.7.1",
+    "unpdf": "^2.2.2",
     "zod": "^4.6.7"
   },
   "devDependencies": {

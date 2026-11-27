@@ -12,7 +12,7 @@ import { profileSchema, type ProfileValues } from "~@/lib/context/schemas";
 import { DeleteDialog } from "../../../_components/delete-dialog";
 import { DetailHeader } from "../../../_components/detail-header";
 import { FormSection } from "../../../_components/empty-pane";
-import { OptionSelect } from "../../../_components/form-bits";
+import { OptionSelect } from "~@/components/ui/option-select";
 import { useDeleteProfile, useSetProfileDefault, useUpdateProfile } from "../../query";
 
 type Nullable = "region" | "firstLanguage" | "writingLanguage" | "currency" | "units" | "dateFormat";

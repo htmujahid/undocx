@@ -39,10 +39,8 @@ export const SourcesExtension = defineExtension({
       counts: signal<ReadonlyMap<string, number>>(new Map()),
       selected: signal<string | null>(null),
       requested,
-      add(title: string, url?: string) {
-        const id = crypto.randomUUID();
-        sources.value = [...sources.peek(), { id, title: title.trim(), url: url?.trim() || undefined }];
-        return id;
+      attach(source: Source) {
+        if (!sources.peek().some((existing) => existing.id === source.id)) sources.value = [...sources.peek(), source];
       },
       remove(id: string) {
         editor.update(() => {
@@ -152,7 +150,7 @@ export function useSources() {
     order: useSignalValue(output.order),
     counts: useSignalValue(output.counts),
     activeId: useSignalValue(output.selected),
-    add: output.add,
+    attach: output.attach,
     remove: output.remove,
     cite: output.cite,
     reveal: output.reveal,

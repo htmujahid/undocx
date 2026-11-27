@@ -1,73 +1,152 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useChat, type UIMessage } from "@ai-sdk/react";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { DefaultChatTransport } from "ai";
+import { $getRoot } from "lexical";
+import { useEffect, useMemo, useRef } from "react";
+import { useForm } from "react-hook-form";
 import { Button } from "~@/components/ui/button";
-import { ArrowUpIcon, CheckIcon, RefreshCwIcon } from "~@/components/ui/icons";
+import { ArrowUpIcon, LoaderCircleIcon, RefreshCwIcon, XIcon } from "~@/components/ui/icons";
 import { SidebarContent, SidebarFooter } from "~@/components/ui/sidebar";
-import { Toggle } from "~@/components/ui/toggle";
+import { assistantMessageSchema, type AssistantMessageValues } from "~@/lib/ai/schemas";
+import { useClearAssistant } from "../query";
 
-type Message = { from: "you" | "undocx"; text: string; actions?: string[]; isFlag?: boolean; time?: string };
+const starters = ["Summarise what this document says so far", "Suggest a stronger opening", "What is missing for the reader to decide?"];
 
-const focus = "§2 ¶2";
-const placeholder = "Tell it what to change in §2 ¶2…";
-const thread: Message[] = [
-  { from: "you", time: "9:25", text: "Lead with the customer, not the checkout." },
-  { from: "undocx", text: "Rewrote ¶2 to open with the customer's experience. Kept the two numbers and their citations. Nothing else changed.", actions: ["Keep", "Undo", "Show diff"] },
-  { from: "undocx", isFlag: true, text: "¶4 quotes Priya but there is no source behind “one in five phone orders”. Attach a note, mark it as an estimate, or cut it?", actions: ["Mark as estimate", "Cut it"] },
-];
+function textOf(message: UIMessage) {
+  return message.parts.map((part) => (part.type === "text" ? part.text : "")).join("");
+}
 
-export function AssistantTab() {
+export function AssistantTab({ id, initialMessages }: { id: string; initialMessages: UIMessage[] }) {
+  const [editor] = useLexicalComposerContext();
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: `/documents/${id}/assistant`,
+        prepareSendMessagesRequest: ({ messages }) => ({
+          body: { message: { text: textOf(messages[messages.length - 1]) }, document: editor.read(() => $getRoot().getTextContent()) },
+        }),
+      }),
+    [id, editor],
+  );
+  const { messages, sendMessage, setMessages, status, error, stop, clearError } = useChat({ id, messages: initialMessages, transport });
+  const { trigger: clear, isMutating: isClearing } = useClearAssistant(id);
+  const form = useForm<AssistantMessageValues>({ resolver: zodResolver(assistantMessageSchema), defaultValues: { text: "" } });
+  const endRef = useRef<HTMLDivElement>(null);
+  const isBusy = status === "submitted" || status === "streaming";
+
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ block: "end" });
+  }, [messages, status]);
+
+  const send = form.handleSubmit(async ({ text }) => {
+    form.reset();
+    clearError();
+    await sendMessage({ text });
+  });
+
+  async function ask(text: string) {
+    clearError();
+    await sendMessage({ text });
+  }
+
+  async function startOver() {
+    stop();
+    await clear();
+    setMessages([]);
+    clearError();
+  }
+
   return (
     <>
       <SidebarContent className="px-4 py-4">
-        <p className="m-0 mb-4 text-xs text-muted-foreground">Working on {focus}</p>
-        <ol className="m-0 grid list-none gap-5 p-0">
-          {thread.map((message, index) =>
-            message.from === "you" ? (
-              <li key={index} className="grid gap-1">
-                <span className="text-xs text-muted-foreground">You{message.time ? ` · ${message.time}` : ""}</span>
-                <p className="m-0 max-w-[90%] justify-self-end rounded-md bg-foreground px-3 py-2 text-sm text-background">{message.text}</p>
+        {messages.length === 0 ? (
+          <div className="grid gap-3">
+            <p className="m-0 text-sm text-muted-foreground">Ask about this document. Undocx reads what you have written, and follows your profile, voice and rules when the document uses them.</p>
+            <div className="flex flex-wrap gap-2">
+              {starters.map((starter) => (
+                <Button key={starter} size="sm" variant="secondary" disabled={isBusy} onClick={() => void ask(starter)}>
+                  {starter}
+                </Button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <ol className="m-0 grid list-none gap-5 p-0">
+            {messages.map((message) =>
+              message.role === "user" ? (
+                <li key={message.id} className="grid gap-1">
+                  <span className="text-xs text-muted-foreground">You</span>
+                  <p className="m-0 max-w-[90%] justify-self-end rounded-md bg-foreground px-3 py-2 text-sm whitespace-pre-wrap text-background">{textOf(message)}</p>
+                </li>
+              ) : (
+                <li key={message.id} className="grid gap-2">
+                  <span className="text-xs text-muted-foreground">Undocx</span>
+                  <div className="rounded-md border border-border bg-card p-3 text-sm">
+                    <p className="m-0 whitespace-pre-wrap text-foreground">{textOf(message) || "…"}</p>
+                  </div>
+                </li>
+              ),
+            )}
+            {status === "submitted" ? (
+              <li className="flex items-center gap-2 text-xs text-muted-foreground" role="status">
+                <LoaderCircleIcon className="size-3.5 animate-spin" />
+                Thinking
               </li>
-            ) : (
-              <li key={index} className="grid gap-2">
-                <span className="text-xs text-muted-foreground">Undocx</span>
-                <div className={"rounded-md border p-3 text-sm " + (message.isFlag ? "border-primary/40 bg-primary/5" : "border-border bg-card")}>
-                  <p className="m-0 text-foreground">{message.text}</p>
-                  {message.actions ? (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {message.actions.map((action, i) => (
-                        <Button key={action} size="sm" variant={i === 0 ? (message.isFlag ? "secondary" : "primary") : "ghost"}>
-                          {i === 0 && !message.isFlag ? <CheckIcon /> : null}
-                          {action}
-                        </Button>
-                      ))}
-                    </div>
-                  ) : null}
-                </div>
-              </li>
-            ),
-          )}
-        </ol>
+            ) : null}
+          </ol>
+        )}
+        {error ? (
+          <p className="m-0 mt-4 rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive" role="alert">
+            {error.message}
+          </p>
+        ) : null}
+        <div ref={endRef} />
       </SidebarContent>
       <SidebarFooter className="border-t border-sidebar-border p-3">
-        <p className="m-0 mb-1.5 font-mono text-[0.6rem] tracking-[0.15em] text-muted-foreground uppercase">Recent instructions</p>
-        <div className="mb-2 flex flex-wrap gap-1.5" role="group" aria-label="Recent instructions">
-          <Toggle className="h-7 text-xs">Lead with the customer</Toggle>
-          <Toggle className="h-7 text-xs">Cut to half the length</Toggle>
-          <Toggle className="h-7 text-xs">Plainer, for a non-technical reader</Toggle>
-        </div>
-        <form className="flex items-end gap-2 rounded-md border border-input bg-card p-2 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring">
-          <label htmlFor="instruction" className="sr-only">
-            Instruction for the selected paragraph
+        <form onSubmit={send} noValidate className="flex items-end gap-2 rounded-md border border-input bg-card p-2 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring">
+          <label htmlFor="assistant-message" className="sr-only">
+            Message for Undocx
           </label>
-          <textarea id="instruction" rows={2} placeholder={placeholder} className="min-w-0 flex-1 resize-none bg-transparent text-sm text-foreground outline-none placeholder:text-faint-foreground" />
-          <Button size="icon" variant="primary" aria-label="Send instruction" type="button">
-            <ArrowUpIcon />
-          </Button>
+          <textarea
+            id="assistant-message"
+            rows={2}
+            placeholder="Ask Undocx about this document…"
+            className="min-w-0 flex-1 resize-none bg-transparent text-sm text-foreground outline-none placeholder:text-faint-foreground"
+            {...form.register("text")}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                if (!isBusy) void send();
+              }
+            }}
+          />
+          {isBusy ? (
+            <Button size="icon" variant="secondary" aria-label="Stop" type="button" onClick={() => void stop()}>
+              <XIcon />
+            </Button>
+          ) : (
+            <Button size="icon" variant="primary" aria-label="Send message" type="submit">
+              <ArrowUpIcon />
+            </Button>
+          )}
         </form>
-        <p className="m-0 mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
-          <RefreshCwIcon className="size-3" />
-          Changes only the paragraph you selected.
-        </p>
+        {form.formState.errors.text ? (
+          <p className="m-0 mt-1.5 text-xs text-destructive" role="alert">
+            {form.formState.errors.text.message}
+          </p>
+        ) : null}
+        <div className="mt-2 flex items-center justify-between gap-2 text-xs text-muted-foreground">
+          <span>It reads your document but does not change it yet.</span>
+          {messages.length > 0 ? (
+            <Button size="sm" variant="ghost" disabled={isClearing} onClick={() => void startOver()}>
+              <RefreshCwIcon className="size-3" />
+              Start over
+            </Button>
+          ) : null}
+        </div>
       </SidebarFooter>
     </>
   );

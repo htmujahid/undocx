@@ -15,6 +15,34 @@
       "when": 1795771341522,
       "tag": "0001_heavy_white_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795774169064,
+      "tag": "0002_third_aqueduct",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1795774649849,
+      "tag": "0003_smiling_zarek",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795775227966,
+      "tag": "0004_clammy_vision",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1795775652884,
+      "tag": "0005_kind_bug",
+      "breakpoints": true
     }
   ]
 }

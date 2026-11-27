@@ -19,7 +19,7 @@ import { limits, spellingOptions } from "~@/lib/context/limits";
 import { DeleteDialog } from "../../../_components/delete-dialog";
 import { DetailHeader } from "../../../_components/detail-header";
 import { FormSection } from "../../../_components/empty-pane";
-import { OptionSelect } from "../../../_components/form-bits";
+import { OptionSelect } from "~@/components/ui/option-select";
 
 type RuleKind = "spelling" | "banned_word" | "format" | "custom";
 type RuleData = { id: string; kind: RuleKind; value: string };

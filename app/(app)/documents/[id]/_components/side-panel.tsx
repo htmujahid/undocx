@@ -2,14 +2,14 @@
 
 import { Sidebar, SidebarHeader, SidebarRail } from "~@/components/ui/sidebar";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "~@/components/ui/tabs";
+import type { UIMessage } from "@ai-sdk/react";
 import { AssistantTab } from "./assistant-tab";
 import { NotesTab } from "./notes-tab";
 import { OutlineTab } from "./outline-tab";
 import { useNotes } from "~@/editor/extensions/notes";
 import { usePanel, type PanelTab } from "~@/editor/extensions/panel";
-import type { proposal } from "./proposal";
 
-export function SidePanel({ doc }: { doc: typeof proposal }) {
+export function SidePanel({ id, messages }: { id: string; messages: UIMessage[] }) {
   const { tab, setTab } = usePanel();
   const saved = useNotes().notes.filter((note) => !note.isDraft);
   return (
@@ -26,10 +26,10 @@ export function SidePanel({ doc }: { doc: typeof proposal }) {
           </TabsList>
         </SidebarHeader>
         <TabsPanel value="outline" className="flex min-h-0 flex-1 flex-col">
-          <OutlineTab doc={doc} />
+          <OutlineTab documentId={id} />
         </TabsPanel>
         <TabsPanel value="assistant" className="flex min-h-0 flex-1 flex-col">
-          <AssistantTab />
+          <AssistantTab id={id} initialMessages={messages} />
         </TabsPanel>
         <TabsPanel value="notes" className="flex min-h-0 flex-1 flex-col">
           <NotesTab />

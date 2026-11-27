@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ProfileIcon, RulesIcon, VoiceIcon } from "~@/components/ui/icons";
+import { FilesIcon, ProfileIcon, RulesIcon, VoiceIcon } from "~@/components/ui/icons";
 import { cn } from "~@/lib/utils";
 
 const tabs = [
   { href: "/library/profiles", label: "Profiles", icon: ProfileIcon },
   { href: "/library/voices", label: "Voices", icon: VoiceIcon },
   { href: "/library/rules", label: "Rules", icon: RulesIcon },
+  { href: "/library/sources", label: "Sources", icon: FilesIcon },
 ];
 
 export function LibraryTabs() {

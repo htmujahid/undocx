@@ -20,5 +20,30 @@ services:
       retries: 10
       start_period: 10s
 
+  minio:
+    image: cgr.dev/chainguard/minio:latest
+    container_name: undocx-app-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY_ID:-undocx}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_ACCESS_KEY:-undocx-secret}
+    ports:
+      - "127.0.0.1:${S3_PORT:-9000}:9000"
+      - "127.0.0.1:${S3_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio-data:/data
+
+  minio-init:
+    image: cgr.dev/chainguard/minio-client:latest
+    container_name: undocx-app-minio-init
+    restart: on-failure
+    depends_on:
+      - minio
+    environment:
+      MC_HOST_local: http://${S3_ACCESS_KEY_ID:-undocx}:${S3_SECRET_ACCESS_KEY:-undocx-secret}@minio:9000
+    command: ["mb", "--ignore-existing", "local/${S3_BUCKET:-undocx}"]
+
 volumes:
   postgres-data:
+  minio-data:

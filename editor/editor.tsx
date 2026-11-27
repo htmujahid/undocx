@@ -2,6 +2,7 @@
 
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { LexicalExtensionComposer } from "@lexical/react/LexicalExtensionComposer";
+import { $createParagraphNode, $getRoot } from "lexical";
 import { useMemo, useState, type ReactNode } from "react";
 import { cn } from "~@/lib/utils";
 import { createDocumentExtension } from "./extensions/document";
@@ -11,8 +12,12 @@ import { PAGE_GAP_PX, pageDimensions, resolveMargins, usePageCount, usePageSetti
 import type { Note } from "./extensions/notes";
 import type { Source } from "./extensions/sources";
 
+function $createEmptyDocument() {
+  $getRoot().append($createParagraphNode());
+}
+
 export function Editor({ documentId, initialState, notes = [], sources = [], children }: { documentId: string; initialState: string | null; notes?: Note[]; sources?: Source[]; children: ReactNode }) {
-  const extension = useMemo(() => createDocumentExtension(documentId, initialState, { notes, sources }), [documentId, initialState, notes, sources]);
+  const extension = useMemo(() => createDocumentExtension(documentId, initialState ?? $createEmptyDocument, { notes, sources }), [documentId, initialState, notes, sources]);
   return (
     <LexicalExtensionComposer key={documentId} extension={extension} contentEditable={null}>
       {children}

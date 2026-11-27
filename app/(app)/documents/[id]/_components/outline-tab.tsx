@@ -24,7 +24,6 @@ import {
   SidebarGroupLabel,
   SidebarMenuButton,
 } from "~@/components/ui/sidebar";
-import type { proposal } from "./proposal";
 import { SourcesSection } from "./sources-section";
 
 function OutlineMenu({
@@ -87,7 +86,7 @@ function OutlineMenu({
   );
 }
 
-export function OutlineTab({ doc }: { doc: typeof proposal }) {
+export function OutlineTab({ documentId }: { documentId: string }) {
   return (
     <>
       <SidebarContent>
@@ -104,22 +103,7 @@ export function OutlineTab({ doc }: { doc: typeof proposal }) {
         <SidebarGroup className="border-t border-sidebar-border">
           <SidebarGroupLabel>Sources</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SourcesSection />
-          </SidebarGroupContent>
-        </SidebarGroup>
-        <SidebarGroup className="border-t border-sidebar-border">
-          <SidebarGroupLabel>Brief</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <dl className="m-0 grid gap-y-2 px-2 text-sm">
-              {doc.brief.map(([k, v]) => (
-                <div key={k}>
-                  <dt className="m-0 font-serif text-sm text-muted-foreground italic">
-                    {k}
-                  </dt>
-                  <dd className="m-0 text-foreground">{v}</dd>
-                </div>
-              ))}
-            </dl>
+            <SourcesSection documentId={documentId} />
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

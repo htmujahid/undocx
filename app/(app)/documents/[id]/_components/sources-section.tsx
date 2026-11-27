@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
-import { normalizeUrl } from "~@/editor/plugins/link";
+import { useState } from "react";
+import { AddSourceDialog } from "~@/components/sources/add-source-dialog";
+import { useDetachSource } from "~@/lib/sources/query";
 import { useSources, type Source } from "~@/editor/extensions/sources";
 import { Button } from "~@/components/ui/button";
 import { ExternalLinkIcon, PlusIcon, XIcon } from "~@/components/ui/icons";
@@ -9,8 +10,9 @@ import { SidebarMenu, SidebarMenuAction, SidebarMenuButton, SidebarMenuItem } fr
 import { cn } from "~@/lib/utils";
 import { usePanel } from "~@/editor/extensions/panel";
 
-export function SourcesSection() {
+export function SourcesSection({ documentId }: { documentId: string }) {
   const { sources, order, counts, activeId, remove, reveal } = useSources();
+  const { trigger: detach } = useDetachSource(documentId);
   const [confirmId, setConfirmId] = useState<string | null>(null);
 
   const cited = order.flatMap((id) => sources.find((source) => source.id === id) ?? []);
@@ -39,6 +41,7 @@ export function SourcesSection() {
                         variant="secondary"
                         onClick={() => {
                           remove(source.id);
+                          void detach(source.id);
                           setConfirmId(null);
                         }}
                       >
@@ -69,7 +72,13 @@ export function SourcesSection() {
                     <ExternalLinkIcon />
                   </SidebarMenuAction>
                 ) : null}
-                <SidebarMenuAction aria-label={`Remove ${source.title}`} showOnHover onClick={() => (count > 0 ? setConfirmId(source.id) : remove(source.id))}>
+                <SidebarMenuAction aria-label={`Remove ${source.title}`} showOnHover onClick={() => {
+                  if (count > 0) setConfirmId(source.id);
+                  else {
+                    remove(source.id);
+                    void detach(source.id);
+                  }
+                }}>
                   <XIcon />
                 </SidebarMenuAction>
               </SidebarMenuItem>
@@ -79,95 +88,24 @@ export function SourcesSection() {
       ) : (
         <p className="m-0 px-2 text-sm text-muted-foreground">No sources yet. Add one, then cite it from selected text.</p>
       )}
-      <AddSource />
+      <AddSource documentId={documentId} />
     </>
   );
 }
 
-function AddSource() {
-  const { add } = useSources();
+function AddSource({ documentId }: { documentId: string }) {
+  const { sources, attach } = useSources();
   const { sourceForm: open, setSourceForm: setOpen } = usePanel();
-  const [title, setTitle] = useState("");
-  const [link, setLink] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const field = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (open) field.current?.focus();
-  }, [open]);
-
-  function close() {
-    setOpen(false);
-    setTitle("");
-    setLink("");
-    setError(null);
-  }
-
-  function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (!title.trim()) return;
-    const url = link.trim() ? normalizeUrl(link) : undefined;
-    if (url === null) {
-      setError("That link doesn’t look right.");
-      return;
-    }
-    add(title, url);
-    close();
-  }
-
-  if (!open) {
-    return (
+  return (
+    <>
       <div className="px-2 pt-2">
         <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => setOpen(true)}>
           <PlusIcon />
           Add a source
         </Button>
       </div>
-    );
-  }
-
-  return (
-    <form onSubmit={submit} onKeyDown={(event) => event.key === "Escape" && close()} className="mx-2 mt-2 grid gap-2 rounded-md border border-input bg-card p-2">
-      <label htmlFor="source-title" className="sr-only">
-        Source title
-      </label>
-      <input
-        ref={field}
-        id="source-title"
-        value={title}
-        onChange={(event) => setTitle(event.target.value)}
-        placeholder="Title, e.g. Sales export 2025.xlsx"
-        className="h-8 min-w-0 rounded-md border border-input bg-background px-2 text-sm text-foreground outline-none placeholder:text-faint-foreground focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring"
-      />
-      <label htmlFor="source-link" className="sr-only">
-        Link (optional)
-      </label>
-      <input
-        id="source-link"
-        value={link}
-        onChange={(event) => {
-          setLink(event.target.value);
-          setError(null);
-        }}
-        placeholder="Link (optional)"
-        inputMode="url"
-        aria-invalid={error ? true : undefined}
-        className="h-8 min-w-0 rounded-md border border-input bg-background px-2 text-sm text-foreground outline-none placeholder:text-faint-foreground focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring aria-invalid:border-destructive"
-      />
-      {error ? (
-        <p role="alert" className="m-0 text-xs text-destructive">
-          {error}
-        </p>
-      ) : null}
-      <div className="flex justify-end gap-2">
-        <Button size="sm" variant="ghost" type="button" onClick={close}>
-          Cancel
-        </Button>
-        <Button size="sm" variant="primary" type="submit" disabled={!title.trim()}>
-          Add source
-        </Button>
-      </div>
-    </form>
+      <AddSourceDialog open={open} onOpenChange={setOpen} documentId={documentId} attachedIds={sources.map((source) => source.id)} onAdded={(created) => attach({ id: created.id, title: created.title, url: created.url ?? undefined })} />
+    </>
   );
 }
 

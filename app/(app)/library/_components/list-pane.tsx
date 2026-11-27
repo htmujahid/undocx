@@ -18,12 +18,14 @@ export function ListPane({
   title,
   createLabel,
   createAction,
+  onCreate,
   items,
   emptyText,
 }: {
   title: string;
   createLabel: string;
-  createAction: () => Promise<void>;
+  createAction?: () => Promise<void>;
+  onCreate?: () => void;
   items: ListItem[];
   emptyText: string;
 }) {
@@ -35,7 +37,7 @@ export function ListPane({
           {title} <span className="text-faint-foreground">{items.length}</span>
         </h2>
         <form action={createAction}>
-          <Button type="submit" variant="primary" size="sm">
+          <Button type={onCreate ? "button" : "submit"} variant="primary" size="sm" onClick={onCreate}>
             <PlusIcon />
             {createLabel}
           </Button>

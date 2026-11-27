@@ -62,12 +62,3 @@ export function OptionSelect({
     </div>
   );
 }
-
-export function Count({ value, max }: { value: string; max: number }) {
-  if (value.length < max * 0.7) return null;
-  return (
-    <span
-      className={value.length >= max ? "text-destructive" : undefined}
-    >{` ${value.length}/${max}`}</span>
-  );
-}
