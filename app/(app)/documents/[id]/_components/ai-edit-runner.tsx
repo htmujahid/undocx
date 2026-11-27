@@ -94,6 +94,7 @@ export function AiEditRunner({ id }: { id: string }) {
     const applyBlocks = (edit: AiEdit, changes: { key: string; text: string; allowed: Set<string> }[], selection?: SelectionTarget) => {
       const keys = changes.map((change) => change.key);
       const before = snapshotBlocks(editor, keys);
+      const beforeState = editor.getEditorState();
       const records: AiEditBlock[] = [];
       let failed = false;
       editor.update(
@@ -119,7 +120,7 @@ export function AiEditRunner({ id }: { id: string }) {
         fail(edit, "The text changed while Undocx was working, so the change was not applied.");
         return;
       }
-      latest.current.ai.update(edit.id, { status: "applied", blocks: records, options: undefined });
+      latest.current.ai.update(edit.id, { status: "applied", blocks: records, options: undefined, beforeState });
     };
 
     const runRewrite = async (edit: AiEdit, payload: Parameters<typeof rewrite>[0], map: Map<number, { key: string; allowed: Set<string> }>, selection?: SelectionTarget) => {
@@ -234,6 +235,7 @@ export function AiEditRunner({ id }: { id: string }) {
           if (!target?.blockKey) return;
           const blockKey = target.blockKey;
           const snapshot = snapshotBlocks(editor, [blockKey]).get(blockKey);
+          const beforeState = editor.getEditorState();
           let beforeText = "";
           let ok = false;
           editor.update(
@@ -250,7 +252,7 @@ export function AiEditRunner({ id }: { id: string }) {
             { discrete: true },
           );
           if (!ok || !snapshot) latest.current.ai.update(editId, { status: "failed", error: "The text changed while you were choosing, so the change was not applied." });
-          else latest.current.ai.update(editId, { status: "applied", options: undefined, blocks: [{ key: blockKey, before: snapshot, beforeText, afterText: text.replace(/\{\{cite:[^}]+\}\}/g, "") }] });
+          else latest.current.ai.update(editId, { status: "applied", options: undefined, beforeState, blocks: [{ key: blockKey, before: snapshot, beforeText, afterText: text.replace(/\{\{cite:[^}]+\}\}/g, "") }] });
     };
 
     return editor.registerCommand(

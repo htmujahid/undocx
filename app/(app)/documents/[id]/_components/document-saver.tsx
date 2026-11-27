@@ -1,7 +1,9 @@
 "use client";
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { COMMAND_PRIORITY_EDITOR } from "lexical";
 import { useEffect, useRef } from "react";
+import { DOCUMENT_RESTORED_COMMAND } from "~@/editor/extensions/versions";
 import { useSaveDocument } from "../query";
 
 export type SaveState = { kind: "saved" } | { kind: "unsaved" } | { kind: "saving" } | { kind: "error"; message: string };
@@ -73,6 +75,19 @@ export function DocumentSaver({ id, version, onState }: { id: string; version: n
       schedule();
     });
 
+    const unregisterRestore = editor.registerCommand(
+      DOCUMENT_RESTORED_COMMAND,
+      ({ version: next }) => {
+        clearTimer();
+        versionRef.current = next;
+        savedRef.current = serialize();
+        isBlockedRef.current = false;
+        onStateRef.current({ kind: "saved" });
+        return true;
+      },
+      COMMAND_PRIORITY_EDITOR,
+    );
+
     const onVisibility = () => {
       if (document.visibilityState === "hidden") void flush();
     };
@@ -84,6 +99,7 @@ export function DocumentSaver({ id, version, onState }: { id: string; version: n
 
     return () => {
       unregister();
+      unregisterRestore();
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("beforeunload", onUnload);
       if (timerRef.current) void flush();

@@ -43,6 +43,13 @@
       "when": 1795775652884,
       "tag": "0005_kind_bug",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795777468986,
+      "tag": "0006_previous_william_stryker",
+      "breakpoints": true
     }
   ]
 }

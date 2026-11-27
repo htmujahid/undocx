@@ -5,7 +5,7 @@ import { Section } from "../../_components/frame";
 import { startHref } from "../../_components/links";
 
 const free = ["Brief chat, outline when needed, and draft", "Section regenerate, locks, variations and notes to self", "Export to Word, PDF, Markdown and Google Docs", "Five documents", "A monthly allowance of AI writing. When it runs out, the AI stops and you can keep typing."];
-const pro = ["Everything in Free, with unlimited documents", "No monthly limit on AI writing", "Your voice, learned from your samples", "Grounded writing with citations", "House rules, review links and version history", "Claims check and document types, as they ship"];
+const pro = ["Everything in Free, with unlimited documents", "No monthly limit on AI writing", "Your voice, learned from your samples", "Grounded writing with citations", "House rules, review links and named versions", "Claims check and document types, as they ship"];
 
 function Plan({ name, price, period, who, items, isPro }: { name: string; price: string; period: string; who: string; items: string[]; isPro: boolean }) {
   return (

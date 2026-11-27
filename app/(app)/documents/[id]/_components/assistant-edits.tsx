@@ -6,6 +6,7 @@ import { Button } from "~@/components/ui/button";
 import { CheckIcon, LoaderCircleIcon } from "~@/components/ui/icons";
 import { $restoreBlock, AI_APPLY_VARIATION_COMMAND, useAiEdits, type AiEdit } from "~@/editor/extensions/ai-edits";
 import { wordDiff } from "~@/lib/diff";
+import { useSaveVersion } from "../versions/query";
 import { cn } from "~@/lib/utils";
 
 function Diff({ before, after }: { before: string; after: string }) {
@@ -28,11 +29,24 @@ function Diff({ before, after }: { before: string; after: string }) {
   );
 }
 
-function EditCard({ edit }: { edit: AiEdit }) {
+function EditCard({ edit, documentId }: { edit: AiEdit; documentId: string }) {
   const [editor] = useLexicalComposerContext();
+  const { trigger: saveVersion } = useSaveVersion(documentId);
   const { update, dismiss } = useAiEdits();
   const [isDiffOpen, setIsDiffOpen] = useState(false);
   const isDone = edit.status === "applied" || edit.status === "kept" || edit.status === "undone";
+
+  async function keep() {
+    update(edit.id, { status: "kept" });
+    const result = await saveVersion({
+      kind: "ai",
+      label: edit.label,
+      content: JSON.stringify(editor.getEditorState().toJSON()),
+      baseline: edit.beforeState ? JSON.stringify(edit.beforeState.toJSON()) : null,
+    }).catch(() => ({ error: "The version could not be saved." }));
+    if ("number" in result) update(edit.id, { versionNumber: result.number, beforeState: undefined });
+    else update(edit.id, { versionError: result.error });
+  }
 
   function undo() {
     let restored = 0;
@@ -52,9 +66,12 @@ function EditCard({ edit }: { edit: AiEdit }) {
         <p className="m-0 text-foreground">
           <span className="text-xs text-muted-foreground">{edit.status === "applied" ? "Changed" : edit.status === "kept" ? "Kept" : edit.status === "undone" ? "Undone" : edit.status === "choose" ? "Choose a version" : edit.status === "failed" ? "Not changed" : "Working"} · </span>
           {edit.label}
+          {edit.versionNumber ? <span className="text-xs text-muted-foreground"> · saved as v{edit.versionNumber}</span> : null}
         </p>
         {edit.status === "working" ? <LoaderCircleIcon className="mt-0.5 size-4 shrink-0 animate-spin text-muted-foreground" /> : null}
       </div>
+
+      {edit.versionError ? <p className="m-0 text-xs text-muted-foreground">{edit.versionError}</p> : null}
 
       {edit.status === "failed" ? (
         <p className="m-0 text-destructive" role="alert">
@@ -86,7 +103,7 @@ function EditCard({ edit }: { edit: AiEdit }) {
       <div className="flex flex-wrap gap-2">
         {edit.status === "applied" ? (
           <>
-            <Button size="sm" variant="primary" onClick={() => update(edit.id, { status: "kept" })}>
+            <Button size="sm" variant="primary" onClick={() => void keep()}>
               <CheckIcon />
               Keep
             </Button>
@@ -110,7 +127,7 @@ function EditCard({ edit }: { edit: AiEdit }) {
   );
 }
 
-export function AssistantEdits() {
+export function AssistantEdits({ documentId }: { documentId: string }) {
   const { edits } = useAiEdits();
   if (edits.length === 0) return null;
   return (
@@ -118,7 +135,7 @@ export function AssistantEdits() {
       <h3 className="m-0 font-mono text-[0.6rem] tracking-[0.15em] text-muted-foreground uppercase">Changes</h3>
       <ol className="m-0 grid list-none gap-2 p-0">
         {edits.map((edit) => (
-          <EditCard key={edit.id} edit={edit} />
+          <EditCard key={edit.id} edit={edit} documentId={documentId} />
         ))}
       </ol>
     </section>

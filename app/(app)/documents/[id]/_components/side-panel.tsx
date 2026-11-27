@@ -5,6 +5,7 @@ import { Tabs, TabsList, TabsPanel, TabsTab } from "~@/components/ui/tabs";
 import type { UIMessage } from "@ai-sdk/react";
 import { AssistantTab } from "./assistant-tab";
 import { NotesTab } from "./notes-tab";
+import { VersionsTab } from "./versions-tab";
 import { OutlineTab } from "./outline-tab";
 import { useNotes } from "~@/editor/extensions/notes";
 import { usePanel, type PanelTab } from "~@/editor/extensions/panel";
@@ -19,6 +20,7 @@ export function SidePanel({ id, messages }: { id: string; messages: UIMessage[] 
           <TabsList aria-label="Panel" className="h-full">
             <TabsTab value="outline">Outline</TabsTab>
             <TabsTab value="assistant">Assistant</TabsTab>
+            <TabsTab value="versions">Versions</TabsTab>
             <TabsTab value="notes">
               Notes
               {saved.length > 0 ? <span className="rounded-sm bg-sidebar-accent px-1 font-sans text-[0.65rem] tracking-normal text-muted-foreground tabular-nums">{saved.length}</span> : null}
@@ -30,6 +32,9 @@ export function SidePanel({ id, messages }: { id: string; messages: UIMessage[] 
         </TabsPanel>
         <TabsPanel value="assistant" className="flex min-h-0 flex-1 flex-col">
           <AssistantTab id={id} initialMessages={messages} />
+        </TabsPanel>
+        <TabsPanel value="versions" className="flex min-h-0 flex-1 flex-col">
+          <VersionsTab documentId={id} />
         </TabsPanel>
         <TabsPanel value="notes" className="flex min-h-0 flex-1 flex-col">
           <NotesTab />

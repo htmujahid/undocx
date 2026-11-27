@@ -6,3 +6,8 @@ export const documentLimits = {
   perUser: 100,
   contentBytes: 4_000_000,
 } as const;
+
+export const versionLimits = {
+  name: 80,
+  perDocument: 50,
+} as const;

@@ -70,7 +70,7 @@ export function AssistantTab({ id, initialMessages }: { id: string; initialMessa
   return (
     <>
       <SidebarContent className="px-4 py-4">
-        <AssistantEdits />
+        <AssistantEdits documentId={id} />
         {messages.length === 0 ? (
           <div className="grid gap-3">
             <p className="m-0 text-sm text-muted-foreground">Ask about this document. Undocx reads what you have written, and follows your profile, voice and rules when the document uses them.</p>

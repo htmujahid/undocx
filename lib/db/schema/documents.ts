@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm";
-import { index, integer, jsonb, pgEnum, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { index, integer, jsonb, pgEnum, pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
 import type { BriefAnswers, BriefQuestion, OutlineAdvice } from "../../documents/brief";
 import { newId } from "../../id";
 import { user } from "./auth";
@@ -43,6 +43,24 @@ export const documentBrief = pgTable("document_brief", {
   createdAt: timestamp().defaultNow().notNull(),
   updatedAt: timestamp().defaultNow().notNull(),
 });
+
+export const documentVersion = pgTable(
+  "document_version",
+  {
+    id: text().primaryKey().$defaultFn(newId),
+    documentId: text()
+      .notNull()
+      .references(() => document.id, { onDelete: "cascade" }),
+    number: integer().notNull(),
+    name: text(),
+    kind: text().$type<"manual" | "ai" | "restore">().notNull(),
+    label: text(),
+    content: jsonb().notNull(),
+    wordCount: integer().notNull().default(0),
+    createdAt: timestamp().defaultNow().notNull(),
+  },
+  (table) => [uniqueIndex("document_version_number_idx").on(table.documentId, table.number)],
+);
 
 export const documentRelations = relations(document, ({ one }) => ({
   brief: one(documentBrief, { fields: [document.id], references: [documentBrief.documentId] }),

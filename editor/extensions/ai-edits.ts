@@ -20,6 +20,7 @@ import {
   $setSelection,
   createCommand,
   defineExtension,
+  type EditorState,
   type ElementNode,
   type LexicalEditor,
   type LexicalNode,
@@ -41,6 +42,9 @@ export type AiEdit = {
   error?: string;
   blocks: AiEditBlock[];
   options?: { blockKey: string | null; before: string; texts: string[] };
+  beforeState?: EditorState;
+  versionNumber?: number;
+  versionError?: string;
 };
 
 export const AI_REWRITE_SELECTION_COMMAND = createCommand<{ instruction: string | null }>("AI_REWRITE_SELECTION_COMMAND");

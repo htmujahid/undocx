@@ -7,6 +7,7 @@ import { authorize, describeError, problem, trackRun } from "~@/lib/ai/route";
 import { draftOutputSchema } from "~@/lib/ai/schemas";
 import { ensureThread, saveThreadMessages } from "~@/lib/db/repository/ai";
 import { findBrief, finishDraft } from "~@/lib/db/repository/brief";
+import { insertVersion } from "~@/lib/db/repository/version";
 import type { OutlineMode } from "~@/lib/documents/brief";
 import { summarizeContent } from "~@/lib/documents/content";
 import { documentLimits } from "~@/lib/documents/limits";
@@ -37,6 +38,8 @@ export async function POST(_request: Request, { params }: RouteContext<"/documen
     if (summary.wordCount === 0) throw new Error("The draft was empty");
     const title = result.output.title.trim().slice(0, documentLimits.title) || document.title;
     if (!(await finishDraft(userId, id, { title, content, ...summary }))) return problem(409, "This document is already set up.");
+
+    await insertVersion(userId, id, { kind: "ai", label: "First draft", content, wordCount: summary.wordCount });
 
     const thread = await ensureThread(userId, id);
     if (thread) {

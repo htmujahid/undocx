@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { sourceLimits } from "../sources/limits";
-import { documentLimits } from "./limits";
+import { documentLimits, versionLimits } from "./limits";
 
 export const titleSchema = z.object({
   title: z.string().trim().min(1, "Give the document a title.").max(documentLimits.title),
@@ -60,3 +60,20 @@ export const noteSchema = z.object({
 });
 
 export type NoteValues = z.infer<typeof noteSchema>;
+
+export const versionNameSchema = z.object({
+  name: z.string().trim().max(versionLimits.name, `Keep the name under ${versionLimits.name} characters.`),
+});
+
+export const versionContentSchema = z.string().max(documentLimits.contentBytes, "This document is too large to save.").transform((value, context) => {
+  try {
+    const parsed: unknown = JSON.parse(value);
+    if (typeof parsed !== "object" || parsed === null || !("root" in parsed)) throw new Error("not an editor state");
+    return parsed;
+  } catch {
+    context.addIssue({ code: "custom", message: "The document content is not valid." });
+    return z.NEVER;
+  }
+});
+
+export type VersionNameValues = z.infer<typeof versionNameSchema>;

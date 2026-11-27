@@ -4,7 +4,7 @@ import { ReviewSheet } from "./review-sheet";
 const facts = [
   ["Read-only links", "With expiry."],
   ["Apply as instruction", "A comment becomes a rewrite."],
-  ["Versions", "Compare any two; restore any."],
+  ["Versions", "Name one, or keep an AI change and it saves one. Restore any."],
 ];
 
 export function ReviewAndShare({ number }: { number: string }) {
