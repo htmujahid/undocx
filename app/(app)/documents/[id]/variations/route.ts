@@ -2,6 +2,7 @@ import { generateText, Output } from "ai";
 import { loadContext } from "~@/lib/ai/context";
 import { getModel } from "~@/lib/ai/model";
 import { editMessage, variationsInstructions } from "~@/lib/ai/prompts";
+import { callOptions } from "~@/lib/ai/options";
 import { authorize, describeError, problem, trackRun } from "~@/lib/ai/route";
 import { variationsOutputSchema, variationsRequestSchema } from "~@/lib/ai/schemas";
 import { findDocument } from "~@/lib/db/repository/document";
@@ -23,6 +24,7 @@ export async function POST(request: Request, { params }: RouteContext<"/document
   try {
     const result = await generateText({
       model: getModel(),
+      ...callOptions({ userId, signal: request.signal, effort: "low", seconds: 90 }),
       instructions: variationsInstructions({ ...(await loadContext(userId, doc)), instruction }),
       prompt: editMessage({ items: [item], focus: [item.index], context }),
       output: Output.object({ schema: variationsOutputSchema }),

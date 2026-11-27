@@ -1,6 +1,7 @@
 import { convertToModelMessages, createUIMessageStreamResponse, generateId, streamText, toUIMessageStream, validateUIMessages, type UIMessage } from "ai";
 import { loadContext } from "~@/lib/ai/context";
 import { getModel } from "~@/lib/ai/model";
+import { callOptions } from "~@/lib/ai/options";
 import { authorize, describeError, problem, trackRun } from "~@/lib/ai/route";
 import { assistantRequestSchema } from "~@/lib/ai/schemas";
 import { assistantInstructions } from "~@/lib/ai/prompts";
@@ -30,9 +31,11 @@ export async function POST(request: Request, { params }: RouteContext<"/document
 
   const result = streamText({
     model: getModel(),
+    ...callOptions({ userId, signal: request.signal, effort: "low", seconds: 120 }),
     instructions: assistantInstructions({ ...context, documentText: parsed.data.document, focus: parsed.data.focus ?? null }),
     messages: await convertToModelMessages(messages.slice(-MAX_HISTORY)),
     onEnd: run.onEnd,
+    onAbort: run.onAbort,
     onError: run.onError,
   });
 
@@ -41,10 +44,10 @@ export async function POST(request: Request, { params }: RouteContext<"/document
       stream: result.stream,
       originalMessages: messages,
       generateMessageId: generateId,
+      sendReasoning: false,
       onError: describeError,
-      onEnd: async ({ messages: updated, responseMessage, outcome, isAborted }) => {
-        if (isAborted) return;
-        await saveThreadMessages(thread.id, outcome.status === "failed" ? updated.filter((message) => message.id !== responseMessage.id) : updated);
+      onEnd: async ({ messages: updated, responseMessage, outcome }) => {
+        await saveThreadMessages(thread.id, outcome.status === "failed" || !responseMessage.parts.some((part) => part.type === "text" && part.text.trim()) ? updated.filter((message) => message.id !== responseMessage.id) : updated);
       },
     }),
   });

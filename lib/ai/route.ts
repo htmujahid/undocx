@@ -1,5 +1,6 @@
 import "server-only";
 
+import { APICallError, LoadAPIKeyError } from "ai";
 import { getUserId } from "~@/lib/auth/session";
 import { insertRun } from "~@/lib/db/repository/ai";
 import { modelId } from "./model";
@@ -8,10 +9,14 @@ export function problem(status: number, error: string) {
   return Response.json({ error }, { status });
 }
 
+const notSetUp = "The assistant is not set up yet. Add an OpenAI API key to the environment.";
+
 export function describeError(error: unknown) {
-  const message = error instanceof Error ? error.message : String(error);
-  if (/api key|authenticat|unauthori[sz]ed|incorrect key/i.test(message)) return "The assistant is not set up yet. Add an OpenAI API key to the environment.";
-  if (/rate limit|too many requests|quota/i.test(message)) return "The assistant is busy. Try again in a moment.";
+  if (LoadAPIKeyError.isInstance(error)) return notSetUp;
+  if (APICallError.isInstance(error)) {
+    if (error.statusCode === 401 || error.statusCode === 403) return notSetUp;
+    if (error.statusCode === 429) return "The assistant is busy. Try again in a moment.";
+  }
   return "The assistant could not answer. Try again.";
 }
 
@@ -25,6 +30,9 @@ export function trackRun(base: { userId: string; kind: string; documentId?: stri
   return {
     onEnd: async ({ usage, finishReason }: { usage: Usage; finishReason: string }) => {
       await record({ finishReason, inputTokens: usage.inputTokens ?? 0, outputTokens: usage.outputTokens ?? 0, totalTokens: usage.totalTokens ?? 0 });
+    },
+    onAbort: async () => {
+      await record({ status: "aborted" });
     },
     onError: async ({ error }: { error: unknown }) => {
       console.error(`[ai:${base.kind}]`, error);

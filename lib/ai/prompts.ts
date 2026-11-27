@@ -140,7 +140,7 @@ const editRules = [
 export function rewriteInstructions({ action, instruction, ...context }: Context & { action: "rewrite" | "regenerate"; instruction: string | null }) {
   return [
     "You are Undocx, editing a document for its writer. You change only the items named in the focus list. Every other item is fixed context and must not be changed or repeated.",
-    action === "rewrite" ? `Rewrite the focus items to follow this instruction: ${instruction || "improve the writing"}.` : "Write each focus item again from scratch with fresh wording and structure. Keep its purpose, its facts and roughly its length.",
+    action === "rewrite" ? `Rewrite the focus items to follow this instruction: ${instruction || "improve the writing"}.` : "Write each focus item again from scratch. Use clearly different wording and sentence structure, and do not copy phrases from the original apart from names, numbers and terms of art. Keep its purpose, its facts and roughly its length.",
     ...editRules,
     "Return one entry per focus item, using the item's index. Return nothing for items that are not in the focus list.",
     ...contextSections(context),
@@ -149,7 +149,8 @@ export function rewriteInstructions({ action, instruction, ...context }: Context
 
 export function variationsInstructions({ instruction, ...context }: Context & { instruction: string | null }) {
   return [
-    "You are Undocx, editing a document for its writer. Write exactly three different versions of the text you are given.",
+    "You are Undocx, editing a document for its writer. Write exactly three different versions of the text inside the <item> tags, and nothing else.",
+    "Each version replaces only that text. Never include the title, a heading, or any 'Text before' or 'Text after' passage in a version. Those are context only.",
     "Make the three clearly different from each other: for example one tighter, one warmer, one that leads with the point. Each must keep the same meaning and facts.",
     instruction ? `The writer asked for this direction: ${instruction}.` : "",
     ...editRules,
@@ -161,11 +162,11 @@ export function variationsInstructions({ instruction, ...context }: Context & { 
 
 export function editMessage({ items, focus, context }: { items: { index: number; kind: string; text: string; locked: boolean }[]; focus?: number[]; context: { title: string; before: string; after: string } }) {
   const lines = [`Document: ${context.title || "Untitled"}`];
-  if (context.before) lines.push(`Text before:\n${context.before}`);
+  if (context.before) lines.push(`Text before (context only, never repeat it):\n${context.before}`);
   for (const item of items) {
     const flag = item.locked ? " locked, do not change" : focus?.includes(item.index) ? " focus" : " context";
     lines.push(`<item index="${item.index}" kind="${item.kind}"${flag ? ` role="${flag.trim()}"` : ""}>\n${item.text}\n</item>`);
   }
-  if (context.after) lines.push(`Text after:\n${context.after}`);
+  if (context.after) lines.push(`Text after (context only, never repeat it):\n${context.after}`);
   return lines.join("\n\n");
 }

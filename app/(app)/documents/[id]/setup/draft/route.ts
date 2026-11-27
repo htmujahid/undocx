@@ -3,6 +3,7 @@ import { loadContext } from "~@/lib/ai/context";
 import { draftToContent } from "~@/lib/ai/draft";
 import { getModel } from "~@/lib/ai/model";
 import { briefMessage, draftInstructions } from "~@/lib/ai/prompts";
+import { callOptions } from "~@/lib/ai/options";
 import { authorize, describeError, problem, trackRun } from "~@/lib/ai/route";
 import { draftOutputSchema } from "~@/lib/ai/schemas";
 import { ensureThread, saveThreadMessages } from "~@/lib/db/repository/ai";
@@ -12,7 +13,7 @@ import type { OutlineMode } from "~@/lib/documents/brief";
 import { summarizeContent } from "~@/lib/documents/content";
 import { documentLimits } from "~@/lib/documents/limits";
 
-export async function POST(_request: Request, { params }: RouteContext<"/documents/[id]/setup/draft">) {
+export async function POST(request: Request, { params }: RouteContext<"/documents/[id]/setup/draft">) {
   const userId = await authorize();
   if (!userId) return problem(401, "Sign in to continue.");
   const { id } = await params;
@@ -27,6 +28,7 @@ export async function POST(_request: Request, { params }: RouteContext<"/documen
     const message = briefMessage({ prompt: brief.prompt, questions: brief.questions, answers: brief.answers });
     const result = await generateText({
       model: getModel(),
+      ...callOptions({ userId, signal: request.signal, effort: "medium", seconds: 150 }),
       instructions: draftInstructions({ ...context, typeKey: document.type, outline: brief.outline as OutlineMode, advice: brief.advice?.recommended ?? null }),
       prompt: message,
       output: Output.object({ schema: draftOutputSchema }),

@@ -12,13 +12,16 @@ export const assistantRequestSchema = z.object({
 
 export type AssistantMessageValues = z.infer<typeof assistantMessageSchema>;
 
-const blockSchema = z.discriminatedUnion("type", [
-  z.object({ type: z.literal("heading"), level: z.enum(["h1", "h2", "h3"]), text: z.string() }),
-  z.object({ type: z.literal("paragraph"), text: z.string(), cites: z.array(z.string()) }),
-  z.object({ type: z.literal("list"), ordered: z.boolean(), items: z.array(z.string()) }),
-  z.object({ type: z.literal("quote"), text: z.string() }),
-  z.object({ type: z.literal("table"), header: z.array(z.string()), rows: z.array(z.array(z.string())) }),
-]);
+const blockSchema = z.object({
+  type: z.enum(["heading", "paragraph", "list", "quote", "table"]),
+  level: z.enum(["h1", "h2", "h3"]).nullable().describe("Heading level. Only for a heading block, otherwise null."),
+  text: z.string().describe("The text of a heading, paragraph or quote. Empty for a list or table."),
+  cites: z.array(z.string()).describe("Source ids a paragraph rests on. Empty for any other block."),
+  ordered: z.boolean().describe("For a list: true for a numbered list. Otherwise false."),
+  items: z.array(z.string()).describe("The items of a list. Empty for any other block."),
+  header: z.array(z.string()).describe("The header cells of a table. Empty for any other block."),
+  rows: z.array(z.array(z.string())).describe("The body rows of a table. Empty for any other block."),
+});
 
 export const questionsOutputSchema = z.object({
   type: z.enum(["proposal", "report", "article", "case-study", "newsletter", "other"]),

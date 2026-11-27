@@ -2,6 +2,7 @@ import { generateText, Output } from "ai";
 import { loadContext } from "~@/lib/ai/context";
 import { getModel } from "~@/lib/ai/model";
 import { questionsInstructions } from "~@/lib/ai/prompts";
+import { callOptions } from "~@/lib/ai/options";
 import { authorize, describeError, problem, trackRun } from "~@/lib/ai/route";
 import { questionsOutputSchema } from "~@/lib/ai/schemas";
 import { findBrief, saveQuestions } from "~@/lib/db/repository/brief";
@@ -23,7 +24,7 @@ function cleanQuestions(raw: { id: string; question: string; choices: string[] }
   return questions;
 }
 
-export async function POST(_request: Request, { params }: RouteContext<"/documents/[id]/setup/questions">) {
+export async function POST(request: Request, { params }: RouteContext<"/documents/[id]/setup/questions">) {
   const userId = await authorize();
   if (!userId) return problem(401, "Sign in to continue.");
   const { id } = await params;
@@ -36,6 +37,7 @@ export async function POST(_request: Request, { params }: RouteContext<"/documen
   try {
     const result = await generateText({
       model: getModel(),
+      ...callOptions({ userId, signal: request.signal, effort: "low", seconds: 90 }),
       instructions: questionsInstructions({ ...context, typeKey: found.document.type }),
       prompt: found.brief.prompt,
       output: Output.object({ schema: questionsOutputSchema }),

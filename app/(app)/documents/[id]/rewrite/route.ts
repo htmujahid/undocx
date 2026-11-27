@@ -2,7 +2,8 @@ import { generateText, Output } from "ai";
 import { loadContext } from "~@/lib/ai/context";
 import { getModel } from "~@/lib/ai/model";
 import { editMessage, rewriteInstructions } from "~@/lib/ai/prompts";
-import { authorize, problem, describeError, trackRun } from "~@/lib/ai/route";
+import { callOptions } from "~@/lib/ai/options";
+import { authorize, describeError, problem, trackRun } from "~@/lib/ai/route";
 import { rewriteOutputSchema, rewriteRequestSchema } from "~@/lib/ai/schemas";
 import { findDocument } from "~@/lib/db/repository/document";
 
@@ -26,6 +27,7 @@ export async function POST(request: Request, { params }: RouteContext<"/document
   try {
     const result = await generateText({
       model: getModel(),
+      ...callOptions({ userId, signal: request.signal, effort: "low", seconds: 90 }),
       instructions: rewriteInstructions({ ...(await loadContext(userId, doc)), action, instruction }),
       prompt: editMessage({ items, focus, context }),
       output: Output.object({ schema: rewriteOutputSchema }),
