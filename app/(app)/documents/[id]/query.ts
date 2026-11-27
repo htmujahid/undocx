@@ -2,7 +2,7 @@
 
 import useSWRMutation from "swr/mutation";
 import { postJson } from "~@/lib/ai/client";
-import type { RewriteRequest, VariationsRequest } from "~@/lib/ai/schemas";
+import type { ClaimsRequest, RewriteRequest, VariationsRequest } from "~@/lib/ai/schemas";
 import type { NoteValues } from "~@/lib/documents/schemas";
 import { clearAssistant, deleteNote, saveDocument, saveNote } from "./actions";
 
@@ -28,4 +28,10 @@ export function useRewrite(id: string) {
 
 export function useVariations(id: string) {
   return useSWRMutation(`variations/${id}`, (_key, { arg }: { arg: VariationsRequest }) => postJson<{ variations: string[] }>(`/documents/${id}/variations`, arg));
+}
+
+export type ClaimResult = { blockIndex: number; text: string; kind: "number" | "date" | "quote" | "statement"; status: "cited" | "uncited" | "unsourced" | "unsupported" | "contradicted"; sourceId: string | null; note: string };
+
+export function useClaims(id: string) {
+  return useSWRMutation(`claims/${id}`, (_key, { arg }: { arg: ClaimsRequest }) => postJson<{ claims: ClaimResult[] }>(`/documents/${id}/claims`, arg));
 }

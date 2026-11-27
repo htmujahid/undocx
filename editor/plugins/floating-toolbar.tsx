@@ -5,7 +5,7 @@ import { useLexicalEditable } from "@lexical/react/useLexicalEditable";
 import { $getSelection, $isRangeSelection, getDOMSelection, getDOMSelectionRangeAndPoints, getParentElement, mergeRegister, registerEventListener, registerEventListeners, SELECTION_CHANGE_COMMAND, COMMAND_PRIORITY_LOW } from "lexical";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { AI_ASK_COMMAND, AI_REWRITE_SELECTION_COMMAND, AI_VARIATIONS_COMMAND } from "../extensions/ai-edits";
+import { AI_ASK_COMMAND, AI_CHECK_CLAIMS_COMMAND, AI_REWRITE_SELECTION_COMMAND, AI_VARIATIONS_COMMAND } from "../extensions/ai-edits";
 import { ADD_NOTE_COMMAND } from "../extensions/notes";
 import { AssistantIcon, ChevronDownIcon, ClaimsCheckIcon, ColumnsIcon, NoteIcon, SparkleIcon } from "~@/components/ui/icons";
 import { Menu, MenuContent, MenuGroup, MenuGroupLabel, MenuItem, MenuSeparator, MenuTrigger } from "~@/components/ui/menu";
@@ -16,19 +16,11 @@ const GAP = 10;
 const EDGE = 8;
 const STICKY_TOOLBAR_HEIGHT = 56;
 
-type SoonGroup = { title: string; items: string[] };
-
-const rewriteGroups: SoonGroup[] = [
+const rewriteGroups: { title: string; items: string[] }[] = [
   { title: "Rewrite with", items: ["Cut to half the length", "Plainer, for a non-technical reader", "Lead with what the customer gets", "Lead with the number"] },
   { title: "Change the tone", items: ["More direct", "Warmer", "More formal"] },
   { title: "Keep to", items: ["Match my voice", "Apply my house rules"] },
 ];
-
-const claimGroups: SoonGroup[] = [
-  { title: "This selection", items: ["Check its numbers and dates", "Find a source for it", "Mark as my estimate", "Show where a number came from"] },
-];
-
-const iconTriggerClass = "inline-flex h-8 min-w-8 items-center justify-center rounded-md px-2 text-sm text-foreground outline-none hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring data-open:bg-primary/10 [&_svg]:size-4";
 
 const triggerClass = "inline-flex h-8 min-w-8 items-center justify-center gap-1.5 rounded-md px-2 text-sm text-primary-deep outline-none hover:bg-primary/10 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring data-open:bg-primary/10 [&_svg]:size-4";
 
@@ -60,41 +52,6 @@ function RewriteMenu({ onRewrite, className, children }: { onRewrite: (instructi
         ))}
         <MenuSeparator />
         <MenuItem value="custom">Write your own instruction…</MenuItem>
-      </MenuContent>
-    </Menu>
-  );
-}
-
-function SoonMenu({ label, tip, groups, custom, className, children }: { label: string; tip: string; groups: SoonGroup[]; custom?: string; className: string; children: React.ReactNode }) {
-  const soon = <span className="text-xs text-faint-foreground">Soon</span>;
-  return (
-    <Menu>
-      <Tooltip>
-        <TooltipTrigger render={<MenuTrigger aria-label={label} className={className} />}>{children}</TooltipTrigger>
-        <TooltipContent>{tip}</TooltipContent>
-      </Tooltip>
-      <MenuContent align="start" className="min-w-64">
-        {groups.map((group, index) => (
-          <Fragment key={group.title}>
-            {index > 0 ? <MenuSeparator /> : null}
-            <MenuGroup>
-              <MenuGroupLabel>{group.title}</MenuGroupLabel>
-              {group.items.map((item) => (
-                <MenuItem key={item} value={item} disabled trailing={soon}>
-                  {item}
-                </MenuItem>
-              ))}
-            </MenuGroup>
-          </Fragment>
-        ))}
-        {custom ? (
-          <>
-            <MenuSeparator />
-            <MenuItem value="custom" disabled trailing={soon}>
-              {custom}
-            </MenuItem>
-          </>
-        ) : null}
       </MenuContent>
     </Menu>
   );
@@ -205,9 +162,12 @@ export function FloatingToolbar({ anchorElem }: { anchorElem: HTMLElement }) {
           </TooltipTrigger>
           <TooltipContent>Three variations of this selection</TooltipContent>
         </Tooltip>
-        <SoonMenu label="Check claims" tip="Check the claims in this selection" groups={claimGroups} className={iconTriggerClass}>
-          <ClaimsCheckIcon />
-        </SoonMenu>
+        <Tooltip>
+          <TooltipTrigger render={<ToolbarButton aria-label="Check claims" onClick={() => editor.dispatchCommand(AI_CHECK_CLAIMS_COMMAND, undefined)} />}>
+            <ClaimsCheckIcon />
+          </TooltipTrigger>
+          <TooltipContent>Check the claims in this document</TooltipContent>
+        </Tooltip>
         <Tooltip>
           <TooltipTrigger render={<ToolbarButton aria-label="Add a note" onClick={() => editor.dispatchCommand(ADD_NOTE_COMMAND, undefined)} />}>
             <NoteIcon />

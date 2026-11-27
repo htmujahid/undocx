@@ -51,7 +51,15 @@ export const AI_REWRITE_SELECTION_COMMAND = createCommand<{ instruction: string 
 export const AI_REGENERATE_COMMAND = createCommand<{ key: string; scope: "block" | "section" }>("AI_REGENERATE_COMMAND");
 export const AI_VARIATIONS_COMMAND = createCommand<{ key: string | null }>("AI_VARIATIONS_COMMAND");
 export const AI_APPLY_VARIATION_COMMAND = createCommand<{ editId: string; text: string }>("AI_APPLY_VARIATION_COMMAND");
+export const AI_REWRITE_BLOCK_COMMAND = createCommand<{ key: string; instruction: string }>("AI_REWRITE_BLOCK_COMMAND");
+export const AI_CHECK_CLAIMS_COMMAND = createCommand<void>("AI_CHECK_CLAIMS_COMMAND");
 export const AI_ASK_COMMAND = createCommand<{ key: string | null }>("AI_ASK_COMMAND");
+
+export type ClaimStatus = "cited" | "uncited" | "unsourced" | "unsupported" | "contradicted";
+
+export type ClaimItem = { id: string; blockKey: string; text: string; kind: string; status: ClaimStatus; sourceId: string | null; note: string; isDismissed: boolean };
+
+export type ClaimsState = { status: "idle" | "working" | "done" | "failed"; error?: string; items: ClaimItem[] };
 
 const MARKER = /\{\{cite:([^}]+)\}\}/g;
 
@@ -60,9 +68,17 @@ export const AiEditsExtension = defineExtension({
   build: () => {
     const edits = signal<AiEdit[]>([]);
     const focus = signal<string | null>(null);
+    const claims = signal<ClaimsState>({ status: "idle", items: [] });
     return {
       edits,
       focus,
+      claims,
+      setClaims(next: ClaimsState) {
+        claims.value = next;
+      },
+      dismissClaim(id: string) {
+        claims.value = { ...claims.peek(), items: claims.peek().items.map((item) => (item.id === id ? { ...item, isDismissed: true } : item)) };
+      },
       add(edit: AiEdit) {
         edits.value = [edit, ...edits.peek()];
       },
@@ -81,7 +97,7 @@ export const AiEditsExtension = defineExtension({
 
 export function useAiEdits() {
   const { output } = useExtensionDependency(AiEditsExtension);
-  return { edits: useSignalValue(output.edits), focus: useSignalValue(output.focus), add: output.add, update: output.update, dismiss: output.dismiss, setFocus: output.setFocus };
+  return { edits: useSignalValue(output.edits), focus: useSignalValue(output.focus), claims: useSignalValue(output.claims), setClaims: output.setClaims, dismissClaim: output.dismissClaim, add: output.add, update: output.update, dismiss: output.dismiss, setFocus: output.setFocus };
 }
 
 export function $kindOf(node: LexicalNode): EditKind {

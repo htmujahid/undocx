@@ -5,10 +5,10 @@ const claims = [
   { claim: "2,614 orders, 41% of the total", source: "Sales export 2025.xlsx · rows 2 to 14", state: "ok" },
   { claim: "Average basket £27.80", source: "Sales export 2025.xlsx · row 16", state: "ok" },
   { claim: "34% of started checkouts abandoned", source: "Shopify analytics · funnel report", state: "ok" },
-  { claim: "Website unchanged since 2019", source: "Staff interview notes.docx · page 1", state: "stale" },
+  { claim: "Website unchanged since 2019", source: "Staff interview notes.docx · page 1", state: "uncited" },
 ] as const;
 
-const stateLabel = { missing: "Attach, cut, or mark as estimate", ok: "Cited", stale: "Source changed since draft" } as const;
+const stateLabel = { missing: "Attach, cut, or mark as estimate", ok: "Cited", uncited: "Supported, not cited" } as const;
 
 export function ClaimsSheet() {
   return (
@@ -18,7 +18,7 @@ export function ClaimsSheet() {
       </SheetChrome>
       <SheetPage>
         <p className="m-0 mb-3 text-sm text-muted-foreground">
-          <span className="font-medium text-primary">1 unsourced</span> · 1 stale · 3 cited
+          <span className="font-medium text-primary">1 unsourced</span> · 1 supported but not cited · 3 cited
         </p>
         <ol aria-label="Claims" className="m-0 grid list-none gap-y-0 p-0 text-sm">
           {claims.map((item, index) => (

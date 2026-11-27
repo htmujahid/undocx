@@ -4,13 +4,13 @@ import { ClaimsSheet } from "./claims-sheet";
 
 const facts = [
   ["Numbers, dates, quotes", "Each linked to its citation."],
-  ["Stale", "Source changed since the draft."],
-  ["Appendix", "Export the list with the document."],
+  ["Uncited", "Supported by a source but not yet cited. Cite it in one press."],
+  ["Unsourced", "Nothing supports it. Attach a source, cut it, or leave a note."],
 ];
 
 export function ClaimsCheck({ number }: { number: string }) {
   return (
-    <Section id="claims-check" number={number} label="Claims check" note="Before you send." title="Every number in the document, listed with where it came from." description="Unsourced claims first, stale sources flagged, the rest cited. Run it before you send." tone="muted">
+    <Section id="claims-check" number={number} label="Claims check" note="Before you send." title="Every number in the document, listed with where it came from." description="Unsourced claims first, the rest cited or one press from a citation. Run it before you send." tone="muted">
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[14rem_minmax(0,1fr)]">
         <ul className="m-0 order-2 grid list-none gap-3 p-0 lg:order-1">
           {facts.map(([term, text]) => (

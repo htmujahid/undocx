@@ -23,6 +23,8 @@ import {
   $setBlockText,
   AI_APPLY_VARIATION_COMMAND,
   AI_ASK_COMMAND,
+  AI_CHECK_CLAIMS_COMMAND,
+  AI_REWRITE_BLOCK_COMMAND,
   AI_REGENERATE_COMMAND,
   AI_REWRITE_SELECTION_COMMAND,
   AI_VARIATIONS_COMMAND,
@@ -34,8 +36,9 @@ import {
   type SelectionTarget,
 } from "~@/editor/extensions/ai-edits";
 import { usePanel } from "~@/editor/extensions/panel";
-import { editLimits } from "~@/lib/ai/schemas";
-import { useRewrite, useVariations } from "../query";
+import { $claimBlocks } from "~@/editor/extensions/checks";
+import { claimsLimits, editLimits } from "~@/lib/ai/schemas";
+import { useClaims, useRewrite, useVariations } from "../query";
 
 const instructionSchema = z.object({ instruction: z.string().trim().min(1, "Say what to change.").max(editLimits.instruction) });
 type InstructionValues = z.infer<typeof instructionSchema>;
@@ -69,19 +72,20 @@ export function AiEditRunner({ id }: { id: string }) {
   const panel = usePanel();
   const { trigger: rewrite } = useRewrite(id);
   const { trigger: variations } = useVariations(id);
+  const { trigger: claims } = useClaims(id);
   const targets = useRef(new Map<string, { selection?: SelectionTarget; blockKey: string | null; allowed: Set<string>; kind: EditKind }>());
   const [pending, setPending] = useState<((instruction: string) => void) | null>(null);
   const form = useForm<InstructionValues>({ resolver: zodResolver(instructionSchema), defaultValues: { instruction: "" } });
 
-  const latest = useRef({ ai, panel, rewrite, variations });
+  const latest = useRef({ ai, panel, rewrite, variations, claims });
   useEffect(() => {
-    latest.current = { ai, panel, rewrite, variations };
+    latest.current = { ai, panel, rewrite, variations, claims };
   });
 
   useEffect(() => {
     const show = () => {
       latest.current.panel.setOpen(true);
-      latest.current.panel.setTab("assistant");
+      if (latest.current.panel.tab !== "checks") latest.current.panel.setTab("assistant");
     };
     const start = (label: string): AiEdit => {
       const edit: AiEdit = { id: crypto.randomUUID(), label, status: "working", blocks: [] };
@@ -201,6 +205,34 @@ export function AiEditRunner({ id }: { id: string }) {
         .catch((error: unknown) => fail(edit, error instanceof Error ? error.message : "Something went wrong. Try again."));
     };
 
+    const rewriteBlock = (key: string, instruction: string) => {
+      const request = editor.read(() => $blockRequest(key));
+      const edit = start(instruction);
+      if (!request.ok) return fail(edit, request.error);
+      void runRewrite(edit, { action: "rewrite", instruction, items: [{ index: 0, kind: request.kind, text: request.text, locked: false }], focus: [0], context: request.context }, new Map([[0, { key, allowed: request.allowed }]]));
+    };
+
+    const checkClaims = async () => {
+      latest.current.panel.setOpen(true);
+      latest.current.panel.setTab("checks");
+      const blocks = editor.read(() => $claimBlocks()).slice(0, claimsLimits.blocks);
+      if (blocks.length === 0) {
+        latest.current.ai.setClaims({ status: "done", items: [] });
+        return;
+      }
+      latest.current.ai.setClaims({ status: "working", items: [] });
+      try {
+        const result = await latest.current.claims({ blocks: blocks.map((block, index) => ({ index, kind: block.kind, text: block.text })) });
+        const items = result.claims.flatMap((claim) => {
+          const block = blocks[claim.blockIndex];
+          return block ? [{ id: crypto.randomUUID(), blockKey: block.key, text: claim.text, kind: claim.kind, status: claim.status, sourceId: claim.sourceId, note: claim.note, isDismissed: false }] : [];
+        });
+        latest.current.ai.setClaims({ status: "done", items });
+      } catch (error) {
+        latest.current.ai.setClaims({ status: "failed", error: error instanceof Error ? error.message : "Something went wrong. Try again.", items: [] });
+      }
+    };
+
     const ask = (key: string | null) => {
       const text = editor.read(() => {
         if (key === null) return $captureSelection()?.text ?? null;
@@ -225,6 +257,8 @@ export function AiEditRunner({ id }: { id: string }) {
       ),
       editor.registerCommand(AI_REGENERATE_COMMAND, ({ key, scope }) => (regenerate(key, scope), true), COMMAND_PRIORITY_EDITOR),
       editor.registerCommand(AI_VARIATIONS_COMMAND, ({ key }) => (showVariations(key, null), true), COMMAND_PRIORITY_EDITOR),
+      editor.registerCommand(AI_REWRITE_BLOCK_COMMAND, ({ key, instruction }) => (rewriteBlock(key, instruction), true), COMMAND_PRIORITY_EDITOR),
+      editor.registerCommand(AI_CHECK_CLAIMS_COMMAND, () => (queueMicrotask(() => void checkClaims()), true), COMMAND_PRIORITY_EDITOR),
       editor.registerCommand(AI_ASK_COMMAND, ({ key }) => (ask(key), true), COMMAND_PRIORITY_EDITOR),
     );
   }, [editor]);

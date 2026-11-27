@@ -10,7 +10,7 @@ const facts = [
 
 export function HouseRules({ number }: { number: string }) {
   return (
-    <Section id="house-rules" number={number} label="House rules" note="In the margin." title="Rules the draft follows every time, without being told twice." description="British spelling, banned words, how prices are written. Checked in the margin, fixed in one press." tone="muted">
+    <Section id="house-rules" number={number} label="House rules" note="One press." title="Rules the draft follows every time, without being told twice." description="British spelling, banned words, how prices are written. Checked on demand, spelling fixed in one press." tone="muted">
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_14rem]">
         <figure aria-labelledby="house-rules-title" className="m-0 min-w-0">
           <RulesSheet />

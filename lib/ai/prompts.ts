@@ -170,3 +170,24 @@ export function editMessage({ items, focus, context }: { items: { index: number;
   if (context.after) lines.push(`Text after (context only, never repeat it):\n${context.after}`);
   return lines.join("\n\n");
 }
+
+export function claimsInstructions(context: Context) {
+  return [
+    "You are Undocx, checking a document's claims against the sources the writer attached. You do not change the document.",
+    "A claim is a checkable statement: a number, percentage, price, date, quantity, named fact, quote, or comparison. Ignore opinions, promises about the future, and text in square brackets such as [price].",
+    "Return one entry per claim, in document order. Copy the claim word for word from its block into text, without any {{cite:ID}} marker.",
+    "Give each claim one status:",
+    "- cited: the claim has a {{cite:ID}} marker next to it and that source supports it.",
+    "- uncited: no marker, but an attached source supports it. Give that source's id.",
+    "- unsupported: a marker is next to it but the source does not support it. Give the source id.",
+    "- contradicted: an attached source says something different. Give the source id and say what it says.",
+    "- unsourced: no attached source supports it. Leave sourceId null.",
+    "Facts listed under the writer's profile as facts to treat as true count as supported: use cited with a null sourceId and say it is a profile fact.",
+    "Be strict. Only mark a claim supported when the source text clearly says it. Never invent a source or a quote.",
+    ...contextSections(context),
+  ].join("\n\n");
+}
+
+export function claimsMessage(blocks: { index: number; kind: string; text: string }[]) {
+  return blocks.map((block) => `<block index="${block.index}" kind="${block.kind}">\n${block.text}\n</block>`).join("\n\n");
+}

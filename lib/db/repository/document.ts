@@ -77,3 +77,12 @@ export async function updateDocumentStatus(userId: string, id: string, status: D
 export async function removeDocument(userId: string, id: string) {
   await db.delete(document).where(and(eq(document.id, id), eq(document.userId, userId)));
 }
+
+export async function updateDocumentRuleSet(userId: string, id: string, ruleSetId: string | null) {
+  const rows = await db
+    .update(document)
+    .set({ ruleSetId })
+    .where(and(eq(document.id, id), eq(document.userId, userId)))
+    .returning({ id: document.id });
+  return rows.length > 0;
+}

@@ -6,7 +6,7 @@ import { defineExtension } from "lexical";
 import { NotesExtension } from "./notes";
 import { SourcesExtension } from "./sources";
 
-export type PanelTab = "outline" | "assistant" | "notes" | "versions";
+export type PanelTab = "outline" | "assistant" | "notes" | "versions" | "checks";
 
 export const PanelExtension = defineExtension({
   name: "undocx/Panel",

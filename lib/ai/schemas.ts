@@ -76,3 +76,27 @@ export const variationsOutputSchema = z.object({
 
 export type RewriteRequest = z.infer<typeof rewriteRequestSchema>;
 export type VariationsRequest = z.infer<typeof variationsRequestSchema>;
+
+export const claimsLimits = { blocks: 60, text: 6000, claims: 60 } as const;
+
+export const claimsRequestSchema = z.object({
+  blocks: z
+    .array(z.object({ index: z.number().int().min(0).max(500), kind: z.enum(["paragraph", "list", "quote", "table"]), text: z.string().max(claimsLimits.text) }))
+    .min(1)
+    .max(claimsLimits.blocks),
+});
+
+export const claimsOutputSchema = z.object({
+  claims: z.array(
+    z.object({
+      blockIndex: z.number().describe("The index of the block the claim is in."),
+      text: z.string().describe("The claim, copied word for word from the block, without any {{cite:ID}} marker."),
+      kind: z.enum(["number", "date", "quote", "statement"]),
+      status: z.enum(["cited", "uncited", "unsourced", "unsupported", "contradicted"]),
+      sourceId: z.string().nullable().describe("The id of the source that supports, fails to support, or contradicts the claim. Null when there is none."),
+      note: z.string().describe("One short sentence: what the source says, or why nothing supports the claim."),
+    }),
+  ),
+});
+
+export type ClaimsRequest = z.infer<typeof claimsRequestSchema>;
