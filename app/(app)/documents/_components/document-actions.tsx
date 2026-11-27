@@ -63,7 +63,7 @@ function DeleteDocumentDialog({ id, open, onOpenChange }: { id: string; open: bo
       <DialogContent className="w-[min(26rem,calc(100vw-2rem))]">
         <div className="grid gap-2 p-5">
           <DialogTitle>Delete this document?</DialogTitle>
-          <DialogDescription>Its text, notes and sources are deleted with it. This cannot be undone.</DialogDescription>
+          <DialogDescription>Its text, notes, saved versions and assistant conversation are deleted with it. Sources stay in your library. This cannot be undone.</DialogDescription>
         </div>
         <div className="flex justify-end gap-2 border-t border-border p-4">
           <DialogClose className={buttonVariants({ variant: "ghost" })}>Keep it</DialogClose>

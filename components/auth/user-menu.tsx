@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useUser } from "~@/components/auth/user-provider";
 import { buttonVariants } from "~@/components/ui/button";
-import { LoaderCircleIcon, SignOutIcon } from "~@/components/ui/icons";
+import { LoaderCircleIcon, ProfileIcon, SignOutIcon } from "~@/components/ui/icons";
 import { Menu, MenuContent, MenuGroup, MenuGroupLabel, MenuItem, MenuSeparator, MenuTrigger } from "~@/components/ui/menu";
 import { signOut } from "~@/lib/auth/client";
 import { cn } from "~@/lib/utils";
@@ -41,6 +41,7 @@ export function UserMenu({ className }: { className?: string }) {
     <Menu
       onAction={(key) => {
         if (key === "sign-out") void handleSignOut();
+        if (key === "account") router.push("/account");
       }}
     >
       <MenuTrigger aria-label="Account" className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "rounded-full p-0", className)}>
@@ -61,6 +62,9 @@ export function UserMenu({ className }: { className?: string }) {
           </div>
         </MenuGroup>
         <MenuSeparator />
+        <MenuItem value="account" icon={<ProfileIcon />}>
+          Account
+        </MenuItem>
         <MenuItem value="sign-out" icon={signingOut ? <LoaderCircleIcon className="animate-spin" /> : <SignOutIcon />} disabled={signingOut}>
           Sign out
         </MenuItem>

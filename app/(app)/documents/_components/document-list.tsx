@@ -65,7 +65,7 @@ export function DocumentList({ initial }: { initial: DocumentSummary[] }) {
         </li>
       </ul>
 
-      <p className="m-0 mt-10 text-sm text-muted-foreground">One person per document. Delete a document and its brief, outline, sources and notes go with it.</p>
+      <p className="m-0 mt-10 text-sm text-muted-foreground">One person per document. Delete a document and its brief, notes, versions and assistant conversation go with it. Sources stay in your library.</p>
       <Button variant="ghost" size="sm" className="mt-2 -ml-2" render={<Link href="/privacy" />}>
         How your documents are stored
       </Button>
