@@ -10,7 +10,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [{ protocol: "https", hostname: "lh3.googleusercontent.com" }],
   },
   async redirects() {
-    return [{ source: "/editor", destination: "/documents", permanent: true }];
+    return [
+      { source: "/library", destination: "/library/profiles", permanent: false },
+    ];
   },
 };
 

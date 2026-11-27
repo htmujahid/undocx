@@ -3,6 +3,7 @@ import "server-only";
 import { cacheLife } from "next/cache";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { connection } from "next/server";
 import { auth } from "./index";
 
 export type CurrentUser = {
@@ -24,4 +25,11 @@ export async function getCurrentUser(): Promise<CurrentUser> {
   if (!session) redirect("/?login");
   const { id, name, email, image } = session.user;
   return { id, name, email, image: image ?? null };
+}
+
+export async function requireUserId() {
+  await connection();
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) throw new Error("Unauthorized");
+  return session.user.id;
 }

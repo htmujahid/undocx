@@ -1,5 +1,8 @@
 import type { IconProps } from "@phosphor-icons/react";
 import {
+  IdentificationCardIcon as IdentificationCard,
+  ListChecksIcon as ListChecks,
+  MicrophoneIcon as Microphone,
   ArrowClockwiseIcon as ArrowClockwise,
   ArrowCounterClockwiseIcon as ArrowCounterClockwise,
   ArrowDownIcon as ArrowDown,
@@ -134,3 +137,6 @@ export const ArrowLeftIcon = withWeight(ArrowLeft);
 export const DuplicateIcon = withWeight(Copy);
 export const ClipboardIcon = withWeight(ClipboardText);
 export const TrashIcon = withWeight(Trash);
+export const ProfileIcon = withWeight(IdentificationCard);
+export const RulesIcon = withWeight(ListChecks);
+export const VoiceIcon = withWeight(Microphone);

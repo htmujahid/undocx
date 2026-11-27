@@ -4,7 +4,7 @@ import { LoaderCircleIcon } from "~@/components/ui/icons";
 
 export default function AppLayout({ children }: LayoutProps<"/">) {
   return (
-    <div className="h-dvh overflow-hidden bg-background font-sans text-foreground">
+    <div className="relative h-dvh overflow-hidden bg-background font-sans text-foreground">
       <Suspense fallback={<AppLoading />}>
         <AuthGate>{children}</AuthGate>
       </Suspense>
