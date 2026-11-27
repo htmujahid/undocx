@@ -1,8 +1,8 @@
 import { Section } from "../../_components/frame";
 
 const columns = [
-  { stage: "At launch", items: ["Brief chat and optional outline", "Section regenerate with diff and undo", "Locked text", "Named versions you can restore", "Variations and merge", "Your voice from samples", "Grounded writing with citations", "Export to Word, PDF, Markdown, Google Docs"] },
-  { stage: "Next", items: ["House rules", "Review links and paragraph comments", "Claims check", "Document types"] },
+  { stage: "At launch", items: ["Brief chat and optional outline", "Section regenerate with diff and undo", "Locked text", "House rules and claims check", "Named versions you can restore", "Variations and merge", "Your voice from samples", "Grounded writing with citations", "Export to Word, PDF, OpenDocument, Markdown, HTML"] },
+  { stage: "Next", items: ["Review links and paragraph comments", "Export to Google Docs", "Document types"] },
   { stage: "Later", items: ["A team plan: shared documents, voices and rules", "Reusable locked blocks across documents", "Letterhead and Word templates on export", "Import from Google Drive and Notion"] },
 ];
 

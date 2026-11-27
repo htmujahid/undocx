@@ -1,6 +1,10 @@
 import { getExtensionDependencyFromEditor } from "@lexical/extension";
 import { $generateHtmlFromNodes } from "@lexical/html";
 import type { LexicalEditor } from "lexical";
+import { compileDocx } from "./export/docx";
+import { $buildExportDoc } from "./export/model";
+import { compileOdt } from "./export/odt";
+import { compilePdf } from "./export/pdf";
 import { $citationOrder } from "./nodes/citation-node";
 import { $exportMarkdown } from "./extensions/markdown";
 import { SourcesExtension, type Source } from "./extensions/sources";
@@ -12,7 +16,7 @@ export type ExportFormat = {
   extension: string;
   mime: string;
   status: "ready" | "soon";
-  $export?: (editor: LexicalEditor) => string | Promise<string>;
+  $export?: (editor: LexicalEditor) => string | Uint8Array<ArrayBuffer>;
 };
 
 export const exportFormats: ExportFormat[] = [
@@ -40,12 +44,36 @@ export const exportFormats: ExportFormat[] = [
     description: "The editor state exactly as Undocx stores it, to re-import later without losing anything.",
     extension: "json",
     mime: "application/json;charset=utf-8",
-    status: "soon",
+    status: "ready",
     $export: (editor) => JSON.stringify(editor.getEditorState().toJSON(), null, 2),
   },
-  { id: "docx", label: "Word", description: "A .docx file with headings, lists, tables and footnotes for citations.", extension: "docx", mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", status: "soon" },
-  { id: "odt", label: "OpenDocument", description: "An .odt file for LibreOffice and other open office suites.", extension: "odt", mime: "application/vnd.oasis.opendocument.text", status: "soon" },
-  { id: "pdf", label: "PDF", description: "Page numbers and a sources list at the end. Nothing in the file depends on Undocx.", extension: "pdf", mime: "application/pdf", status: "soon" },
+  {
+    id: "docx",
+    label: "Word",
+    description: "A .docx file with headings, lists, tables, links and page setup. Citations are superscript numbers with a References list at the end.",
+    extension: "docx",
+    mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    status: "ready",
+    $export: (editor) => compileDocx($buildExportDoc($references(editor))),
+  },
+  {
+    id: "odt",
+    label: "OpenDocument",
+    description: "An .odt file for LibreOffice and other open office suites, with the same structure as the Word export.",
+    extension: "odt",
+    mime: "application/vnd.oasis.opendocument.text",
+    status: "ready",
+    $export: (editor) => compileOdt($buildExportDoc($references(editor))),
+  },
+  {
+    id: "pdf",
+    label: "PDF",
+    description: "Page numbers and a References list at the end, using your page setup. Standard fonts, so Latin letters only. Nothing in the file depends on Undocx.",
+    extension: "pdf",
+    mime: "application/pdf",
+    status: "ready",
+    $export: (editor) => compilePdf($buildExportDoc($references(editor))),
+  },
   { id: "gdoc", label: "Google Docs", description: "A new document in your Drive, ready to share, with citations in a Sources section.", extension: "gdoc", mime: "application/vnd.google-apps.document", status: "soon" },
 ];
 
@@ -81,13 +109,13 @@ export function slugify(text: string) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80) || "document";
 }
 
-export async function exportDocument(editor: LexicalEditor, format: ExportFormat) {
+export function exportDocument(editor: LexicalEditor, format: ExportFormat) {
   if (!format.$export) throw new Error(`${format.label} export is not available yet`);
   const exporter = format.$export;
   return editor.read(() => exporter(editor));
 }
 
-export function downloadFile(name: string, content: string, mime: string) {
+export function downloadFile(name: string, content: string | Uint8Array<ArrayBuffer>, mime: string) {
   const url = URL.createObjectURL(new Blob([content], { type: mime }));
   const anchor = document.createElement("a");
   anchor.href = url;

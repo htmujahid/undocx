@@ -18,12 +18,12 @@ export function ExportDialog() {
   const [formatId, setFormatId] = useState(ready[0].id);
   const format = exportFormats.find((option) => option.id === formatId) ?? ready[0];
 
-  async function download() {
+  function download() {
     const title = editor.read(() => {
       const first = $getRoot().getFirstChild();
       return $isHeadingNode(first) ? first.getTextContent() : "document";
     });
-    downloadFile(`${slugify(title)}.${format.extension}`, await exportDocument(editor, format), format.mime);
+    downloadFile(`${slugify(title)}.${format.extension}`, exportDocument(editor, format), format.mime);
   }
 
   return (

@@ -66,6 +66,10 @@ const pageState = createState("page", {
   isEqual: (a, b) => JSON.stringify(a) === JSON.stringify(b),
 });
 
+export function $getPageSettings(): PageSettings {
+  return $getState($getRoot(), pageState);
+}
+
 export function usePageSettings(): PageSettings {
   const editorState = useSignalValue(useExtensionDependency(EditorStateExtension).output);
   return editorState.read(() => $getState($getRoot(), pageState));

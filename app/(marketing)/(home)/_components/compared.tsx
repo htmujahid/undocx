@@ -12,7 +12,7 @@ const rows: [string, Cell, Cell, string?][] = [
   ["Variations side by side, with merge", "no", "no"],
   ["Learns your voice from your documents", "partly", "no", "A chat can be given samples each time; it does not keep them."],
   ["Citations that open the source", "partly", "no"],
-  ["Exports to Word, PDF, Markdown, Google Docs", "no", "partly"],
+  ["Exports to Word, PDF, OpenDocument, Markdown", "no", "partly"],
 ];
 
 function Mark({ value }: { value: Cell }) {
