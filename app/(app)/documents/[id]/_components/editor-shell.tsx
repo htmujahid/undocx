@@ -5,6 +5,7 @@ import { useState, type CSSProperties, type ReactNode } from "react";
 import { usePanel } from "~@/editor/extensions/panel";
 import { HistoryShortcuts } from "~@/editor/plugins/history-shortcuts";
 import { SidebarInset, SidebarProvider } from "~@/components/ui/sidebar";
+import { AiEditRunner } from "./ai-edit-runner";
 import { DocumentSaver, type SaveState } from "./document-saver";
 import { NotesSync } from "./notes-sync";
 import { CommandPalette } from "./command-palette";
@@ -32,6 +33,7 @@ export function EditorShell({ id, title, version, messages, notes, children }: {
       <SidePanel id={id} messages={messages} />
       <DocumentSaver id={id} version={version} onState={setSaveState} />
       <NotesSync id={id} initial={notes} />
+      <AiEditRunner id={id} />
       <CommandPalette />
       <HistoryShortcuts />
     </SidebarProvider>

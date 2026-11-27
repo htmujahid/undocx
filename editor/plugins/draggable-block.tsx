@@ -9,6 +9,7 @@ import { $copyNode, $createParagraphNode, $getRoot, $getSelection, $getState, $i
 import { useRef, useState, type CSSProperties } from "react";
 import { ArrowDownIcon, ArrowUpIcon, AssistantIcon, ClipboardIcon, ColumnsIcon, DuplicateIcon, GripIcon, LockIcon, LockOpenIcon, NoteIcon, RefreshCwIcon, TrashIcon } from "~@/components/ui/icons";
 import { Menu, MenuContent, MenuGroup, MenuItem, MenuSeparator, MenuTrigger } from "~@/components/ui/menu";
+import { $isLocked, $kindOf, AI_ASK_COMMAND, AI_REGENERATE_COMMAND, AI_VARIATIONS_COMMAND } from "../extensions/ai-edits";
 import { ADD_NOTE_COMMAND } from "../extensions/notes";
 import { lockedState, toggleSelectedBlockLock } from "../extensions/lock";
 import { MM_TO_PX, resolveMargins, usePageSettings } from "../extensions/page";
@@ -22,9 +23,9 @@ function handleX(leftPx: number) {
   return leftPx >= HANDLE_WIDTH + HANDLE_GAP ? leftPx - HANDLE_WIDTH - HANDLE_GAP : -HANDLE_WIDTH;
 }
 
-type BlockInfo = { locked: boolean; isFirst: boolean; isLast: boolean; canNote: boolean };
+type BlockInfo = { locked: boolean; isFirst: boolean; isLast: boolean; canNote: boolean; canEdit: boolean; isHeading: boolean };
 
-const closedInfo: BlockInfo = { locked: false, isFirst: true, isLast: true, canNote: false };
+const closedInfo: BlockInfo = { locked: false, isFirst: true, isLast: true, canNote: false, canEdit: false, isHeading: false };
 
 function $blockOf(editor: LexicalEditor, element: HTMLElement) {
   return $getRoot()
@@ -46,6 +47,8 @@ function $readInfo(node: LexicalNode): BlockInfo {
     isFirst: node.getPreviousSibling() === null,
     isLast: node.getNextSibling() === null,
     canNote: $isParagraphNode(node) || $isHeadingNode(node) || $isQuoteNode(node) || $isListNode(node),
+    canEdit: $kindOf(node) !== "other" && !$isLocked(node),
+    isHeading: $isHeadingNode(node),
   };
 }
 
@@ -53,8 +56,6 @@ function isTyping() {
   const element = document.activeElement;
   return element instanceof HTMLElement && element.matches("input, textarea, select");
 }
-
-const soon = <span className="text-xs text-faint-foreground">Soon</span>;
 
 export function DraggableBlock({ anchorElem }: { anchorElem: HTMLElement }) {
   const [editor] = useLexicalComposerContext();
@@ -112,6 +113,16 @@ export function DraggableBlock({ anchorElem }: { anchorElem: HTMLElement }) {
     }
     if (action === "delete" && info.locked && !armed) {
       setArmed(true);
+      return;
+    }
+    if (action === "regenerate" || action === "regenerate-section" || action === "variations" || action === "ask") {
+      const key = editor.read(() => $blockOf(editor, element)?.getKey());
+      if (!key) return;
+      skipRefocusRef.current = true;
+      if (action === "regenerate") editor.dispatchCommand(AI_REGENERATE_COMMAND, { key, scope: "block" });
+      if (action === "regenerate-section") editor.dispatchCommand(AI_REGENERATE_COMMAND, { key, scope: "section" });
+      if (action === "variations") editor.dispatchCommand(AI_VARIATIONS_COMMAND, { key: info.canEdit ? key : null });
+      if (action === "ask") editor.dispatchCommand(AI_ASK_COMMAND, { key });
       return;
     }
     if (action === "note") skipRefocusRef.current = true;
@@ -173,13 +184,18 @@ export function DraggableBlock({ anchorElem }: { anchorElem: HTMLElement }) {
             </MenuTrigger>
             <MenuContent align="start" side="bottom" finalFocus="none" className="min-w-60">
               <MenuGroup>
-                <MenuItem value="regenerate" icon={<RefreshCwIcon />} disabled trailing={soon}>
+                <MenuItem value="regenerate" icon={<RefreshCwIcon />} disabled={!info.canEdit}>
                   Regenerate
                 </MenuItem>
-                <MenuItem value="variations" icon={<ColumnsIcon />} disabled trailing={soon}>
+                {info.isHeading ? (
+                  <MenuItem value="regenerate-section" icon={<RefreshCwIcon />} disabled={info.locked}>
+                    Regenerate section
+                  </MenuItem>
+                ) : null}
+                <MenuItem value="variations" icon={<ColumnsIcon />} disabled={!info.canEdit}>
                   Three variations
                 </MenuItem>
-                <MenuItem value="ask" icon={<AssistantIcon />} disabled trailing={soon}>
+                <MenuItem value="ask" icon={<AssistantIcon />} disabled={!info.canNote}>
                   Ask Undocx about this
                 </MenuItem>
               </MenuGroup>

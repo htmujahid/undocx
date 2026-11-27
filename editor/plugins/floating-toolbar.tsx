@@ -5,6 +5,7 @@ import { useLexicalEditable } from "@lexical/react/useLexicalEditable";
 import { $getSelection, $isRangeSelection, getDOMSelection, getDOMSelectionRangeAndPoints, getParentElement, mergeRegister, registerEventListener, registerEventListeners, SELECTION_CHANGE_COMMAND, COMMAND_PRIORITY_LOW } from "lexical";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { AI_ASK_COMMAND, AI_REWRITE_SELECTION_COMMAND, AI_VARIATIONS_COMMAND } from "../extensions/ai-edits";
 import { ADD_NOTE_COMMAND } from "../extensions/notes";
 import { AssistantIcon, ChevronDownIcon, ClaimsCheckIcon, ColumnsIcon, NoteIcon, SparkleIcon } from "~@/components/ui/icons";
 import { Menu, MenuContent, MenuGroup, MenuGroupLabel, MenuItem, MenuSeparator, MenuTrigger } from "~@/components/ui/menu";
@@ -31,12 +32,36 @@ const iconTriggerClass = "inline-flex h-8 min-w-8 items-center justify-center ro
 
 const triggerClass = "inline-flex h-8 min-w-8 items-center justify-center gap-1.5 rounded-md px-2 text-sm text-primary-deep outline-none hover:bg-primary/10 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring data-open:bg-primary/10 [&_svg]:size-4";
 
-function SoonButton({ label, children }: { label: string; children: React.ReactNode }) {
+const rewriteInstructions: Record<string, string> = {
+  "Match my voice": "Match my voice as closely as you can",
+  "Apply my house rules": "Apply my house rules strictly",
+};
+
+function RewriteMenu({ onRewrite, className, children }: { onRewrite: (instruction: string | null) => void; className: string; children: React.ReactNode }) {
   return (
-    <Tooltip>
-      <TooltipTrigger render={<ToolbarButton aria-label={label} aria-disabled="true" className="text-muted-foreground opacity-60 hover:bg-transparent" />}>{children}</TooltipTrigger>
-      <TooltipContent>{label} · coming soon</TooltipContent>
-    </Tooltip>
+    <Menu onAction={(value) => onRewrite(value === "custom" ? null : (rewriteInstructions[String(value)] ?? String(value)))}>
+      <Tooltip>
+        <TooltipTrigger render={<MenuTrigger aria-label="Rewrite selection" className={className} />}>{children}</TooltipTrigger>
+        <TooltipContent>Rewrite only this selection</TooltipContent>
+      </Tooltip>
+      <MenuContent align="start" className="min-w-64">
+        {rewriteGroups.map((group, index) => (
+          <Fragment key={group.title}>
+            {index > 0 ? <MenuSeparator /> : null}
+            <MenuGroup>
+              <MenuGroupLabel>{group.title}</MenuGroupLabel>
+              {group.items.map((item) => (
+                <MenuItem key={item} value={item}>
+                  {item}
+                </MenuItem>
+              ))}
+            </MenuGroup>
+          </Fragment>
+        ))}
+        <MenuSeparator />
+        <MenuItem value="custom">Write your own instruction…</MenuItem>
+      </MenuContent>
+    </Menu>
   );
 }
 
@@ -162,18 +187,24 @@ export function FloatingToolbar({ anchorElem }: { anchorElem: HTMLElement }) {
       className="invisible absolute top-0 left-0 z-10 w-max rounded-md border border-border bg-popover p-1 text-popover-foreground opacity-0 shadow-md transition-opacity duration-100 will-change-transform data-visible:visible data-visible:opacity-100 motion-reduce:transition-none"
     >
       <Toolbar aria-label="Selection" className="gap-0.5">
-        <SoonMenu label="Rewrite selection" tip="Rewrite only this selection" groups={rewriteGroups} custom="Write your own instruction…" className={triggerClass}>
+        <RewriteMenu onRewrite={(instruction) => editor.dispatchCommand(AI_REWRITE_SELECTION_COMMAND, { instruction })} className={triggerClass}>
           <SparkleIcon />
           Rewrite
           <ChevronDownIcon className="size-3!" />
-        </SoonMenu>
-        <SoonButton label="Ask Undocx about this">
-          <AssistantIcon />
-        </SoonButton>
+        </RewriteMenu>
+        <Tooltip>
+          <TooltipTrigger render={<ToolbarButton aria-label="Ask Undocx about this" onClick={() => editor.dispatchCommand(AI_ASK_COMMAND, { key: null })} />}>
+            <AssistantIcon />
+          </TooltipTrigger>
+          <TooltipContent>Ask Undocx about this</TooltipContent>
+        </Tooltip>
         <ToolbarSeparator />
-        <SoonButton label="Three variations">
-          <ColumnsIcon />
-        </SoonButton>
+        <Tooltip>
+          <TooltipTrigger render={<ToolbarButton aria-label="Three variations" onClick={() => editor.dispatchCommand(AI_VARIATIONS_COMMAND, { key: null })} />}>
+            <ColumnsIcon />
+          </TooltipTrigger>
+          <TooltipContent>Three variations of this selection</TooltipContent>
+        </Tooltip>
         <SoonMenu label="Check claims" tip="Check the claims in this selection" groups={claimGroups} className={iconTriggerClass}>
           <ClaimsCheckIcon />
         </SoonMenu>

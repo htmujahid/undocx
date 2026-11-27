@@ -1,23 +1,17 @@
 "use client";
 
 import useSWRMutation from "swr/mutation";
+import { postJson } from "~@/lib/ai/client";
 import type { BriefQuestion, OutlineAdvice, OutlineMode } from "~@/lib/documents/brief";
 import type { AnswerValues } from "~@/lib/documents/schemas";
 import { saveAnswer, setOutline } from "./actions";
 
-async function post<T>(url: string): Promise<T> {
-  const response = await fetch(url, { method: "POST" });
-  const body = (await response.json().catch(() => null)) as (T & { error?: string }) | null;
-  if (!response.ok || !body) throw new Error(body?.error ?? "Something went wrong. Try again.");
-  return body;
-}
-
 export function useGenerateQuestions(id: string) {
-  return useSWRMutation(`setup/${id}/questions`, () => post<{ questions: BriefQuestion[]; advice: OutlineAdvice }>(`/documents/${id}/setup/questions`));
+  return useSWRMutation(`setup/${id}/questions`, () => postJson<{ questions: BriefQuestion[]; advice: OutlineAdvice }>(`/documents/${id}/setup/questions`));
 }
 
 export function useWriteDraft(id: string) {
-  return useSWRMutation(`setup/${id}/draft`, () => post<{ id: string }>(`/documents/${id}/setup/draft`));
+  return useSWRMutation(`setup/${id}/draft`, () => postJson<{ id: string }>(`/documents/${id}/setup/draft`));
 }
 
 export function useSaveAnswer(id: string) {

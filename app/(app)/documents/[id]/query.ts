@@ -1,6 +1,8 @@
 "use client";
 
 import useSWRMutation from "swr/mutation";
+import { postJson } from "~@/lib/ai/client";
+import type { RewriteRequest, VariationsRequest } from "~@/lib/ai/schemas";
 import type { NoteValues } from "~@/lib/documents/schemas";
 import { clearAssistant, deleteNote, saveDocument, saveNote } from "./actions";
 
@@ -18,4 +20,12 @@ export function useSaveNote(id: string) {
 
 export function useDeleteNote(id: string) {
   return useSWRMutation(`notes/${id}`, (_key, { arg }: { arg: string }) => deleteNote(id, arg));
+}
+
+export function useRewrite(id: string) {
+  return useSWRMutation(`rewrite/${id}`, (_key, { arg }: { arg: RewriteRequest }) => postJson<{ items: { index: number; text: string }[] }>(`/documents/${id}/rewrite`, arg));
+}
+
+export function useVariations(id: string) {
+  return useSWRMutation(`variations/${id}`, (_key, { arg }: { arg: VariationsRequest }) => postJson<{ variations: string[] }>(`/documents/${id}/variations`, arg));
 }

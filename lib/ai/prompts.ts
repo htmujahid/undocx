@@ -81,13 +81,14 @@ function contextSections({ profile, voice, ruleSet, sources }: Context) {
   return [profile ? profileSection(profile) : "", voice ? voiceSection(voice) : "", ruleSet ? rulesSection(ruleSet) : "", sourcesSection(sources)].filter(Boolean);
 }
 
-export function assistantInstructions({ documentText, ...context }: Context & { documentText: string }) {
+export function assistantInstructions({ documentText, focus, ...context }: Context & { documentText: string; focus: string | null }) {
   const sections = [
     "You are Undocx, a writing assistant inside a document editor. You help one person plan, write and improve the document they are working on.",
     "Be direct and concrete. Answer in plain text without markdown headings. Keep answers short unless asked for more.",
     "You can read the document but you cannot edit it yet. When you suggest wording, give the exact text so the writer can paste it.",
     "Never invent facts, numbers, quotes or sources. If something is missing, say what is missing and ask for it.",
     ...contextSections(context),
+    focus ? `## The passage the writer is asking about\n<passage>\n${focus.slice(0, 2000)}\n</passage>\nAnswer about this passage unless the question is clearly about something else.` : "",
     documentText.trim() ? `## The document so far\n<document>\n${documentText.slice(0, limits.document)}\n</document>` : "## The document so far\nThe document is empty.",
   ];
   return sections.filter(Boolean).join("\n\n");
@@ -127,4 +128,44 @@ export function draftInstructions({ outline, advice, typeKey, ...context }: Cont
 export function briefMessage({ prompt, questions, answers }: { prompt: string; questions: BriefQuestion[]; answers: BriefAnswers }) {
   const answered = questions.filter((question) => answers[question.id]).map((question) => `- ${question.question} ${answers[question.id]}`);
   return [`Brief: ${prompt}`, answered.length > 0 ? `Answers:\n${answered.join("\n")}` : ""].filter(Boolean).join("\n\n");
+}
+
+const editRules = [
+  "Write plain text with no markdown symbols. Keep the meaning, the facts and every number unless the instruction says otherwise.",
+  "Keep every citation marker of the form {{cite:ID}} exactly as written, next to the claim it supports. Never invent a marker, and never add one for an id that is not in the text you were given.",
+  "Never invent facts, numbers, quotes or sources. If the text uses a placeholder in square brackets, keep it.",
+  "For a list, write one list item per line. For other text keep the same number of paragraphs.",
+];
+
+export function rewriteInstructions({ action, instruction, ...context }: Context & { action: "rewrite" | "regenerate"; instruction: string | null }) {
+  return [
+    "You are Undocx, editing a document for its writer. You change only the items named in the focus list. Every other item is fixed context and must not be changed or repeated.",
+    action === "rewrite" ? `Rewrite the focus items to follow this instruction: ${instruction || "improve the writing"}.` : "Write each focus item again from scratch with fresh wording and structure. Keep its purpose, its facts and roughly its length.",
+    ...editRules,
+    "Return one entry per focus item, using the item's index. Return nothing for items that are not in the focus list.",
+    ...contextSections(context),
+  ].join("\n\n");
+}
+
+export function variationsInstructions({ instruction, ...context }: Context & { instruction: string | null }) {
+  return [
+    "You are Undocx, editing a document for its writer. Write exactly three different versions of the text you are given.",
+    "Make the three clearly different from each other: for example one tighter, one warmer, one that leads with the point. Each must keep the same meaning and facts.",
+    instruction ? `The writer asked for this direction: ${instruction}.` : "",
+    ...editRules,
+    ...contextSections(context),
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+}
+
+export function editMessage({ items, focus, context }: { items: { index: number; kind: string; text: string; locked: boolean }[]; focus?: number[]; context: { title: string; before: string; after: string } }) {
+  const lines = [`Document: ${context.title || "Untitled"}`];
+  if (context.before) lines.push(`Text before:\n${context.before}`);
+  for (const item of items) {
+    const flag = item.locked ? " locked, do not change" : focus?.includes(item.index) ? " focus" : " context";
+    lines.push(`<item index="${item.index}" kind="${item.kind}"${flag ? ` role="${flag.trim()}"` : ""}>\n${item.text}\n</item>`);
+  }
+  if (context.after) lines.push(`Text after:\n${context.after}`);
+  return lines.join("\n\n");
 }

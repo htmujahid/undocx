@@ -8,6 +8,7 @@ import { TableExtension } from "@lexical/table";
 import { configExtension, defineExtension, type InitialEditorStateType } from "lexical";
 import { CitationNode } from "../nodes/citation-node";
 import { PageBreakNode } from "../nodes/page-break-node";
+import { AiEditsExtension } from "./ai-edits";
 import { LayoutExtension } from "./layout";
 import { isValidUrl } from "../plugins/link";
 import { MarkdownExtension } from "./markdown";
@@ -39,6 +40,7 @@ export function createDocumentExtension(documentId: string, $initialEditorState:
       configExtension(SourcesExtension, { sources }),
       PageExtension,
       PanelExtension,
+      AiEditsExtension,
       configExtension(NodeSelectionDataSelectedExtension, { nodes: [CitationNode, PageBreakNode] }),
       configExtension(HistoryExtension, { delay: 500, maxDepth: 100 }),
     ],

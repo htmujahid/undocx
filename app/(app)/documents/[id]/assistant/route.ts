@@ -1,26 +1,20 @@
 import { convertToModelMessages, createUIMessageStreamResponse, generateId, streamText, toUIMessageStream, validateUIMessages, type UIMessage } from "ai";
-import { z } from "zod";
 import { loadContext } from "~@/lib/ai/context";
 import { getModel } from "~@/lib/ai/model";
 import { authorize, describeError, problem, trackRun } from "~@/lib/ai/route";
-import { assistantMessageSchema } from "~@/lib/ai/schemas";
+import { assistantRequestSchema } from "~@/lib/ai/schemas";
 import { assistantInstructions } from "~@/lib/ai/prompts";
 import { ensureThread, listThreadMessages, saveThreadMessages } from "~@/lib/db/repository/ai";
 import { findDocument } from "~@/lib/db/repository/document";
 
 const MAX_HISTORY = 30;
 
-const requestSchema = z.object({
-  message: assistantMessageSchema,
-  document: z.string().max(200_000),
-});
-
 export async function POST(request: Request, { params }: RouteContext<"/documents/[id]/assistant">) {
   const userId = await authorize();
   if (!userId) return problem(401, "Sign in to use the assistant.");
   const { id } = await params;
 
-  const parsed = requestSchema.safeParse(await request.json().catch(() => null));
+  const parsed = assistantRequestSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return problem(400, "That message could not be read.");
 
   const doc = await findDocument(userId, id);
@@ -36,7 +30,7 @@ export async function POST(request: Request, { params }: RouteContext<"/document
 
   const result = streamText({
     model: getModel(),
-    instructions: assistantInstructions({ ...context, documentText: parsed.data.document }),
+    instructions: assistantInstructions({ ...context, documentText: parsed.data.document, focus: parsed.data.focus ?? null }),
     messages: await convertToModelMessages(messages.slice(-MAX_HISTORY)),
     onEnd: run.onEnd,
     onError: run.onError,

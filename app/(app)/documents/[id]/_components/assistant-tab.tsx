@@ -11,7 +11,9 @@ import { Button } from "~@/components/ui/button";
 import { ArrowUpIcon, LoaderCircleIcon, RefreshCwIcon, XIcon } from "~@/components/ui/icons";
 import { SidebarContent, SidebarFooter } from "~@/components/ui/sidebar";
 import { assistantMessageSchema, type AssistantMessageValues } from "~@/lib/ai/schemas";
+import { useAiEdits } from "~@/editor/extensions/ai-edits";
 import { useClearAssistant } from "../query";
+import { AssistantEdits } from "./assistant-edits";
 
 const starters = ["Summarise what this document says so far", "Suggest a stronger opening", "What is missing for the reader to decide?"];
 
@@ -21,12 +23,13 @@ function textOf(message: UIMessage) {
 
 export function AssistantTab({ id, initialMessages }: { id: string; initialMessages: UIMessage[] }) {
   const [editor] = useLexicalComposerContext();
+  const { focus, setFocus } = useAiEdits();
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
         api: `/documents/${id}/assistant`,
-        prepareSendMessagesRequest: ({ messages }) => ({
-          body: { message: { text: textOf(messages[messages.length - 1]) }, document: editor.read(() => $getRoot().getTextContent()) },
+        prepareSendMessagesRequest: ({ messages, body }) => ({
+          body: { message: { text: textOf(messages[messages.length - 1]) }, document: editor.read(() => $getRoot().getTextContent()), focus: typeof body?.focus === "string" ? body.focus : null },
         }),
       }),
     [id, editor],
@@ -44,13 +47,18 @@ export function AssistantTab({ id, initialMessages }: { id: string; initialMessa
   const send = form.handleSubmit(async ({ text }) => {
     form.reset();
     clearError();
-    await sendMessage({ text });
+    await sendMessage({ text }, { body: { focus } });
+    setFocus(null);
   });
 
   async function ask(text: string) {
     clearError();
-    await sendMessage({ text });
+    await sendMessage({ text }, { body: { focus } });
   }
+
+  useEffect(() => {
+    if (focus) document.getElementById("assistant-message")?.focus();
+  }, [focus]);
 
   async function startOver() {
     stop();
@@ -62,6 +70,7 @@ export function AssistantTab({ id, initialMessages }: { id: string; initialMessa
   return (
     <>
       <SidebarContent className="px-4 py-4">
+        <AssistantEdits />
         {messages.length === 0 ? (
           <div className="grid gap-3">
             <p className="m-0 text-sm text-muted-foreground">Ask about this document. Undocx reads what you have written, and follows your profile, voice and rules when the document uses them.</p>
@@ -106,6 +115,16 @@ export function AssistantTab({ id, initialMessages }: { id: string; initialMessa
         <div ref={endRef} />
       </SidebarContent>
       <SidebarFooter className="border-t border-sidebar-border p-3">
+        {focus ? (
+          <div className="mb-2 flex items-start justify-between gap-2 rounded-md bg-primary/5 px-3 py-2 text-xs text-muted-foreground">
+            <p className="m-0 line-clamp-2">
+              Asking about <span className="text-foreground">“{focus}”</span>
+            </p>
+            <Button size="icon" variant="ghost" aria-label="Stop asking about this passage" className="-mt-1 -mr-1 size-6" onClick={() => setFocus(null)}>
+              <XIcon className="size-3" />
+            </Button>
+          </div>
+        ) : null}
         <form onSubmit={send} noValidate className="flex items-end gap-2 rounded-md border border-input bg-card p-2 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ring">
           <label htmlFor="assistant-message" className="sr-only">
             Message for Undocx
