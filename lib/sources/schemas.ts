@@ -29,3 +29,11 @@ export const renameSourceSchema = z.object({ title });
 export type TextSourceValues = z.infer<typeof textSourceSchema>;
 export type LinkSourceValues = z.infer<typeof linkSourceSchema>;
 export type RenameSourceValues = z.infer<typeof renameSourceSchema>;
+
+export const sourceSearchSchema = z.object({
+  query: z.string().trim().max(sourceLimits.searchQuery).default(""),
+  offset: z.number().int().min(0).max(10_000).default(0),
+  excludeDocumentId: z.string().max(64).optional(),
+});
+
+export type SourceSearchInput = z.input<typeof sourceSearchSchema>;

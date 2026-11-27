@@ -5,10 +5,10 @@ import { requireUserId } from "~@/lib/auth/session";
 import type { FormState } from "~@/lib/context/limits";
 import { countWords } from "~@/lib/context/limits";
 import { findDocument } from "~@/lib/db/repository/document";
-import { attachSources, countDocumentSources, countSources, detachSource as detachSourceFor, insertSource, listSources as listSourcesFor, removeSource, renameSource as renameSourceFor } from "~@/lib/db/repository/source";
+import { attachSources, countDocumentSources, countSources, detachSource as detachSourceFor, insertSource, searchSources as searchSourcesFor, removeSource, renameSource as renameSourceFor } from "~@/lib/db/repository/source";
 import { deleteObject } from "~@/lib/storage/s3";
 import { sourceLimits } from "./limits";
-import { linkSourceSchema, renameSourceSchema, textSourceSchema, type LinkSourceValues, type RenameSourceValues, type TextSourceValues } from "./schemas";
+import { linkSourceSchema, renameSourceSchema, sourceSearchSchema, textSourceSchema, type SourceSearchInput, type LinkSourceValues, type RenameSourceValues, type TextSourceValues } from "./schemas";
 
 export type CreatedSource = { id: string; kind: "file" | "text" | "link"; title: string; url: string | null };
 export type CreateResult = { source: CreatedSource } | { error: string };
@@ -27,8 +27,10 @@ async function checkRoom(userId: string, documentId: string | undefined, isNew: 
   return null;
 }
 
-export async function listSources() {
-  return listSourcesFor(await requireUserId());
+export async function searchSources(input: SourceSearchInput) {
+  const parsed = sourceSearchSchema.safeParse(input);
+  const { query, offset, excludeDocumentId } = parsed.success ? parsed.data : { query: "", offset: 0, excludeDocumentId: undefined };
+  return searchSourcesFor(await requireUserId(), { query, offset, limit: sourceLimits.pageSize, excludeDocumentId });
 }
 
 export async function createTextSource(values: TextSourceValues, documentId?: string): Promise<CreateResult> {

@@ -1,31 +1,59 @@
 "use client";
 
-import useSWR from "swr";
+import { useSWRConfig } from "swr";
+import useSWRInfinite from "swr/infinite";
 import useSWRMutation from "swr/mutation";
-import { attachSource, createLinkSource, createTextSource, deleteSource, detachSource, listSources, renameSource, type CreatedSource } from "./actions";
+import { useDebouncedValue } from "~@/hooks/use-debounced-value";
+import { attachSource, createLinkSource, createTextSource, deleteSource, detachSource, renameSource, searchSources, type CreatedSource } from "./actions";
+import { sourceLimits } from "./limits";
 import type { LinkSourceValues, RenameSourceValues, TextSourceValues } from "./schemas";
 
 export const sourcesKey = "sources";
 
-export type SourceSummary = Awaited<ReturnType<typeof listSources>>[number];
+export type SourcePage = Awaited<ReturnType<typeof searchSources>>;
+export type SourceSummary = SourcePage["items"][number];
 
-export function useSources(initial?: SourceSummary[]) {
-  return useSWR(sourcesKey, () => listSources(), { fallbackData: initial });
+export function useSourceSearch({ query, excludeDocumentId, initial }: { query: string; excludeDocumentId?: string; initial?: SourcePage }) {
+  const trimmed = query.trim();
+  const debounced = useDebouncedValue(trimmed, sourceLimits.searchDelay);
+  const { data, size, setSize, isLoading, isValidating } = useSWRInfinite(
+    (index: number, previous: SourcePage | null) => (previous && !previous.hasMore ? null : ([sourcesKey, debounced, excludeDocumentId ?? "", index] as const)),
+    ([, text, exclude, index]) => searchSources({ query: text, excludeDocumentId: exclude || undefined, offset: index * sourceLimits.pageSize }),
+    { keepPreviousData: true, fallbackData: !debounced && !excludeDocumentId && initial ? [initial] : undefined },
+  );
+  const pages = data ?? [];
+  return {
+    items: pages.flatMap((page) => page.items),
+    hasMore: pages[pages.length - 1]?.hasMore ?? false,
+    isLoading,
+    isWaiting: trimmed !== debounced,
+    isFetching: isValidating,
+    isLoadingMore: size > pages.length,
+    loadMore: () => void setSize(size + 1),
+  };
+}
+
+function useSourceMutation<Arg, Result>(fetcher: (arg: Arg) => Promise<Result>) {
+  const { mutate } = useSWRConfig();
+  return useSWRMutation(sourcesKey, (_key, { arg }: { arg: Arg }) => fetcher(arg), {
+    revalidate: false,
+    onSuccess: () => mutate((key) => (Array.isArray(key) && key[0] === sourcesKey) || (typeof key === "string" && key.startsWith("$inf$") && key.includes(sourcesKey))),
+  });
 }
 
 export function useCreateTextSource(documentId?: string) {
-  return useSWRMutation(sourcesKey, (_key, { arg }: { arg: TextSourceValues }) => createTextSource(arg, documentId));
+  return useSourceMutation((values: TextSourceValues) => createTextSource(values, documentId));
 }
 
 export function useCreateLinkSource(documentId?: string) {
-  return useSWRMutation(sourcesKey, (_key, { arg }: { arg: LinkSourceValues }) => createLinkSource(arg, documentId));
+  return useSourceMutation((values: LinkSourceValues) => createLinkSource(values, documentId));
 }
 
 export function useUploadSource(documentId?: string) {
-  return useSWRMutation(sourcesKey, async (_key, { arg }: { arg: { file: File; title: string } }): Promise<{ source: CreatedSource }> => {
+  return useSourceMutation(async ({ file, title }: { file: File; title: string }): Promise<{ source: CreatedSource }> => {
     const form = new FormData();
-    form.set("file", arg.file);
-    if (arg.title.trim()) form.set("title", arg.title.trim());
+    form.set("file", file);
+    if (title.trim()) form.set("title", title.trim());
     if (documentId) form.set("documentId", documentId);
     const response = await fetch("/library/sources/upload", { method: "POST", body: form });
     const body = (await response.json().catch(() => null)) as { source?: CreatedSource; error?: string } | null;
@@ -35,17 +63,17 @@ export function useUploadSource(documentId?: string) {
 }
 
 export function useRenameSource(id: string) {
-  return useSWRMutation(sourcesKey, (_key, { arg }: { arg: RenameSourceValues }) => renameSource(id, arg));
+  return useSourceMutation((values: RenameSourceValues) => renameSource(id, values));
 }
 
 export function useDeleteSource(id: string) {
-  return useSWRMutation(sourcesKey, () => deleteSource(id));
+  return useSourceMutation(() => deleteSource(id));
 }
 
 export function useAttachSource(documentId: string) {
-  return useSWRMutation(sourcesKey, (_key, { arg }: { arg: string }) => attachSource(documentId, arg));
+  return useSourceMutation((sourceId: string) => attachSource(documentId, sourceId));
 }
 
 export function useDetachSource(documentId: string) {
-  return useSWRMutation(sourcesKey, (_key, { arg }: { arg: string }) => detachSource(documentId, arg));
+  return useSourceMutation((sourceId: string) => detachSource(documentId, sourceId));
 }

@@ -16,12 +16,6 @@ export const auth = betterAuth({
       prompt: "select_account",
     },
   },
-  session: {
-    cookieCache: {
-      enabled: true,
-      maxAge: 5 * 60,
-    },
-  },
   plugins: [nextCookies()],
 });
 

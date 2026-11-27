@@ -3,7 +3,6 @@ import { Suspense } from "react";
 import { getCurrentUser } from "~@/lib/auth/session";
 import { listProfiles } from "~@/lib/db/repository/profile";
 import { listRuleSets } from "~@/lib/db/repository/rule-set";
-import { listSources } from "~@/lib/db/repository/source";
 import { listVoices } from "~@/lib/db/repository/voice";
 import { DocumentsHeader } from "../_components/documents-header";
 import { NewDocumentForm } from "./_components/new-document-form";
@@ -15,13 +14,12 @@ export const metadata: Metadata = {
 
 async function NewDocument() {
   const user = await getCurrentUser();
-  const [profiles, voices, ruleSets, sources] = await Promise.all([listProfiles(user.id), listVoices(user.id), listRuleSets(user.id), listSources(user.id)]);
+  const [profiles, voices, ruleSets] = await Promise.all([listProfiles(user.id), listVoices(user.id), listRuleSets(user.id)]);
   return (
     <NewDocumentForm
       profiles={profiles.map((profile) => ({ id: profile.id, name: profile.name, isDefault: profile.isDefault }))}
       voices={voices.map((voice) => ({ id: voice.id, name: voice.name }))}
       ruleSets={ruleSets.map((set) => ({ id: set.id, name: set.name }))}
-      sources={sources}
     />
   );
 }

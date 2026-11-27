@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, asc, count, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
 import { connection } from "next/server";
 import { db } from "~@/lib/db";
 import { asset, document, documentSource, source } from "~@/lib/db/schema";
@@ -8,9 +8,22 @@ import { asset, document, documentSource, source } from "~@/lib/db/schema";
 export type NewSource = { kind: "file" | "text" | "link"; title: string; url?: string | null; content?: string; wordCount?: number };
 export type NewAsset = { key: string; filename: string; mimeType: string; size: number };
 
-export async function listSources(userId: string) {
+export type SourceSearch = { query?: string; limit?: number; offset?: number; excludeDocumentId?: string };
+
+function likePattern(query: string) {
+  return `%${query.replace(/[\\%_]/g, "\\$&")}%`;
+}
+
+export async function searchSources(userId: string, { query = "", limit = 20, offset = 0, excludeDocumentId }: SourceSearch = {}) {
   await connection();
-  return db
+  const term = query.trim();
+  const conditions = [eq(source.userId, userId)];
+  if (term) {
+    const pattern = likePattern(term);
+    conditions.push(or(ilike(source.title, pattern), ilike(asset.filename, pattern), ilike(source.url, pattern))!);
+  }
+  if (excludeDocumentId) conditions.push(sql`not exists (select 1 from ${documentSource} where ${documentSource.sourceId} = ${source.id} and ${documentSource.documentId} = ${excludeDocumentId})`);
+  const rows = await db
     .select({
       id: source.id,
       kind: source.kind,
@@ -23,8 +36,11 @@ export async function listSources(userId: string) {
     })
     .from(source)
     .leftJoin(asset, eq(asset.id, source.assetId))
-    .where(eq(source.userId, userId))
-    .orderBy(desc(source.updatedAt));
+    .where(and(...conditions))
+    .orderBy(desc(source.updatedAt), desc(source.id))
+    .limit(limit + 1)
+    .offset(offset);
+  return { items: rows.slice(0, limit), hasMore: rows.length > limit };
 }
 
 export async function findSource(userId: string, id: string) {

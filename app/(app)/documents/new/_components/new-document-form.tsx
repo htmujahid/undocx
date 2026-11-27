@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { AddSourceDialog } from "~@/components/sources/add-source-dialog";
+import { SourceSearch, sourceMeta } from "~@/components/sources/source-search";
+import { XIcon } from "~@/components/ui/icons";
 import { Button } from "~@/components/ui/button";
 import { TextareaField } from "~@/components/ui/form-fields";
 import { LoaderCircleIcon } from "~@/components/ui/icons";
@@ -13,7 +15,6 @@ import { OptionSelect } from "~@/components/ui/option-select";
 import { documentLimits } from "~@/lib/documents/limits";
 import { startSchema, type StartValues } from "~@/lib/documents/schemas";
 import { documentTypes } from "~@/lib/documents/types";
-import { useSources, type SourceSummary } from "~@/lib/sources/query";
 import { useCreateDocument } from "../../query";
 import { startDocument } from "../actions";
 
@@ -38,7 +39,7 @@ function PickSelect({ label, hint, items, emptyHint, value, onChange }: { label:
   return <OptionSelect label={label} hint={hint} value={value} options={items.map((item) => ({ value: item.id, label: item.name }))} notSetLabel="None" onChange={onChange} />;
 }
 
-export function NewDocumentForm({ profiles, voices, ruleSets, sources }: { profiles: (Pick & { isDefault: boolean })[]; voices: Pick[]; ruleSets: Pick[]; sources: SourceSummary[] }) {
+export function NewDocumentForm({ profiles, voices, ruleSets }: { profiles: (Pick & { isDefault: boolean })[]; voices: Pick[]; ruleSets: Pick[] }) {
   const router = useRouter();
   const { trigger: createBlank, isMutating: isCreatingBlank } = useCreateDocument();
   const form = useForm<StartValues>({
@@ -47,7 +48,12 @@ export function NewDocumentForm({ profiles, voices, ruleSets, sources }: { profi
   });
   const { isSubmitting, errors } = form.formState;
   const [isAdding, setIsAdding] = useState(false);
-  const { data: library = sources } = useSources(sources);
+  const [picked, setPicked] = useState<{ id: string; title: string }[]>([]);
+
+  function pick(next: { id: string; title: string }[]) {
+    setPicked(next);
+    form.setValue("sourceIds", next.map((item) => item.id));
+  }
 
   const submit = form.handleSubmit(async (values) => {
     const result = await startDocument(values);
@@ -111,26 +117,32 @@ export function NewDocumentForm({ profiles, voices, ruleSets, sources }: { profi
             Add a source
           </Button>
         </div>
-        <Controller
-          control={form.control}
-          name="sourceIds"
-          render={({ field }) =>
-            library.length === 0 ? (
-              <p className="m-0 text-sm text-muted-foreground">No sources yet.</p>
-            ) : (
-              <ul aria-label="Sources to use" className="m-0 grid max-h-56 list-none gap-1 overflow-y-auto p-0">
-                {library.map((item) => (
-                  <li key={item.id}>
-                    <label className="flex cursor-pointer items-center gap-3 rounded-md px-2 py-1.5 text-sm hover:bg-muted">
-                      <input type="checkbox" checked={field.value.includes(item.id)} onChange={(event) => field.onChange(event.target.checked ? [...field.value, item.id] : field.value.filter((id) => id !== item.id))} className="size-4 accent-primary" />
-                      <span className="min-w-0 flex-1 truncate text-foreground">{item.title}</span>
-                      <span className="shrink-0 text-xs text-muted-foreground">{item.kind === "link" ? "Link" : `${item.wordCount.toLocaleString()} words`}</span>
-                    </label>
-                  </li>
-                ))}
-              </ul>
-            )
-          }
+        {picked.length > 0 ? (
+          <ul aria-label="Sources to use" className="m-0 flex list-none flex-wrap gap-2 p-0">
+            {picked.map((item) => (
+              <li key={item.id} className="inline-flex max-w-full items-center gap-1 rounded-full border border-input bg-background py-1 pr-1 pl-3 text-sm text-foreground">
+                <span className="min-w-0 truncate">{item.title}</span>
+                <Button type="button" variant="ghost" size="icon" aria-label={`Remove ${item.title}`} className="size-6 rounded-full" onClick={() => pick(picked.filter((entry) => entry.id !== item.id))}>
+                  <XIcon className="size-3" />
+                </Button>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+        <SourceSearch
+          emptyText="No sources yet. Add one to use it here and in any other document."
+          renderItem={(item) => {
+            const isPicked = picked.some((entry) => entry.id === item.id);
+            return (
+              <label className="flex cursor-pointer items-center gap-3 rounded-md px-2 py-1.5 text-sm hover:bg-muted">
+                <input type="checkbox" checked={isPicked} onChange={(event) => pick(event.target.checked ? [...picked, { id: item.id, title: item.title }] : picked.filter((entry) => entry.id !== item.id))} className="size-4 accent-primary" />
+                <span className="grid min-w-0 flex-1">
+                  <span className="truncate text-foreground">{item.title}</span>
+                  <span className="truncate text-xs text-muted-foreground">{sourceMeta(item)}</span>
+                </span>
+              </label>
+            );
+          }}
         />
       </section>
 
@@ -153,7 +165,7 @@ export function NewDocumentForm({ profiles, voices, ruleSets, sources }: { profi
     <AddSourceDialog
       open={isAdding}
       onOpenChange={setIsAdding}
-      onAdded={(created) => form.setValue("sourceIds", [...form.getValues("sourceIds"), created.id])}
+      onAdded={(created) => pick([...picked, { id: created.id, title: created.title }])}
     />
     </>
   );

@@ -7,17 +7,17 @@ import { Button, buttonVariants } from "~@/components/ui/button";
 import { Dialog, DialogBackdrop, DialogClose, DialogContent, DialogDescription, DialogTitle } from "~@/components/ui/dialog";
 import { InputField, TextareaField } from "~@/components/ui/form-fields";
 import { LoaderCircleIcon, XIcon } from "~@/components/ui/icons";
+import { SourceSearch, sourceMeta } from "~@/components/sources/source-search";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "~@/components/ui/tabs";
 import type { CreatedSource } from "~@/lib/sources/actions";
 import { extensionOf, sourceLimits } from "~@/lib/sources/limits";
-import { useAttachSource, useCreateLinkSource, useCreateTextSource, useSources, useUploadSource } from "~@/lib/sources/query";
+import { useAttachSource, useCreateLinkSource, useCreateTextSource, useUploadSource, type SourceSummary } from "~@/lib/sources/query";
 import { linkSourceSchema, textSourceSchema, type LinkSourceValues, type TextSourceValues } from "~@/lib/sources/schemas";
 
 type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   documentId?: string;
-  attachedIds?: string[];
   onAdded: (source: CreatedSource) => void;
 };
 
@@ -129,42 +129,40 @@ function LinkPanel({ documentId, onAdded }: { documentId?: string; onAdded: (sou
   );
 }
 
-function LibraryPanel({ documentId, attachedIds, onAdded }: { documentId: string; attachedIds: string[]; onAdded: (source: CreatedSource) => void }) {
-  const { data = [], isLoading } = useSources();
+function LibraryPanel({ documentId, onAdded }: { documentId: string; onAdded: (source: CreatedSource) => void }) {
   const { trigger, isMutating } = useAttachSource(documentId);
   const [problem, setProblem] = useState<string | null>(null);
-  const available = data.filter((item) => !attachedIds.includes(item.id));
 
-  async function attach(item: (typeof data)[number]) {
+  async function attach(item: SourceSummary) {
     setProblem(null);
     const result = await trigger(item.id);
     if (result && "error" in result && result.error) return setProblem(result.error);
     onAdded({ id: item.id, kind: item.kind, title: item.title, url: item.url });
   }
 
-  if (isLoading) return <p className="m-0 text-sm text-muted-foreground">Loading your library…</p>;
-  if (available.length === 0) return <p className="m-0 text-sm text-muted-foreground">{data.length === 0 ? "Your library has no sources yet. Upload a file, paste text or add a link." : "Everything in your library is already in this document."}</p>;
   return (
     <div className="grid gap-3">
-      <ul className="m-0 grid max-h-72 list-none gap-1 overflow-y-auto p-0">
-        {available.map((item) => (
-          <li key={item.id} className="flex items-center justify-between gap-3 rounded-md px-2 py-1.5 hover:bg-muted">
+      <SourceSearch
+        excludeDocumentId={documentId}
+        emptyText="Nothing left to add. Everything in your library is already in this document, or your library is empty."
+        renderItem={(item) => (
+          <div className="flex items-center justify-between gap-3 rounded-md px-2 py-1.5 hover:bg-muted">
             <span className="grid min-w-0">
               <span className="truncate text-sm text-foreground">{item.title}</span>
-              <span className="text-xs text-muted-foreground">{item.kind === "link" ? "Link" : `${item.wordCount.toLocaleString()} words`}</span>
+              <span className="truncate text-xs text-muted-foreground">{sourceMeta(item)}</span>
             </span>
             <Button size="sm" variant="secondary" disabled={isMutating} onClick={() => void attach(item)}>
               Add
             </Button>
-          </li>
-        ))}
-      </ul>
+          </div>
+        )}
+      />
       <Failure message={problem} />
     </div>
   );
 }
 
-export function AddSourceDialog({ open, onOpenChange, documentId, attachedIds = [], onAdded }: Props) {
+export function AddSourceDialog({ open, onOpenChange, documentId, onAdded }: Props) {
   const hasLibrary = Boolean(documentId);
   const handleAdded = (source: CreatedSource) => {
     onAdded(source);
@@ -192,7 +190,7 @@ export function AddSourceDialog({ open, onOpenChange, documentId, attachedIds = 
           </TabsList>
           {hasLibrary && documentId ? (
             <TabsPanel value="library">
-              <LibraryPanel documentId={documentId} attachedIds={attachedIds} onAdded={handleAdded} />
+              <LibraryPanel documentId={documentId} onAdded={handleAdded} />
             </TabsPanel>
           ) : null}
           <TabsPanel value="upload">

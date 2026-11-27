@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { ReactNode } from "react";
 import { Button } from "~@/components/ui/button";
 import { LoaderCircleIcon, PlusIcon } from "~@/components/ui/icons";
 import { cn } from "~@/lib/utils";
@@ -19,6 +20,8 @@ export function ListPane({
   createLabel,
   createAction,
   onCreate,
+  search,
+  footer,
   items,
   emptyText,
 }: {
@@ -26,6 +29,8 @@ export function ListPane({
   createLabel: string;
   createAction?: () => Promise<void>;
   onCreate?: () => void;
+  search?: ReactNode;
+  footer?: ReactNode;
   items: ListItem[];
   emptyText: string;
 }) {
@@ -43,6 +48,7 @@ export function ListPane({
           </Button>
         </form>
       </div>
+      {search ? <div className="px-4 pb-2">{search}</div> : null}
       {items.length === 0 ? (
         <p className="m-0 px-4 py-6 text-sm leading-normal text-muted-foreground">
           {emptyText}
@@ -80,6 +86,7 @@ export function ListPane({
           })}
         </ul>
       )}
+      {footer ? <div className="shrink-0 px-4 pb-3">{footer}</div> : null}
     </>
   );
 }

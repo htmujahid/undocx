@@ -94,7 +94,7 @@ export function SourcesSection({ documentId }: { documentId: string }) {
 }
 
 function AddSource({ documentId }: { documentId: string }) {
-  const { sources, attach } = useSources();
+  const { attach } = useSources();
   const { sourceForm: open, setSourceForm: setOpen } = usePanel();
   return (
     <>
@@ -104,7 +104,7 @@ function AddSource({ documentId }: { documentId: string }) {
           Add a source
         </Button>
       </div>
-      <AddSourceDialog open={open} onOpenChange={setOpen} documentId={documentId} attachedIds={sources.map((source) => source.id)} onAdded={(created) => attach({ id: created.id, title: created.title, url: created.url ?? undefined })} />
+      <AddSourceDialog open={open} onOpenChange={setOpen} documentId={documentId} onAdded={(created) => attach({ id: created.id, title: created.title, url: created.url ?? undefined })} />
     </>
   );
 }

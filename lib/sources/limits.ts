@@ -5,6 +5,9 @@ export const sourceLimits = {
   bytes: 10 * 1024 * 1024,
   perUser: 100,
   perDocument: 20,
+  pageSize: 20,
+  searchQuery: 100,
+  searchDelay: 300,
   extensions: ["txt", "md", "markdown", "csv", "pdf", "docx"],
 } as const;
 
