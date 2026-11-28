@@ -24,6 +24,7 @@ export default function PrivacyPage() {
       </Clause>
       <Clause number="03" title="Deletion">
         <p>Delete a document and its brief, notes, saved versions and assistant conversation are deleted with it. The sources you attached stay in your library, because other documents may use them.</p>
+        <p>Your chats are kept so you can reopen them, up to your latest 100. Delete a chat from the chat page and it is removed straight away.</p>
         <p>Delete a folder and its documents are kept and move to Unfiled. A tag disappears once no document uses it.</p>
         <p>Delete a source and its text and uploaded file are deleted. Documents that cited it keep their text and citation numbers, but the source details are gone.</p>
         <p>Delete your account, from the Account page, and we delete straight away: your account and sign-in, every document with its notes, versions, briefs, search index and assistant conversations, your chat history, all your sources and their uploaded files, your writer profiles, voices and rule sets, your folders and tags, and the records of your AI requests. Your files are removed from storage first. If that fails, the account is not deleted, so nothing is left behind, and you can try again. Deleting an account cannot be undone and we cannot recover anything afterwards.</p>

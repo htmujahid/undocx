@@ -30,7 +30,7 @@ export function DocumentsToolbar({ query }: { query: ListQuery }) {
       </div>
       <Select value={query.sort} onValueChange={(next) => next && router.replace(listHref(query, { sort: next as DocumentSort }))}>
         <SelectLabel className="sr-only">Sort by</SelectLabel>
-        <SelectTrigger className="w-44 border border-input bg-card px-3">
+        <SelectTrigger className="h-9 w-44 border border-input bg-card px-3">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

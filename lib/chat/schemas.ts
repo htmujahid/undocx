@@ -8,6 +8,7 @@ export type ChatMessageValues = z.infer<typeof chatMessageSchema>;
 
 export const chatRequestSchema = z.object({
   message: chatMessageSchema,
+  threadId: z.string().uuid(),
   documentId: z.string().max(64).nullable().optional(),
 });
 
@@ -15,4 +16,4 @@ export type ChatSource = { n: number; documentId: string; title: string; section
 
 export type ChatMetadata = { sources: ChatSource[] };
 
-export const chatLimits = { excerpts: 8, minSimilarity: 0.3 } as const;
+export const chatLimits = { excerpts: 8, minSimilarity: 0.3, title: 60, listed: 50, kept: 100 } as const;

@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
+const appHost = new URL(process.env.BETTER_AUTH_URL ?? "http://localhost:3000").hostname;
+
 const nextConfig: NextConfig = {
+  allowedDevOrigins: [appHost],
   experimental: {
     agentFeedback: true,
   },

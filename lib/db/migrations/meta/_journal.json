@@ -71,6 +71,13 @@
       "when": 1795830786421,
       "tag": "0009_organization",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1795834025383,
+      "tag": "0010_chat_history",
+      "breakpoints": true
     }
   ]
 }

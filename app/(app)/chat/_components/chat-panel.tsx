@@ -3,30 +3,40 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useChat, type UIMessage } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
+import { useSWRConfig } from "swr";
 import { Button } from "~@/components/ui/button";
-import { ArrowUpIcon, LoaderCircleIcon, RefreshCwIcon } from "~@/components/ui/icons";
-import { chatMessageSchema, type ChatMessageValues, type ChatMetadata } from "~@/lib/chat/schemas";
-import { clearConversation } from "../actions";
+import { DeleteDialog } from "~@/components/delete-dialog";
+import { ArrowUpIcon, LoaderCircleIcon, PlusIcon } from "~@/components/ui/icons";
+import { chatLimits, chatMessageSchema, type ChatMessageValues, type ChatMetadata } from "~@/lib/chat/schemas";
+import { chatThreadsKey, useDeleteChatThread, useStartChat } from "../query";
 import { Answer } from "./chat-answer";
 import { SourceList } from "./chat-sources";
 
 const starters = ["Which document mentions a deadline?", "What have I written about pricing?", "Find where I describe our refund policy"];
 
-const transport = new DefaultChatTransport({
-  api: "/chat/ask",
-  prepareSendMessagesRequest: ({ messages }) => ({ body: { message: { text: textOf(messages[messages.length - 1]) } } }),
-});
-
 function textOf(message: UIMessage) {
   return message.parts.map((part) => (part.type === "text" ? part.text : "")).join("");
 }
 
-export function ChatPanel({ initialMessages }: { initialMessages: UIMessage[] }) {
-  const { messages, sendMessage, setMessages, status, error, stop, clearError } = useChat({ id: "library-chat", messages: initialMessages, transport });
+export function ChatPanel({ threadId, title, initialMessages }: { threadId: string; title: string | null; initialMessages: UIMessage[] }) {
+  const router = useRouter();
+  const { mutate } = useSWRConfig();
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: "/chat/ask",
+        prepareSendMessagesRequest: ({ messages }) => ({ body: { message: { text: textOf(messages[messages.length - 1]) }, threadId } }),
+      }),
+    [threadId],
+  );
+  const { messages, sendMessage, status, error, clearError } = useChat({ id: threadId, messages: initialMessages, transport, onFinish: () => void mutate(chatThreadsKey) });
+  const heading = title ?? (messages[0] ? textOf(messages[0]).slice(0, chatLimits.title) : "Ask your documents.");
+  const { trigger: startChat, isMutating: isStarting } = useStartChat();
+  const { trigger: remove } = useDeleteChatThread(threadId);
   const form = useForm<ChatMessageValues>({ resolver: zodResolver(chatMessageSchema), defaultValues: { text: "" } });
-  const [isClearing, setIsClearing] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
   const isBusy = status === "submitted" || status === "streaming";
 
@@ -45,13 +55,9 @@ export function ChatPanel({ initialMessages }: { initialMessages: UIMessage[] })
     await sendMessage({ text });
   }
 
-  async function startOver() {
-    stop();
-    setIsClearing(true);
-    await clearConversation();
-    setMessages([]);
-    clearError();
-    setIsClearing(false);
+  async function startNew() {
+    const { id } = await startChat();
+    router.push(`/chat/${id}`);
   }
 
   return (
@@ -59,15 +65,26 @@ export function ChatPanel({ initialMessages }: { initialMessages: UIMessage[] })
       <main className="min-h-0 flex-1 overflow-y-auto">
         <div className="mx-auto grid w-full max-w-2xl gap-6 px-4 py-10 sm:px-6">
           <div className="flex items-end justify-between gap-4">
-            <div>
+            <div className="min-w-0">
               <p className="m-0 font-mono text-[0.65rem] tracking-[0.15em] text-muted-foreground uppercase">Chat</p>
-              <h1 className="m-0 mt-1 font-serif text-3xl font-medium tracking-tight text-foreground">Ask your documents.</h1>
+              <h1 className="m-0 mt-1 truncate font-serif text-3xl font-medium tracking-tight text-foreground">{heading}</h1>
             </div>
             {messages.length > 0 ? (
-              <Button variant="ghost" size="sm" disabled={isClearing || isBusy} onClick={() => void startOver()}>
-                <RefreshCwIcon />
-                New chat
-              </Button>
+              <div className="flex shrink-0 items-center gap-1">
+                <Button variant="ghost" size="sm" disabled={isStarting || isBusy} onClick={() => void startNew()}>
+                  <PlusIcon />
+                  New chat
+                </Button>
+                <DeleteDialog
+                  label="Delete this chat"
+                  title="Delete this chat?"
+                  description="The conversation is deleted for good. Your documents are not affected."
+                  action={async () => {
+                    await remove();
+                    router.push("/chat");
+                  }}
+                />
+              </div>
             ) : null}
           </div>
 

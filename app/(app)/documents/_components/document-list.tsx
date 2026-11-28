@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "~@/components/ui/button";
 import { FileTextIcon, FolderSimpleIcon, LockIcon } from "~@/components/ui/icons";
+import { relativeDay } from "~@/lib/format-date";
 import { defaultListQuery, listHref, type ListQuery } from "~@/lib/documents/list-query";
 import { DocumentActions } from "./document-actions";
 import { DocumentPagination } from "./document-pagination";
@@ -27,14 +28,6 @@ type Props = {
   tags: Counted[];
   counts: { all: number; unfiled: number };
 };
-
-function updatedLabel(date: Date) {
-  const value = new Date(date);
-  const days = Math.floor((Date.now() - value.getTime()) / 86_400_000);
-  if (days < 1 && new Date().getDate() === value.getDate()) return `Today, ${value.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`;
-  if (days < 2) return "Yesterday";
-  return value.toLocaleDateString([], { day: "numeric", month: "long" });
-}
 
 function isFiltered(query: ListQuery) {
   return Boolean(query.q) || query.folder !== defaultListQuery.folder || query.tag !== null;
@@ -106,7 +99,7 @@ export function DocumentList({ query, result, folders, tags, counts }: Props) {
                     ) : null}
                   </div>
                   <span className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-                    <span suppressHydrationWarning>{updatedLabel(doc.updatedAt)}</span>
+                    <span suppressHydrationWarning>{relativeDay(doc.updatedAt)}</span>
                     <span aria-hidden="true">·</span>
                     <span>{doc.wordCount.toLocaleString()} words</span>
                     {doc.lockedCount > 0 ? (

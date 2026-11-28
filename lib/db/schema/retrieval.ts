@@ -57,18 +57,32 @@ export const indexJob = pgTable(
   (table) => [index("index_job_requested_idx").on(table.requestedAt)],
 );
 
-export const chatMessage = pgTable(
-  "chat_message",
+export const chatThread = pgTable(
+  "chat_thread",
   {
     id: text().primaryKey().$defaultFn(newId),
     userId: text()
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
+    title: text().notNull(),
+    createdAt: timestamp().defaultNow().notNull(),
+    updatedAt: timestamp().defaultNow().notNull(),
+  },
+  (table) => [index("chat_thread_user_updated_idx").on(table.userId, table.updatedAt)],
+);
+
+export const chatMessage = pgTable(
+  "chat_message",
+  {
+    id: text().primaryKey().$defaultFn(newId),
+    threadId: text()
+      .notNull()
+      .references(() => chatThread.id, { onDelete: "cascade" }),
     position: integer().notNull(),
     role: text().notNull(),
     parts: jsonb().notNull(),
     metadata: jsonb(),
     createdAt: timestamp().defaultNow().notNull(),
   },
-  (table) => [index("chat_message_user_idx").on(table.userId, table.position)],
+  (table) => [index("chat_message_thread_idx").on(table.threadId, table.position)],
 );

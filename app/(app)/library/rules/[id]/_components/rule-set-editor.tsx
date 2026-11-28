@@ -8,7 +8,7 @@ import { ruleSetSchema, type RuleSetValues } from "~@/lib/context/schemas";
 import { useRouter } from "next/navigation";
 import { useDeleteRuleSet, useSetSpelling, useUpdateRuleSet } from "../../query";
 import { limits, spellingOptions } from "~@/lib/context/limits";
-import { DeleteDialog } from "../../../_components/delete-dialog";
+import { DeleteDialog } from "~@/components/delete-dialog";
 import { DetailHeader } from "../../../_components/detail-header";
 import { FormSection } from "../../../_components/empty-pane";
 import { OptionSelect } from "~@/components/ui/option-select";

@@ -10,7 +10,7 @@ export function DocumentsHeader({ hasNewButton = true }: { hasNewButton?: boolea
         Undocx<span className="text-primary">.</span>
       </Link>
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" render={<Link href="/chat" />}>
+        <Button variant="ghost" size="sm" render={<Link href="/chat" prefetch={false} />}>
           <AssistantIcon />
           Ask
         </Button>

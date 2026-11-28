@@ -8,7 +8,7 @@ import { InputField } from "~@/components/ui/form-fields";
 import { sourceLimits } from "~@/lib/sources/limits";
 import { useDeleteSource, useRenameSource } from "~@/lib/sources/query";
 import { renameSourceSchema, type RenameSourceValues } from "~@/lib/sources/schemas";
-import { DeleteDialog } from "../../../_components/delete-dialog";
+import { DeleteDialog } from "~@/components/delete-dialog";
 import { DetailHeader } from "../../../_components/detail-header";
 import { FormSection } from "../../../_components/empty-pane";
 

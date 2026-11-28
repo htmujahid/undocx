@@ -45,7 +45,7 @@ It is built for people who write documents that have to be right: proposals, rep
 - **Folders** and **tags** to organise, with filters and pagination
 
 ### Ask your documents
-Search everything you have written in one place and get an answer with a citation for each claim. Undocx finds the passages that matter across all your documents and answers only from them. If the answer is not there, it says so.
+Search everything you have written in one place and get an answer with a citation for each claim. Undocx finds the passages that matter across all your documents and answers only from them. If the answer is not there, it says so. Every chat is saved, so you can reopen earlier ones from the history list or delete them.
 
 ### Export
 Word, OpenDocument, PDF, Markdown, HTML and JSON. Citations become footnotes or a references list, and locked text exports as ordinary text. Nothing in an exported file depends on Undocx.

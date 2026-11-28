@@ -9,7 +9,7 @@ import { Switch } from "~@/components/ui/switch";
 import { limits } from "~@/lib/context/limits";
 import { audienceLevels } from "~@/lib/context/options";
 import { profileSchema, type ProfileValues } from "~@/lib/context/schemas";
-import { DeleteDialog } from "../../../_components/delete-dialog";
+import { DeleteDialog } from "~@/components/delete-dialog";
 import { DetailHeader } from "../../../_components/detail-header";
 import { FormSection } from "../../../_components/empty-pane";
 import { OptionSelect } from "~@/components/ui/option-select";

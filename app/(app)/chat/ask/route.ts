@@ -4,7 +4,7 @@ import { callOptions } from "~@/lib/ai/options";
 import { authorize, beginRun, describeError, problem } from "~@/lib/ai/route";
 import { chatInstructions, standaloneInstructions } from "~@/lib/chat/prompts";
 import { chatLimits, chatRequestSchema, type ChatMetadata, type ChatSource } from "~@/lib/chat/schemas";
-import { listChatMessages, saveChatMessages } from "~@/lib/db/repository/chat";
+import { ensureChatThread, listChatMessages, saveChatMessages } from "~@/lib/db/repository/chat";
 import { searchChunks } from "~@/lib/db/repository/retrieval";
 import { embedTexts } from "~@/lib/retrieval/embed";
 import { runIndexJobs } from "~@/lib/retrieval/indexer";
@@ -19,14 +19,19 @@ export async function POST(request: Request) {
 
   const parsed = chatRequestSchema.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return problem(400, "That question could not be read.");
-  const { message, documentId } = parsed.data;
+  const { message, threadId, documentId } = parsed.data;
 
   const gate = await beginRun({ userId, kind: "chat", task: "chat", documentId: documentId ?? undefined });
   if (gate.denied) return gate.denied;
   const { run } = gate;
 
   try {
-    const previous = await listChatMessages(userId);
+    const thread = await ensureChatThread(userId, threadId, message.text.replace(/\s+/g, " ").slice(0, chatLimits.title));
+    if (!thread) {
+      await run.onAbort();
+      return problem(404, "This chat no longer exists.");
+    }
+    const previous = await listChatMessages(thread.id);
     let query = message.text;
     if (previous.length > 0) {
       const recent = previous.slice(-4).map((item) => `${item.role === "user" ? "User" : "Assistant"}: ${textOf(item).slice(0, 600)}`).join("\n");
@@ -75,7 +80,7 @@ export async function POST(request: Request) {
         messageMetadata: ({ part }): ChatMetadata | undefined => (part.type === "start" ? { sources } : undefined),
         onError: describeError,
         onEnd: async ({ messages: updated, responseMessage, outcome }) => {
-          await saveChatMessages(userId, outcome.status === "failed" || !responseMessage.parts.some((part) => part.type === "text" && part.text.trim()) ? updated.filter((item) => item.id !== responseMessage.id) : updated);
+          await saveChatMessages(thread.id, outcome.status === "failed" || !responseMessage.parts.some((part) => part.type === "text" && part.text.trim()) ? updated.filter((item) => item.id !== responseMessage.id) : updated);
         },
       }),
     });

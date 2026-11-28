@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { useDeleteVoice, useUpdateVoice } from "../../query";
 import { limits } from "~@/lib/context/limits";
 import { cn } from "~@/lib/utils";
-import { DeleteDialog } from "../../../_components/delete-dialog";
+import { DeleteDialog } from "~@/components/delete-dialog";
 import { DetailHeader } from "../../../_components/detail-header";
 import { FormSection } from "../../../_components/empty-pane";
 import { SampleRow } from "./sample-row";
