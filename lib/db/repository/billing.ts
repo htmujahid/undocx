@@ -42,13 +42,17 @@ export async function getEntitlement(userId: string) {
   return { plan, limits: plans[plan].limits, subscription: active, window };
 }
 
-export async function usageSince(userId: string, since: Date) {
+export async function usageIn(userId: string, since: Date, hourAgo: Date) {
   const [row] = await db
     .select({
-      micros: sql<number>`coalesce(sum(${aiRun.costMicros}), 0)`.mapWith(Number),
-      runs: sql<number>`count(*)`.mapWith(Number),
+      micros: sql<number>`coalesce(sum(${aiRun.costMicros}) filter (where ${aiRun.createdAt} >= ${since}), 0)`.mapWith(Number),
+      lastHour: sql<number>`count(*) filter (where ${aiRun.createdAt} >= ${hourAgo})`.mapWith(Number),
     })
     .from(aiRun)
-    .where(and(eq(aiRun.userId, userId), gte(aiRun.createdAt, since)));
+    .where(and(eq(aiRun.userId, userId), gte(aiRun.createdAt, since < hourAgo ? since : hourAgo)));
   return row;
+}
+
+export async function usageSince(userId: string, since: Date) {
+  return (await usageIn(userId, since, since)).micros;
 }

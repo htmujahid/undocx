@@ -90,13 +90,13 @@ export async function renameSource(userId: string, id: string, title: string) {
 }
 
 export async function removeSource(userId: string, id: string) {
-  const found = await findSource(userId, id);
-  if (!found) return null;
-  await db.transaction(async (tx) => {
-    await tx.delete(source).where(and(eq(source.id, id), eq(source.userId, userId)));
-    if (found.asset) await tx.delete(asset).where(eq(asset.id, found.asset.id));
+  return db.transaction(async (tx) => {
+    const [removed] = await tx.delete(source).where(and(eq(source.id, id), eq(source.userId, userId))).returning({ assetId: source.assetId });
+    if (!removed) return null;
+    if (!removed.assetId) return { assetKey: null };
+    const [file] = await tx.delete(asset).where(eq(asset.id, removed.assetId)).returning({ key: asset.key });
+    return { assetKey: file?.key ?? null };
   });
-  return { assetKey: found.asset?.key ?? null };
 }
 
 export async function listDocumentSources(userId: string, documentId: string, withContent = false) {

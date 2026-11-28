@@ -11,8 +11,6 @@ export const limits = {
   samplesMax: 10,
   ruleSetDescription: 300,
   ruleValue: 200,
-  rulesMax: 60,
-  perUser: 50,
 } as const;
 
 export const spellingOptions = [

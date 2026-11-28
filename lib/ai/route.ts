@@ -4,7 +4,7 @@ import { APICallError, LoadAPIKeyError } from "ai";
 import { getUserId } from "~@/lib/auth/session";
 import { insertRun } from "~@/lib/db/repository/ai";
 import { costMicros } from "~@/lib/billing/pricing";
-import { getEntitlement, usageSince } from "~@/lib/db/repository/billing";
+import { getEntitlement, usageIn } from "~@/lib/db/repository/billing";
 import { modelFor, type Task } from "./model";
 
 export function problem(status: number, error: string) {
@@ -41,11 +41,11 @@ export async function beginRun(base: { userId: string; kind: string; task: Task;
   const { plan, limits, window } = await getEntitlement(userId);
   const upgrade = plan === "free" ? " Upgrade to Pro for more." : "";
   const hour = new Date(Date.now() - 60 * 60 * 1000);
-  const [month, recent] = await Promise.all([usageSince(userId, window.start), usageSince(userId, hour)]);
-  if (month.micros >= limits.allowanceMicros) {
+  const usage = await usageIn(userId, window.start, hour);
+  if (usage.micros >= limits.allowanceMicros) {
     return { denied: problem(402, `You have used this period's AI allowance. It resets on ${dateFormat.format(window.end)}.${upgrade}`) };
   }
-  if (recent.runs >= limits.burstPerHour) {
+  if (usage.lastHour >= limits.burstPerHour) {
     return { denied: problem(429, `You have reached the hourly limit for AI requests. Try again later.${upgrade}`) };
   }
   if ((inFlight.get(userId) ?? 0) >= limits.concurrent) {

@@ -1,18 +1,14 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import { Button, buttonVariants } from "~@/components/ui/button";
+import { buttonVariants } from "~@/components/ui/button";
 import { Dialog, DialogBackdrop, DialogClose, DialogContent, DialogDescription, DialogTitle } from "~@/components/ui/dialog";
-import { InputField, TextareaField } from "~@/components/ui/form-fields";
-import { LoaderCircleIcon, XIcon } from "~@/components/ui/icons";
-import { SourceSearch, sourceMeta } from "~@/components/sources/source-search";
+import { XIcon } from "~@/components/ui/icons";
 import { Tabs, TabsList, TabsPanel, TabsTab } from "~@/components/ui/tabs";
 import type { CreatedSource } from "~@/lib/sources/actions";
-import { extensionOf, sourceLimits } from "~@/lib/sources/limits";
-import { useAttachSource, useCreateLinkSource, useCreateTextSource, useUploadSource, type SourceSummary } from "~@/lib/sources/query";
-import { linkSourceSchema, textSourceSchema, type LinkSourceValues, type TextSourceValues } from "~@/lib/sources/schemas";
+import { UploadPanel } from "./upload-source-panel";
+import { TextPanel } from "./text-source-panel";
+import { LinkPanel } from "./link-source-panel";
+import { LibraryPanel } from "./library-source-panel";
 
 type Props = {
   open: boolean;
@@ -20,147 +16,6 @@ type Props = {
   documentId?: string;
   onAdded: (source: CreatedSource) => void;
 };
-
-const accept = sourceLimits.extensions.map((extension) => `.${extension}`).join(",");
-
-function Failure({ message }: { message: string | null }) {
-  return message ? (
-    <p className="m-0 text-sm text-destructive" role="alert">
-      {message}
-    </p>
-  ) : null;
-}
-
-function UploadPanel({ documentId, onAdded }: { documentId?: string; onAdded: (source: CreatedSource) => void }) {
-  const { trigger, isMutating } = useUploadSource(documentId);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [file, setFile] = useState<File | null>(null);
-  const [title, setTitle] = useState("");
-  const [problem, setProblem] = useState<string | null>(null);
-
-  function choose(next: File | undefined) {
-    setProblem(null);
-    if (!next) return;
-    if (!(sourceLimits.extensions as readonly string[]).includes(extensionOf(next.name))) return setProblem(`Upload one of: ${sourceLimits.extensions.join(", ")}.`);
-    if (next.size > sourceLimits.bytes) return setProblem(`Files can be up to ${sourceLimits.bytes / 1024 / 1024} MB.`);
-    setFile(next);
-  }
-
-  async function submit() {
-    if (!file) return setProblem("Choose a file first.");
-    setProblem(null);
-    try {
-      const result = await trigger({ file, title });
-      onAdded(result.source);
-    } catch (error) {
-      setProblem(error instanceof Error ? error.message : "The file could not be uploaded.");
-    }
-  }
-
-  return (
-    <div className="grid gap-4">
-      <div className="grid gap-2">
-        <input ref={inputRef} type="file" accept={accept} hidden aria-label="File" onChange={(event) => choose(event.target.files?.[0])} />
-        <Button type="button" variant="secondary" onClick={() => inputRef.current?.click()} className="justify-self-start">
-          {file ? "Choose a different file" : "Choose a file"}
-        </Button>
-        <p className="m-0 text-xs text-muted-foreground">{file ? `${file.name} · ${(file.size / 1024).toFixed(0)} KB` : `${sourceLimits.extensions.join(", ")}. Up to ${sourceLimits.bytes / 1024 / 1024} MB. Undocx reads the text so it can use and cite it.`}</p>
-      </div>
-      <label className="grid gap-1.5 text-xs font-medium text-muted-foreground">
-        Title (optional)
-        <input value={title} onChange={(event) => setTitle(event.target.value)} maxLength={sourceLimits.title} placeholder="Defaults to the file name" className="h-9 w-full rounded-md border border-input bg-card px-3 text-sm font-normal text-foreground outline-none placeholder:text-faint-foreground focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring" />
-      </label>
-      <Failure message={problem} />
-      <div className="flex justify-end">
-        <Button type="button" variant="primary" disabled={isMutating || !file} onClick={() => void submit()}>
-          {isMutating ? <LoaderCircleIcon className="animate-spin" /> : null}
-          Add file
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-function TextPanel({ documentId, onAdded }: { documentId?: string; onAdded: (source: CreatedSource) => void }) {
-  const { trigger } = useCreateTextSource(documentId);
-  const form = useForm<TextSourceValues>({ resolver: zodResolver(textSourceSchema), defaultValues: { title: "", content: "" } });
-  const { isSubmitting, errors } = form.formState;
-  const submit = form.handleSubmit(async (values) => {
-    const result = await trigger(values);
-    if ("error" in result) return form.setError("root.server", { message: result.error });
-    onAdded(result.source);
-  });
-  return (
-    <form onSubmit={submit} noValidate className="grid gap-4">
-      <InputField control={form.control} name="title" label="Title" max={sourceLimits.title} placeholder="Staff interview notes" />
-      <TextareaField control={form.control} name="content" label="Text" max={sourceLimits.content} rows={8} placeholder="Paste the text Undocx should use." />
-      <Failure message={errors.root?.server?.message ?? null} />
-      <div className="flex justify-end">
-        <Button type="submit" variant="primary" disabled={isSubmitting}>
-          {isSubmitting ? <LoaderCircleIcon className="animate-spin" /> : null}
-          Add text
-        </Button>
-      </div>
-    </form>
-  );
-}
-
-function LinkPanel({ documentId, onAdded }: { documentId?: string; onAdded: (source: CreatedSource) => void }) {
-  const { trigger } = useCreateLinkSource(documentId);
-  const form = useForm<LinkSourceValues>({ resolver: zodResolver(linkSourceSchema), defaultValues: { title: "", url: "" } });
-  const { isSubmitting, errors } = form.formState;
-  const submit = form.handleSubmit(async (values) => {
-    const result = await trigger(values);
-    if ("error" in result) return form.setError("root.server", { message: result.error });
-    onAdded(result.source);
-  });
-  return (
-    <form onSubmit={submit} noValidate className="grid gap-4">
-      <InputField control={form.control} name="title" label="Title" max={sourceLimits.title} placeholder="Shopify analytics, Jan to Dec 2025" />
-      <InputField control={form.control} name="url" label="Link" inputMode="url" placeholder="https://" description="Undocx does not read the page. It cites the link and its title." />
-      <Failure message={errors.root?.server?.message ?? null} />
-      <div className="flex justify-end">
-        <Button type="submit" variant="primary" disabled={isSubmitting}>
-          {isSubmitting ? <LoaderCircleIcon className="animate-spin" /> : null}
-          Add link
-        </Button>
-      </div>
-    </form>
-  );
-}
-
-function LibraryPanel({ documentId, onAdded }: { documentId: string; onAdded: (source: CreatedSource) => void }) {
-  const { trigger, isMutating } = useAttachSource(documentId);
-  const [problem, setProblem] = useState<string | null>(null);
-
-  async function attach(item: SourceSummary) {
-    setProblem(null);
-    const result = await trigger(item.id);
-    if (result && "error" in result && result.error) return setProblem(result.error);
-    onAdded({ id: item.id, kind: item.kind, title: item.title, url: item.url });
-  }
-
-  return (
-    <div className="grid gap-3">
-      <SourceSearch
-        excludeDocumentId={documentId}
-        emptyText="Nothing left to add. Everything in your library is already in this document, or your library is empty."
-        renderItem={(item) => (
-          <div className="flex items-center justify-between gap-3 rounded-md px-2 py-1.5 hover:bg-muted">
-            <span className="grid min-w-0">
-              <span className="truncate text-sm text-foreground">{item.title}</span>
-              <span className="truncate text-xs text-muted-foreground">{sourceMeta(item)}</span>
-            </span>
-            <Button size="sm" variant="secondary" disabled={isMutating} onClick={() => void attach(item)}>
-              Add
-            </Button>
-          </div>
-        )}
-      />
-      <Failure message={problem} />
-    </div>
-  );
-}
 
 export function AddSourceDialog({ open, onOpenChange, documentId, onAdded }: Props) {
   const hasLibrary = Boolean(documentId);

@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { UIMessage } from "ai";
-import { asc, eq } from "drizzle-orm";
+import { asc, eq, sql } from "drizzle-orm";
 import { connection } from "next/server";
 import { db } from "~@/lib/db";
 import { chatMessage } from "~@/lib/db/schema";
@@ -19,14 +19,14 @@ export async function listChatMessages(userId: string): Promise<UIMessage[]> {
 
 export async function saveChatMessages(userId: string, messages: UIMessage[]) {
   if (messages.length === 0) return;
-  await db.transaction(async (tx) => {
-    for (const [position, message] of messages.entries()) {
-      await tx
-        .insert(chatMessage)
-        .values({ id: message.id, userId, position, role: message.role, parts: message.parts, metadata: message.metadata ?? null })
-        .onConflictDoUpdate({ target: chatMessage.id, set: { position, parts: message.parts, metadata: message.metadata ?? null }, setWhere: eq(chatMessage.userId, userId) });
-    }
-  });
+  await db
+    .insert(chatMessage)
+    .values(messages.map((message, position) => ({ id: message.id, userId, position, role: message.role, parts: message.parts, metadata: message.metadata ?? null })))
+    .onConflictDoUpdate({
+      target: chatMessage.id,
+      set: { position: sql`excluded.position`, parts: sql`excluded.parts`, metadata: sql`excluded.metadata` },
+      setWhere: eq(chatMessage.userId, userId),
+    });
 }
 
 export async function clearChat(userId: string) {

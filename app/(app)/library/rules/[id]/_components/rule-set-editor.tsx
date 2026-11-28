@@ -4,114 +4,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { InputField, TextareaField } from "~@/components/ui/form-fields";
-import { ruleSchema, ruleSetSchema, type RuleKind as AddableKind, type RuleSetValues, type RuleValues } from "~@/lib/context/schemas";
-import { Button } from "~@/components/ui/button";
-import { PlusIcon, XIcon } from "~@/components/ui/icons";
+import { ruleSetSchema, type RuleSetValues } from "~@/lib/context/schemas";
 import { useRouter } from "next/navigation";
-import {
-  useAddRule,
-  useDeleteRuleSet,
-  useRemoveRule,
-  useSetSpelling,
-  useUpdateRuleSet,
-} from "../../query";
+import { useDeleteRuleSet, useSetSpelling, useUpdateRuleSet } from "../../query";
 import { limits, spellingOptions } from "~@/lib/context/limits";
 import { DeleteDialog } from "../../../_components/delete-dialog";
 import { DetailHeader } from "../../../_components/detail-header";
 import { FormSection } from "../../../_components/empty-pane";
 import { OptionSelect } from "~@/components/ui/option-select";
-
-type RuleKind = "spelling" | "banned_word" | "format" | "custom";
-type RuleData = { id: string; kind: RuleKind; value: string };
-
-function RuleList({
-  ruleSetId,
-  rules,
-}: {
-  ruleSetId: string;
-  rules: RuleData[];
-}) {
-  const [isPending, startTransition] = useTransition();
-  const { trigger: remove } = useRemoveRule(ruleSetId);
-  if (rules.length === 0) return null;
-  return (
-    <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
-      {rules.map((rule) => (
-        <li
-          key={rule.id}
-          className="inline-flex max-w-full items-center gap-1 rounded-full border border-input bg-card py-1 pr-1 pl-3 text-sm text-foreground"
-        >
-          <span className="min-w-0 truncate">{rule.value}</span>
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label={`Remove ${rule.value}`}
-            disabled={isPending}
-            onClick={() =>
-              startTransition(async () => {
-                await remove(rule.id);
-              })
-            }
-            className="size-6 rounded-full"
-          >
-            <XIcon className="size-3" />
-          </Button>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function RuleSection({
-  ruleSetId,
-  kind,
-  title,
-  placeholder,
-  rules,
-  hint,
-}: {
-  ruleSetId: string;
-  kind: AddableKind;
-  title: string;
-  placeholder: string;
-  rules: RuleData[];
-  hint: string;
-}) {
-  const { trigger: add } = useAddRule(ruleSetId);
-  const form = useForm<RuleValues>({ resolver: zodResolver(ruleSchema(kind)), defaultValues: { value: "" } });
-  const { isSubmitting, errors } = form.formState;
-
-  const submit = form.handleSubmit(async (values) => {
-    const result = await add({ kind, values });
-    if (result?.error) {
-      form.setError("root.server", { message: result.error });
-      return;
-    }
-    form.reset();
-  });
-
-  return (
-    <div className="grid gap-3">
-      <RuleList ruleSetId={ruleSetId} rules={rules} />
-      <form onSubmit={submit} noValidate className="grid gap-2" onChange={() => form.clearErrors("root.server")}>
-        <div className="flex items-start gap-2">
-          <InputField control={form.control} name="value" label={`Add to ${title}`} isLabelHidden max={kind === "banned_word" ? limits.ruleValue * 10 : limits.ruleValue} placeholder={placeholder} fieldClassName="min-w-0 flex-1" />
-          <Button type="submit" size="md" disabled={isSubmitting}>
-            <PlusIcon />
-            Add
-          </Button>
-        </div>
-        {errors.root?.server ? (
-          <p className="m-0 text-sm text-destructive" role="alert">
-            {errors.root.server.message}
-          </p>
-        ) : (
-          <p className="m-0 text-xs text-muted-foreground">{hint}</p>
-        )}
-      </form>
-    </div>
-  );
-}
+import { RuleSection } from "./rule-section";
+import type { RuleData, RuleKind } from "./rule-types";
 
 export function RuleSetEditor({
   set,

@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, asc, count, desc, eq } from "drizzle-orm";
+import { and, asc, count, desc, eq, sql } from "drizzle-orm";
 import { connection } from "next/server";
 import { db } from "~@/lib/db";
 import { rule, ruleSet } from "~@/lib/db/schema";
@@ -9,29 +9,22 @@ export type RuleKind = (typeof rule.$inferInsert)["kind"];
 
 export async function listRuleSets(userId: string) {
   await connection();
-  const sets = await db
-    .select()
+  const ofKind = (kind: RuleKind) => sql<number>`count(${rule.id}) filter (where ${rule.kind} = ${kind})`.mapWith(Number);
+  return db
+    .select({
+      id: ruleSet.id,
+      name: ruleSet.name,
+      description: ruleSet.description,
+      spelling: sql<string | null>`max(${rule.value}) filter (where ${rule.kind} = 'spelling')`,
+      banned: ofKind("banned_word"),
+      formats: ofKind("format"),
+      custom: ofKind("custom"),
+    })
     .from(ruleSet)
+    .leftJoin(rule, eq(rule.ruleSetId, ruleSet.id))
     .where(eq(ruleSet.userId, userId))
+    .groupBy(ruleSet.id)
     .orderBy(desc(ruleSet.updatedAt));
-  if (sets.length === 0) return [];
-  const rows = await db
-    .select({ ruleSetId: rule.ruleSetId, kind: rule.kind, value: rule.value })
-    .from(rule)
-    .innerJoin(ruleSet, eq(rule.ruleSetId, ruleSet.id))
-    .where(eq(ruleSet.userId, userId));
-  return sets.map((set) => {
-    const own = rows.filter((row) => row.ruleSetId === set.id);
-    return {
-      id: set.id,
-      name: set.name,
-      description: set.description,
-      spelling: own.find((row) => row.kind === "spelling")?.value ?? null,
-      banned: own.filter((row) => row.kind === "banned_word").length,
-      formats: own.filter((row) => row.kind === "format").length,
-      custom: own.filter((row) => row.kind === "custom").length,
-    };
-  });
 }
 
 export async function findRuleSet(userId: string, id: string) {
@@ -100,12 +93,11 @@ async function touch(ruleSetId: string) {
 }
 
 export async function replaceSpelling(ruleSetId: string, value: string | null) {
-  await db
-    .delete(rule)
-    .where(and(eq(rule.ruleSetId, ruleSetId), eq(rule.kind, "spelling")));
-  if (value)
-    await db.insert(rule).values({ ruleSetId, kind: "spelling", value });
-  await touch(ruleSetId);
+  await db.transaction(async (tx) => {
+    await tx.delete(rule).where(and(eq(rule.ruleSetId, ruleSetId), eq(rule.kind, "spelling")));
+    if (value) await tx.insert(rule).values({ ruleSetId, kind: "spelling", value });
+    await tx.update(ruleSet).set({ updatedAt: new Date() }).where(eq(ruleSet.id, ruleSetId));
+  });
 }
 
 export async function listRules(ruleSetId: string) {

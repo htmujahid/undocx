@@ -42,16 +42,14 @@ export async function listThreadMessages(userId: string, documentId: string): Pr
 export async function saveThreadMessages(threadId: string, messages: UIMessage[]) {
   if (messages.length === 0) return;
   await db.transaction(async (tx) => {
-    for (const [position, message] of messages.entries()) {
-      await tx
-        .insert(aiMessage)
-        .values({ id: message.id, threadId, position, role: message.role, parts: message.parts, metadata: message.metadata ?? null })
-        .onConflictDoUpdate({
-          target: aiMessage.id,
-          set: { position, parts: message.parts, metadata: message.metadata ?? null },
-          setWhere: eq(aiMessage.threadId, threadId),
-        });
-    }
+    await tx
+      .insert(aiMessage)
+      .values(messages.map((message, position) => ({ id: message.id, threadId, position, role: message.role, parts: message.parts, metadata: message.metadata ?? null })))
+      .onConflictDoUpdate({
+        target: aiMessage.id,
+        set: { position: sql`excluded.position`, parts: sql`excluded.parts`, metadata: sql`excluded.metadata` },
+        setWhere: eq(aiMessage.threadId, threadId),
+      });
     await tx.update(aiThread).set({ updatedAt: new Date() }).where(eq(aiThread.id, threadId));
   });
 }
@@ -63,12 +61,4 @@ export async function clearThread(userId: string, documentId: string) {
 
 export async function insertRun(run: typeof aiRun.$inferInsert) {
   await db.insert(aiRun).values(run);
-}
-
-export async function sumUsage(userId: string, since: Date) {
-  const [row] = await db
-    .select({ runs: sql<number>`count(*)`.mapWith(Number), tokens: sql<number>`coalesce(sum(${aiRun.totalTokens}), 0)`.mapWith(Number) })
-    .from(aiRun)
-    .where(and(eq(aiRun.userId, userId), sql`${aiRun.createdAt} >= ${since}`));
-  return row;
 }

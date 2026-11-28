@@ -7,7 +7,7 @@ const dateFormat = new Intl.DateTimeFormat("en", { year: "numeric", month: "long
 export async function Billing({ userId }: { userId: string }) {
   const { plan, limits, subscription, window } = await getEntitlement(userId);
   const used = await usageSince(userId, window.start);
-  const percent = percentUsed(used.micros, limits.allowanceMicros);
+  const percent = percentUsed(used, limits.allowanceMicros);
   const canceling = subscription?.cancelAtPeriodEnd ?? false;
   const pastDue = subscription?.status === "past_due";
 

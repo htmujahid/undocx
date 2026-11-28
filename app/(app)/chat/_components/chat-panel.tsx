@@ -3,13 +3,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useChat, type UIMessage } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import Link from "next/link";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "~@/components/ui/button";
 import { ArrowUpIcon, LoaderCircleIcon, RefreshCwIcon } from "~@/components/ui/icons";
-import { chatMessageSchema, type ChatMessageValues, type ChatMetadata, type ChatSource } from "~@/lib/chat/schemas";
+import { chatMessageSchema, type ChatMessageValues, type ChatMetadata } from "~@/lib/chat/schemas";
 import { clearConversation } from "../actions";
+import { Answer } from "./chat-answer";
+import { SourceList } from "./chat-sources";
 
 const starters = ["Which document mentions a deadline?", "What have I written about pricing?", "Find where I describe our refund policy"];
 
@@ -20,43 +21,6 @@ const transport = new DefaultChatTransport({
 
 function textOf(message: UIMessage) {
   return message.parts.map((part) => (part.type === "text" ? part.text : "")).join("");
-}
-
-function Answer({ text, sources }: { text: string; sources: ChatSource[] }) {
-  const parts = text.replace(/\*\*|__/g, "").split(/(\[\d+\])/g);
-  return (
-    <p className="m-0 whitespace-pre-wrap text-foreground">
-      {parts.map((part, index) => {
-        const match = /^\[(\d+)\]$/.exec(part);
-        const source = match ? sources.find((item) => item.n === Number(match[1])) : undefined;
-        if (!source) return <Fragment key={index}>{part}</Fragment>;
-        return (
-          <Link key={index} href={`/documents/${source.documentId}`} aria-label={`Source ${source.n}: ${source.title}`} className="mx-0.5 align-super text-[0.65rem] font-medium text-primary no-underline hover:underline">
-            [{source.n}]
-          </Link>
-        );
-      })}
-    </p>
-  );
-}
-
-function SourceList({ sources, text }: { sources: ChatSource[]; text: string }) {
-  const cited = sources.filter((source) => text.includes(`[${source.n}]`));
-  if (cited.length === 0) return null;
-  return (
-    <ol className="m-0 grid list-none gap-2 p-0">
-      {cited.map((source) => (
-        <li key={source.n} className="grid gap-1 rounded-md border border-border bg-background p-3">
-          <Link href={`/documents/${source.documentId}`} className="flex items-baseline gap-2 text-xs font-medium text-foreground no-underline hover:underline">
-            <span className="font-mono text-primary">[{source.n}]</span>
-            <span className="truncate">{source.title}</span>
-            {source.section ? <span className="truncate font-normal text-muted-foreground">{source.section}</span> : null}
-          </Link>
-          <p className="m-0 line-clamp-3 text-xs leading-normal text-muted-foreground">{source.text}</p>
-        </li>
-      ))}
-    </ol>
-  );
 }
 
 export function ChatPanel({ initialMessages }: { initialMessages: UIMessage[] }) {

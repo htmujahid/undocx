@@ -3,7 +3,6 @@ export const sourceLimits = {
   content: 200_000,
   textMin: 20,
   bytes: 10 * 1024 * 1024,
-  perUser: 100,
   perDocument: 20,
   pageSize: 20,
   searchQuery: 100,

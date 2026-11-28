@@ -1,106 +1,18 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
 import { Button } from "~@/components/ui/button";
-import { InputField } from "~@/components/ui/form-fields";
-import { LoaderCircleIcon } from "~@/components/ui/icons";
 import { SegmentedControl, SegmentedControlItem } from "~@/components/ui/segmented-control";
 import { nextQuestion, outlineModes, type BriefAnswers, type BriefQuestion, type OutlineAdvice, type OutlineMode } from "~@/lib/documents/brief";
-import { documentLimits } from "~@/lib/documents/limits";
-import { customAnswerSchema, type CustomAnswerValues } from "~@/lib/documents/schemas";
 import { useGenerateQuestions, useSaveAnswer, useSetOutline, useWriteDraft } from "../query";
+import { Brief, type BriefPick } from "./setup-brief";
+import { Working } from "./setup-working";
+import { Problem } from "./setup-problem";
+import { QuestionCard } from "./question-card";
 
-type Pick = { label: string; value: string };
-
-function Brief({ prompt, picks }: { prompt: string; picks: Pick[] }) {
-  return (
-    <div className="grid gap-2">
-      <span className="text-xs text-muted-foreground">Your brief</span>
-      <div className="rounded-md bg-foreground px-4 py-3 text-sm leading-normal whitespace-pre-wrap text-background">{prompt}</div>
-      {picks.length > 0 ? (
-        <ul aria-label="Your picks" className="m-0 flex list-none flex-wrap gap-1.5 p-0">
-          {picks.map((pick) => (
-            <li key={pick.label} className="rounded-full border border-border bg-card px-2.5 py-0.5 text-xs text-muted-foreground">
-              {pick.label}: <span className="text-foreground">{pick.value}</span>
-            </li>
-          ))}
-        </ul>
-      ) : null}
-    </div>
-  );
-}
-
-function Working({ children }: { children: string }) {
-  return (
-    <p role="status" className="m-0 flex items-center gap-2 text-sm text-muted-foreground">
-      <LoaderCircleIcon className="size-4 animate-spin" />
-      {children}
-    </p>
-  );
-}
-
-function Problem({ message, onRetry, children }: { message: string; onRetry: () => void; children?: React.ReactNode }) {
-  return (
-    <div className="grid gap-3 rounded-md border border-destructive/40 bg-destructive/5 p-4" role="alert">
-      <p className="m-0 text-sm text-destructive">{message}</p>
-      <div className="flex flex-wrap gap-2">
-        <Button size="sm" variant="secondary" onClick={onRetry}>
-          Try again
-        </Button>
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function QuestionCard({ question, index, total, onAnswer, onSkip, onFinish, isBusy }: { question: BriefQuestion; index: number; total: number; onAnswer: (value: string) => void; onSkip: () => void; onFinish: () => void; isBusy: boolean }) {
-  const form = useForm<CustomAnswerValues>({ resolver: zodResolver(customAnswerSchema), defaultValues: { answer: "" } });
-  const submit = form.handleSubmit(({ answer }) => {
-    form.reset();
-    onAnswer(answer);
-  });
-  return (
-    <section aria-labelledby="question-title" className="grid gap-4 rounded-lg border border-border bg-card p-5">
-      <div className="grid gap-1">
-        <span className="font-mono text-[0.65rem] tracking-[0.15em] text-muted-foreground uppercase">
-          Question {index + 1} of {total}
-        </span>
-        <h2 id="question-title" className="m-0 font-serif text-xl leading-tight font-medium text-foreground">
-          {question.question}
-        </h2>
-      </div>
-      {question.choices.length > 0 ? (
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Suggested answers">
-          {question.choices.map((choice) => (
-            <Button key={choice} variant="secondary" disabled={isBusy} onClick={() => onAnswer(choice)}>
-              {choice}
-            </Button>
-          ))}
-        </div>
-      ) : null}
-      <form onSubmit={submit} noValidate className="flex items-start gap-2">
-        <InputField control={form.control} name="answer" label="Or answer in your own words" isLabelHidden max={documentLimits.answer} placeholder="Or answer in your own words" fieldClassName="min-w-0 flex-1" />
-        <Button type="submit" disabled={isBusy}>
-          Answer
-        </Button>
-      </form>
-      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3">
-        <Button variant="ghost" size="sm" disabled={isBusy} onClick={onSkip}>
-          Skip this question
-        </Button>
-        <Button variant="ghost" size="sm" disabled={isBusy} onClick={onFinish}>
-          Just write it
-        </Button>
-      </div>
-    </section>
-  );
-}
-
-export function SetupFlow({ id, prompt, picks, questions: initialQuestions, answers: initialAnswers, advice: initialAdvice, outline: initialOutline }: { id: string; prompt: string; picks: Pick[]; questions: BriefQuestion[]; answers: BriefAnswers; advice: OutlineAdvice | null; outline: OutlineMode }) {
+export function SetupFlow({ id, prompt, picks, questions: initialQuestions, answers: initialAnswers, advice: initialAdvice, outline: initialOutline }: { id: string; prompt: string; picks: BriefPick[]; questions: BriefQuestion[]; answers: BriefAnswers; advice: OutlineAdvice | null; outline: OutlineMode }) {
   const router = useRouter();
   const [questions, setQuestions] = useState(initialQuestions);
   const [advice, setAdvice] = useState(initialAdvice);
