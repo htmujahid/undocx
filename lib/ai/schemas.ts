@@ -25,7 +25,17 @@ const blockSchema = z.object({
 
 export const questionsOutputSchema = z.object({
   type: z.enum(["proposal", "report", "article", "case-study", "newsletter", "other"]),
-  questions: z.array(z.object({ id: z.string(), question: z.string(), choices: z.array(z.string()) })),
+  questions: z.array(
+    z.object({
+      id: z.string(),
+      question: z.string(),
+      choices: z.array(z.string()).describe("Short answer options. 2 to 4 for single, 3 to 6 for multi. Empty for yesno and text."),
+      kind: z
+        .enum(["single", "multi", "yesno", "text"])
+        .describe("Decide this after writing the choices. multi if more than one choice could be right at the same time. single if exactly one choice is right. yesno if the answer is yes or no. text if only the writer can say, such as a name, date or number."),
+      hint: z.string().describe("An optional one-line hint under the question. Empty when not needed."),
+    }),
+  ),
   outline: z.object({ recommended: z.boolean(), reason: z.string() }),
 });
 

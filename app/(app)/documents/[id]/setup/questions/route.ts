@@ -6,20 +6,24 @@ import { callOptions } from "~@/lib/ai/options";
 import { authorize, describeError, problem, beginRun } from "~@/lib/ai/route";
 import { questionsOutputSchema } from "~@/lib/ai/schemas";
 import { findBrief, saveQuestions } from "~@/lib/db/repository/brief";
-import type { BriefQuestion } from "~@/lib/documents/brief";
+import type { BriefQuestion, QuestionKind } from "~@/lib/documents/brief";
 import { documentLimits } from "~@/lib/documents/limits";
 
-function cleanQuestions(raw: { id: string; question: string; choices: string[] }[]) {
+function cleanQuestions(raw: { id?: string; question?: string; kind?: QuestionKind; choices?: string[]; hint?: string }[]) {
   const seen = new Set<string>();
   const questions: BriefQuestion[] = [];
   for (const [index, item] of raw.entries()) {
-    const question = item.question.trim();
-    const choices = item.choices.map((choice) => choice.trim()).filter(Boolean).slice(0, 4);
+    const question = (item.question ?? "").trim();
     if (!question || questions.length >= documentLimits.questions) continue;
-    let id = item.id.trim().toLowerCase().replace(/[^a-z0-9-]+/g, "-").slice(0, 40) || `question-${index + 1}`;
+    const options = [...new Set((item.choices ?? []).map((choice) => choice.trim()).filter(Boolean))];
+    let kind: QuestionKind = item.kind ?? "single";
+    if ((kind === "single" && options.length < 2) || (kind === "multi" && options.length < 2)) kind = "text";
+    const choices = kind === "single" ? options.slice(0, 4) : kind === "multi" ? options.slice(0, 6) : [];
+    let id = (item.id ?? "").trim().toLowerCase().replace(/[^a-z0-9-]+/g, "-").slice(0, 40) || `question-${index + 1}`;
     if (seen.has(id)) id = `${id}-${index + 1}`;
     seen.add(id);
-    questions.push({ id, question, choices });
+    const hint = (item.hint ?? "").trim().slice(0, 120);
+    questions.push({ id, question, kind, choices, ...(hint ? { hint } : {}) });
   }
   return questions;
 }

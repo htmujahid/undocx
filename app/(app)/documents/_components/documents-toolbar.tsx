@@ -12,6 +12,11 @@ const searchDelay = 300;
 export function DocumentsToolbar({ query }: { query: ListQuery }) {
   const router = useRouter();
   const [text, setText] = useState(query.q);
+  const [seen, setSeen] = useState(query.q);
+  if (seen !== query.q) {
+    setSeen(query.q);
+    if (query.q === "") setText("");
+  }
   const latest = useRef(query);
   useEffect(() => {
     latest.current = query;

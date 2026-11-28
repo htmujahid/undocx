@@ -1,4 +1,12 @@
-export type BriefQuestion = { id: string; question: string; choices: string[] };
+export type QuestionKind = "single" | "multi" | "yesno" | "text";
+export type BriefQuestion = { id: string; question: string; kind?: QuestionKind; choices: string[]; hint?: string };
+
+export const multiSeparator = "; ";
+export const yesNoChoices = ["Yes", "No"];
+
+export function kindOf(question: BriefQuestion): QuestionKind {
+  return question.kind ?? "single";
+}
 export type BriefAnswers = Record<string, string | null>;
 export type OutlineAdvice = { recommended: boolean; reason: string };
 export type OutlineMode = "auto" | "on" | "off";

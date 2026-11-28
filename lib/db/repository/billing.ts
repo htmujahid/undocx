@@ -45,8 +45,8 @@ export async function getEntitlement(userId: string) {
 export async function usageIn(userId: string, since: Date, hourAgo: Date) {
   const [row] = await db
     .select({
-      micros: sql<number>`coalesce(sum(${aiRun.costMicros}) filter (where ${aiRun.createdAt} >= ${since}), 0)`.mapWith(Number),
-      lastHour: sql<number>`count(*) filter (where ${aiRun.createdAt} >= ${hourAgo})`.mapWith(Number),
+      micros: sql<number>`coalesce(sum(${aiRun.costMicros}) filter (where ${aiRun.createdAt} >= ${since.toISOString()}::timestamp), 0)`.mapWith(Number),
+      lastHour: sql<number>`count(*) filter (where ${aiRun.createdAt} >= ${hourAgo.toISOString()}::timestamp)`.mapWith(Number),
     })
     .from(aiRun)
     .where(and(eq(aiRun.userId, userId), gte(aiRun.createdAt, since < hourAgo ? since : hourAgo)));
