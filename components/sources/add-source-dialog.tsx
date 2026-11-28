@@ -3,12 +3,8 @@
 import { buttonVariants } from "~@/components/ui/button";
 import { Dialog, DialogBackdrop, DialogClose, DialogContent, DialogDescription, DialogTitle } from "~@/components/ui/dialog";
 import { XIcon } from "~@/components/ui/icons";
-import { Tabs, TabsList, TabsPanel, TabsTab } from "~@/components/ui/tabs";
 import type { CreatedSource } from "~@/lib/sources/actions";
-import { UploadPanel } from "./upload-source-panel";
-import { TextPanel } from "./text-source-panel";
-import { LinkPanel } from "./link-source-panel";
-import { LibraryPanel } from "./library-source-panel";
+import { AddSourcePanels } from "./add-source-panels";
 
 type Props = {
   open: boolean;
@@ -18,7 +14,6 @@ type Props = {
 };
 
 export function AddSourceDialog({ open, onOpenChange, documentId, onAdded }: Props) {
-  const hasLibrary = Boolean(documentId);
   const handleAdded = (source: CreatedSource) => {
     onAdded(source);
     onOpenChange(false);
@@ -36,28 +31,7 @@ export function AddSourceDialog({ open, onOpenChange, documentId, onAdded }: Pro
             <XIcon />
           </DialogClose>
         </div>
-        <Tabs defaultValue={hasLibrary ? "library" : "upload"} className="grid gap-4 p-5">
-          <TabsList aria-label="Source type">
-            {hasLibrary ? <TabsTab value="library">Library</TabsTab> : null}
-            <TabsTab value="upload">Upload</TabsTab>
-            <TabsTab value="text">Paste text</TabsTab>
-            <TabsTab value="link">Link</TabsTab>
-          </TabsList>
-          {hasLibrary && documentId ? (
-            <TabsPanel value="library">
-              <LibraryPanel documentId={documentId} onAdded={handleAdded} />
-            </TabsPanel>
-          ) : null}
-          <TabsPanel value="upload">
-            <UploadPanel documentId={documentId} onAdded={handleAdded} />
-          </TabsPanel>
-          <TabsPanel value="text">
-            <TextPanel documentId={documentId} onAdded={handleAdded} />
-          </TabsPanel>
-          <TabsPanel value="link">
-            <LinkPanel documentId={documentId} onAdded={handleAdded} />
-          </TabsPanel>
-        </Tabs>
+        <AddSourcePanels documentId={documentId} onAdded={handleAdded} className="p-5" />
       </DialogContent>
     </Dialog>
   );

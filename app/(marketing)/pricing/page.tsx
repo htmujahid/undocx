@@ -11,7 +11,7 @@ import { Roadmap } from "./_components/roadmap";
 
 export const metadata: Metadata = {
   title: "Pricing",
-  description: "Free for five documents a month. Pro at $10 a month for unlimited documents, your voice and grounded writing.",
+  description: "Free for five documents and a monthly AI allowance. Pro at $10 a month for 100 documents, a larger allowance and a bigger library.",
 };
 
 export default function PricingPage() {
@@ -22,7 +22,7 @@ export default function PricingPage() {
           <Title>
             Free to start. <span className="text-primary italic">Pro when you write every week.</span>
           </Title>
-          <Lede>Five documents and a monthly allowance of AI writing cost nothing. Unlimited documents, your voice and sources are $10 a month.</Lede>
+          <Lede>Five documents and a monthly allowance of AI writing cost nothing. A hundred documents, a larger allowance and a bigger library are $10 a month.</Lede>
           <div className="flex flex-wrap items-center gap-4">
             <Button variant="primary" size="lg" render={<Link href={startHref} />}>
               Start writing free

@@ -23,7 +23,7 @@ export function useProfiles(initial: ProfileSummary[]) {
 }
 
 export function useCreateProfile() {
-  return useSWRMutation(profilesKey, () => createProfile());
+  return useSWRMutation(profilesKey, (_key, { arg }: { arg: ProfileValues }) => createProfile(arg));
 }
 
 export function useUpdateProfile(id: string) {

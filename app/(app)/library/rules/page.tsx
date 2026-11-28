@@ -1,17 +1,22 @@
 import type { Metadata } from "next";
-import { RulesIcon } from "~@/components/ui/icons";
-import { EmptyPane } from "../_components/empty-pane";
+import { Suspense } from "react";
+import { PaneFallback } from "../_components/empty-pane";
+import { RulesList } from "./_components/rules-list";
+import { listRuleSets } from "./actions";
 
 export const metadata: Metadata = {
-  title: "Rules",
-  description: "What must always or never happen in a draft.",
+  title: "House rules",
+  description: "Spelling, words and formats Undocx follows and checks.",
 };
+
+async function List() {
+  return <RulesList initial={await listRuleSets()} />;
+}
 
 export default function RulesPage() {
   return (
-    <EmptyPane icon={RulesIcon} title="Rules">
-      What must always or never happen: British spelling, banned words, how
-      prices are written. Checked against the draft, not guessed.
-    </EmptyPane>
+    <Suspense fallback={<PaneFallback />}>
+      <List />
+    </Suspense>
   );
 }

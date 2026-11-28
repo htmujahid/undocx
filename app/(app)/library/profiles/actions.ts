@@ -24,12 +24,27 @@ export async function listProfiles() {
   return listProfilesFor(await requireUserId());
 }
 
-export async function createProfile(): Promise<{ id: string } | { error: string }> {
+function toFields({ audienceLevel, ...rest }: ProfileValues) {
+  return {
+    ...rest,
+    audienceLevel,
+    region: rest.region || null,
+    firstLanguage: rest.firstLanguage || null,
+    writingLanguage: rest.writingLanguage || null,
+    currency: rest.currency || null,
+    units: rest.units || null,
+    dateFormat: rest.dateFormat || null,
+  };
+}
+
+export async function createProfile(values: ProfileValues): Promise<{ id: string } | { error: string }> {
   const userId = await requireUserId();
+  const parsed = profileSchema.safeParse(values);
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
   const total = await countProfiles(userId);
   const { plan, limits } = await getEntitlement(userId);
   if (total >= limits.profiles) return { error: limitMessage(plan, "writer profiles", "profiles") };
-  const id = await insertProfile(userId, total === 0);
+  const id = await insertProfile(userId, total === 0, toFields(parsed.data));
   refresh();
   return { id };
 }
@@ -38,18 +53,7 @@ export async function updateProfile(id: string, values: ProfileValues): Promise<
   const userId = await requireUserId();
   const parsed = profileSchema.safeParse(values);
   if (!parsed.success) return { error: parsed.error.issues[0].message };
-  const { name, audienceLevel, ...rest } = parsed.data;
-  const isUpdated = await updateProfileFields(userId, id, {
-    ...rest,
-    name,
-    audienceLevel,
-    region: rest.region || null,
-    firstLanguage: rest.firstLanguage || null,
-    writingLanguage: rest.writingLanguage || null,
-    currency: rest.currency || null,
-    units: rest.units || null,
-    dateFormat: rest.dateFormat || null,
-  });
+  const isUpdated = await updateProfileFields(userId, id, toFields(parsed.data));
   if (!isUpdated) return { error: "This profile no longer exists." };
   refresh();
   return { saved: true };

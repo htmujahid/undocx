@@ -6,6 +6,7 @@ import type { RuleKind, RuleSetValues, RuleValues } from "~@/lib/context/schemas
 import {
   addRule,
   createRuleSet,
+  type RuleDraft,
   deleteRuleSet,
   listRuleSets,
   removeRule,
@@ -25,7 +26,7 @@ export function useRuleSets(initial: RuleSetSummary[]) {
 }
 
 export function useCreateRuleSet() {
-  return useSWRMutation(ruleSetsKey, () => createRuleSet());
+  return useSWRMutation(ruleSetsKey, (_key, { arg }: { arg: { values: RuleSetValues; rules: RuleDraft[]; spelling: string | null } }) => createRuleSet(arg.values, arg.rules, arg.spelling));
 }
 
 export function useUpdateRuleSet(id: string) {

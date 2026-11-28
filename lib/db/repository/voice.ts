@@ -64,12 +64,15 @@ export async function countVoices(userId: string) {
   return total;
 }
 
-export async function insertVoice(userId: string) {
-  const [row] = await db
-    .insert(voice)
-    .values({ userId, name: "Untitled voice" })
-    .returning({ id: voice.id });
-  return row.id;
+export async function insertVoice(userId: string, fields: { name: string; notes: string }, samples: { title: string; content: string; wordCount: number; isIncluded: boolean }[] = []) {
+  return db.transaction(async (tx) => {
+    const [row] = await tx
+      .insert(voice)
+      .values({ userId, ...fields })
+      .returning({ id: voice.id });
+    if (samples.length > 0) await tx.insert(voiceSample).values(samples.map((sample) => ({ voiceId: row.id, ...sample })));
+    return row.id;
+  });
 }
 
 export async function updateVoiceFields(

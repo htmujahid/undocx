@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { limitMessage } from "~@/lib/billing/plans";
 import { getEntitlement } from "~@/lib/db/repository/billing";
 import { requireUserId } from "~@/lib/auth/session";
-import { limits, spellingOptions, type FormState } from "~@/lib/context/limits";
+import { spellingOptions, type FormState } from "~@/lib/context/limits";
+import { freshRuleEntries, parseRuleEntries } from "~@/lib/context/rules";
 import { ruleSchema, ruleSetSchema, type RuleKind, type RuleSetValues, type RuleValues } from "~@/lib/context/schemas";
 import {
   countRuleSets,
@@ -27,11 +28,27 @@ export async function listRuleSets() {
   return listRuleSetsFor(await requireUserId());
 }
 
-export async function createRuleSet(): Promise<{ id: string } | { error: string }> {
+export type RuleDraft = { kind: RuleKind; value: string };
+
+export async function createRuleSet(values: RuleSetValues, rules: RuleDraft[] = [], spelling: string | null = null): Promise<{ id: string } | { error: string }> {
   const userId = await requireUserId();
-  const { plan, limits } = await getEntitlement(userId);
-  if ((await countRuleSets(userId)) >= limits.ruleSets) return { error: limitMessage(plan, "rule sets", "ruleSets") };
-  const id = await insertRuleSet(userId);
+  const parsed = ruleSetSchema.safeParse(values);
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
+  const rows: { kind: RuleKind | "spelling"; value: string }[] = [];
+  if (spelling) {
+    if (!spellingOptions.some((option) => option.value === spelling)) return { error: "Pick one of the listed spellings." };
+    rows.push({ kind: "spelling", value: spelling });
+  }
+  for (const draft of rules) {
+    const checked = ruleSchema(draft.kind).safeParse({ value: draft.value });
+    if (!checked.success) return { error: checked.error.issues[0].message };
+    const fresh = freshRuleEntries(draft.kind, parseRuleEntries(draft.kind, checked.data.value), rows);
+    for (const value of fresh) rows.push({ kind: draft.kind, value });
+  }
+  const { plan, limits: planLimits } = await getEntitlement(userId);
+  if ((await countRuleSets(userId)) >= planLimits.ruleSets) return { error: limitMessage(plan, "rule sets", "ruleSets") };
+  if (rows.length > planLimits.rulesPerSet) return { error: limitMessage(plan, "rules per set", "rulesPerSet") };
+  const id = await insertRuleSet(userId, parsed.data, rows as { kind: RuleKind; value: string }[]);
   refresh();
   return { id };
 }
@@ -65,16 +82,14 @@ export async function addRule(ruleSetId: string, kind: RuleKind, values: RuleVal
   if (!(await ownsRuleSet(userId, ruleSetId))) return { error: "This rule set no longer exists." };
   const parsed = ruleSchema(kind).safeParse(values);
   if (!parsed.success) return { error: parsed.error.issues[0].message };
-  const entries = (kind === "banned_word" ? parsed.data.value.split(/[,\n]/) : [parsed.data.value]).map((value) => value.trim().slice(0, limits.ruleValue)).filter(Boolean);
+  const entries = parseRuleEntries(kind, parsed.data.value);
   if (entries.length === 0) return { error: kind === "banned_word" ? "Enter a word or phrase." : "Describe the rule." };
   const existing = await listRules(ruleSetId);
   const entitlement = await getEntitlement(userId);
   if (existing.length + entries.length > entitlement.limits.rulesPerSet) return { error: limitMessage(entitlement.plan, "rules per set", "rulesPerSet") };
-  const seen = new Set(existing.filter((row) => row.kind === kind).map((row) => row.value.toLowerCase()));
-  const fresh = new Map<string, string>();
-  for (const value of entries) if (!seen.has(value.toLowerCase()) && !fresh.has(value.toLowerCase())) fresh.set(value.toLowerCase(), value);
-  if (fresh.size === 0) return { error: "That rule is already in the set." };
-  await insertRules(ruleSetId, kind, [...fresh.values()]);
+  const fresh = freshRuleEntries(kind, entries, existing);
+  if (fresh.length === 0) return { error: "That rule is already in the set." };
+  await insertRules(ruleSetId, kind, fresh);
   refresh();
   return { saved: true };
 }

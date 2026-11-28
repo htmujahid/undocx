@@ -11,8 +11,9 @@ export const metadata: Metadata = {
   description: "Your Undocx account and your data.",
 };
 
-export default async function AccountPage() {
+export default async function AccountPage({ searchParams }: PageProps<"/account">) {
   const user = await getCurrentUser();
+  const isUpgrading = (await searchParams).upgraded === "1";
   return (
     <div className="flex h-full flex-col">
       <DocumentsHeader hasNewButton={false} />
@@ -39,7 +40,7 @@ export default async function AccountPage() {
           </section>
 
           <Suspense fallback={<div role="status" aria-label="Loading plan" className="h-56 rounded-lg border border-border bg-card" />}>
-            <Billing userId={user.id} />
+            <Billing userId={user.id} isUpgrading={isUpgrading} />
           </Suspense>
 
           <DeleteAccount email={user.email} />

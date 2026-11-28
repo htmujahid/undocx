@@ -35,7 +35,7 @@ export function PricingTeaser({ number }: { number: string }) {
           <p className="m-0 font-serif text-5xl leading-none text-primary">
             $10<span className="ml-2 font-sans text-sm text-muted-foreground">a month</span>
           </p>
-          <p className="m-0 text-base leading-normal text-muted-foreground">Unlimited documents, no AI writing limit, your voice from samples, grounded writing with citations.</p>
+          <p className="m-0 text-base leading-normal text-muted-foreground">100 documents, a larger AI allowance, the strongest model for first drafts and claims checks, and a bigger library.</p>
           <div className="mt-auto pt-2">
             <Button render={<Link href="/pricing" />}>What Pro adds</Button>
           </div>

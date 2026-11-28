@@ -58,12 +58,15 @@ export async function countRuleSets(userId: string) {
   return total;
 }
 
-export async function insertRuleSet(userId: string) {
-  const [row] = await db
-    .insert(ruleSet)
-    .values({ userId, name: "Untitled rule set" })
-    .returning({ id: ruleSet.id });
-  return row.id;
+export async function insertRuleSet(userId: string, fields: { name: string; description: string }, rules: { kind: RuleKind; value: string }[] = []) {
+  return db.transaction(async (tx) => {
+    const [row] = await tx
+      .insert(ruleSet)
+      .values({ userId, ...fields })
+      .returning({ id: ruleSet.id });
+    if (rules.length > 0) await tx.insert(rule).values(rules.map((item) => ({ ruleSetId: row.id, ...item })));
+    return row.id;
+  });
 }
 
 export async function updateRuleSetFields(

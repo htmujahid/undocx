@@ -1,16 +1,25 @@
 import type { Metadata } from "next";
-import { FilesIcon } from "~@/components/ui/icons";
-import { EmptyPane } from "../_components/empty-pane";
+import { Suspense } from "react";
+import { PaneFallback } from "../_components/empty-pane";
+import { SourcesList } from "./_components/sources-list";
+import { getCurrentUser } from "~@/lib/auth/session";
+import { searchSources } from "~@/lib/db/repository/source";
+import { sourceLimits } from "~@/lib/sources/limits";
 
 export const metadata: Metadata = {
   title: "Sources",
   description: "Files, text and links Undocx can read and cite.",
 };
 
+async function List() {
+  const user = await getCurrentUser();
+  return <SourcesList initial={await searchSources(user.id, { limit: sourceLimits.pageSize })} />;
+}
+
 export default function SourcesPage() {
   return (
-    <EmptyPane icon={FilesIcon} title="Sources">
-      Files, pasted text and links you can attach to any document. Undocx reads them, writes from them and cites them. Free keeps 10 sources, Pro keeps 100.
-    </EmptyPane>
+    <Suspense fallback={<PaneFallback />}>
+      <List />
+    </Suspense>
   );
 }

@@ -9,6 +9,7 @@ import {
   deleteSample,
   deleteVoice,
   listVoices,
+  type SampleDraft,
   setSampleIncluded,
   updateVoice,
 } from "./actions";
@@ -25,7 +26,7 @@ export function useVoices(initial: VoiceSummary[]) {
 }
 
 export function useCreateVoice() {
-  return useSWRMutation(voicesKey, () => createVoice());
+  return useSWRMutation(voicesKey, (_key, { arg }: { arg: { values: VoiceValues; samples: SampleDraft[] } }) => createVoice(arg.values, arg.samples));
 }
 
 export function useUpdateVoice(id: string) {

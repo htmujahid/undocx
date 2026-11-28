@@ -1,18 +1,22 @@
 import type { Metadata } from "next";
-import { ProfileIcon } from "~@/components/ui/icons";
-import { EmptyPane } from "../_components/empty-pane";
+import { Suspense } from "react";
+import { PaneFallback } from "../_components/empty-pane";
+import { ProfilesList } from "./_components/profiles-list";
+import { listProfiles } from "./actions";
 
 export const metadata: Metadata = {
   title: "Writer profiles",
-  description:
-    "Who you are, who you write for, and the facts Undocx should rely on.",
+  description: "Who you are, who you write for, and the facts Undocx should rely on.",
 };
+
+async function List() {
+  return <ProfilesList initial={await listProfiles()} />;
+}
 
 export default function ProfilesPage() {
   return (
-    <EmptyPane icon={ProfileIcon} title="Writer profiles">
-      Who you are, where you write from, who reads you and the facts to rely on.
-      Pick one on a new document and Undocx stops asking what it already knows.
-    </EmptyPane>
+    <Suspense fallback={<PaneFallback />}>
+      <List />
+    </Suspense>
   );
 }

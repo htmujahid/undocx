@@ -27,11 +27,22 @@ export async function listVoices() {
   return listVoicesFor(await requireUserId());
 }
 
-export async function createVoice(): Promise<{ id: string } | { error: string }> {
+export type SampleDraft = SampleValues & { isIncluded: boolean };
+
+export async function createVoice(values: VoiceValues, samples: SampleDraft[] = []): Promise<{ id: string } | { error: string }> {
   const userId = await requireUserId();
+  const parsed = voiceSchema.safeParse(values);
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
+  const rows = [];
+  for (const draft of samples) {
+    const checked = sampleSchema.safeParse({ title: draft.title, content: draft.content });
+    if (!checked.success) return { error: checked.error.issues[0].message };
+    rows.push({ ...checked.data, wordCount: countWords(checked.data.content), isIncluded: draft.isIncluded });
+  }
   const { plan, limits } = await getEntitlement(userId);
   if ((await countVoices(userId)) >= limits.voices) return { error: limitMessage(plan, "voices", "voices") };
-  const id = await insertVoice(userId);
+  if (rows.length > limits.voiceSamples) return { error: limitMessage(plan, "samples per voice", "voiceSamples") };
+  const id = await insertVoice(userId, parsed.data, rows);
   refresh();
   return { id };
 }

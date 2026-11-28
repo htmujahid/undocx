@@ -38,10 +38,10 @@ export async function countProfiles(userId: string) {
   return total;
 }
 
-export async function insertProfile(userId: string, isDefault: boolean) {
+export async function insertProfile(userId: string, isDefault: boolean, fields: ProfileFields & { name: string }) {
   const [row] = await db
     .insert(writerProfile)
-    .values({ userId, name: "Untitled profile", isDefault })
+    .values({ ...fields, userId, isDefault })
     .returning({ id: writerProfile.id });
   return row.id;
 }

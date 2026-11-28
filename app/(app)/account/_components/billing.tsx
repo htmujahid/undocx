@@ -1,10 +1,11 @@
 import { getEntitlement, usageSince } from "~@/lib/db/repository/billing";
 import { percentUsed, plans } from "~@/lib/billing/plans";
 import { BillingAction } from "./billing-actions";
+import { UpgradeStatus } from "./upgrade-status";
 
 const dateFormat = new Intl.DateTimeFormat("en", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
 
-export async function Billing({ userId }: { userId: string }) {
+export async function Billing({ userId, isUpgrading }: { userId: string; isUpgrading: boolean }) {
   const { plan, limits, subscription, window } = await getEntitlement(userId);
   const used = await usageSince(userId, window.start);
   const percent = percentUsed(used, limits.allowanceMicros);
@@ -47,6 +48,8 @@ export async function Billing({ userId }: { userId: string }) {
           Pro gives you {plans.pro.limits.documents} documents, a larger AI allowance and the strongest model for first drafts and claim checks.
         </p>
       )}
+
+      {isUpgrading && !subscription ? <UpgradeStatus /> : null}
 
       <div>{subscription ? <BillingAction kind="manage">Manage billing</BillingAction> : <BillingAction kind="upgrade">Upgrade to Pro</BillingAction>}</div>
     </section>

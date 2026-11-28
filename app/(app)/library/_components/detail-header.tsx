@@ -1,15 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "~@/components/ui/button";
 import type { ReactNode } from "react";
-import {
-  ArrowLeftIcon,
-  CheckIcon,
-  LoaderCircleIcon,
-} from "~@/components/ui/icons";
-import { cn } from "~@/lib/utils";
 import type { FieldValues, UseFormReturn } from "react-hook-form";
+import { Button } from "~@/components/ui/button";
+import { ArrowLeftIcon, LoaderCircleIcon } from "~@/components/ui/icons";
 
 type SaveStatus = { kind: "dirty" } | { kind: "saving" } | { kind: "saved" } | { kind: "error"; message: string };
 
@@ -23,75 +18,34 @@ function statusOf<T extends FieldValues>(form: UseFormReturn<T>): SaveStatus {
   return { kind: "saved" };
 }
 
-function StatusText({ status }: { status: SaveStatus }) {
+function StatusText({ status }: { status: Extract<SaveStatus, { kind: "error" }> }) {
   return (
-    <p
-      aria-live="polite"
-      className={cn(
-        "m-0 flex items-center gap-1.5 text-xs whitespace-nowrap",
-        status.kind === "error" ? "text-destructive" : "text-muted-foreground",
-      )}
-    >
-      {status.kind === "saving" ? (
-        <LoaderCircleIcon className="size-3.5 animate-spin" />
-      ) : null}
-      {status.kind === "saved" ? (
-        <CheckIcon className="size-3.5 text-primary" />
-      ) : null}
-      {status.kind === "dirty"
-          ? "Unsaved changes"
-          : status.kind === "saving"
-            ? "Saving"
-            : status.kind === "saved"
-              ? "Saved"
-              : status.message}
+    <p role="alert" className="m-0 text-xs text-destructive">
+      {status.message}
     </p>
   );
 }
 
-export function DetailHeader<T extends FieldValues>({
-  backHref,
-  eyebrow,
-  title,
-  form,
-  onSave,
-  children,
-}: {
-  backHref: string;
-  eyebrow: string;
-  title: string;
-  form: UseFormReturn<T>;
-  onSave: () => void;
-  children?: ReactNode;
-}) {
+export function DetailTop<T extends FieldValues>({ backHref, backLabel, form, onSave, createLabel }: { backHref: string; backLabel: string; form: UseFormReturn<T>; onSave: () => void; createLabel?: string }) {
+  const status = statusOf(form);
   return (
-    <header className="sticky top-0 z-10 flex h-14 items-center gap-3 border-b border-border bg-background/95 px-4 backdrop-blur sm:px-6">
-      <Link
-        href={backHref}
-        aria-label="Back to the list"
-        className="-ml-1 inline-flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-muted lg:hidden"
-      >
-        <ArrowLeftIcon />
+    <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+      <Link href={backHref} className="inline-flex w-fit items-center gap-1.5 text-sm text-muted-foreground no-underline hover:text-foreground">
+        <ArrowLeftIcon className="size-4" />
+        {backLabel}
       </Link>
-      <div className="min-w-0 flex-1">
-        <p className="m-0 font-mono text-[0.6rem] tracking-[0.15em] text-muted-foreground uppercase">
-          {eyebrow}
-        </p>
-        <h1 className="m-0 truncate font-serif text-lg leading-tight font-medium text-foreground">
-          {title}
-        </h1>
+      <div className="ml-auto flex items-center gap-3">
+        {status.kind === "error" ? <StatusText status={status} /> : null}
+        <Button variant="primary" size="sm" disabled={createLabel ? form.formState.isSubmitting : !form.formState.isDirty || form.formState.isSubmitting} onClick={onSave}>
+          {form.formState.isSubmitting ? <LoaderCircleIcon className="animate-spin" /> : null}
+          {createLabel ?? "Save changes"}
+        </Button>
       </div>
-      <StatusText status={statusOf(form)} />
-      {children}
-      <Button
-        variant="primary"
-        size="sm"
-        disabled={!form.formState.isDirty || form.formState.isSubmitting}
-        onClick={onSave}
-      >
-        {form.formState.isSubmitting ? <LoaderCircleIcon className="animate-spin" /> : null}
-        Save changes
-      </Button>
-    </header>
+    </div>
   );
 }
+
+export function DetailBody({ children }: { children: ReactNode }) {
+  return <div className="mx-auto grid w-full max-w-3xl flex-1 content-start gap-4 p-4 pb-10 sm:p-5 sm:pb-12">{children}</div>;
+}
+

@@ -4,6 +4,7 @@ const appHost = new URL(process.env.BETTER_AUTH_URL ?? "http://localhost:3000").
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: [appHost],
+  devIndicators: { position: "bottom-right" },
   experimental: {
     agentFeedback: true,
   },
