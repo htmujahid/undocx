@@ -40,23 +40,6 @@ export const documentChunk = pgTable(
   ],
 );
 
-export const indexJob = pgTable(
-  "index_job",
-  {
-    documentId: text()
-      .primaryKey()
-      .references(() => document.id, { onDelete: "cascade" }),
-    userId: text()
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-    requestedAt: timestamp().defaultNow().notNull(),
-    lockedAt: timestamp(),
-    attempts: integer().notNull().default(0),
-    error: text(),
-  },
-  (table) => [index("index_job_requested_idx").on(table.requestedAt)],
-);
-
 export const chatThread = pgTable(
   "chat_thread",
   {

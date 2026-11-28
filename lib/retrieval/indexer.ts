@@ -1,36 +1,55 @@
 import "server-only";
 
-import { claimJobs, enqueueUnindexed, failJob, finishJob, listChunkVectors, loadDocumentForIndexing, replaceChunks } from "~@/lib/db/repository/retrieval";
+import { createHash } from "node:crypto";
+import { getEntitlement, usageSince } from "~@/lib/db/repository/billing";
+import { insertRun } from "~@/lib/db/repository/ai";
+import { costMicros } from "~@/lib/billing/pricing";
+import { countStaleDocuments, listChunkVectors, listStaleDocuments, loadDocumentForIndexing, markIndexed, replaceChunks } from "~@/lib/db/repository/retrieval";
 import { chunkDocument, embeddingInput } from "./chunk";
-import { embeddingModel, embedTexts } from "./embed";
+import { embeddingModel, embedWithUsage } from "./embed";
 
-export async function indexDocument(userId: string, documentId: string) {
+async function indexDocument(userId: string, documentId: string) {
   const doc = await loadDocumentForIndexing(userId, documentId);
-  if (!doc) return;
+  if (!doc) return 0;
   const chunks = chunkDocument(doc.content, doc.title);
+  const hash = createHash("sha256")
+    .update([embeddingModel, doc.title, ...chunks.map((chunk) => chunk.hash)].join("|"))
+    .digest("hex");
+  if (hash === doc.indexedHash) {
+    await markIndexed(documentId, doc.version, hash);
+    return 0;
+  }
   const known = new Map((await listChunkVectors(documentId)).filter((row) => row.embeddingModel === embeddingModel).map((row) => [row.contentHash, row.embedding]));
   const missing = chunks.filter((chunk) => !known.has(chunk.hash));
-  const fresh = await embedTexts(missing.map((chunk) => embeddingInput(doc.title, chunk)));
-  missing.forEach((chunk, index) => known.set(chunk.hash, fresh[index]));
+  const { embeddings, tokens } = await embedWithUsage(missing.map((chunk) => embeddingInput(doc.title, chunk)));
+  missing.forEach((chunk, index) => known.set(chunk.hash, embeddings[index]));
   await replaceChunks(
     userId,
     documentId,
     embeddingModel,
-    chunks.map(({ hash, ...chunk }) => ({ ...chunk, contentHash: hash, embedding: known.get(hash)! })),
+    chunks.map(({ hash: contentHash, ...chunk }) => ({ ...chunk, contentHash, embedding: known.get(contentHash)! })),
   );
+  await markIndexed(documentId, doc.version, hash);
+  return tokens;
 }
 
-export async function runIndexJobs({ quietSeconds, limit, userId, backfill = false }: { quietSeconds: number; limit: number; userId?: string; backfill?: boolean }) {
-  if (backfill) await enqueueUnindexed(userId);
-  const jobs = await claimJobs({ quietSeconds, limit, userId });
-  for (const job of jobs) {
+export async function refreshIndex(userId: string, { budgetMs = 20_000 }: { budgetMs?: number } = {}) {
+  const { limits, window } = await getEntitlement(userId);
+  if ((await usageSince(userId, window.start)) >= limits.allowanceMicros) return { updated: 0, remaining: await countStaleDocuments(userId), blocked: true };
+  const startedAt = Date.now();
+  let updated = 0;
+  let tokens = 0;
+  for (const id of await listStaleDocuments(userId, 200)) {
+    if (Date.now() - startedAt > budgetMs) break;
     try {
-      await indexDocument(job.userId, job.documentId);
-      await finishJob(job);
+      tokens += await indexDocument(userId, id);
+      updated++;
     } catch (error) {
       console.error("[retrieval:index]", error);
-      await failJob(job.documentId, error instanceof Error ? error.message : "Indexing failed");
     }
   }
-  return jobs.length;
+  if (tokens > 0) {
+    await insertRun({ userId, kind: "index", model: embeddingModel, status: "ok", inputTokens: tokens, totalTokens: tokens, costMicros: costMicros(embeddingModel, { inputTokens: tokens }), durationMs: Date.now() - startedAt });
+  }
+  return { updated, remaining: await countStaleDocuments(userId), blocked: false };
 }

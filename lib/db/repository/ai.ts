@@ -59,6 +59,10 @@ export async function clearThread(userId: string, documentId: string) {
   if (thread) await db.delete(aiMessage).where(eq(aiMessage.threadId, thread.id));
 }
 
+export async function insertRun(run: typeof aiRun.$inferInsert) {
+  await db.insert(aiRun).values(run);
+}
+
 const staleRunMs = 5 * 60 * 1000;
 
 export async function startRun(run: typeof aiRun.$inferInsert) {

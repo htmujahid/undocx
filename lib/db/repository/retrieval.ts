@@ -2,7 +2,7 @@ import "server-only";
 
 import { and, eq, sql } from "drizzle-orm";
 import { db } from "~@/lib/db";
-import { document, documentChunk, indexJob } from "~@/lib/db/schema";
+import { document, documentChunk } from "~@/lib/db/schema";
 
 export type NewChunk = {
   position: number;
@@ -14,56 +14,25 @@ export type NewChunk = {
   embedding: number[];
 };
 
-export type ClaimedJob = { documentId: string; userId: string; requestedAt: string };
+const stale = sql`(d.plain_text <> '' or d.indexed_version is not null) and d.status <> 'drafting' and d.indexed_version is distinct from d.content_version`;
 
-export async function requestIndexing(userId: string, documentId: string) {
-  await db
-    .insert(indexJob)
-    .values({ documentId, userId })
-    .onConflictDoUpdate({ target: indexJob.documentId, set: { requestedAt: new Date(), lockedAt: null, attempts: 0, error: null } });
+export async function countStaleDocuments(userId: string) {
+  const result = await db.execute<{ total: number }>(sql`select count(*)::int as total from document d where d.user_id = ${userId} and ${stale}`);
+  return result.rows[0].total;
 }
 
-export async function enqueueUnindexed(userId?: string) {
-  await db.execute(sql`
-    insert into index_job (document_id, user_id)
-    select d.id, d.user_id from document d
-    where d.plain_text <> ''
-      ${userId ? sql`and d.user_id = ${userId}` : sql``}
-      and not exists (select 1 from document_chunk c where c.document_id = d.id)
-      and not exists (select 1 from index_job j where j.document_id = d.id)
-    on conflict do nothing
-  `);
+export async function listStaleDocuments(userId: string, limit: number) {
+  const result = await db.execute<{ id: string }>(sql`select d.id from document d where d.user_id = ${userId} and ${stale} order by d.updated_at desc limit ${limit}`);
+  return result.rows.map((row) => row.id);
 }
 
-export async function claimJobs({ quietSeconds, limit, userId }: { quietSeconds: number; limit: number; userId?: string }) {
-  const result = await db.execute<{ document_id: string; user_id: string; requested_at: string }>(sql`
-    update index_job set locked_at = now(), attempts = attempts + 1
-    where document_id in (
-      select document_id from index_job
-      where requested_at <= now() - make_interval(secs => ${quietSeconds})
-        and (locked_at is null or locked_at < now() - interval '5 minutes')
-        and attempts < 5
-        ${userId ? sql`and user_id = ${userId}` : sql``}
-      order by requested_at
-      limit ${limit}
-      for update skip locked
-    )
-    returning document_id, user_id, requested_at::text as requested_at
-  `);
-  return result.rows.map((row) => ({ documentId: row.document_id, userId: row.user_id, requestedAt: row.requested_at }));
-}
-
-export async function finishJob(job: ClaimedJob) {
-  await db.execute(sql`delete from index_job where document_id = ${job.documentId} and requested_at = ${job.requestedAt}::timestamp`);
-}
-
-export async function failJob(documentId: string, error: string) {
-  await db.update(indexJob).set({ lockedAt: null, error: error.slice(0, 500) }).where(eq(indexJob.documentId, documentId));
+export async function markIndexed(documentId: string, version: number, hash: string) {
+  await db.update(document).set({ indexedVersion: version, indexedHash: hash, indexedAt: new Date() }).where(eq(document.id, documentId));
 }
 
 export async function loadDocumentForIndexing(userId: string, documentId: string) {
   const [row] = await db
-    .select({ title: document.title, content: document.content })
+    .select({ title: document.title, content: document.content, version: document.contentVersion, indexedHash: document.indexedHash })
     .from(document)
     .where(and(eq(document.id, documentId), eq(document.userId, userId)));
   return row ?? null;

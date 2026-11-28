@@ -7,10 +7,11 @@ import { useSWRConfig } from "swr";
 import { Button } from "~@/components/ui/button";
 import { LoaderCircleIcon } from "~@/components/ui/icons";
 import { chatLimits, type ChatMetadata } from "~@/lib/chat/schemas";
-import { chatThreadsKey } from "../query";
+import { chatThreadsKey, searchStatusKey } from "../query";
 import { Answer } from "./chat-answer";
 import { ChatComposer } from "./chat-composer";
 import { ChatHeader } from "./chat-header";
+import { SearchStatus } from "./search-status";
 import { SourceList } from "./chat-sources";
 
 const starters = ["Which document mentions a deadline?", "What have I written about pricing?", "Find where I describe our refund policy"];
@@ -37,7 +38,11 @@ export function ChatPanel({ threadId, title, initialMessages }: { threadId: stri
       }),
     [threadId],
   );
-  const { messages, sendMessage, status, error, stop, clearError } = useChat({ id: threadId, messages: initialMessages, transport, onFinish: () => void mutate(chatThreadsKey) });
+  const { messages, sendMessage, status, error, stop, clearError } = useChat({ id: threadId, messages: initialMessages, transport, onFinish: () => {
+      void mutate(chatThreadsKey);
+      void mutate(searchStatusKey);
+    },
+  });
   const endRef = useRef<HTMLDivElement>(null);
   const isBusy = status === "submitted" || status === "streaming";
   const heading = title ?? (messages[0] ? textOf(messages[0]).slice(0, chatLimits.title) : "New chat");
@@ -61,8 +66,9 @@ export function ChatPanel({ threadId, title, initialMessages }: { threadId: stri
             <h2 className="m-0 font-serif text-4xl font-medium tracking-tight text-foreground sm:text-5xl">What would you like to know?</h2>
             <p className="m-0 text-base leading-normal text-muted-foreground">Ask anything about your documents. Every answer comes with its sources.</p>
           </div>
-          <div className="w-full max-w-3xl">
+          <div className="grid w-full max-w-3xl gap-2">
             <ChatComposer onSend={send} onStop={stop} isBusy={isBusy} autoFocus />
+            <SearchStatus isBusy={isBusy} />
           </div>
           <div className="flex max-w-3xl flex-wrap justify-center gap-2">
             {starters.map((starter) => (
@@ -114,6 +120,7 @@ export function ChatPanel({ threadId, title, initialMessages }: { threadId: stri
           <div className="shrink-0 px-4 pb-4">
             <div className="mx-auto grid w-full max-w-3xl gap-2">
               <ChatComposer onSend={send} onStop={stop} isBusy={isBusy} />
+              <SearchStatus isBusy={isBusy} />
               <p className="m-0 text-center text-xs text-faint-foreground">Answers come from your own documents and can miss things. Check the sources.</p>
             </div>
           </div>

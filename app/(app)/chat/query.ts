@@ -2,7 +2,7 @@
 
 import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
-import { deleteChatThread, listChatThreads, startChat } from "./actions";
+import { deleteChatThread, listChatThreads, searchStatus, startChat, updateSearch } from "./actions";
 
 export const chatThreadsKey = "chat/threads";
 
@@ -18,4 +18,14 @@ export function useStartChat() {
 
 export function useDeleteChatThread(id: string) {
   return useSWRMutation(chatThreadsKey, () => deleteChatThread(id));
+}
+
+export const searchStatusKey = "chat/search-status";
+
+export function useSearchStatus() {
+  return useSWR(searchStatusKey, () => searchStatus());
+}
+
+export function useUpdateSearch() {
+  return useSWRMutation("chat/search-update", () => updateSearch());
 }

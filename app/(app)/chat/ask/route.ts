@@ -7,7 +7,7 @@ import { chatLimits, chatRequestSchema, type ChatMetadata, type ChatSource } fro
 import { ensureChatThread, listChatMessages, saveChatMessages } from "~@/lib/db/repository/chat";
 import { searchChunks } from "~@/lib/db/repository/retrieval";
 import { embedTexts } from "~@/lib/retrieval/embed";
-import { runIndexJobs } from "~@/lib/retrieval/indexer";
+import { refreshIndex } from "~@/lib/retrieval/indexer";
 
 function textOf(message: UIMessage) {
   return message.parts.map((part) => (part.type === "text" ? part.text : "")).join("");
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       query = rewritten?.text.trim().slice(0, 500) || message.text;
     }
 
-    await runIndexJobs({ quietSeconds: 0, limit: 5, userId, backfill: true });
+    await refreshIndex(userId, { budgetMs: 15_000 });
     const [vector] = await embedTexts([query], request.signal);
     const hits = await searchChunks(userId, { vector, query, documentId: documentId ?? undefined, limit: chatLimits.excerpts });
 

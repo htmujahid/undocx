@@ -2,7 +2,6 @@ import "server-only";
 
 import { and, asc, count, desc, eq, sql } from "drizzle-orm";
 import { connection } from "next/server";
-import { requestIndexing } from "~@/lib/db/repository/retrieval";
 import { db } from "~@/lib/db";
 import { document, documentVersion } from "~@/lib/db/schema";
 
@@ -88,6 +87,5 @@ export async function replaceDocumentContent(userId: string, documentId: string,
     .set({ ...fields, contentVersion: sql`${document.contentVersion} + 1`, updatedAt: new Date() })
     .where(and(eq(document.id, documentId), eq(document.userId, userId)))
     .returning({ version: document.contentVersion });
-  if (rows[0]) await requestIndexing(userId, documentId);
   return rows[0]?.version ?? null;
 }
