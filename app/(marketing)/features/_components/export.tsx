@@ -3,14 +3,14 @@ import { Section } from "../../_components/frame";
 import { ExportPlayground } from "./export-playground";
 
 const formats = [
-  { term: "Word and Docs", text: "Citations as footnotes. Headings and tables intact.", Icon: FileTextIcon },
+  { term: "Word and OpenDocument", text: "Citations as footnotes. Headings and tables intact.", Icon: FileTextIcon },
   { term: "PDF", text: "Page numbers and a sources list.", Icon: DownloadIcon },
   { term: "Markdown", text: "Plain headings, numbered links.", Icon: CodeIcon },
 ];
 
 export function Export({ number }: { number: string }) {
   return (
-    <Section id="export" number={number} label="Export" note="Four formats." title="Word, PDF, Markdown or Google Docs. Nothing else to clean up." description="Pick a format and see how citations and locked text come out the other side.">
+    <Section id="export" number={number} label="Export" note="Four formats." title="Word, OpenDocument, PDF or Markdown. Nothing else to clean up." description="Pick a format and see how citations and locked text come out the other side.">
       <div className="flex flex-col gap-8">
         <ul className="m-0 grid list-none grid-cols-1 gap-3 p-0 sm:grid-cols-3">
           {formats.map(({ term, text, Icon }) => (

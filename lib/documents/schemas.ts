@@ -1,10 +1,18 @@
 import { z } from "zod";
 import { sourceLimits } from "../sources/limits";
-import { documentLimits, versionLimits } from "./limits";
+import { documentLimits, organizeLimits, versionLimits } from "./limits";
 
 export const titleSchema = z.object({
   title: z.string().trim().min(1, "Give the document a title.").max(documentLimits.title),
 });
+
+export const folderSchema = z.object({
+  name: z.string().trim().min(1, "Give the folder a name.").max(organizeLimits.folderName),
+});
+
+export const tagNameSchema = z.string().trim().min(1).max(organizeLimits.tagName);
+
+export type FolderValues = z.infer<typeof folderSchema>;
 
 export const statusSchema = z.enum(["draft", "ready"]);
 

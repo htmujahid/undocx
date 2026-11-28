@@ -300,7 +300,7 @@ export function EditorMock() {
             <li>Word (.docx)</li>
             <li>PDF</li>
             <li>Markdown</li>
-            <li>Google Docs</li>
+            <li>OpenDocument</li>
           </ul>
         ) : (
           <span>

@@ -7,7 +7,7 @@ const items = [
   ["/features#variations", "Compare variations", "Two or three versions side by side. Keep one or merge them."],
   ["/features#your-voice", "Sound like yourself", "Upload a few things you wrote and the draft takes on your voice."],
   ["/features#grounded-writing", "Check every number", "Citations point back into the files you attached."],
-  ["/features#export", "Export anywhere", "Word, PDF, Markdown or Google Docs, as ordinary files."],
+  ["/features#export", "Export anywhere", "Word, OpenDocument, PDF or Markdown, as ordinary files."],
 ];
 
 export function After({ number }: { number: string }) {

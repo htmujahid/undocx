@@ -1,11 +1,37 @@
-import { relations } from "drizzle-orm";
-import { index, integer, jsonb, pgEnum, pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
+import { relations, sql } from "drizzle-orm";
+import { index, integer, jsonb, pgEnum, pgTable, primaryKey, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
 import type { BriefAnswers, BriefQuestion, OutlineAdvice } from "../../documents/brief";
 import { newId } from "../../id";
 import { user } from "./auth";
 import { ruleSet, voice, writerProfile } from "./context";
 
 export const documentStatus = pgEnum("document_status", ["drafting", "draft", "ready"]);
+
+export const folder = pgTable(
+  "folder",
+  {
+    id: text().primaryKey().$defaultFn(newId),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text().notNull(),
+    createdAt: timestamp().defaultNow().notNull(),
+  },
+  (table) => [uniqueIndex("folder_user_name_idx").on(table.userId, sql`lower(${table.name})`)],
+);
+
+export const tag = pgTable(
+  "tag",
+  {
+    id: text().primaryKey().$defaultFn(newId),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    name: text().notNull(),
+    createdAt: timestamp().defaultNow().notNull(),
+  },
+  (table) => [uniqueIndex("tag_user_name_idx").on(table.userId, sql`lower(${table.name})`)],
+);
 
 export const document = pgTable(
   "document",
@@ -17,6 +43,7 @@ export const document = pgTable(
     title: text().notNull().default("Untitled document"),
     type: text(),
     status: documentStatus().notNull().default("draft"),
+    folderId: text().references(() => folder.id, { onDelete: "set null" }),
     profileId: text().references(() => writerProfile.id, { onDelete: "set null" }),
     voiceId: text().references(() => voice.id, { onDelete: "set null" }),
     ruleSetId: text().references(() => ruleSet.id, { onDelete: "set null" }),
@@ -28,7 +55,20 @@ export const document = pgTable(
     createdAt: timestamp().defaultNow().notNull(),
     updatedAt: timestamp().defaultNow().notNull(),
   },
-  (table) => [index("document_user_updated_idx").on(table.userId, table.updatedAt)],
+  (table) => [index("document_user_updated_idx").on(table.userId, table.updatedAt), index("document_folder_idx").on(table.folderId)],
+);
+
+export const documentTag = pgTable(
+  "document_tag",
+  {
+    documentId: text()
+      .notNull()
+      .references(() => document.id, { onDelete: "cascade" }),
+    tagId: text()
+      .notNull()
+      .references(() => tag.id, { onDelete: "cascade" }),
+  },
+  (table) => [primaryKey({ columns: [table.documentId, table.tagId] }), index("document_tag_tag_idx").on(table.tagId)],
 );
 
 export const documentBrief = pgTable("document_brief", {

@@ -3,16 +3,13 @@ import "server-only";
 import { and, asc, count, desc, eq, ilike, inArray, or, sql } from "drizzle-orm";
 import { connection } from "next/server";
 import { db } from "~@/lib/db";
+import { likePattern } from "~@/lib/db/like";
 import { asset, document, documentSource, source } from "~@/lib/db/schema";
 
 export type NewSource = { kind: "file" | "text" | "link"; title: string; url?: string | null; content?: string; wordCount?: number };
 export type NewAsset = { key: string; filename: string; mimeType: string; size: number };
 
 export type SourceSearch = { query?: string; limit?: number; offset?: number; excludeDocumentId?: string };
-
-function likePattern(query: string) {
-  return `%${query.replace(/[\\%_]/g, "\\$&")}%`;
-}
 
 export async function searchSources(userId: string, { query = "", limit = 20, offset = 0, excludeDocumentId }: SourceSearch = {}) {
   await connection();

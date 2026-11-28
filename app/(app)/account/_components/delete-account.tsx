@@ -17,6 +17,7 @@ const removed = [
   "Your chat history",
   "Your sources and the files you uploaded",
   "Your writer profiles, voices and rule sets",
+  "Your folders and tags",
   "Usage records of your AI requests",
 ];
 

@@ -6,7 +6,7 @@ const formats = [
   { name: "Word", ext: ".docx", note: "Citations become footnotes. Headings, lists and tables intact." },
   { name: "PDF", ext: ".pdf", note: "Page numbers and a sources list. For what should not change." },
   { name: "Markdown", ext: ".md", note: "Plain headings and numbered links." },
-  { name: "Google Docs", ext: "", note: "A new document in your Drive, ready to share." },
+  { name: "OpenDocument", ext: ".odt", note: "For LibreOffice and other open office suites." },
 ];
 
 export function Export({ number }: { number: string }) {
@@ -30,7 +30,7 @@ export function Export({ number }: { number: string }) {
               <span className="font-serif text-2xl text-foreground">{format.name}</span>
               {index === 0 ? <CheckIcon className="size-4 text-primary" /> : null}
             </span>
-            <span className="font-mono text-xs text-muted-foreground">{format.ext || "drive"}</span>
+            <span className="font-mono text-xs text-muted-foreground">{format.ext}</span>
             <span className="text-sm leading-normal text-muted-foreground">{format.note}</span>
           </li>
         ))}

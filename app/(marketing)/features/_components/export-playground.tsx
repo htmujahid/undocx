@@ -4,7 +4,7 @@ import { useState } from "react";
 import { SegmentedControl, SegmentedControlItem } from "~@/components/ui/segmented-control";
 import { Sheet, SheetChrome, SheetPage } from "../../_components/doc";
 
-type Format = "docx" | "pdf" | "md" | "gdoc";
+type Format = "docx" | "pdf" | "md";
 
 const title = "Proposal: a new online store for Marlow & Finch";
 
@@ -20,7 +20,6 @@ export function ExportPlayground() {
           <SegmentedControlItem value="docx">Word</SegmentedControlItem>
           <SegmentedControlItem value="pdf">PDF</SegmentedControlItem>
           <SegmentedControlItem value="md">Markdown</SegmentedControlItem>
-          <SegmentedControlItem value="gdoc">Google Docs</SegmentedControlItem>
         </SegmentedControl>
       </SheetChrome>
       <SheetPage>
@@ -43,7 +42,7 @@ ${locked}
                 <p className="m-0 font-serif text-lg font-medium">2. What we heard</p>
                 <p className="m-0 max-w-measure text-base leading-relaxed">
                   {sentence}
-                  <sup className="ml-0.5 text-[0.7em]">{format === "gdoc" ? "[1]" : "1"}</sup>.
+                  <sup className="ml-0.5 text-[0.7em]">1</sup>.
                 </p>
               </div>
               <div>
@@ -64,7 +63,6 @@ ${locked}
                     <span className="tabular-nums text-faint-foreground">Page 2 of 4</span>
                   </div>
                 ) : null}
-                {format === "gdoc" ? <p className="m-0">[1] Sales export 2025.xlsx · Sources section at the end. Opens in your Drive, ready to share.</p> : null}
               </div>
             </div>
           )}

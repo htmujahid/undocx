@@ -8,15 +8,12 @@ import { downloadFile, exportDocument, exportFormats, slugify } from "~@/editor/
 import { Button, buttonVariants } from "~@/components/ui/button";
 import { Dialog, DialogBackdrop, DialogClose, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "~@/components/ui/dialog";
 import { DownloadIcon, XIcon } from "~@/components/ui/icons";
-import { Select, SelectContent, SelectGroup, SelectGroupLabel, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "~@/components/ui/select";
-
-const ready = exportFormats.filter((format) => format.status === "ready");
-const soon = exportFormats.filter((format) => format.status === "soon");
+import { Select, SelectContent, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "~@/components/ui/select";
 
 export function ExportDialog() {
   const [editor] = useLexicalComposerContext();
-  const [formatId, setFormatId] = useState(ready[0].id);
-  const format = exportFormats.find((option) => option.id === formatId) ?? ready[0];
+  const [formatId, setFormatId] = useState(exportFormats[0].id);
+  const format = exportFormats.find((option) => option.id === formatId) ?? exportFormats[0];
 
   function download() {
     const title = editor.read(() => {
@@ -50,24 +47,12 @@ export function ExportDialog() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectGroup>
-                <SelectGroupLabel>Available</SelectGroupLabel>
-                {ready.map((option) => (
-                  <SelectItem key={option.id} value={option.id} label={option.label}>
-                    {option.label}
-                    <span className="ml-2 font-mono text-[0.65rem] text-faint-foreground">.{option.extension}</span>
-                  </SelectItem>
-                ))}
-              </SelectGroup>
-              <SelectGroup>
-                <SelectGroupLabel>Coming soon</SelectGroupLabel>
-                {soon.map((option) => (
-                  <SelectItem key={option.id} value={option.id} label={option.label} disabled>
-                    {option.label}
-                    <span className="ml-2 font-mono text-[0.65rem] text-faint-foreground">.{option.extension}</span>
-                  </SelectItem>
-                ))}
-              </SelectGroup>
+              {exportFormats.map((option) => (
+                <SelectItem key={option.id} value={option.id} label={option.label}>
+                  {option.label}
+                  <span className="ml-2 font-mono text-[0.65rem] text-faint-foreground">.{option.extension}</span>
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
           <p className="m-0 text-sm text-muted-foreground">{format.description}</p>

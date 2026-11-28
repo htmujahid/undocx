@@ -1,17 +1,10 @@
 "use client";
 
-import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
-import type { DocumentStatus, TitleValues } from "~@/lib/documents/schemas";
-import { createDocument, deleteDocument, listDocuments, setDocumentStatus, updateTitle } from "./actions";
+import type { DocumentStatus, FolderValues, TitleValues } from "~@/lib/documents/schemas";
+import { createDocument, createFolder, deleteDocument, deleteFolder, moveDocument, renameFolder, setDocumentStatus, setTags, updateTitle } from "./actions";
 
 export const documentsKey = "documents";
-
-export type DocumentSummary = Awaited<ReturnType<typeof listDocuments>>[number];
-
-export function useDocuments(initial: DocumentSummary[]) {
-  return useSWR(documentsKey, () => listDocuments(), { fallbackData: initial }).data;
-}
 
 export function useCreateDocument() {
   return useSWRMutation(documentsKey, () => createDocument());
@@ -27,4 +20,24 @@ export function useSetDocumentStatus(id: string) {
 
 export function useDeleteDocument(id: string) {
   return useSWRMutation(documentsKey, () => deleteDocument(id));
+}
+
+export function useCreateFolder() {
+  return useSWRMutation(documentsKey, (_key, { arg }: { arg: FolderValues }) => createFolder(arg));
+}
+
+export function useRenameFolder(id: string) {
+  return useSWRMutation(documentsKey, (_key, { arg }: { arg: FolderValues }) => renameFolder(id, arg));
+}
+
+export function useDeleteFolder(id: string) {
+  return useSWRMutation(documentsKey, () => deleteFolder(id));
+}
+
+export function useMoveDocument(id: string) {
+  return useSWRMutation(documentsKey, (_key, { arg }: { arg: string | null }) => moveDocument(id, arg));
+}
+
+export function useSetTags(id: string) {
+  return useSWRMutation(documentsKey, (_key, { arg }: { arg: string[] }) => setTags(id, arg));
 }

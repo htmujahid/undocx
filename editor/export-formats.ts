@@ -15,8 +15,7 @@ export type ExportFormat = {
   description: string;
   extension: string;
   mime: string;
-  status: "ready" | "soon";
-  $export?: (editor: LexicalEditor) => string | Uint8Array<ArrayBuffer>;
+  $export: (editor: LexicalEditor) => string | Uint8Array<ArrayBuffer>;
 };
 
 export const exportFormats: ExportFormat[] = [
@@ -26,7 +25,6 @@ export const exportFormats: ExportFormat[] = [
     description: "Headings, lists, quotes, links, tables, rules and citations as Markdown. Columns become a one-row table. Alignment is dropped.",
     extension: "md",
     mime: "text/markdown;charset=utf-8",
-    status: "ready",
     $export: (editor) => $exportMarkdown() + markdownReferences($references(editor)),
   },
   {
@@ -35,7 +33,6 @@ export const exportFormats: ExportFormat[] = [
     description: "A fragment of semantic HTML with the document's structure. Styling is left to the page that embeds it.",
     extension: "html",
     mime: "text/html;charset=utf-8",
-    status: "ready",
     $export: (editor) => stripClasses($generateHtmlFromNodes(editor) + htmlReferences($references(editor))),
   },
   {
@@ -44,7 +41,6 @@ export const exportFormats: ExportFormat[] = [
     description: "The editor state exactly as Undocx stores it, to re-import later without losing anything.",
     extension: "json",
     mime: "application/json;charset=utf-8",
-    status: "ready",
     $export: (editor) => JSON.stringify(editor.getEditorState().toJSON(), null, 2),
   },
   {
@@ -53,7 +49,6 @@ export const exportFormats: ExportFormat[] = [
     description: "A .docx file with headings, lists, tables, links and page setup. Citations are superscript numbers with a References list at the end.",
     extension: "docx",
     mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    status: "ready",
     $export: (editor) => compileDocx($buildExportDoc($references(editor))),
   },
   {
@@ -62,7 +57,6 @@ export const exportFormats: ExportFormat[] = [
     description: "An .odt file for LibreOffice and other open office suites, with the same structure as the Word export.",
     extension: "odt",
     mime: "application/vnd.oasis.opendocument.text",
-    status: "ready",
     $export: (editor) => compileOdt($buildExportDoc($references(editor))),
   },
   {
@@ -71,10 +65,8 @@ export const exportFormats: ExportFormat[] = [
     description: "Page numbers and a References list at the end, using your page setup. Standard fonts, so Latin letters only. Nothing in the file depends on Undocx.",
     extension: "pdf",
     mime: "application/pdf",
-    status: "ready",
     $export: (editor) => compilePdf($buildExportDoc($references(editor))),
   },
-  { id: "gdoc", label: "Google Docs", description: "A new document in your Drive, ready to share, with citations in a Sources section.", extension: "gdoc", mime: "application/vnd.google-apps.document", status: "soon" },
 ];
 
 function $references(editor: LexicalEditor): Source[] {
@@ -110,9 +102,7 @@ export function slugify(text: string) {
 }
 
 export function exportDocument(editor: LexicalEditor, format: ExportFormat) {
-  if (!format.$export) throw new Error(`${format.label} export is not available yet`);
-  const exporter = format.$export;
-  return editor.read(() => exporter(editor));
+  return editor.read(() => format.$export(editor));
 }
 
 export function downloadFile(name: string, content: string | Uint8Array<ArrayBuffer>, mime: string) {

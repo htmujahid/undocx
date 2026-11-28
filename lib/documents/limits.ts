@@ -9,3 +9,13 @@ export const documentLimits = {
 export const versionLimits = {
   name: 80,
 } as const;
+
+export const organizeLimits = {
+  folderName: 40,
+  folders: 50,
+  tagName: 30,
+  tags: 100,
+  tagsPerDocument: 10,
+  pageSize: 12,
+  search: 100,
+} as const;

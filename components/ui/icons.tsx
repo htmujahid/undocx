@@ -1,6 +1,9 @@
 import type { IconProps } from "@phosphor-icons/react";
 import {
   DotsThreeIcon as DotsThree,
+  FolderSimpleIcon as FolderSimple,
+  TagIcon as Tag,
+  ArrowRightIcon as ArrowRight,
   FilesIcon as Files,
   PencilSimpleIcon as PencilSimple,
   IdentificationCardIcon as IdentificationCard,
@@ -78,6 +81,9 @@ function withWeight(Icon: ComponentType<IconProps>) {
 }
 
 export const DotsThreeIcon = withWeight(DotsThree);
+export const FolderSimpleIcon = withWeight(FolderSimple);
+export const TagIcon = withWeight(Tag);
+export const ArrowRightIcon = withWeight(ArrowRight);
 export const FilesIcon = withWeight(Files);
 export const PencilSimpleIcon = withWeight(PencilSimple);
 export const ArrowDownIcon = withWeight(ArrowDown);
