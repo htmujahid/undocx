@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "~@/components/ui/button";
 import { Checkbox, CheckboxGroup } from "~@/components/ui/checkbox";
+import { ChoiceRow, ChoiceShortcut, useChoiceShortcuts } from "~@/components/ui/choice-row";
 import { Radio, RadioGroup } from "~@/components/ui/radio";
 import { Textarea } from "~@/components/ui/textarea";
 import { kindOf, multiSeparator, yesNoChoices, type BriefQuestion, type QuestionKind } from "~@/lib/documents/brief";
@@ -18,7 +19,6 @@ const defaultHints: Record<QuestionKind, string> = {
   text: "Answer in your own words.",
 };
 
-const rowClass = "flex min-h-11 cursor-pointer items-center gap-3 rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground transition-colors hover:bg-muted/60 has-[[data-checked]]:border-primary has-[[data-checked]]:bg-primary/5 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ring";
 
 export function QuestionCard({ question, index, total, onAnswer, onSkip, onFinish, isBusy }: { question: BriefQuestion; index: number; total: number; onAnswer: (value: string) => void; onSkip: () => void; onFinish: () => void; isBusy: boolean }) {
   const kind = kindOf(question);
@@ -27,6 +27,7 @@ export function QuestionCard({ question, index, total, onAnswer, onSkip, onFinis
   const [picked, setPicked] = useState<string[]>([]);
   const [other, setOther] = useState("");
   const [text, setText] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const otherRef = useRef<HTMLInputElement>(null);
 
@@ -64,43 +65,18 @@ export function QuestionCard({ question, index, total, onAnswer, onSkip, onFinis
     if (answer !== null) onAnswer(answer);
   }
 
-  const keys = useRef({ pick, submit, canContinue });
-  keys.current = { pick, submit, canContinue };
-
-  useEffect(() => {
-    function onKeyDown(event: globalThis.KeyboardEvent) {
-      const target = event.target as HTMLElement;
-      if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey || target.closest("[role=dialog], [role=menu], [role=listbox]") || target.matches("input[type=text], textarea, select, a, [role=combobox]")) return;
-      const insideForm = target === document.body || Boolean(target.closest("form[aria-labelledby=question-title]"));
-      if (!insideForm) return;
-      const number = Number(event.key);
-      if (kind !== "text" && number >= 1 && number <= options.length) {
-        event.preventDefault();
-        keys.current.pick(options[number - 1]);
-      } else if (event.key === "Enter" && keys.current.canContinue && !target.matches("button:not([role=radio]):not([role=checkbox])")) {
-        event.preventDefault();
-        keys.current.submit();
-      }
-    }
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [kind, options]);
+  useChoiceShortcuts({ scope: formRef, count: kind === "text" ? 0 : options.length, onPick: (position) => pick(options[position]), onSubmit: submit, canSubmit: canContinue });
 
   const otherRow = (control: React.ReactNode) => (
-    <label className={cn(rowClass, kind === "yesno" && "sm:col-span-2")}>
+    <ChoiceRow className={cn(kind === "yesno" && "sm:col-span-2")}>
       {control}
       <input ref={otherRef} type="text" value={other} maxLength={documentLimits.answer} onChange={(event) => changeOther(event.target.value)} aria-label="Something else" placeholder="Something else…" className="min-w-0 flex-1 appearance-none border-0 bg-transparent p-0 text-sm text-foreground shadow-none outline-none placeholder:text-faint-foreground" />
-    </label>
-  );
-
-  const shortcut = (position: number) => (
-    <kbd aria-hidden="true" className="ml-auto hidden rounded-sm border border-border px-1.5 py-0.5 font-mono text-[0.65rem] leading-none text-faint-foreground sm:inline">
-      {position}
-    </kbd>
+    </ChoiceRow>
   );
 
   return (
     <form
+      ref={formRef}
       aria-labelledby="question-title"
       noValidate
       onSubmit={(event) => {
@@ -131,22 +107,22 @@ export function QuestionCard({ question, index, total, onAnswer, onSkip, onFinis
       ) : isMulti ? (
         <CheckboxGroup aria-labelledby="question-title" value={picked} onValueChange={select} className="grid gap-2">
           {options.map((option, position) => (
-            <label key={option} className={rowClass}>
+            <ChoiceRow key={option}>
               <Checkbox value={option} />
               <span className="min-w-0">{option}</span>
-              {shortcut(position + 1)}
-            </label>
+              <ChoiceShortcut>{position + 1}</ChoiceShortcut>
+            </ChoiceRow>
           ))}
           {otherRow(<Checkbox value={OTHER} aria-label="Use something else" />)}
         </CheckboxGroup>
       ) : (
         <RadioGroup aria-labelledby="question-title" value={picked[0] ?? null} onValueChange={(value) => select(value ? [value] : [])} className={cn("grid gap-2", kind === "yesno" && "sm:grid-cols-2")}>
           {options.map((option, position) => (
-            <label key={option} className={rowClass}>
+            <ChoiceRow key={option}>
               <Radio value={option} />
               <span className="min-w-0">{option}</span>
-              {shortcut(position + 1)}
-            </label>
+              <ChoiceShortcut>{position + 1}</ChoiceShortcut>
+            </ChoiceRow>
           ))}
           {otherRow(<Radio value={OTHER} aria-label="Use something else" />)}
         </RadioGroup>

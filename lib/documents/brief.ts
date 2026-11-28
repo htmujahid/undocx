@@ -11,10 +11,10 @@ export type BriefAnswers = Record<string, string | null>;
 export type OutlineAdvice = { recommended: boolean; reason: string };
 export type OutlineMode = "auto" | "on" | "off";
 
-export const outlineModes: { value: OutlineMode; label: string }[] = [
-  { value: "auto", label: "Let Undocx decide" },
-  { value: "on", label: "With an outline" },
-  { value: "off", label: "Without one" },
+export const outlineModes: { value: OutlineMode; label: string; description: string }[] = [
+  { value: "auto", label: "Let Undocx decide", description: "It looks at the brief and your answers." },
+  { value: "on", label: "With an outline", description: "A title, then sections with short headings." },
+  { value: "off", label: "Without one", description: "Flowing text with few or no headings." },
 ];
 
 export function nextQuestion(questions: BriefQuestion[], answers: BriefAnswers) {

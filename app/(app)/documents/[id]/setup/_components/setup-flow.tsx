@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "~@/components/ui/button";
-import { SegmentedControl, SegmentedControlItem } from "~@/components/ui/segmented-control";
+import { ChoiceRow, ChoiceShortcut, useChoiceShortcuts } from "~@/components/ui/choice-row";
+import { Radio, RadioGroup } from "~@/components/ui/radio";
 import { nextQuestion, outlineModes, type BriefAnswers, type BriefQuestion, type OutlineAdvice, type OutlineMode } from "~@/lib/documents/brief";
 import { useGenerateQuestions, useSaveAnswer, useSetOutline, useWriteDraft } from "../query";
 import { Brief, type BriefPick } from "./setup-brief";
@@ -107,33 +108,7 @@ export function SetupFlow({ id, prompt, picks, questions: initialQuestions, answ
       {current && !isWriting ? <QuestionCard key={current.id} question={current} index={answeredCount} total={questions.length} isBusy={false} onAnswer={(value) => answer(current, value)} onSkip={() => answer(current, null)} onFinish={() => setIsFinished(true)} /> : null}
 
       {advice && !current && !isWriting ? (
-        <section aria-labelledby="outline-title" className="grid gap-4 rounded-lg border border-border bg-card p-5">
-          <div className="grid gap-1">
-            <h2 id="outline-title" className="m-0 font-serif text-xl leading-tight font-medium text-foreground">
-              Should it have an outline?
-            </h2>
-            <p className="m-0 text-sm leading-normal text-muted-foreground">
-              {advice.reason ? `${advice.recommended ? "Undocx suggests one" : "Undocx suggests none"}: ${advice.reason}` : "Undocx decides from the brief."}
-            </p>
-          </div>
-          <SegmentedControl value={outline} onValueChange={(next) => next && setOutline(next as OutlineMode)} aria-label="Outline" className="w-full">
-            {outlineModes.map((mode) => (
-              <SegmentedControlItem key={mode.value} value={mode.value} className="flex-1 justify-center">
-                {mode.label}
-              </SegmentedControlItem>
-            ))}
-          </SegmentedControl>
-          {problem ? (
-            <p className="m-0 text-sm text-destructive" role="alert">
-              {problem}
-            </p>
-          ) : null}
-          <div className="flex justify-end">
-            <Button variant="primary" onClick={() => void write()}>
-              Write the first draft
-            </Button>
-          </div>
-        </section>
+        <OutlineChoice advice={advice} outline={outline} onOutline={setOutline} problem={problem} onWrite={() => void write()} />
       ) : null}
 
       {isWriting ? <Working>Writing your first draft. This takes about a minute…</Working> : null}
@@ -146,5 +121,51 @@ export function SetupFlow({ id, prompt, picks, questions: initialQuestions, answ
         .
       </p>
     </div>
+  );
+}
+
+function OutlineChoice({ advice, outline, onOutline, problem, onWrite }: { advice: OutlineAdvice; outline: OutlineMode; onOutline: (mode: OutlineMode) => void; problem: string | null; onWrite: () => void }) {
+  const formRef = useRef<HTMLFormElement>(null);
+  useChoiceShortcuts({ scope: formRef, count: outlineModes.length, onPick: (position) => onOutline(outlineModes[position].value), onSubmit: onWrite, canSubmit: true });
+  return (
+    <form
+      ref={formRef}
+      aria-labelledby="outline-title"
+      onSubmit={(event) => {
+        event.preventDefault();
+        onWrite();
+      }}
+      className="grid gap-5 rounded-lg border border-border bg-card p-5"
+    >
+      <div className="grid gap-1">
+        <span className="font-mono text-[0.65rem] tracking-[0.15em] text-muted-foreground uppercase">Last step</span>
+        <h2 id="outline-title" className="m-0 font-serif text-xl leading-tight font-medium text-foreground">
+          Should it have an outline?
+        </h2>
+        <p className="m-0 text-sm leading-normal text-muted-foreground">{advice.reason ? `${advice.recommended ? "Undocx suggests one" : "Undocx suggests none"}: ${advice.reason}` : "Choose how the first draft is structured."}</p>
+      </div>
+      <RadioGroup aria-labelledby="outline-title" value={outline} onValueChange={(value) => value && onOutline(value as OutlineMode)} className="grid gap-2">
+        {outlineModes.map((mode, position) => (
+          <ChoiceRow key={mode.value}>
+            <Radio value={mode.value} />
+            <span className="grid min-w-0 gap-0.5">
+              <span>{mode.label}</span>
+              <span className="text-xs text-muted-foreground">{mode.value === "auto" ? `${mode.description} It would ${advice.recommended ? "use" : "skip"} one here.` : mode.description}</span>
+            </span>
+            <ChoiceShortcut>{position + 1}</ChoiceShortcut>
+          </ChoiceRow>
+        ))}
+      </RadioGroup>
+      {problem ? (
+        <p className="m-0 text-sm text-destructive" role="alert">
+          {problem}
+        </p>
+      ) : null}
+      <div className="flex justify-end border-t border-border pt-4">
+        <Button type="submit" variant="primary">
+          Write the first draft
+        </Button>
+      </div>
+    </form>
   );
 }
