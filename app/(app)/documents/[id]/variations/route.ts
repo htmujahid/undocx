@@ -3,7 +3,7 @@ import { loadContext } from "~@/lib/ai/context";
 import { getModel } from "~@/lib/ai/model";
 import { editMessage, variationsInstructions } from "~@/lib/ai/prompts";
 import { callOptions } from "~@/lib/ai/options";
-import { authorize, describeError, problem, trackRun } from "~@/lib/ai/route";
+import { authorize, describeError, problem, beginRun } from "~@/lib/ai/route";
 import { variationsOutputSchema, variationsRequestSchema } from "~@/lib/ai/schemas";
 import { findDocument } from "~@/lib/db/repository/document";
 
@@ -20,10 +20,12 @@ export async function POST(request: Request, { params }: RouteContext<"/document
   const doc = await findDocument(userId, id);
   if (!doc) return problem(404, "This document no longer exists.");
 
-  const run = trackRun({ userId, documentId: id, kind: "variations" });
+  const gate = await beginRun({ userId, documentId: id, kind: "variations", task: "edit" });
+  if (gate.denied) return gate.denied;
+  const { run } = gate;
   try {
     const result = await generateText({
-      model: getModel(),
+      model: getModel(gate.model),
       ...callOptions({ userId, signal: request.signal, effort: "low", seconds: 90 }),
       instructions: variationsInstructions({ ...(await loadContext(userId, doc)), instruction }),
       prompt: editMessage({ items: [item], focus: [item.index], context }),

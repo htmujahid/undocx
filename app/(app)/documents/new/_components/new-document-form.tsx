@@ -65,8 +65,12 @@ export function NewDocumentForm({ profiles, voices, ruleSets }: { profiles: (Pic
   });
 
   async function blank() {
-    const id = await createBlank();
-    router.push(id ? `/documents/${id}` : "/documents");
+    const result = await createBlank();
+    if ("error" in result) {
+      form.setError("root.server", { message: result.error });
+      return;
+    }
+    router.push(`/documents/${result.id}`);
   }
 
   return (

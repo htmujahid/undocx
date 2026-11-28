@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { Button } from "~@/components/ui/button";
 import { LoaderCircleIcon, PlusIcon } from "~@/components/ui/icons";
 import { cn } from "~@/lib/utils";
@@ -27,7 +27,7 @@ export function ListPane({
 }: {
   title: string;
   createLabel: string;
-  createAction?: () => Promise<void>;
+  createAction?: () => Promise<string | null>;
   onCreate?: () => void;
   search?: ReactNode;
   footer?: ReactNode;
@@ -35,19 +35,28 @@ export function ListPane({
   emptyText: string;
 }) {
   const pathname = usePathname();
+  const [error, setError] = useState<string | null>(null);
   return (
     <>
       <div className="flex h-12 shrink-0 items-center justify-between gap-2 px-4">
         <h2 className="m-0 font-mono text-[0.65rem] tracking-[0.15em] text-muted-foreground uppercase">
           {title} <span className="text-faint-foreground">{items.length}</span>
         </h2>
-        <form action={createAction}>
+        <form action={async () => setError((await createAction?.()) ?? null)}>
           <Button type={onCreate ? "button" : "submit"} variant="primary" size="sm" onClick={onCreate}>
             <PlusIcon />
             {createLabel}
           </Button>
         </form>
       </div>
+      {error ? (
+        <p role="alert" className="m-0 px-4 pb-2 text-xs leading-normal text-destructive">
+          {error}{" "}
+          <Link href="/account" className="text-foreground underline">
+            Plan
+          </Link>
+        </p>
+      ) : null}
       {search ? <div className="px-4 pb-2">{search}</div> : null}
       {items.length === 0 ? (
         <p className="m-0 px-4 py-6 text-sm leading-normal text-muted-foreground">

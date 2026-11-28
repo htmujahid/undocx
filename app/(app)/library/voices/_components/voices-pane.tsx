@@ -24,8 +24,10 @@ export function VoicesPane({ initial }: { initial: VoiceSummary[] }) {
       title="Voices"
       createLabel="New"
       createAction={async () => {
-        const id = await trigger();
-        router.push(id ? `/library/voices/${id}` : "/library/voices");
+        const result = await trigger();
+        if ("error" in result) return result.error;
+        router.push(`/library/voices/${result.id}`);
+        return null;
       }}
       items={items}
       emptyText="No voices yet. Add a few things you are happy with and Undocx will write like them."

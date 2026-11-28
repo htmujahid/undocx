@@ -53,6 +53,7 @@ export const aiRun = pgTable(
     inputTokens: integer().notNull().default(0),
     outputTokens: integer().notNull().default(0),
     totalTokens: integer().notNull().default(0),
+    costMicros: integer().notNull().default(0),
     durationMs: integer().notNull().default(0),
     createdAt: timestamp().defaultNow().notNull(),
   },

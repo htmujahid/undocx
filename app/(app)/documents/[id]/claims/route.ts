@@ -3,9 +3,19 @@ import { loadContext } from "~@/lib/ai/context";
 import { getModel } from "~@/lib/ai/model";
 import { callOptions } from "~@/lib/ai/options";
 import { claimsInstructions, claimsMessage } from "~@/lib/ai/prompts";
-import { authorize, describeError, problem, trackRun } from "~@/lib/ai/route";
+import { authorize, describeError, problem, beginRun } from "~@/lib/ai/route";
 import { claimsLimits, claimsOutputSchema, claimsRequestSchema } from "~@/lib/ai/schemas";
 import { findDocument } from "~@/lib/db/repository/document";
+
+function withinBudget<T extends { text: string }>(blocks: T[], budget: number) {
+  const kept: T[] = [];
+  for (const block of blocks) {
+    budget -= block.text.length;
+    if (budget < 0) break;
+    kept.push(block);
+  }
+  return kept;
+}
 
 export async function POST(request: Request, { params }: RouteContext<"/documents/[id]/claims">) {
   const userId = await authorize();
@@ -20,13 +30,15 @@ export async function POST(request: Request, { params }: RouteContext<"/document
   if (!doc) return problem(404, "This document no longer exists.");
 
   const context = await loadContext(userId, doc);
-  const run = trackRun({ userId, documentId: id, kind: "claims" });
+  const gate = await beginRun({ userId, documentId: id, kind: "claims", task: "claims" });
+  if (gate.denied) return gate.denied;
+  const { run } = gate;
   try {
     const result = await generateText({
-      model: getModel(),
+      model: getModel(gate.model),
       ...callOptions({ userId, signal: request.signal, effort: "medium", seconds: 120 }),
       instructions: claimsInstructions(context),
-      prompt: claimsMessage(blocks),
+      prompt: claimsMessage(withinBudget(blocks, gate.limits.documentChars)),
       output: Output.object({ schema: claimsOutputSchema }),
     });
     await run.onEnd({ usage: result.usage, finishReason: result.finishReason });

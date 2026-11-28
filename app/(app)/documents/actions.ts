@@ -1,10 +1,11 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { limitMessage } from "~@/lib/billing/plans";
+import { getEntitlement } from "~@/lib/db/repository/billing";
 import { requireUserId } from "~@/lib/auth/session";
 import type { FormState } from "~@/lib/context/limits";
 import { countDocuments, insertDocument, listDocuments as listDocumentsFor, removeDocument, renameDocument, updateDocumentStatus } from "~@/lib/db/repository/document";
-import { documentLimits } from "~@/lib/documents/limits";
 import { statusSchema, titleSchema, type DocumentStatus, type TitleValues } from "~@/lib/documents/schemas";
 
 function refresh() {
@@ -15,12 +16,13 @@ export async function listDocuments() {
   return listDocumentsFor(await requireUserId());
 }
 
-export async function createDocument() {
+export async function createDocument(): Promise<{ id: string } | { error: string }> {
   const userId = await requireUserId();
-  if ((await countDocuments(userId)) >= documentLimits.perUser) return null;
+  const { plan, limits } = await getEntitlement(userId);
+  if ((await countDocuments(userId)) >= limits.documents) return { error: limitMessage(plan, "documents", "documents") };
   const id = await insertDocument(userId);
   refresh();
-  return id;
+  return { id };
 }
 
 export async function updateTitle(id: string, values: TitleValues): Promise<FormState> {

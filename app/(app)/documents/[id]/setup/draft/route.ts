@@ -4,7 +4,7 @@ import { draftToContent } from "~@/lib/ai/draft";
 import { getModel } from "~@/lib/ai/model";
 import { briefMessage, draftInstructions } from "~@/lib/ai/prompts";
 import { callOptions } from "~@/lib/ai/options";
-import { authorize, describeError, problem, trackRun } from "~@/lib/ai/route";
+import { authorize, describeError, problem, beginRun } from "~@/lib/ai/route";
 import { draftOutputSchema } from "~@/lib/ai/schemas";
 import { ensureThread, saveThreadMessages } from "~@/lib/db/repository/ai";
 import { findBrief, finishDraft } from "~@/lib/db/repository/brief";
@@ -23,11 +23,13 @@ export async function POST(request: Request, { params }: RouteContext<"/document
   const { document, brief } = found;
 
   const context = await loadContext(userId, document);
-  const run = trackRun({ userId, documentId: id, kind: "setup-draft" });
+  const gate = await beginRun({ userId, documentId: id, kind: "setup-draft", task: "draft" });
+  if (gate.denied) return gate.denied;
+  const { run } = gate;
   try {
     const message = briefMessage({ prompt: brief.prompt, questions: brief.questions, answers: brief.answers });
     const result = await generateText({
-      model: getModel(),
+      model: getModel(gate.model),
       ...callOptions({ userId, signal: request.signal, effort: "medium", seconds: 150 }),
       instructions: draftInstructions({ ...context, typeKey: document.type, outline: brief.outline as OutlineMode, advice: brief.advice?.recommended ?? null }),
       prompt: message,
@@ -41,7 +43,7 @@ export async function POST(request: Request, { params }: RouteContext<"/document
     const title = result.output.title.trim().slice(0, documentLimits.title) || document.title;
     if (!(await finishDraft(userId, id, { title, content, ...summary }))) return problem(409, "This document is already set up.");
 
-    await insertVersion(userId, id, { kind: "ai", label: "First draft", content, wordCount: summary.wordCount });
+    await insertVersion(userId, id, { kind: "ai", label: "First draft", content, wordCount: summary.wordCount }, gate.limits.versionsPerDocument);
 
     const thread = await ensureThread(userId, id);
     if (thread) {

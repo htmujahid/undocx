@@ -1,6 +1,8 @@
 import { revalidatePath } from "next/cache";
 import { newId } from "~@/lib/id";
 import { getUserId } from "~@/lib/auth/session";
+import { limitMessage } from "~@/lib/billing/plans";
+import { getEntitlement } from "~@/lib/db/repository/billing";
 import { countWords } from "~@/lib/context/limits";
 import { findDocument } from "~@/lib/db/repository/document";
 import { attachSources, countDocumentSources, countSources, insertSource } from "~@/lib/db/repository/source";
@@ -20,16 +22,17 @@ export async function POST(request: Request) {
   const file = form?.get("file");
   if (!form || !(file instanceof File)) return problem(400, "Choose a file to upload.");
   if (file.size === 0) return problem(400, "That file is empty.");
-  if (file.size > sourceLimits.bytes) return problem(413, `Files can be up to ${sourceLimits.bytes / 1024 / 1024} MB.`);
+  const { plan, limits } = await getEntitlement(userId);
+  if (file.size > limits.fileBytes) return problem(413, `Files can be up to ${limits.fileBytes / 1024 / 1024} MB on your plan.${plan === "free" ? " Pro allows larger files." : ""}`);
   const extension = extensionOf(file.name);
   if (!(sourceLimits.extensions as readonly string[]).includes(extension)) return problem(415, `Upload one of: ${sourceLimits.extensions.join(", ")}.`);
 
   const documentIdValue = form.get("documentId");
   const documentId = typeof documentIdValue === "string" && documentIdValue ? documentIdValue : undefined;
-  if ((await countSources(userId)) >= sourceLimits.perUser) return problem(409, `You can keep up to ${sourceLimits.perUser} sources.`);
+  if ((await countSources(userId)) >= limits.sources) return problem(409, limitMessage(plan, "sources in your library", "sources"));
   if (documentId) {
     if (!(await findDocument(userId, documentId))) return problem(404, "This document no longer exists.");
-    if ((await countDocumentSources(documentId)) >= sourceLimits.perDocument) return problem(409, `A document can use up to ${sourceLimits.perDocument} sources.`);
+    if ((await countDocumentSources(documentId)) >= limits.sourcesPerDocument) return problem(409, limitMessage(plan, "sources per document", "sourcesPerDocument"));
   }
 
   const bytes = new Uint8Array(await file.arrayBuffer());

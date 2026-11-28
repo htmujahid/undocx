@@ -1,8 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { limitMessage } from "~@/lib/billing/plans";
+import { getEntitlement } from "~@/lib/db/repository/billing";
 import { requireUserId } from "~@/lib/auth/session";
-import { limits, type FormState } from "~@/lib/context/limits";
+import type { FormState } from "~@/lib/context/limits";
 import { profileSchema, type ProfileValues } from "~@/lib/context/schemas";
 import {
   countProfiles,
@@ -22,13 +24,14 @@ export async function listProfiles() {
   return listProfilesFor(await requireUserId());
 }
 
-export async function createProfile() {
+export async function createProfile(): Promise<{ id: string } | { error: string }> {
   const userId = await requireUserId();
   const total = await countProfiles(userId);
-  if (total >= limits.perUser) return null;
+  const { plan, limits } = await getEntitlement(userId);
+  if (total >= limits.profiles) return { error: limitMessage(plan, "writer profiles", "profiles") };
   const id = await insertProfile(userId, total === 0);
   refresh();
-  return id;
+  return { id };
 }
 
 export async function updateProfile(id: string, values: ProfileValues): Promise<FormState> {

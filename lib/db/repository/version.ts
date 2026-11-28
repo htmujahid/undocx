@@ -4,7 +4,6 @@ import { and, asc, count, desc, eq, sql } from "drizzle-orm";
 import { connection } from "next/server";
 import { db } from "~@/lib/db";
 import { document, documentVersion } from "~@/lib/db/schema";
-import { versionLimits } from "~@/lib/documents/limits";
 
 export type NewVersion = { name?: string | null; kind: "manual" | "ai" | "restore"; label?: string | null; content: unknown; wordCount: number };
 
@@ -40,12 +39,12 @@ export async function countVersions(documentId: string) {
   return total;
 }
 
-export async function insertVersion(userId: string, documentId: string, fields: NewVersion) {
+export async function insertVersion(userId: string, documentId: string, fields: NewVersion, limit: number) {
   if (!(await owned(userId, documentId))) return null;
   return db.transaction(async (tx) => {
     await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${documentId}))`);
     const [{ total }] = await tx.select({ total: count() }).from(documentVersion).where(eq(documentVersion.documentId, documentId));
-    if (total >= versionLimits.perDocument) {
+    if (total >= limit) {
       const [oldest] = await tx
         .select({ id: documentVersion.id })
         .from(documentVersion)

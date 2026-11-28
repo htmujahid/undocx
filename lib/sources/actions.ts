@@ -1,6 +1,8 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { limitMessage } from "~@/lib/billing/plans";
+import { getEntitlement } from "~@/lib/db/repository/billing";
 import { requireUserId } from "~@/lib/auth/session";
 import type { FormState } from "~@/lib/context/limits";
 import { countWords } from "~@/lib/context/limits";
@@ -19,10 +21,11 @@ function refresh() {
 }
 
 async function checkRoom(userId: string, documentId: string | undefined, isNew: boolean) {
-  if (isNew && (await countSources(userId)) >= sourceLimits.perUser) return `You can keep up to ${sourceLimits.perUser} sources.`;
+  const { plan, limits } = await getEntitlement(userId);
+  if (isNew && (await countSources(userId)) >= limits.sources) return limitMessage(plan, "sources in your library", "sources");
   if (documentId) {
     if (!(await findDocument(userId, documentId))) return "This document no longer exists.";
-    if ((await countDocumentSources(documentId)) >= sourceLimits.perDocument) return `A document can use up to ${sourceLimits.perDocument} sources.`;
+    if ((await countDocumentSources(documentId)) >= limits.sourcesPerDocument) return limitMessage(plan, "sources per document", "sourcesPerDocument");
   }
   return null;
 }

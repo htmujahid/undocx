@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Newsreader } from "next/font/google";
+import { UserProvider } from "~@/components/auth/user-provider";
+import { getOptionalUser } from "~@/lib/auth/session";
 import { ThemeProvider } from "~@/components/theme-provider";
 import "./globals.css";
 
@@ -46,7 +48,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" data-scroll-behavior="smooth" className={`${newsreader.variable} ${geist.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          {children}
+          <UserProvider user={getOptionalUser()}>{children}</UserProvider>
         </ThemeProvider>
       </body>
     </html>

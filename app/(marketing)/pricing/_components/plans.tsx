@@ -4,8 +4,22 @@ import { CheckIcon } from "~@/components/ui/icons";
 import { Section } from "../../_components/frame";
 import { startHref } from "../../_components/links";
 
-const free = ["Brief chat, outline when needed, and draft", "Section regenerate, locks, variations and notes to self", "Export to Word, PDF, Markdown and Google Docs", "Five documents", "A monthly allowance of AI writing. When it runs out, the AI stops and you can keep typing."];
-const pro = ["Everything in Free, with unlimited documents", "No monthly limit on AI writing", "Your voice, learned from your samples", "Grounded writing with citations", "House rules, review links and named versions", "Claims check and document types, as they ship"];
+const free = [
+  "Brief chat, outline when needed, and a first draft",
+  "Section regenerate, locks, variations and notes to self",
+  "Export to Word, OpenDocument, PDF and JSON",
+  "5 documents, with the last 3 versions of each",
+  "A monthly AI allowance, about two assisted documents. It resets on the 1st of each month",
+  "1 writer profile, 1 voice and 1 rule set, and 10 sources",
+];
+const pro = [
+  "Everything in Free, with far more room",
+  "100 documents, with the last 10 versions of each",
+  "A larger AI allowance, about 13 assisted documents, resetting with your billing date",
+  "The strongest model for first drafts and claims checks",
+  "10 profiles, 10 voices, 10 rule sets and 100 sources, with files up to 10 MB",
+  "Longer documents and sources for the assistant to read",
+];
 
 function Plan({ name, price, period, who, items, isPro }: { name: string; price: string; period: string; who: string; items: string[]; isPro: boolean }) {
   return (
@@ -39,7 +53,7 @@ function Plan({ name, price, period, who, items, isPro }: { name: string; price:
 
 export function Plans({ number }: { number: string }) {
   return (
-    <Section id="plans" number={number} label="Plans" note="Free, or $10 a month." title="Two plans. One of them is free." description="Start on Free. Move to Pro when you need unlimited documents, your voice and sources.">
+    <Section id="plans" number={number} label="Plans" note="Free, or $10 a month." title="Two plans. One of them is free." description="Start on Free. Move to Pro when you need more documents, a larger AI allowance and a bigger library.">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <Plan name="Free" price="$0" period="forever" who="Anyone who writes now and then" items={free} isPro={false} />
         <Plan name="Pro" price="$10" period="per month" who="People who write every week" items={pro} isPro />

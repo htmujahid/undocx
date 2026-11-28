@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { Suspense } from "react";
 import { getCurrentUser } from "~@/lib/auth/session";
 import { DocumentsHeader } from "../documents/_components/documents-header";
+import { Billing } from "./_components/billing";
 import { DeleteAccount } from "./_components/delete-account";
 
 export const metadata: Metadata = {
@@ -35,6 +37,10 @@ export default async function AccountPage() {
               <p className="m-0 text-xs text-faint-foreground">Signed in with Google</p>
             </div>
           </section>
+
+          <Suspense fallback={<div role="status" aria-label="Loading plan" className="h-56 rounded-lg border border-border bg-card" />}>
+            <Billing userId={user.id} />
+          </Suspense>
 
           <DeleteAccount email={user.email} />
         </div>

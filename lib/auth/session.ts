@@ -22,14 +22,20 @@ export async function getUserId() {
   return session ? session.user.id : null;
 }
 
-export async function getCurrentUser(): Promise<CurrentUser> {
+export async function getOptionalUser(): Promise<CurrentUser | null> {
   "use cache: private";
   cacheLife("minutes");
 
   const session = await auth.api.getSession({ headers: await headers() });
-  if (!session) redirect("/?login");
+  if (!session) return null;
   const { id, name, email, image } = session.user;
   return { id, name, email, image: image ?? null };
+}
+
+export async function getCurrentUser(): Promise<CurrentUser> {
+  const user = await getOptionalUser();
+  if (!user) redirect("/?login");
+  return user;
 }
 
 export async function requireUserId() {

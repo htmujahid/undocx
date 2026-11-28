@@ -3,7 +3,7 @@ import { loadContext } from "~@/lib/ai/context";
 import { getModel } from "~@/lib/ai/model";
 import { questionsInstructions } from "~@/lib/ai/prompts";
 import { callOptions } from "~@/lib/ai/options";
-import { authorize, describeError, problem, trackRun } from "~@/lib/ai/route";
+import { authorize, describeError, problem, beginRun } from "~@/lib/ai/route";
 import { questionsOutputSchema } from "~@/lib/ai/schemas";
 import { findBrief, saveQuestions } from "~@/lib/db/repository/brief";
 import type { BriefQuestion } from "~@/lib/documents/brief";
@@ -33,10 +33,12 @@ export async function POST(request: Request, { params }: RouteContext<"/document
   if (found.document.status !== "drafting") return problem(409, "This document is already set up.");
 
   const context = await loadContext(userId, found.document);
-  const run = trackRun({ userId, documentId: id, kind: "setup-questions" });
+  const gate = await beginRun({ userId, documentId: id, kind: "setup-questions", task: "questions" });
+  if (gate.denied) return gate.denied;
+  const { run } = gate;
   try {
     const result = await generateText({
-      model: getModel(),
+      model: getModel(gate.model),
       ...callOptions({ userId, signal: request.signal, effort: "low", seconds: 90 }),
       instructions: questionsInstructions({ ...context, typeKey: found.document.type }),
       prompt: found.brief.prompt,

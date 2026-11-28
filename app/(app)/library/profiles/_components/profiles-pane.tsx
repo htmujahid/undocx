@@ -26,8 +26,10 @@ export function ProfilesPane({ initial }: { initial: ProfileSummary[] }) {
       title="Writer profiles"
       createLabel="New"
       createAction={async () => {
-        const id = await trigger();
-        router.push(id ? `/library/profiles/${id}` : "/library/profiles");
+        const result = await trigger();
+        if ("error" in result) return result.error;
+        router.push(`/library/profiles/${result.id}`);
+        return null;
       }}
       items={items}
       emptyText="No profiles yet. Make one per role, client or publication."

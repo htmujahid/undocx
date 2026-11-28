@@ -34,7 +34,7 @@ export function DeleteAccount({ email }: { email: string }) {
       return;
     }
     if (error.code === "SESSION_EXPIRED" || error.code === "SESSION_NOT_FRESH") setNeedsSignIn(true);
-    else form.setError("root.server", { message: "Your account was not deleted. Try again in a moment." });
+    else form.setError("root.server", { message: error.code === "ACTIVE_SUBSCRIPTION" ? "Cancel your Pro subscription under Manage billing first, then delete your account." : "Your account was not deleted. Try again in a moment." });
   });
 
   return (

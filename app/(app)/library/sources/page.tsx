@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { FilesIcon } from "~@/components/ui/icons";
-import { sourceLimits } from "~@/lib/sources/limits";
 import { EmptyPane } from "../_components/empty-pane";
 
 export const metadata: Metadata = {
@@ -11,7 +10,7 @@ export const metadata: Metadata = {
 export default function SourcesPage() {
   return (
     <EmptyPane icon={FilesIcon} title="Sources">
-      Files, pasted text and links you can attach to any document. Undocx reads them, writes from them and cites them. Up to {sourceLimits.perUser} sources.
+      Files, pasted text and links you can attach to any document. Undocx reads them, writes from them and cites them. Free keeps 10 sources, Pro keeps 100.
     </EmptyPane>
   );
 }

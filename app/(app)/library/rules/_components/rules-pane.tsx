@@ -32,8 +32,10 @@ export function RulesPane({ initial }: { initial: RuleSetSummary[] }) {
       title="Rule sets"
       createLabel="New"
       createAction={async () => {
-        const id = await trigger();
-        router.push(id ? `/library/rules/${id}` : "/library/rules");
+        const result = await trigger();
+        if ("error" in result) return result.error;
+        router.push(`/library/rules/${result.id}`);
+        return null;
       }}
       items={items}
       emptyText="No rule sets yet. Start with the spelling you use and the words you never write."

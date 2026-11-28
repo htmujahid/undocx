@@ -1,8 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { limitMessage } from "~@/lib/billing/plans";
+import { getEntitlement } from "~@/lib/db/repository/billing";
 import { requireUserId } from "~@/lib/auth/session";
-import { countWords, limits, type FormState } from "~@/lib/context/limits";
+import { countWords, type FormState } from "~@/lib/context/limits";
 import { sampleSchema, voiceSchema, type SampleValues, type VoiceValues } from "~@/lib/context/schemas";
 import {
   countSamples,
@@ -25,12 +27,13 @@ export async function listVoices() {
   return listVoicesFor(await requireUserId());
 }
 
-export async function createVoice() {
+export async function createVoice(): Promise<{ id: string } | { error: string }> {
   const userId = await requireUserId();
-  if ((await countVoices(userId)) >= limits.perUser) return null;
+  const { plan, limits } = await getEntitlement(userId);
+  if ((await countVoices(userId)) >= limits.voices) return { error: limitMessage(plan, "voices", "voices") };
   const id = await insertVoice(userId);
   refresh();
-  return id;
+  return { id };
 }
 
 export async function updateVoice(id: string, values: VoiceValues): Promise<FormState> {
@@ -53,7 +56,8 @@ export async function addSample(voiceId: string, values: SampleValues): Promise<
   if (!(await ownsVoice(userId, voiceId))) return { error: "This voice no longer exists." };
   const parsed = sampleSchema.safeParse(values);
   if (!parsed.success) return { error: parsed.error.issues[0].message };
-  if ((await countSamples(voiceId)) >= limits.samplesMax) return { error: `A voice holds at most ${limits.samplesMax} samples.` };
+  const entitlement = await getEntitlement(userId);
+  if ((await countSamples(voiceId)) >= entitlement.limits.voiceSamples) return { error: limitMessage(entitlement.plan, "samples per voice", "voiceSamples") };
   await insertSample(voiceId, { ...parsed.data, wordCount: countWords(parsed.data.content) });
   refresh();
   return { saved: true };

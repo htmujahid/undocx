@@ -2,13 +2,12 @@ import { convertToModelMessages, createUIMessageStreamResponse, generateId, stre
 import { loadContext } from "~@/lib/ai/context";
 import { getModel } from "~@/lib/ai/model";
 import { callOptions } from "~@/lib/ai/options";
-import { authorize, describeError, problem, trackRun } from "~@/lib/ai/route";
+import { authorize, describeError, problem, beginRun } from "~@/lib/ai/route";
 import { assistantRequestSchema } from "~@/lib/ai/schemas";
 import { assistantInstructions } from "~@/lib/ai/prompts";
 import { ensureThread, listThreadMessages, saveThreadMessages } from "~@/lib/db/repository/ai";
 import { findDocument } from "~@/lib/db/repository/document";
 
-const MAX_HISTORY = 30;
 
 export async function POST(request: Request, { params }: RouteContext<"/documents/[id]/assistant">) {
   const userId = await authorize();
@@ -27,13 +26,15 @@ export async function POST(request: Request, { params }: RouteContext<"/document
 
   const userMessage: UIMessage = { id: generateId(), role: "user", parts: [{ type: "text", text: parsed.data.message.text }] };
   const messages = await validateUIMessages({ messages: [...previous, userMessage] });
-  const run = trackRun({ userId, documentId: doc.id, threadId: thread.id, kind: "assistant" });
+  const gate = await beginRun({ userId, documentId: doc.id, threadId: thread.id, kind: "assistant", task: "edit" });
+  if (gate.denied) return gate.denied;
+  const { run } = gate;
 
   const result = streamText({
-    model: getModel(),
+    model: getModel(gate.model),
     ...callOptions({ userId, signal: request.signal, effort: "low", seconds: 120 }),
-    instructions: assistantInstructions({ ...context, documentText: parsed.data.document, focus: parsed.data.focus ?? null }),
-    messages: await convertToModelMessages(messages.slice(-MAX_HISTORY)),
+    instructions: assistantInstructions({ ...context, documentText: parsed.data.document.slice(0, gate.limits.documentChars), focus: parsed.data.focus ?? null }),
+    messages: await convertToModelMessages(messages.slice(-gate.limits.historyMessages)),
     onEnd: run.onEnd,
     onAbort: run.onAbort,
     onError: run.onError,
