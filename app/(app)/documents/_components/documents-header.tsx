@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { UserMenu } from "~@/components/auth/user-menu";
 import { Button } from "~@/components/ui/button";
-import { FileTextIcon, ProfileIcon } from "~@/components/ui/icons";
+import { FileTextIcon, AssistantIcon, ProfileIcon } from "~@/components/ui/icons";
 
 export function DocumentsHeader({ hasNewButton = true }: { hasNewButton?: boolean }) {
   return (
@@ -10,6 +10,10 @@ export function DocumentsHeader({ hasNewButton = true }: { hasNewButton?: boolea
         Undocx<span className="text-primary">.</span>
       </Link>
       <div className="flex items-center gap-2">
+        <Button variant="ghost" size="sm" render={<Link href="/chat" />}>
+          <AssistantIcon />
+          Ask
+        </Button>
         <Button variant="ghost" size="sm" render={<Link href="/library" />}>
           <ProfileIcon />
           Library

@@ -7,6 +7,7 @@ import { startHref } from "../../_components/links";
 const free = [
   "Brief chat, outline when needed, and a first draft",
   "Section regenerate, locks, variations and notes to self",
+  "Ask your documents: search everything you have written and get answers with citations",
   "Export to Word, OpenDocument, PDF and JSON",
   "5 documents, with the last 3 versions of each",
   "A monthly AI allowance, about two assisted documents. It resets on the 1st of each month",

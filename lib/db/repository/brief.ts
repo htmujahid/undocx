@@ -3,6 +3,7 @@ import "server-only";
 import { and, eq, sql } from "drizzle-orm";
 import { connection } from "next/server";
 import { db } from "~@/lib/db";
+import { requestIndexing } from "~@/lib/db/repository/retrieval";
 import type { BriefQuestion, OutlineAdvice, OutlineMode } from "~@/lib/documents/brief";
 import { document, documentBrief } from "~@/lib/db/schema";
 
@@ -58,5 +59,6 @@ export async function finishDraft(
     .set({ ...fields, status: "draft", contentVersion: 1, updatedAt: new Date() })
     .where(and(eq(document.id, documentId), eq(document.userId, userId), eq(document.status, "drafting")))
     .returning({ id: document.id });
+  if (rows.length > 0) await requestIndexing(userId, documentId);
   return rows.length > 0;
 }

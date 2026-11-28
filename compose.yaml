@@ -2,7 +2,7 @@ name: undocx-app
 
 services:
   postgres:
-    image: postgres:18-alpine
+    image: pgvector/pgvector:pg18
     container_name: undocx-app-postgres
     restart: unless-stopped
     environment:

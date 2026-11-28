@@ -2,6 +2,7 @@ import "server-only";
 
 import { and, count, desc, eq } from "drizzle-orm";
 import { connection } from "next/server";
+import { requestIndexing } from "~@/lib/db/repository/retrieval";
 import { db } from "~@/lib/db";
 import { document } from "~@/lib/db/schema";
 
@@ -53,6 +54,7 @@ export async function saveDocumentContent(
     .set({ ...fields, contentVersion: version + 1, updatedAt: new Date() })
     .where(and(eq(document.id, id), eq(document.userId, userId), eq(document.contentVersion, version)))
     .returning({ version: document.contentVersion });
+  if (rows[0]) await requestIndexing(userId, id);
   return rows[0]?.version ?? null;
 }
 
@@ -62,6 +64,7 @@ export async function renameDocument(userId: string, id: string, title: string) 
     .set({ title, updatedAt: new Date() })
     .where(and(eq(document.id, id), eq(document.userId, userId)))
     .returning({ id: document.id });
+  if (rows.length > 0) await requestIndexing(userId, id);
   return rows.length > 0;
 }
 

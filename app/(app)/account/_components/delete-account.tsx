@@ -13,7 +13,8 @@ import { deleteAccountSchema, type DeleteAccountValues } from "~@/lib/auth/schem
 
 const removed = [
   "Your account and sign-in",
-  "Every document, with its notes, versions, brief and assistant conversation",
+  "Every document, with its notes, versions, brief, search index and assistant conversation",
+  "Your chat history",
   "Your sources and the files you uploaded",
   "Your writer profiles, voices and rule sets",
   "Usage records of your AI requests",

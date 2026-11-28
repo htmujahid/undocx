@@ -3,12 +3,13 @@ import "server-only";
 import { openai } from "@ai-sdk/openai";
 import type { PlanId } from "~@/lib/billing/plans";
 
-export type Task = "questions" | "draft" | "edit" | "claims";
+export type Task = "questions" | "draft" | "edit" | "claims" | "chat";
 
 const routes: Record<Task, Record<PlanId, string>> = {
   questions: { free: "gpt-5.4-nano", pro: "gpt-5.4-nano" },
   draft: { free: "gpt-5.4-mini", pro: "gpt-5.4" },
   edit: { free: "gpt-5.4-mini", pro: "gpt-5.4-mini" },
+  chat: { free: "gpt-5.4-mini", pro: "gpt-5.4-mini" },
   claims: { free: "gpt-5.4-mini", pro: "gpt-5.4" },
 };
 
