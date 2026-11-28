@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Suspense } from "react";
 import { getCurrentUser } from "~@/lib/auth/session";
 import { DocumentsHeader } from "../documents/_components/documents-header";
+import { Button } from "~@/components/ui/button";
 import { Billing } from "./_components/billing";
 import { DeleteAccount } from "./_components/delete-account";
 
@@ -42,6 +43,20 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
           <Suspense fallback={<div role="status" aria-label="Loading plan" className="h-56 rounded-lg border border-border bg-card" />}>
             <Billing userId={user.id} isUpgrading={isUpgrading} />
           </Suspense>
+
+          <section aria-labelledby="data-title" className="grid gap-4 rounded-lg border border-border bg-card p-5">
+            <div className="grid gap-1">
+              <h2 id="data-title" className="m-0 font-serif text-xl font-medium text-foreground">
+                Your data
+              </h2>
+              <p className="m-0 text-sm leading-normal text-muted-foreground">Download everything you wrote as one JSON file: documents with their notes and versions, your library, and your conversations. Uploaded files can be downloaded from each source&rsquo;s page.</p>
+            </div>
+            <div>
+              <Button variant="secondary" render={<a href="/account/export" download />}>
+                Download my data
+              </Button>
+            </div>
+          </section>
 
           <DeleteAccount email={user.email} />
         </div>

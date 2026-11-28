@@ -47,6 +47,7 @@ export async function usageIn(userId: string, since: Date, hourAgo: Date) {
     .select({
       micros: sql<number>`coalesce(sum(${aiRun.costMicros}) filter (where ${aiRun.createdAt} >= ${since.toISOString()}::timestamp), 0)`.mapWith(Number),
       lastHour: sql<number>`count(*) filter (where ${aiRun.createdAt} >= ${hourAgo.toISOString()}::timestamp)`.mapWith(Number),
+      oldestInHour: sql<number | null>`extract(epoch from min(${aiRun.createdAt}) filter (where ${aiRun.createdAt} >= ${hourAgo.toISOString()}::timestamp))`.mapWith((value) => (value === null ? null : Number(value))),
     })
     .from(aiRun)
     .where(and(eq(aiRun.userId, userId), gte(aiRun.createdAt, since < hourAgo ? since : hourAgo)));

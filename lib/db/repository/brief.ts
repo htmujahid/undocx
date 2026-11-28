@@ -45,6 +45,13 @@ export async function saveAnswer(documentId: string, questionId: string, answer:
     .where(eq(documentBrief.documentId, documentId));
 }
 
+export async function clearAnswer(documentId: string, questionId: string) {
+  await db
+    .update(documentBrief)
+    .set({ answers: sql`${documentBrief.answers} - ${questionId}::text`, updatedAt: new Date() })
+    .where(eq(documentBrief.documentId, documentId));
+}
+
 export async function saveOutlineMode(documentId: string, outline: OutlineMode) {
   await db.update(documentBrief).set({ outline, updatedAt: new Date() }).where(eq(documentBrief.documentId, documentId));
 }

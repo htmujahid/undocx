@@ -15,6 +15,14 @@ import { SourceList } from "./chat-sources";
 
 const starters = ["Which document mentions a deadline?", "What have I written about pricing?", "Find where I describe our refund policy"];
 
+function errorText(error: Error) {
+  try {
+    const parsed = JSON.parse(error.message) as { error?: unknown };
+    if (typeof parsed.error === "string") return parsed.error;
+  } catch {}
+  return error.message.startsWith("<") ? "Something went wrong. Try again." : error.message;
+}
+
 function textOf(message: UIMessage) {
   return message.parts.map((part) => (part.type === "text" ? part.text : "")).join("");
 }
@@ -65,7 +73,7 @@ export function ChatPanel({ threadId, title, initialMessages }: { threadId: stri
           </div>
           {error ? (
             <p className="m-0 max-w-3xl rounded-xl border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive" role="alert">
-              {error.message}
+              {errorText(error)}
             </p>
           ) : null}
         </div>
@@ -96,7 +104,7 @@ export function ChatPanel({ threadId, title, initialMessages }: { threadId: stri
               {error ? (
                 <li>
                   <p className="m-0 rounded-xl border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive" role="alert">
-                    {error.message}
+                    {errorText(error)}
                   </p>
                 </li>
               ) : null}

@@ -55,6 +55,6 @@ export async function POST(request: Request, { params }: RouteContext<"/document
     return Response.json({ id });
   } catch (error) {
     await run.onError({ error });
-    return problem(502, describeError(error));
+    return problem(500, describeError(error));
   }
 }

@@ -10,7 +10,7 @@ import { versionContentSchema, versionNameSchema, type VersionNameValues } from 
 export type SaveVersionInput = { content: string; name?: string | null; kind: "manual" | "ai"; label?: string | null; baseline?: string | null };
 export type SaveVersionResult = { number: number } | { error: string };
 
-const full = (plan: string, count: number) => `This document already has ${count} saved versions. Delete one to make room${plan === "free" ? ", or upgrade to Pro to keep more" : ""}.`;
+const full = (plan: string, count: number) => `All ${count} versions of this document are ones you saved or named, so none can be replaced automatically. Delete one to make room${plan === "free" ? ", or upgrade to Pro to keep more" : ""}.`;
 
 export async function listVersions(documentId: string) {
   return listVersionsFor(await requireUserId(), documentId);

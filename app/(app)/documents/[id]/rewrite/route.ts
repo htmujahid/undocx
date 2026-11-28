@@ -36,10 +36,10 @@ export async function POST(request: Request, { params }: RouteContext<"/document
     });
     await run.onEnd({ usage: result.usage, finishReason: result.finishReason });
     const changed = result.output.items.filter((item) => focus.includes(item.index) && item.text.trim());
-    if (changed.length === 0) return problem(502, "Undocx did not return a change. Try again.");
+    if (changed.length === 0) return problem(500, "Undocx did not return a change. Try again.");
     return Response.json({ items: changed.map((item) => ({ index: item.index, text: item.text.trim() })) });
   } catch (error) {
     await run.onError({ error });
-    return problem(502, describeError(error));
+    return problem(500, describeError(error));
   }
 }

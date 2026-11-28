@@ -2,7 +2,7 @@ import "server-only";
 
 import { APICallError, LoadAPIKeyError } from "ai";
 import { getUserId } from "~@/lib/auth/session";
-import { insertRun } from "~@/lib/db/repository/ai";
+import { countRunning, discardRun, finishRun, startRun } from "~@/lib/db/repository/ai";
 import { costMicros } from "~@/lib/billing/pricing";
 import { getEntitlement, usageIn } from "~@/lib/db/repository/billing";
 import { modelFor, type Task } from "./model";
@@ -26,14 +26,6 @@ export const authorize = getUserId;
 
 type Usage = { inputTokens?: number; outputTokens?: number; totalTokens?: number };
 
-const inFlight = new Map<string, number>();
-
-function release(userId: string) {
-  const left = (inFlight.get(userId) ?? 1) - 1;
-  if (left <= 0) inFlight.delete(userId);
-  else inFlight.set(userId, left);
-}
-
 const dateFormat = new Intl.DateTimeFormat("en", { month: "long", day: "numeric", timeZone: "UTC" });
 
 export async function beginRun(base: { userId: string; kind: string; task: Task; documentId?: string; threadId?: string }) {
@@ -46,21 +38,22 @@ export async function beginRun(base: { userId: string; kind: string; task: Task;
     return { denied: problem(402, `You have used this period's AI allowance. It resets on ${dateFormat.format(window.end)}.${upgrade}`) };
   }
   if (usage.lastHour >= limits.burstPerHour) {
-    return { denied: problem(429, `You have reached the hourly limit for AI requests. Try again later.${upgrade}`) };
+    const minutes = usage.oldestInHour === null ? 60 : Math.max(1, Math.ceil((usage.oldestInHour * 1000 + 60 * 60 * 1000 - Date.now()) / 60000));
+    return { denied: problem(429, `You have reached the hourly limit for AI requests. Try again in about ${minutes} ${minutes === 1 ? "minute" : "minutes"}.${upgrade}`) };
   }
-  if ((inFlight.get(userId) ?? 0) >= limits.concurrent) {
-    return { denied: problem(429, "Wait for the current AI request to finish before starting another.") };
-  }
-  inFlight.set(userId, (inFlight.get(userId) ?? 0) + 1);
 
   const model = modelFor(task, plan);
   const startedAt = Date.now();
+  const runId = await startRun({ userId, kind: base.kind, documentId: base.documentId, threadId: base.threadId, model, status: "running" });
+  if ((await countRunning(userId)) > limits.concurrent) {
+    await discardRun(runId);
+    return { denied: problem(429, "Wait for the current AI request to finish before starting another.") };
+  }
   let settled = false;
-  const record = async (fields: Partial<Parameters<typeof insertRun>[0]>) => {
+  const record = async (fields: Parameters<typeof finishRun>[1]) => {
     if (settled) return;
     settled = true;
-    release(userId);
-    await insertRun({ userId, kind: base.kind, documentId: base.documentId, threadId: base.threadId, model, status: "ok", durationMs: Date.now() - startedAt, ...fields }).catch(() => undefined);
+    await finishRun(runId, { status: "ok", durationMs: Date.now() - startedAt, ...fields }).catch(() => undefined);
   };
   const run = {
     onEnd: async ({ usage, finishReason }: { usage: Usage; finishReason: string }) => {

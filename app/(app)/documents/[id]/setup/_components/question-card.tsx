@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Button } from "~@/components/ui/button";
+import { ArrowLeftIcon } from "~@/components/ui/icons";
 import { Checkbox, CheckboxGroup } from "~@/components/ui/checkbox";
 import { ChoiceRow, ChoiceShortcut, useChoiceShortcuts } from "~@/components/ui/choice-row";
 import { Radio, RadioGroup } from "~@/components/ui/radio";
@@ -20,13 +21,23 @@ const defaultHints: Record<QuestionKind, string> = {
 };
 
 
-export function QuestionCard({ question, index, total, onAnswer, onSkip, onFinish, isBusy }: { question: BriefQuestion; index: number; total: number; onAnswer: (value: string) => void; onSkip: () => void; onFinish: () => void; isBusy: boolean }) {
+function restore(kind: QuestionKind, options: string[], value: string | null) {
+  if (!value) return { picked: [] as string[], other: "", text: "" };
+  if (kind === "text") return { picked: [], other: "", text: value };
+  const parts = kind === "multi" ? value.split(multiSeparator) : [value];
+  const picked = parts.filter((part) => options.includes(part));
+  const other = parts.filter((part) => !options.includes(part)).join(multiSeparator);
+  return { picked: other ? [...picked, OTHER] : picked, other, text: "" };
+}
+
+export function QuestionCard({ question, index, total, onAnswer, onSkip, onFinish, onBack, initial, isBusy }: { question: BriefQuestion; index: number; total: number; onAnswer: (value: string) => void; onSkip: () => void; onFinish: () => void; onBack?: () => void; initial?: string | null; isBusy: boolean }) {
   const kind = kindOf(question);
   const options = kind === "yesno" ? yesNoChoices : question.choices;
   const isMulti = kind === "multi";
-  const [picked, setPicked] = useState<string[]>([]);
-  const [other, setOther] = useState("");
-  const [text, setText] = useState("");
+  const start = restore(kind, options, initial ?? null);
+  const [picked, setPicked] = useState<string[]>(start.picked);
+  const [other, setOther] = useState(start.other);
+  const [text, setText] = useState(start.text);
   const formRef = useRef<HTMLFormElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const otherRef = useRef<HTMLInputElement>(null);
@@ -130,6 +141,12 @@ export function QuestionCard({ question, index, total, onAnswer, onSkip, onFinis
 
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4">
         <div className="flex flex-wrap items-center gap-1">
+          {onBack ? (
+            <Button type="button" variant="ghost" size="sm" disabled={isBusy} onClick={onBack}>
+              <ArrowLeftIcon />
+              Back
+            </Button>
+          ) : null}
           <Button type="button" variant="ghost" size="sm" disabled={isBusy} onClick={onSkip}>
             Skip this question
           </Button>

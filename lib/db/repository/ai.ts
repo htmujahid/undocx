@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { UIMessage } from "ai";
-import { and, asc, eq, sql } from "drizzle-orm";
+import { and, asc, count, eq, sql } from "drizzle-orm";
 import { connection } from "next/server";
 import { db } from "~@/lib/db";
 import { aiMessage, aiRun, aiThread, document } from "~@/lib/db/schema";
@@ -59,6 +59,26 @@ export async function clearThread(userId: string, documentId: string) {
   if (thread) await db.delete(aiMessage).where(eq(aiMessage.threadId, thread.id));
 }
 
-export async function insertRun(run: typeof aiRun.$inferInsert) {
-  await db.insert(aiRun).values(run);
+const staleRunMs = 5 * 60 * 1000;
+
+export async function startRun(run: typeof aiRun.$inferInsert) {
+  const [row] = await db.insert(aiRun).values({ ...run, status: "running" }).returning({ id: aiRun.id });
+  return row.id;
+}
+
+export async function finishRun(id: string, fields: Partial<typeof aiRun.$inferInsert>) {
+  await db.update(aiRun).set(fields).where(eq(aiRun.id, id));
+}
+
+export async function discardRun(id: string) {
+  await db.delete(aiRun).where(eq(aiRun.id, id));
+}
+
+export async function countRunning(userId: string) {
+  const since = new Date(Date.now() - staleRunMs).toISOString();
+  const [row] = await db
+    .select({ total: count() })
+    .from(aiRun)
+    .where(and(eq(aiRun.userId, userId), eq(aiRun.status, "running"), sql`${aiRun.createdAt} >= ${since}::timestamp`));
+  return row.total;
 }

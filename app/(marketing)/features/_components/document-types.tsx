@@ -1,7 +1,7 @@
 import { Section } from "../../_components/frame";
 import { TypesSheet } from "./types-sheet";
 
-const types = ["Proposal", "Report", "Article", "Case study", "Newsletter", "Your own"];
+const types = ["Proposal", "Report", "Article", "Case study", "Newsletter", "Anything else"];
 
 export function DocumentTypes({ number }: { number: string }) {
   return (
@@ -24,8 +24,8 @@ export function DocumentTypes({ number }: { number: string }) {
             <dd className="m-0 text-sm leading-normal text-muted-foreground">A price and a decision date for a proposal. A period and a source list for a report.</dd>
           </div>
           <div className="border-t border-border pt-3">
-            <dt className="m-0 text-sm font-medium text-foreground">Your own</dt>
-            <dd className="m-0 text-sm leading-normal text-muted-foreground">Save a brief and outline as a type and start the next one from it. Or leave it blank and let Undocx work out the type.</dd>
+            <dt className="m-0 text-sm font-medium text-foreground">Anything else</dt>
+            <dd className="m-0 text-sm leading-normal text-muted-foreground">Leave the type blank and Undocx works it out from your prompt, then asks only what that kind of document needs.</dd>
           </div>
         </dl>
       </div>

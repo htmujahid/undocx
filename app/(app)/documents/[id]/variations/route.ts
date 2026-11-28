@@ -33,10 +33,10 @@ export async function POST(request: Request, { params }: RouteContext<"/document
     });
     await run.onEnd({ usage: result.usage, finishReason: result.finishReason });
     const variations = [...new Set(result.output.variations.map((text) => text.trim()).filter(Boolean))].slice(0, 3);
-    if (variations.length === 0) return problem(502, "Undocx did not return any versions. Try again.");
+    if (variations.length === 0) return problem(500, "Undocx did not return any versions. Try again.");
     return Response.json({ variations });
   } catch (error) {
     await run.onError({ error });
-    return problem(502, describeError(error));
+    return problem(500, describeError(error));
   }
 }

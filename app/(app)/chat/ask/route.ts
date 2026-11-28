@@ -86,6 +86,6 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     await run.onError({ error });
-    return problem(502, describeError(error));
+    return problem(500, describeError(error));
   }
 }

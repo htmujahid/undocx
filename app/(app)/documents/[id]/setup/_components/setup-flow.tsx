@@ -7,7 +7,7 @@ import { Button } from "~@/components/ui/button";
 import { ChoiceRow, ChoiceShortcut, useChoiceShortcuts } from "~@/components/ui/choice-row";
 import { Radio, RadioGroup } from "~@/components/ui/radio";
 import { nextQuestion, outlineModes, type BriefAnswers, type BriefQuestion, type OutlineAdvice, type OutlineMode } from "~@/lib/documents/brief";
-import { useGenerateQuestions, useSaveAnswer, useSetOutline, useWriteDraft } from "../query";
+import { useClearAnswer, useGenerateQuestions, useSaveAnswer, useSetOutline, useWriteDraft } from "../query";
 import { Brief, type BriefPick } from "./setup-brief";
 import { Working } from "./setup-working";
 import { Problem } from "./setup-problem";
@@ -25,6 +25,8 @@ export function SetupFlow({ id, prompt, picks, questions: initialQuestions, answ
   const { trigger: generate, isMutating: isGenerating } = useGenerateQuestions(id);
   const { trigger: writeDraft } = useWriteDraft(id);
   const { trigger: persistAnswer } = useSaveAnswer(id);
+  const { trigger: dropAnswer } = useClearAnswer(id);
+  const [restored, setRestored] = useState<BriefAnswers>({});
   const { trigger: persistOutline } = useSetOutline(id);
   const hasStarted = useRef(false);
 
@@ -53,6 +55,15 @@ export function SetupFlow({ id, prompt, picks, questions: initialQuestions, answ
   function answer(question: BriefQuestion, value: string | null) {
     setAnswers((existing) => ({ ...existing, [question.id]: value }));
     void persistAnswer({ questionId: question.id, answer: value });
+  }
+
+  const previous = current ? [...questions].reverse().find((question) => question.id !== current.id && question.id in answers && questions.indexOf(question) < questions.indexOf(current)) : undefined;
+
+  function goBack() {
+    if (!previous) return;
+    setRestored({ [previous.id]: answers[previous.id] });
+    setAnswers((existing) => Object.fromEntries(Object.entries(existing).filter(([key]) => key !== previous.id)));
+    void dropAnswer(previous.id);
   }
 
   async function write() {
@@ -105,7 +116,7 @@ export function SetupFlow({ id, prompt, picks, questions: initialQuestions, answ
         </Problem>
       ) : null}
 
-      {current && !isWriting ? <QuestionCard key={current.id} question={current} index={answeredCount} total={questions.length} isBusy={false} onAnswer={(value) => answer(current, value)} onSkip={() => answer(current, null)} onFinish={() => setIsFinished(true)} /> : null}
+      {current && !isWriting ? <QuestionCard key={current.id} question={current} index={answeredCount} total={questions.length} isBusy={false} initial={restored[current.id] ?? null} onBack={previous ? goBack : undefined} onAnswer={(value) => answer(current, value)} onSkip={() => answer(current, null)} onFinish={() => setIsFinished(true)} /> : null}
 
       {advice && !current && !isWriting ? (
         <OutlineChoice advice={advice} outline={outline} onOutline={setOutline} problem={problem} onWrite={() => void write()} />

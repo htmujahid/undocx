@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireUserId } from "~@/lib/auth/session";
-import { findBrief, saveAnswer as saveAnswerFor, saveOutlineMode } from "~@/lib/db/repository/brief";
+import { clearAnswer as clearAnswerFor, findBrief, saveAnswer as saveAnswerFor, saveOutlineMode } from "~@/lib/db/repository/brief";
 import { answerSchema, outlineModeSchema, type AnswerValues } from "~@/lib/documents/schemas";
 import type { OutlineMode } from "~@/lib/documents/brief";
 
@@ -17,6 +17,11 @@ export async function saveAnswer(id: string, values: AnswerValues) {
   if (!parsed.success || !found) return;
   if (!found.brief.questions.some((question) => question.id === parsed.data.questionId)) return;
   await saveAnswerFor(id, parsed.data.questionId, parsed.data.answer || null);
+}
+
+export async function clearAnswer(id: string, questionId: string) {
+  if (!questionId || questionId.length > 60 || !(await ownedDrafting(id))) return;
+  await clearAnswerFor(id, questionId);
 }
 
 export async function setOutline(id: string, mode: OutlineMode) {
